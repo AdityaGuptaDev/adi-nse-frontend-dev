@@ -1,0 +1,316 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@plugin "daisyui/theme" {
+  name: "light";
+  default: true;
+  /* --color-primary: #2c3e50; */
+  --color-primary: #f5862e;
+  --color-secondary: #233b74;
+  --color-secondary-content: #3498db;
+  --color-base-content: #333333;
+  /* border-color */
+  --color-accent: #e2e2e2;
+  --color-accent-content: #f9f9f9;
+}
+
+@plugin "daisyui/theme" {
+  name: "dark";
+  /* --color-primary: #2c3e50; */
+  --color-primary: #f5862e;
+  --color-secondary: #233b74;
+  --color-secondary-content: #3498db;
+  --color-base-content: #333333;
+  --color-accent: #e2e2e2;
+  --color-accent-content: #f9f9f9;
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --color-primary: #f5862e;
+  --color-secondary: #233b74;
+  --color-secondary-content: #3498db;
+  --color-base-content: #333333;
+  --color-accent: #e2e2e2;
+  --color-accent-content: #f9f9f9;
+  /* --color-placeholder: #98A2B3; */
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-lato: var(--font-lato);
+  --font-montserrat: var(--font-montserrat);
+  --color-placeholder: #98a2b3;
+  --color-disable: #f9f9f9;
+  --color-field-border: #eaecf0;
+  --color-mainbackground: #f4f6f8;
+  --color-border: #e2e2e2;
+  --color-other: #3498db;
+  --color-progressBg: #D9D9D9;
+}
+
+body {
+  /* background: var(--background);
+  color: var(--foreground); */
+  background: #ffffff;
+  color: #000000;
+  font-family: var(--font-lato);
+}
+
+.title {
+  font-family: var(--font-montserrat);
+}
+
+.myContainer {
+  @apply mx-auto px-4;
+}
+
+.activeClass {
+  @apply bg-green-100 text-green-600 px-2 rounded-md;
+}
+
+.inActiveClass {
+  @apply bg-red-100 text-red-600 px-2 rounded-md;
+}
+
+.activePage {
+  @apply bg-white/10;
+}
+
+.riskchart {
+  @media screen and (max-width: 1024px) {
+    height: 250px;
+    margin: -50px 0px;
+  }
+
+  @media screen and (min-width: 1024px) {
+    height: 350px;
+    margin-bottom: -50px;
+    margin-top: -50px;
+  }
+}
+
+.collapse-arrow>.collapse-title:after {
+  @apply text-primary;
+  top: 1.9rem;
+  content: "";
+  transform-origin: 75% 75%;
+  pointer-events: none;
+  width: 0.5rem;
+  height: 0.5rem;
+  transition-property: all;
+
+  transition-duration: 0.2s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  display: block;
+  position: absolute;
+  inset-inline-end: 1.4rem;
+
+  box-shadow: 2px 2px;
+  color: orange;
+}
+
+.collapse-arrow>.collapse-title::before {
+  @apply bg-gray-200 rounded-2xl;
+  top: 3.2rem;
+  content: "";
+  transform-origin: 95% 95%;
+  pointer-events: none;
+  width: 2rem;
+  height: 2rem;
+  display: block;
+  position: absolute;
+  inset-inline-end: 1.4rem;
+  transform: translateY(-100%) rotate(45deg);
+}
+
+.otpInput {
+  @apply w-11 h-11 min-w-11 min-h-11 border border-accent focus-visible:border-primary rounded-lg text-xl;
+}
+
+.otpInputGap {
+  @apply w-2;
+}
+
+.pageTitle {
+  @apply border-b border-gray-200 p-4 ps-6;
+}
+
+.thead {
+  @apply text-center text-black text-sm font-montserrat font-medium;
+}
+
+.thead th {
+  @apply font-medium bg-gray-50;
+}
+
+.thead th.mergeTh {
+  box-shadow: -1px -1px 0px inset rgba(0, 0, 0, 0.05), 1px 0px 0px inset rgba(0, 0, 0, 0.05);
+}
+
+.thead th.colTh {
+  box-shadow: -1px -1px 0px inset rgba(0, 0, 0, 0.05), 1px 0px 0px inset rgba(0, 0, 0, 0.05);
+}
+
+.thead tr {
+  @apply border-b-0;
+}
+
+.thead th .sorting {
+  @apply opacity-50;
+}
+
+.thead th .sorting svg {
+  @apply w-3 h-3;
+}
+
+.fieldset-legend {
+  @apply p-0;
+}
+
+.viewlabel {
+  @apply text-sm font-medium text-gray-500 tracking-wide;
+}
+
+.viewFieldValue {
+  @apply text-base font-medium text-gray-900 bg-gray-50 px-3 py-2 rounded-md
+}
+
+.rmsc {
+  --rmsc-main: #000000;
+  --rmsc-hover: #f1f3f5;
+  --rmsc-selected: #e2e6ea;
+  --rmsc-border: #ccc;
+  --rmsc-gray: #aaa;
+  --rmsc-bg: #fff;
+  --rmsc-p: 10px;
+  /* Spacing */
+  --rmsc-radius: 10px !important;
+  /* Radius */
+  --rmsc-h: 38px;
+  /* Height */
+}
+
+/* .rmsc .dropdown-container {
+    border-radius: 10px !important;
+} */
+
+.multi-select-up .dropdown-content {
+  top: auto !important;
+  bottom: 100% !important;
+  width: 100% !important;
+}
+
+/* Remove border and background on hover for react-multi-select-component */
+.multi-select-up .dropdown-content:hover {
+  background: white !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.multi-select-up .dropdown-content:active {
+  background: white !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.tableHeaderClass {
+  @apply flex justify-between items-center gap-1
+}
+
+.Toastify__toast-container {
+  z-index: 9999999 !important;
+  position: fixed !important;
+  top: 1rem;
+  right: 1rem;
+}
+
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+/* modal css start */
+/* .modal-box {
+  @apply p-0;
+} */
+.modalHeader {
+  /* @apply flex justify-between items-center border-b border-accent pb-2 p-5; */
+  @apply flex justify-between items-center border-b border-accent pb-2;
+}
+
+.modalTitle {
+  @apply text-lg font-montserrat;
+}
+
+/* .modalBody {
+  @apply overflow-y-auto max-h-[65vh] px-5;
+} */
+.modalFooter {
+  /* @apply flex gap-5 justify-center text-center border-t border-accent p-5; */
+  @apply flex gap-5 justify-center text-center border-t border-accent pt-5;
+}
+
+/* modal css end */
+
+.labelValue {
+  @apply text-xs font-semibold;
+}
+
+/* .steps .step::before {
+  color: black;
+} */
+
+.steps .step-primary::before {
+  color: white !important;
+}
+
+.steps .step {
+  @apply block md:grid;
+}
+
+.steps .step::before {
+  @apply hidden md:block;
+}
+
+.arrow--disabled {
+  fill: rgba(255, 255, 255, 0.5);
+}
+
+
+@media print {
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background: white !important;
+  }
+
+  .action-buttons {
+    display: none !important;
+  }
+}
+
+/* Fallback colors for PDF generation */
+.chart-container {
+  background: white !important;
+}
+
+canvas {
+  background: white !important;
+}
+
+.inlineLabel {
+  @apply min-w-28 text-placeholder;
+}
+
+
+.tabs .tab {
+  @apply px-2;
+}

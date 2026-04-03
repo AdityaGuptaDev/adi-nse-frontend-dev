@@ -1,0 +1,118 @@
+@import "../../styles//variables";
+
+ 
+// .tooltip {
+//   svg{
+//     @apply w-4 !h-4;
+//   }
+// }
+.paginationContainer {
+    ul {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      align-items: center;
+      // width: 80%;
+      
+      li {
+        .pageLink {
+          min-width: 40px;
+            height: 40px;
+            border-radius: 10px;
+        }
+        a {
+          min-width: 40px;
+          height: 40px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          // font-size: 0.75rem;
+          font-size: 1rem;
+            border: 1px solid rgba(52,152,219,0.1);
+            border-radius: 10px;
+            box-shadow: 3px 3px 5px rgba(0,0,0,0.05);
+            color: rgba(0,0,0,0.4);
+          button {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem;
+            border-color: #bcbcbc;
+            border: 1px solid rgba(52,152,219,0.1);
+            svg{
+              width: 10px;
+              height: 10px;
+            }
+          }
+        }
+        &.selected {
+          a {
+            // background-color: green;
+            color: white;
+            // font-size: 0.75rem;
+            font-size: 1rem;
+          }
+        }
+        &.active a,
+        &.selected a {
+          // background-color: green;
+          // background-color: var(--color-secondary);
+          color: #000;
+          font-weight: 600;
+          // padding: 5px;
+          // font-size: 0.75rem;
+          font-size: 1rem;
+          border: 1px solid #ddd;
+          border-radius: 10px;
+        }
+  
+        &:focus {
+          outline: none;
+        }
+      }
+  
+      li.disabled {
+        opacity: 0.3;
+      }
+    }
+  }
+
+  .resizableTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .resizableTable th {
+    position: relative;
+    padding: 10px;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+  }
+  
+  .resizableTable td {
+    padding: 10px;
+    border: 1px solid #ddd;
+  }
+  
+  .resizeHandle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 5px;
+    height: 100%;
+    cursor: ew-resize;
+  }
+  
+  .resizeHandle:hover {
+    background-color: #ccc;
+  }
+
+  .active {
+    // background-color: #1e50ff;
+    border-radius: 10px;
+  }
+  
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+  cursor: pointer;
+}

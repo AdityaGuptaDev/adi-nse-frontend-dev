@@ -1,0 +1,44 @@
+[2025-08-18T06:08:48.642Z]
+{
+  "txnType": "V",
+  "entGroupRefNo": "V202507110674"
+}
+
+[2025-08-18T06:12:10.042Z]
+{
+  "txnType": "V",
+  "entGroupRefNo": "V202507110674"
+}
+
+[2025-08-18T06:25:21.805Z]
+{}
+
+[2025-08-18T06:26:05.520Z]
+{
+  "txnType": "V",
+  "entGroupRefNo": "V2025071106740",
+  "folio": "1234"
+}
+
+[2025-08-18T06:27:05.217Z]
+{
+  "txnType": "V",
+  "entGroupRefNo": "V2025071106740",
+  "folio": "1234777"
+}
+
+[2025-08-20T06:07:39.553Z]
+{
+  "netBkPayDt": {
+    "gorn": "U14157AZA0114212 ",
+    "payRefNo": "U1230003767407",
+    "payRemarks": "Payment Success",
+    "payStatus": "success"
+  }
+}
+
+[2025-08-20T06:07:43.709Z]
+{
+  "msg": "{\"netBkPayDt\":{\"gorn\":\"U14157AZA0114212 \",\"payRefNo\":\"U1230003767407\",\"payRemarks\":\"Payment Success\",\"payStatus\":\"success\"}}"
+}
+

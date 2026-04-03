@@ -1,0 +1,300 @@
+import React, { useState } from 'react';
+
+
+export default function InsuranceAlertForm() {
+  const [formData, setFormData] = useState({
+    insuranceType: 'Life Insurance',
+    insurancePlan: 'General Insurance',
+    insuranceCompany: '',
+    policyNo: '',
+    sumAssured: '',
+    premiumAmount: '',
+    premiumFrequency: 'Yearly',
+    premiumDay: '1',
+    premiumMonth: 'Jan',
+    premiumYear: '2026',
+    policyTerm: '',
+    insuranceExpiryDate: ''
+  });
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = () => {
+    console.log('Form submitted:', formData);
+    alert('Alert created successfully!');
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100">
+      {/* Header Bar */}
+      {/* <div className="bg-white border-b border-gray-300 px-4 py-2 flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <div className="w-4 h-4 bg-red-500 rounded-sm flex items-center justify-center">
+            <span className="text-white text-xs font-bold">M</span>
+          </div>
+          <span className="text-sm text-gray-700">Manual - Set Insurance Alerts - Google Chrome</span>
+        </div>
+        <div className="flex items-center space-x-2">
+          <button className="text-gray-500 hover:text-gray-700">−</button>
+          <button className="text-gray-500 hover:text-gray-700">□</button>
+          <button className="text-gray-500 hover:text-gray-700">×</button>
+        </div>
+      </div> */}
+
+      {/* URL Bar */}
+      {/* <div className="bg-white border-b border-gray-200 px-4 py-2">
+        <div className="flex items-center space-x-2">
+          <div className="flex space-x-1">
+            <div className="w-3 h-3 rounded-full bg-gray-300"></div>
+            <div className="w-3 h-3 rounded-full bg-gray-300"></div>
+          </div>
+          <div className="flex-1 bg-gray-50 rounded px-3 py-1 text-sm text-gray-600">
+            https://vedantasset.co.in/FinnSys/alerts/set/alerts.insurance.asp?INVESTOR_ID=981
+          </div>
+        </div>
+      </div> */}
+
+      {/* Action Buttons */}
+      <div className="bg-white px-4 py-2 flex justify-end space-x-2">
+        <button className="bg-blue-600 text-white px-4 py-1 rounded text-sm flex items-center space-x-1">
+          <span>📋</span>
+          <span>Manage Tickets</span>
+        </button>
+        <button className="bg-green-600 text-white px-4 py-1 rounded text-sm flex items-center space-x-1">
+          <span>📞</span>
+          <span>Send us Whatsapp</span>
+        </button>
+      </div>
+
+      {/* Main Content */}
+      <div className="p-6">
+        <h2 className="text-lg font-bold text-gray-900 mb-6">
+          Set Insurance Alert for LAKSHMI SINHA
+        </h2>
+
+        <div className="bg-white p-6 rounded shadow-sm max-w-2xl">
+          <table className="w-full">
+            <tbody>
+              {/* Insurance Type */}
+              <tr className="border-b border-gray-200">
+                <td className="py-3 pr-4 font-semibold text-gray-700 w-1/3">
+                  Insurance Type:
+                </td>
+                <td className="py-3">
+                  <select 
+                    className="w-full px-3 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    value={formData.insuranceType}
+                    onChange={(e) => handleInputChange('insuranceType', e.target.value)}
+                  >
+                    <option>Life Insurance</option>
+                    <option>Health Insurance</option>
+                    <option>Motor Insurance</option>
+                    <option>General Insurance</option>
+                  </select>
+                </td>
+              </tr>
+
+              {/* Insurance Plan */}
+              <tr className="border-b border-gray-200">
+                <td className="py-3 pr-4 font-semibold text-gray-700">
+                  Insurance Plan:
+                  <div className="text-xs font-normal text-gray-500 mt-1">
+                    (e.g. Endowment, Pension, Traditional, ULIP, Mediclaim, Motor, Accident etc)
+                  </div>
+                </td>
+                <td className="py-3">
+                  <input 
+                    type="text"
+                    className="w-full px-3 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    value={formData.insurancePlan}
+                    onChange={(e) => handleInputChange('insurancePlan', e.target.value)}
+                  />
+                </td>
+              </tr>
+
+              {/* Insurance Company */}
+              <tr className="border-b border-gray-200">
+                <td className="py-3 pr-4 font-semibold text-gray-700">
+                  Insurance Company:
+                  <div className="text-xs font-normal text-gray-500 mt-1">
+                    (e.g. HDFC, LIC of India etc)
+                  </div>
+                </td>
+                <td className="py-3">
+                  <input 
+                    type="text"
+                    className="w-full px-3 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    value={formData.insuranceCompany}
+                    onChange={(e) => handleInputChange('insuranceCompany', e.target.value)}
+                  />
+                </td>
+              </tr>
+
+              {/* Policy No */}
+              <tr className="border-b border-gray-200">
+                <td className="py-3 pr-4 font-semibold text-gray-700">
+                  Policy No: <span className="text-gray-500 font-normal">(optional)</span>
+                </td>
+                <td className="py-3">
+                  <input 
+                    type="text"
+                    className="w-full px-3 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    value={formData.policyNo}
+                    onChange={(e) => handleInputChange('policyNo', e.target.value)}
+                  />
+                </td>
+              </tr>
+
+              {/* Sum Assured */}
+              <tr className="border-b border-gray-200">
+                <td className="py-3 pr-4 font-semibold text-gray-700">
+                  Sum Assured: <span className="text-gray-500 font-normal">(Rupees)</span>
+                </td>
+                <td className="py-3">
+                  <input 
+                    type="text"
+                    className="w-full px-3 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    value={formData.sumAssured}
+                    onChange={(e) => handleInputChange('sumAssured', e.target.value)}
+                  />
+                </td>
+              </tr>
+
+              {/* Premium Amount */}
+              <tr className="border-b border-gray-200">
+                <td className="py-3 pr-4 font-semibold text-gray-700">
+                  Premium Amount: <span className="text-gray-500 font-normal">(Rupees)</span>
+                </td>
+                <td className="py-3">
+                  <input 
+                    type="text"
+                    className="w-full px-3 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    value={formData.premiumAmount}
+                    onChange={(e) => handleInputChange('premiumAmount', e.target.value)}
+                  />
+                </td>
+              </tr>
+
+              {/* Premium Frequency */}
+              <tr className="border-b border-gray-200">
+                <td className="py-3 pr-4 font-semibold text-gray-700">
+                  Premium Frequency
+                </td>
+                <td className="py-3">
+                  <select 
+                    className="w-full px-3 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    value={formData.premiumFrequency}
+                    onChange={(e) => handleInputChange('premiumFrequency', e.target.value)}
+                  >
+                    <option>Yearly</option>
+                    <option>Half Yearly</option>
+                    <option>Quarterly</option>
+                    <option>Monthly</option>
+                  </select>
+                </td>
+              </tr>
+
+              {/* Premium / First Installment Date */}
+              <tr className="border-b border-gray-200">
+                <td className="py-3 pr-4 font-semibold text-gray-700">
+                  Premium / First Installment Date:
+                </td>
+                <td className="py-3">
+                  <div className="flex space-x-2">
+                    <div className="flex items-center space-x-1">
+                      <span className="text-sm text-gray-700">Day</span>
+                      <select 
+                        className="px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        value={formData.premiumDay}
+                        onChange={(e) => handleInputChange('premiumDay', e.target.value)}
+                      >
+                        {Array.from({length: 31}, (_, i) => (
+                          <option key={i+1} value={i+1}>{i+1}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <span className="text-sm text-gray-700">Month</span>
+                      <select 
+                        className="px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        value={formData.premiumMonth}
+                        onChange={(e) => handleInputChange('premiumMonth', e.target.value)}
+                      >
+                        <option>Jan</option>
+                        <option>Feb</option>
+                        <option>Mar</option>
+                        <option>Apr</option>
+                        <option>May</option>
+                        <option>Jun</option>
+                        <option>Jul</option>
+                        <option>Aug</option>
+                        <option>Sep</option>
+                        <option>Oct</option>
+                        <option>Nov</option>
+                        <option>Dec</option>
+                      </select>
+                    </div>
+                    <div className="flex items-center space-x-1">
+                      <span className="text-sm text-gray-700">Year</span>
+                      <select 
+                        className="px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        value={formData.premiumYear}
+                        onChange={(e) => handleInputChange('premiumYear', e.target.value)}
+                      >
+                        {Array.from({length: 10}, (_, i) => (
+                          <option key={2024+i} value={2024+i}>{2024+i}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              {/* Policy Term */}
+              <tr className="border-b border-gray-200">
+                <td className="py-3 pr-4 font-semibold text-gray-700">
+                  Policy Term: <span className="text-gray-500 font-normal">(years)</span>
+                </td>
+                <td className="py-3">
+                  <input 
+                    type="text"
+                    className="w-32 px-3 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    value={formData.policyTerm}
+                    onChange={(e) => handleInputChange('policyTerm', e.target.value)}
+                  />
+                </td>
+              </tr>
+
+              {/* Insurance Expiry Date */}
+              <tr className="border-b border-gray-200">
+                <td className="py-3 pr-4 font-semibold text-gray-700">
+                  Insurance Expiry Date:
+                </td>
+                <td className="py-3">
+                  <input 
+                    type="text"
+                    className="w-full px-3 py-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
+                    value={formData.insuranceExpiryDate}
+                    onChange={(e) => handleInputChange('insuranceExpiryDate', e.target.value)}
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          {/* Submit Button */}
+          <div className="mt-6 text-center">
+            <button 
+              onClick={handleSubmit}
+              className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 py-2 rounded border border-gray-400 font-medium"
+            >
+              Post New Alert
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
