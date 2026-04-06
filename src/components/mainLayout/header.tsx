@@ -53,10 +53,20 @@ const Header = ({
 
   const prodUserData = getLS(USER_DATA);
   const userTypeId = prodUserData?.partner?.userType_id ?? 0;
-  const userType = prodUserData?.userTypeId ?? 0;
+  //const userType = prodUserData?.userTypeId ?? 0;
   const partnerMobile = prodUserData?.mobile ?? 0;
   const userCreated = prodUserData?.partner?.userCreated ?? 0;
+  //const userType1=prodUserData?.partner?.userType_id ?? 0;
 
+  let userType;
+
+if (prodUserData?.partner?.userType_id) {
+  userType = prodUserData.partner.userType_id;
+} else {
+  userType = prodUserData?.userTypeId ?? 0;
+}
+
+console.log("partner----",userType)
   let targetLink = "/my-profile";
   if (userType === 4) {
     targetLink =
@@ -73,7 +83,7 @@ const Header = ({
         : `/bcOnboarding?mobile=${partnerMobile}`;
   }
 
-  if (userType === 2) {
+  if ( userType===2 ) {
     targetLink = "/my-profile";
   }
 

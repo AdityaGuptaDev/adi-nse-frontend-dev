@@ -78,7 +78,16 @@ function MyProfile() {
         const userData = getLS(USER_DATA);
 
         //getting user type Id 
-        const userType = userData?.userTypeId ?? 0;
+        let userType;
+
+if (userData?.partner?.userType_id) {
+  userType = userData.partner.userType_id;
+} else {
+  userType = userData?.userTypeId ?? 0;
+}
+
+        //const userType = userData?.userTypeId ?? 0;
+        
         const partnerId = userData?.partner?.regId ?? 0;
         let investor;
 

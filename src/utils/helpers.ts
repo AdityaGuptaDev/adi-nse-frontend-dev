@@ -199,6 +199,11 @@ export const handleServerError = (error: any) => {
     toastAlert("error", "Somthing went wrong!");
   }
 
+  if (error?.status === 429) {
+    toastAlert("warn", error?.msg || "Too many requests, please try again later");
+    return;
+  }
+
   if (error?.status === 409 || error?.status === 500) {
     if (error?.field?.length) {
       toastAlert("error", `${error.field[0]} has a ${error?.msg}`);

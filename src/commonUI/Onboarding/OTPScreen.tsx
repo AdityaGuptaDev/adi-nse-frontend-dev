@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import CustomButton from "@/commonUI/Button";
 import CustomText from "@/commonUI/Text";
 import api from "@/utils/api";
-import { toastAlert, handleServerError, setLS } from "@/utils/helpers";
+import { toastAlert, handleServerError, setLS, getLS } from "@/utils/helpers";
 import {
     TOKEN_PREFIX,
     MENU_PREFIX,
@@ -33,7 +33,7 @@ interface OTPScreenProps {
     parentData?: any | null;
 
 }
-
+ const userData = getLS(USER_DATA);
 
 export default function OTPScreen({
     mode,
@@ -99,6 +99,8 @@ export default function OTPScreen({
     };
 
 
+
+ 
     const verifyRegisterOTP = async () => {
         console.log(userData, "userData");
         const payload = {
@@ -107,6 +109,7 @@ export default function OTPScreen({
             userId: userData.id,
             userTypeId: userData.userTypeId,
             parentData,
+            ...(parentData?.userId && { source: "partner-add-investor" }),
         };
 
         const res = await api.post(`/user/verify-otp`, payload);

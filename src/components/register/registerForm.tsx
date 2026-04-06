@@ -70,6 +70,7 @@ function RegisterForm() {
 
   const mobileValue = watch("mobile");
   const registerAsValue = watch("registerAs");
+  console.log("registerAs---value",registerAsValue);
 
   // Handle mobile input change
   const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

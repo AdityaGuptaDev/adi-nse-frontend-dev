@@ -498,7 +498,7 @@ function InvestorList(props: any) {
         if (e == 'Dashboard') {
             try {
                 const payload = {
-                    userName: data.reg_email,
+                    userName: data.reg_mobile,
                     userTypeId: USER_TYPE.InvestorRegistration
                 };
 

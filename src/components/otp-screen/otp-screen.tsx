@@ -33,8 +33,8 @@ function OTPScreen({
   partnerId,
   mobile,
   mobile_no,
-  registerAs,
   register_as,
+  //register_as,
   fromAdmin
 }: any) {
   const router = useRouter();
@@ -54,7 +54,7 @@ function OTPScreen({
   const [userTypes, setUserTypes] = useState<any[]>([]);
   const [showUserTypeSelection, setShowUserTypeSelection] = useState(false);
   const [selectedUserType, setSelectedUserType] = useState<any>(null);
-
+console.log("registerAs------",register_as);
   useEffect(() => {
     if (userData) {
       setTimer(120); // Reset timer to 60 seconds
@@ -135,17 +135,17 @@ function OTPScreen({
           //toastAlert("success", result.data.msg);
           console.log("mobile-",mobile);
           console.log("fromAdmin-",fromAdmin);
-          console.log("registerAs-",registerAs);
+          console.log("registerAs-",register_as);
 
-          if (fromAdmin===1 && registerAs==="Partner") {
+          if (fromAdmin===1 && register_as==="Partner") {
   router.push(`/partnerOnboarding?mobile=${mobile}&fromAdmin=${fromAdmin}`);
 
 } 
- if (fromAdmin===1 && registerAs==="BC") {
+ if (fromAdmin===1 && register_as==="BC") {
   
   router.push(`/bcOnboarding?mobile=${mobile}&fromAdmin=${fromAdmin}`);
 } 
-if(fromAdmin===1 && registerAs==="Investor") {
+if(fromAdmin===1 && register_as==="Investor") {
   router.push(`/investorOnboarding?mobile=${mobile}&fromAdmin=${fromAdmin}`);
 }
 if(fromAdmin!==1 )
@@ -165,7 +165,7 @@ console.log("loginOTPValue-----------+++++++",loginOTPValue);
 
         let payload: any = {
           userName: mobileno || userData.email,
-          loginOTP: loginOTP,
+          loginOTP: loginOTPValue,
         };
         console.log("payload-----------+++++++",payload);
         console.log("userName-----------+++++++",userName);
@@ -197,11 +197,12 @@ console.log("loginOTPValue-----------+++++++",loginOTPValue);
        // payload.userTypeId = userTypesData.userTypes[0].userTypeId;
 
         console.log("Login payload:", payload);
-if(registerAs==="Partner"){
+if(register_as==="Partner"){
   payload.userTypeId = 4
 }else{
   payload.userTypeId = 2;
 }
+//alert("inside the login")
         const result: any = await api.post(`/user/login`, payload);
 
         if (result.data.data) {
@@ -216,7 +217,7 @@ if(registerAs==="Partner"){
           setCookieToken(result.data.data.token);
           storeCookieData(cookieStorageKeys.INIT_PATH, result.data.data.initPath);
 
-         // toastAlert("success", "Logged In successfully");
+         toastAlert("success", "Logged In successfully");
           if (result.data.data.initPath) {
 
             router.push(`/${result.data.data.initPath}`);
@@ -224,13 +225,18 @@ if(registerAs==="Partner"){
             router.push("/dashboard");
           }
 
+          //return false;
         }
   
 }
   
 
         }
-      } else {
+      } 
+      
+      
+      
+      else {
         setLoading(true);
 
         if (!loginOTP || loginOTP.length !== 6) {

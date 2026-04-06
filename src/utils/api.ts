@@ -17,6 +17,8 @@ const getMessageFromStatus = (status: number, msg: string | null) => {
       return msg == 'token expired' ? 'Your token has been expired. Please login again.' : msg || 'Invalid Login';
     case 409:
       return msg || 'Already Exist';
+    case 429:
+      return msg || 'Too many requests, please try again later';
     case 500:
       return msg || 'Something went wrong';
     case 400:
@@ -29,6 +31,20 @@ const getMessageFromStatus = (status: number, msg: string | null) => {
 const formatError = (err: any) => {
   // console.log('err', err);
   let val: any = { msg: '', status: null, field: null };
+
+  // Handle rate limit (429) responses
+  if (err?.status === 429 && err?.data?.error === 'RATE_LIMIT_EXCEEDED') {
+    const retryAfter = err.data.retryAfter;
+    let retryMsg = err.data.message || 'Too many requests, please try again later';
+    if (retryAfter) {
+      const minutes = Math.ceil(retryAfter / 60);
+      retryMsg += `. Retry after ${minutes} minute${minutes > 1 ? 's' : ''}`;
+    }
+    val.msg = retryMsg;
+    val.status = 429;
+    return val;
+  }
+
   if (typeof err?.data == 'string') {
     if (err?.data.search())
       console.log({ err })

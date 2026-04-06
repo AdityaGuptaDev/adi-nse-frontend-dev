@@ -116,7 +116,8 @@ export default function RegisterForm() {
                 parentUserType: parentData.userType || undefined,
                 ...(parentData.userId != null && { parentId: parentData.userId }),
             };
-
+            console.log("payload-",payload);
+            
             const res = await api.post("/user/add-investor", payload);
             console.log("Registration Response:", res);
 
