@@ -31,12 +31,30 @@ function MyProfile() {
     const [fetchingCanDetails, setFetchingCanDetails] = useState(false);
     const [userType, setUserType] = useState<number>(0);
     const [userData, setUserData] = useState<any>(null);
+    const [uccDetails, setUccDetails] = useState<any>(null);
     const removeModalRef = useRef<HTMLDialogElement>(null);
 
     useEffect(() => {
         const userDataLS = getLS(USER_DATA);
         setUserData(userDataLS);
         setUserType(userDataLS?.userTypeId ?? 0);
+
+        // Fetch UCC details if investor mobile is available
+        const fetchUccDetails = async () => {
+            const investor = userDataLS?.InvestorRegistration;
+            if (investor?.reg_mobile) {
+                try {
+                    const res = await api.get(`/nse/ucc/search-by-mobile/${investor.reg_mobile}`);
+                    const payload = res?.data?.data ?? res?.data ?? {};
+                    if (payload?.status === "S" && payload?.data) {
+                        setUccDetails(payload.data);
+                    }
+                } catch {
+                    // UCC not found - that's fine
+                }
+            }
+        };
+        fetchUccDetails();
     }, []);
 
     const toggleMemberExpansion = (pan: string) => {
@@ -256,27 +274,60 @@ if (userData?.partner?.userType_id) {
     };
 
     useEffect(() => {
-        const userData = getLS(USER_DATA);
-        console.log("User Data=", userData.InvestorRegistration)
-        //getting user type Id 
-        const userType = userData?.userTypeId ?? 0;
-        if (userType === 2) {
-            if (
-                (!userData?.InvestorRegistration) ||
-                (userData?.InvestorRegistration?.is_kyc_complete === false) ||
-                userData?.InvestorRegistration?.is_kyc_complete === null
-            ) {
-                setOnBoardingModal(true);
+        const checkOnboarding = async () => {
+            const userData = getLS(USER_DATA);
+            console.log("User Data=", userData?.InvestorRegistration);
+            const userTypeVal = userData?.userTypeId ?? 0;
 
-            } else {
-                console.log("fdsfds")
+            // Partners/admins never see onboarding popup
+            if (userTypeVal === 4 || userTypeVal === 6) {
                 setOnBoardingModal(false);
+                return;
             }
-        }
-        if (userType === 4 || userType === 6) {
-            setOnBoardingModal(false);
-        }
 
+            if (userTypeVal === 2) {
+                const investor = userData?.InvestorRegistration;
+
+                // If KYC is complete, no popup
+                if (investor?.is_kyc_complete === true) {
+                    setOnBoardingModal(false);
+                    return;
+                }
+
+                // If CAN is registered, skip onboarding popup
+                if (investor?.is_CAN_registered === true) {
+                    setOnBoardingModal(false);
+                    return;
+                }
+
+                // Check if UCC is created via NSE API
+                if (investor?.reg_mobile) {
+                    try {
+                        const res = await api.get(`/nse/ucc/search-by-mobile/${investor.reg_mobile}`);
+                        const payload = res?.data?.data ?? res?.data ?? {};
+                        if (payload?.status === "S" && payload?.data) {
+                            const uccData = payload.data;
+                            if (uccData.uccCreated === 1 || uccData.uccCreated === true) {
+                                console.log("UCC created - no onboarding popup in profile");
+                                setOnBoardingModal(false);
+                                return;
+                            }
+                        }
+                    } catch {
+                        console.log("UCC check failed in profile, continuing");
+                    }
+                }
+
+                // None of the above - show onboarding
+                if (!investor || investor.is_kyc_complete === false || investor.is_kyc_complete === null) {
+                    setOnBoardingModal(true);
+                } else {
+                    setOnBoardingModal(false);
+                }
+            }
+        };
+
+        checkOnboarding();
     }, []);
 
     useEffect(() => {
@@ -472,6 +523,20 @@ if (userData?.partner?.userType_id) {
                                                         }} className="text-blue-600 underline ml-1 cursor-pointer">(Check KYC Status)</div>
                                                     }
                                                 </div>
+                                                {/* CAN Number */}
+                                                {investorList?.is_CAN_registered && (
+                                                    <div className='flex gap-6'>
+                                                        <span className='inlineLabel'>CAN Number</span>:
+                                                        <span className='font-bold text-green-600'>{canDetails?.can_number || "Registered"}</span>
+                                                    </div>
+                                                )}
+                                                {/* UCC/NSE Client Code */}
+                                                {uccDetails && (uccDetails.uccCreated === 1 || uccDetails.uccCreated === true) && (
+                                                    <div className='flex gap-6'>
+                                                        <span className='inlineLabel'>NSE UCC</span>:
+                                                        <span className='font-bold text-[#4bc5c1]'>{uccDetails.clientCode || uccDetails.primaryHolderPan || "Created"}</span>
+                                                    </div>
+                                                )}
                                                 <div className='flex gap-6'>
                                                     <span className='inlineLabel'>Profile</span>:
                                                     <div className="flex items-center gap-2">

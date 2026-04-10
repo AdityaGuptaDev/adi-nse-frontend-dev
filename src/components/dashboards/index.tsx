@@ -338,21 +338,57 @@ const MutualFundDashboard = () => {
     loadApiPortfolioData();
   }, [investorName, panNumber, selectedDate, hasClientData]);
 
-  //added by rakesh sinha 
+  //added by rakesh sinha - updated to check CAN and UCC status
   useEffect(() => {
-    const userData = getLS(USER_DATA);
-    console.log("User Data=", userData?.InvestorRegistration)
+    const checkOnboardingStatus = async () => {
+      const userData = getLS(USER_DATA);
+      console.log("User Data=", userData?.InvestorRegistration);
 
-    if (
-      (!userData?.InvestorRegistration) ||
-      (userData?.InvestorRegistration?.is_kyc_complete === false) ||
-      userData?.InvestorRegistration?.is_kyc_complete === null
-    ) {
-      setOnBoardingModal(true);
-    } else {
-      console.log("fdsfds")
-      setOnBoardingModal(false);
-    }
+      const investor = userData?.InvestorRegistration;
+
+      // If investor data exists and KYC is complete, no popup needed
+      if (investor?.is_kyc_complete === true) {
+        console.log("KYC complete - no onboarding popup");
+        setOnBoardingModal(false);
+        return;
+      }
+
+      // If CAN is registered, skip onboarding popup
+      if (investor?.is_CAN_registered === true) {
+        console.log("CAN registered - no onboarding popup");
+        setOnBoardingModal(false);
+        return;
+      }
+
+      // Check if UCC is created via NSE API (by mobile number)
+      if (investor?.reg_mobile) {
+        try {
+          const res = await api.get(`/nse/ucc/search-by-mobile/${investor.reg_mobile}`);
+          const payload = res?.data?.data ?? res?.data ?? {};
+          if (payload?.status === "S" && payload?.data) {
+            const uccData = payload.data;
+            // If UCC record exists and uccCreated flag is true, skip onboarding
+            if (uccData.uccCreated === 1 || uccData.uccCreated === true) {
+              console.log("UCC created - no onboarding popup");
+              setOnBoardingModal(false);
+              return;
+            }
+          }
+        } catch (err) {
+          // UCC check failed - continue with normal check
+          console.log("UCC check failed, continuing with normal onboarding check");
+        }
+      }
+
+      // If none of the above conditions met, show onboarding popup
+      if (!investor || investor.is_kyc_complete === false || investor.is_kyc_complete === null) {
+        setOnBoardingModal(true);
+      } else {
+        setOnBoardingModal(false);
+      }
+    };
+
+    checkOnboardingStatus();
   }, []);
 
   // Original portfolio data loading for other sections

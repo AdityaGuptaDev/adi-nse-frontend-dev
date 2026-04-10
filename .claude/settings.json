@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs wc:*)",
+      "Read(//tmp/**)",
+      "Bash(grep -l \"nse/ucc\" \"c:\\\\Users\\\\user\\\\Desktop\\\\NSE  Module Completee Code By Aditya\\\\adi-nse-frontend-dev/src/routes\"/*/*.ts)",
+      "Bash(grep -l \"nse\\\\|NSE\" \"c:\\\\Users\\\\user\\\\Desktop\\\\NSE  Module Completee Code By Aditya\\\\adi-nse-frontend-dev/src/components\"/*/*.tsx)",
+      "Bash(grep -l \"nse\\\\|NSE\" \"c:\\\\Users\\\\user\\\\Desktop\\\\NSE  Module Completee Code By Aditya\\\\adi-nse-frontend-dev/src/app/\\(modules\\)/\\(main\\)\"/*/*.tsx)",
+      "Read(//c/Users/user/Desktop/**)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\user\\Desktop\\NSE  Module Completee Code By Aditya\\adi-nse-backend-dev\\src\\routes\\nse",
+      "c:\\Users\\user\\Desktop\\NSE  Module Completee Code By Aditya\\adi-nse-backend-dev\\src\\services"
+    ]
+  }
+}

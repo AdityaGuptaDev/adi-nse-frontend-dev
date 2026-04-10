@@ -78,13 +78,33 @@ const pepOptions = [
   { value: "R", label: "Related to a politically exposed person" },
 ];
 
+// NSE UCC spec (page 50, fields 131-132): identity type values must be 1-4 only.
+// 2 = Aadhaar — only LAST 4 DIGITS are accepted (privacy requirement).
+// 4 = OCI/Passport — typically only for foreign nominees.
 const nomineeIdProofOptions = [
   { value: "1", label: "PAN" },
-  { value: "2", label: "Aadhaar" },
-  { value: "3", label: "Passport" },
-  { value: "4", label: "Voter ID" },
-  { value: "5", label: "Driving License" },
+  { value: "2", label: "Aadhaar (last 4 digits)" },
+  { value: "3", label: "Driving Licence" },
+  { value: "4", label: "OCI / Passport" },
 ];
+
+// Validate nominee identity number against the chosen identity type
+const validateNomineeIdNumber = (type: string, num: string): string | true => {
+  if (!num) return "ID number is required";
+  const v = num.trim().toUpperCase();
+  switch (type) {
+    case "1":
+      return /^[A-Z]{5}[0-9]{4}[A-Z]$/.test(v) || "Enter a valid 10-character PAN (e.g., ABCDE1234F)";
+    case "2":
+      return /^\d{4}$/.test(v) || "Enter the LAST 4 digits of Aadhaar only";
+    case "3":
+      return (/^[A-Z0-9]{5,20}$/.test(v)) || "Enter a valid driving licence number";
+    case "4":
+      return (/^[A-Z0-9]{5,20}$/.test(v)) || "Enter a valid passport / OCI number";
+    default:
+      return "Select an ID proof type first";
+  }
+};
 
 const idDocTypeOptions = [
   { value: "PAN", label: "PAN" },
@@ -231,7 +251,7 @@ const defaultValues = {
   city: "",
   state: "",
   pincode: "",
-  country: "",
+  country: "INDIA",
   // Step 1 - secondary/third/guardian PAN
   second_holder_pan: "",
   second_holder_pan_exempt: "N",
@@ -360,7 +380,7 @@ const defaultValues = {
   nominee_1_address3: "",
   nominee_1_city: "",
   nominee_1_pin: "",
-  nominee_1_country: "",
+  nominee_1_country: "INDIA",
   nominee_soa: "Y",
   do_not_wish_to_nominate: false,
   show_nominee_in_soa: true,
@@ -385,7 +405,7 @@ const defaultValues = {
   nominee_2_address3: "",
   nominee_2_pin: "",
   nominee_2_city: "",
-  nominee_2_country: "",
+  nominee_2_country: "INDIA",
   // Nominee 3
   nominee_3_name: "",
   nominee_3_relationship: "",
@@ -404,7 +424,7 @@ const defaultValues = {
   nominee_3_address3: "",
   nominee_3_pin: "",
   nominee_3_city: "",
-  nominee_3_country: "",
+  nominee_3_country: "INDIA",
   reg_id: "",
   reg_status: "",
   reg_remark: "",
@@ -592,7 +612,69 @@ function CreateUCC() {
       }
     })();
     getCountryList();
+
+    // Prefill mobile number from localStorage if available, then fetch existing UCC record
+    const userData: any = getLS(USER_DATA);
+    const storedMobile =
+      userData?.InvestorRegistration?.reg_mobile ||
+      userData?.InvestorRegistration?.mobile ||
+      userData?.InvestorRegistration?.mobile_no ||
+      userData?.mobile ||
+      userData?.mobile_no ||
+      "";
+    if (storedMobile) {
+      const cleaned = String(storedMobile).replace(/\D/g, "").slice(-10);
+      if (cleaned) {
+        setValue("indian_mobile_no", cleaned, { shouldValidate: true });
+        prefillFromExistingUCC(cleaned);
+      }
+    }
   }, []);
+
+  // ── Prefill all 4 pages from saved UCC record by mobile ──
+  const snakeToCamel = (s: string) =>
+    s.split("_").map((p, i) => (i === 0 ? p : p.charAt(0).toUpperCase() + p.slice(1))).join("");
+
+  const normalizeDob = (val: any) => {
+    if (typeof val !== "string") return val;
+    const v = val.trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
+    const m = v.match(/^(\d{2})[-/](\d{2})[-/](\d{4})$/);
+    if (m) return `${m[3]}-${m[2]}-${m[1]}`;
+    // ISO datetime → YYYY-MM-DD
+    const isoMatch = v.match(/^(\d{4}-\d{2}-\d{2})T/);
+    if (isoMatch) return isoMatch[1];
+    return v;
+  };
+
+  const prefillFromExistingUCC = async (mobile: string) => {
+    try {
+      const res = await api.get(`/nse/ucc/search-by-mobile/${mobile}`);
+      const payload = res?.data?.data ?? res?.data ?? {};
+      if (payload?.status !== "S" || !payload?.data) return;
+
+      const record: Record<string, any> = payload.data;
+
+      Object.keys(defaultValues).forEach((formKey) => {
+        const camelKey = snakeToCamel(formKey);
+        if (Object.prototype.hasOwnProperty.call(record, camelKey)) {
+          let val = record[camelKey];
+          if (val === null || val === undefined || val === "") return;
+          if (/(^|_)dob($|_)|date_of|incorporation/i.test(formKey)) {
+            val = normalizeDob(val);
+          }
+          setValue(formKey as any, val, { shouldValidate: false });
+        }
+      });
+
+      // Restore step the user previously reached, if any
+      if (typeof record.formStep === "number" && record.formStep >= 0 && record.formStep <= 3) {
+        setCurrentStep(record.formStep);
+      }
+    } catch (err) {
+      // 404 / not found is expected for first-time users — silently ignore
+    }
+  };
 
   // Reset PAN verified status when PAN changes
   useEffect(() => {
@@ -1046,8 +1128,31 @@ const onSubmit = async (data: any) => {
   const valid = await trigger(fields);
   if (!valid) return;
 
+  // ── Step 2 pre-flight: nominee identity is mandatory per NSE UCC spec ──
+  if (currentStep === 2) {
+    const v = getValues() as any;
+    const doNotNominate = !!v.do_not_wish_to_nominate;
+    if (!doNotNominate) {
+      for (let i = 1; i <= nomineeCount; i++) {
+        const nm = v[`nominee_${i}_name`];
+        if (!nm || !String(nm).trim()) continue;
+        const idType = v[`nominee_${i}_identity_type`];
+        const idNum = v[`nominee_${i}_identity_number`];
+        if (!idType) {
+          toastAlert("error", `Nominee ${i}: please select an ID Proof type (NSE requires it).`);
+          return;
+        }
+        const result = validateNomineeIdNumber(String(idType), String(idNum || ""));
+        if (result !== true) {
+          toastAlert("error", `Nominee ${i}: ${result}`);
+          return;
+        }
+      }
+    }
+  }
+
   try {
-    const data = getValues();
+    const data: any = getValues();
     const userData: any = getLS(USER_DATA);
     const investor_id = userData?.InvestorRegistration?.id;
     const endpointMap: Record<number, string> = {
@@ -1057,7 +1162,64 @@ const onSubmit = async (data: any) => {
     };
     const endpoint = endpointMap[currentStep];
     if (endpoint) {
-      await api.post(endpoint, { ...data, investor_id });
+      // Ensure tax_status and aadhaar number are explicitly included.
+      // aadhaarNo lives in component state (useState), so getValues() does not pick it up.
+      // Force-read tax_status from form — CustomReactSelect uses setValue only, not register
+      const resolvedTaxStatus = data.tax_status || getValues("tax_status") || "01";
+      const payload: any = {
+        ...data,
+        investor_id,
+        // Send in BOTH snake_case and camelCase — backend saveUCCStep0 may use either
+        tax_status: resolvedTaxStatus,
+        taxStatus: resolvedTaxStatus,
+        // aadhaarNo lives in component state (useState), so getValues() does not pick it up
+        aadhaar_no: aadhaarNo || "",
+        aadhaar_number: aadhaarNo || "",
+        aadhaar: aadhaarNo || "",
+        aadhaarNo: aadhaarNo || "",
+      };
+      console.log("[handleNext] step", currentStep, "tax_status =", resolvedTaxStatus, "aadhaar =", aadhaarNo);
+
+      // ── Step 2 (Nominee page) — normalize nominee fields so backend persists them ──
+      if (currentStep === 2) {
+        const doNotNominate = !!data.do_not_wish_to_nominate;
+        payload.do_not_wish_to_nominate = doNotNominate;
+        payload.nomination_opt = doNotNominate ? "N" : "Y";
+        payload.nominee_count = nomineeCount;
+
+        // Coerce minor_flag to consistent "Y" / "N" strings (backend has mixed schema)
+        const toFlag = (v: any) => (v === true || v === "Y" || v === "y" ? "Y" : "N");
+
+        // Strip blank-only nominees that shouldn't be persisted
+        for (const i of [1, 2, 3]) {
+          const prefix = `nominee_${i}_`;
+          const hasName = !!(data[`${prefix}name`] && String(data[`${prefix}name`]).trim());
+          const inUse = i <= nomineeCount && hasName && !doNotNominate;
+
+          payload[`${prefix}minor_flag`] = toFlag(data[`${prefix}minor_flag`]);
+          payload[`${prefix}same_address`] = !!data[`${prefix}same_address`];
+
+          // Ensure share is string of digits
+          if (data[`${prefix}share`] != null && data[`${prefix}share`] !== "") {
+            payload[`${prefix}share`] = String(data[`${prefix}share`]);
+          }
+
+          if (!inUse) {
+            // Send empty/null for unused slots so backend can clear them
+            [
+              "name", "relationship", "dob", "share", "email", "mobile",
+              "identity_type", "identity_number", "guardian", "guardian_pan",
+              "address1", "address2", "address3", "pin", "city", "country",
+            ].forEach((k) => {
+              payload[`${prefix}${k}`] = "";
+            });
+            payload[`${prefix}minor_flag`] = "N";
+            payload[`${prefix}same_address`] = false;
+          }
+        }
+      }
+
+      await api.post(endpoint, payload);
     }
     setCurrentStep((s) => Math.min(s + 1, 3));
   } catch (err) {
@@ -1999,7 +2161,54 @@ const onSubmit = async (data: any) => {
               bindName="label"
               value={watch(name("identity_type"))}
               placeholder="Select"
-              onChange={(e: any) => setValue(name("identity_type"), e.value)}
+              required
+              onChange={(e: any) => {
+                setValue(name("identity_type"), e.value, { shouldValidate: true });
+                // Reset id number when type changes so old value doesn't fail validation
+                setValue(name("identity_number"), "", { shouldValidate: true });
+              }}
+              error={(errors as any)?.[`nominee_${idx}_identity_type`]?.message}
+            />
+            <Controller
+              control={control}
+              name={name("identity_number")}
+              rules={{
+                validate: (val) => {
+                  const nomineeName = watch(name("name"));
+                  const idType = watch(name("identity_type"));
+                  // Only validate if a nominee name has been entered
+                  if (!nomineeName || !String(nomineeName).trim()) return true;
+                  if (!idType) return "Select ID Proof first";
+                  return validateNomineeIdNumber(String(idType), String(val || ""));
+                },
+              }}
+              render={({ field, fieldState }) => {
+                const idType = watch(name("identity_type"));
+                const placeholder =
+                  idType === "1" ? "PAN (e.g., ABCDE1234F)" :
+                  idType === "2" ? "Last 4 digits of Aadhaar" :
+                  idType === "3" ? "Driving Licence Number" :
+                  idType === "4" ? "Passport / OCI Number" :
+                  "Select ID Proof first";
+                const maxLen = idType === "1" ? 10 : idType === "2" ? 4 : 20;
+                return (
+                  <CustomInput
+                    label="ID Number"
+                    placeholder={placeholder}
+                    required
+                    maxLength={maxLen}
+                    value={field.value || ""}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      let v = e.target.value;
+                      if (idType === "2") v = v.replace(/\D/g, "").slice(0, 4);
+                      else if (idType === "1") v = v.toUpperCase().slice(0, 10);
+                      else v = v.toUpperCase().slice(0, 20);
+                      field.onChange(v);
+                    }}
+                    error={fieldState.error?.message}
+                  />
+                );
+              }}
             />
           </div>
 
