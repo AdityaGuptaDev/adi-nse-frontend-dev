@@ -35,6 +35,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { RiFileExcel2Line } from "react-icons/ri";
 import InvestorPopup from "./investor";
+import { useFundStore } from "@/store/useFundStore";
 
 const FundPicker: NextPage = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -74,6 +75,34 @@ const FundPicker: NextPage = () => {
     | "return7y"
     | "return10y";
 
+  // ── Data source mode ──
+  // Fund-Explore renders one UI over two different underlying feeds:
+  //   • "MFU" → Morningstar-backed /fund-picker/getFundPickerData (default for
+  //             investors who completed CAN registration)
+  //   • "NSE" → NSE MASTER_DOWNLOAD via /nse/scheme/list (default for
+  //             investors whose UCC is created but CAN isn't)
+  //
+  // The mode is auto-selected on mount from the logged-in user's registration
+  // state, and can be overridden by the user via the toggle next to search.
+  // The Zustand `fund-store` mirrors this mode so downstream pages (new-order,
+  // nse-order-form) know which form to render.
+  type DataSourceMode = "MFU" | "NSE";
+  const [dataSource, setDataSourceLocal] = useState<DataSourceMode>("MFU");
+  const { setDataSource: persistDataSource } = useFundStore();
+  const setDataSource = (mode: DataSourceMode) => {
+    setDataSourceLocal(mode);
+    try {
+      persistDataSource(mode);
+    } catch {
+      // store may not be ready during SSR
+    }
+  };
+
+  // NSE-specific state
+  const [nseResolving, setNseResolving] = useState(false);
+  const [nseCategories, setNseCategories] = useState<string[]>([]);
+  const [nseCategoryFilter, setNseCategoryFilter] = useState<string>("");
+
   const [showColumnsDropdown, setShowColumnsDropdown] = useState(false);
   const [visibleColumns, setVisibleColumns] = useState<
     Record<ReturnColumnKey, boolean>
@@ -101,13 +130,35 @@ const FundPicker: NextPage = () => {
 
   const { setCartCounter, cartCounter } = useContext<any>(AccountContext);
 
+  // Auto-detect the right data source on mount based on the logged-in
+  // investor's registration state. If the user has a CAN registered → MFU,
+  // otherwise if a UCC is present → NSE, else default to MFU.
+  useEffect(() => {
+    try {
+      const ud: any = getLS(USER_DATA);
+      const investor = ud?.InvestorRegistration;
+      if (investor?.is_CAN_registered) {
+        setDataSource("MFU");
+        return;
+      }
+      // Check UCC hint from InvestorRegistration if the backend populates it.
+      if (investor?.ucc_created || investor?.uccCreated || investor?.UCCRegistration?.ucc_created === 1) {
+        setDataSource("NSE");
+        return;
+      }
+      setDataSource("MFU");
+    } catch {
+      setDataSource("MFU");
+    }
+  }, []);
+
   useEffect(() => {
     let debounceTimer: NodeJS.Timeout;
     debounceTimer = setTimeout(async () => {
       getSchemeData();
     }, 300);
     return () => clearTimeout(debounceTimer);
-  }, [payload, page, sortConfig]);
+  }, [payload, page, sortConfig, dataSource, nseCategoryFilter]);
 
   useEffect(() => {
     getAdminInvesterFilter();
@@ -153,6 +204,32 @@ const FundPicker: NextPage = () => {
   const getSchemeData = async () => {
     try {
       setLoader(true);
+
+      // ── NSE mode ──
+      // Serve rows from NSE MASTER_DOWNLOAD (cached on the backend) in the
+      // same shape the MFU table expects. No local-storage / adminFilter
+      // logic because NSE carries its own filter universe.
+      if (dataSource === "NSE") {
+        const nseParams: any = {
+          page,
+          limit,
+          search: payload?.ms_fullname || search || "",
+        };
+        if (nseCategoryFilter) nseParams.category = nseCategoryFilter;
+
+        const res = await api.get("/nse/scheme/list", { params: nseParams });
+        const outer = res?.data?.data ?? res?.data ?? {};
+        const data = outer?.data ?? outer;
+        setSchemeData(data?.rows || []);
+        setTotalCount(data?.count || 0);
+        if (Array.isArray(data?.categories)) {
+          setNseCategories(data.categories);
+        }
+        setLoader(false);
+        return;
+      }
+
+      // ── MFU (default) mode ──
       const savedFilters = localStorage.getItem("fundPickerFilters");
 
       if (savedFilters) {
@@ -540,6 +617,108 @@ const FundPicker: NextPage = () => {
     }
   };
 
+  // ══════════════════════════════════════════
+  //  Transact click — behavior depends on current data source
+  // ══════════════════════════════════════════
+  // NSE mode rows already carry the canonical NSE scheme_code (as
+  // item.nse_scheme_code), so navigate straight to the NSE order form.
+  //
+  // MFU mode rows carry only the Morningstar ISIN — resolve via
+  // /nse/scheme/resolve-by-isin before navigating, so the executed NSE
+  // scheme_code matches the one the user picked. If the ISIN isn't found on
+  // NSE, fall back to the existing MFU investor popup instead of erroring.
+
+  const goToNseOrderForm = (resolved: {
+    scheme_code: string;
+    scheme_name?: string;
+    amc_code?: string;
+    isin?: string;
+    min_purchase_amount?: string;
+  }) => {
+    const params = new URLSearchParams({
+      scheme_code: resolved.scheme_code || "",
+      scheme_name: resolved.scheme_name || "",
+      amc_code: resolved.amc_code || "",
+      isin: resolved.isin || "",
+      min_amount: resolved.min_purchase_amount || "100",
+    });
+    router.push(`/nse-order-form?${params.toString()}`);
+  };
+
+  const handleTransactClick = async (item: any) => {
+    // NSE mode — the row came straight from /nse/scheme/list, so all the
+    // fields we need are already on it. Zero extra network calls.
+    if (dataSource === "NSE") {
+      if (item?.nse_purchase_allowed === false) {
+        toastAlert("error", "Purchase is currently disabled for this scheme on NSE");
+        return;
+      }
+      const schemeCode = item?.nse_scheme_code || item?.id || "";
+      if (!schemeCode) {
+        toastAlert("error", "Missing NSE scheme code for this row");
+        return;
+      }
+      goToNseOrderForm({
+        scheme_code: schemeCode,
+        scheme_name: item?.name || item?.ms_fullname || "",
+        amc_code: item?.nse_amc_code || "",
+        isin: item?.schemeISIN || "",
+        min_purchase_amount: item?.nse_min_purchase_amount || "100",
+      });
+      return;
+    }
+
+    // MFU mode — resolve ISIN → NSE scheme_code before navigating. On miss,
+    // fall back to the existing MFU investor popup so the user isn't stuck.
+    const isin = (item?.schemeISIN || "").toString().trim();
+    if (!isin) {
+      setSelectedScheme(item);
+      setshowInvestorPopup(true);
+      return;
+    }
+
+    setNseResolving(true);
+    try {
+      const res = await api.get(`/nse/scheme/resolve-by-isin`, {
+        params: { isin },
+      });
+      const outer = res?.data?.data ?? res?.data ?? {};
+      const innerStatus = outer?.status;
+      const resolved = outer?.data;
+
+      if (innerStatus !== "S" || !resolved?.matched) {
+        toastAlert(
+          "info",
+          "Scheme not listed on NSE — continuing via MFU"
+        );
+        setSelectedScheme(item);
+        setshowInvestorPopup(true);
+        return;
+      }
+      if (resolved.purchase_allowed === false) {
+        toastAlert("error", "Purchase is currently disabled for this scheme on NSE");
+        return;
+      }
+
+      goToNseOrderForm({
+        scheme_code: resolved.scheme_code,
+        scheme_name: resolved.scheme_name || item?.name || "",
+        amc_code: resolved.amc_code,
+        isin: resolved.isin || isin,
+        min_purchase_amount: resolved.min_purchase_amount,
+      });
+    } catch (err) {
+      handleServerError(err);
+      setSelectedScheme(item);
+      setshowInvestorPopup(true);
+    } finally {
+      setNseResolving(false);
+    }
+  };
+
+  // Back-compat alias so the Transact icon keeps its old handler name.
+  const handleNseTransact = handleTransactClick;
+
   const handleNavigateSchemeDetail = (item: any, e: any, payload: any) => {
     const benchmarkids = item?.SchemeBenchmarksMappings?.map(
       (item: any) => item.benchmark_id_FK
@@ -561,14 +740,71 @@ const FundPicker: NextPage = () => {
   return (
     <>
       <div className="p-1 sm:p-3 flex gap-1 sm:gap-2 flex-wrap focus:ring-none border-accent">
+        {/* Data source mode toggle — MFU (CAN) vs NSE (UCC) */}
+        <div className="inline-flex items-center rounded-xl border border-accent overflow-hidden h-[34px] sm:h-[40px] bg-white">
+          <button
+            type="button"
+            onClick={() => {
+              if (dataSource !== "MFU") {
+                setDataSource("MFU");
+                setPage(1);
+              }
+            }}
+            className={`px-3 sm:px-4 text-xs sm:text-sm font-semibold transition-colors h-full ${
+              dataSource === "MFU"
+                ? "bg-primary text-white"
+                : "text-gray-600 hover:bg-gray-50"
+            }`}
+            title="Morningstar-backed (CAN / MFU registered investors)"
+          >
+            MFU
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              if (dataSource !== "NSE") {
+                setDataSource("NSE");
+                setPage(1);
+              }
+            }}
+            className={`px-3 sm:px-4 text-xs sm:text-sm font-semibold transition-colors h-full border-l border-accent ${
+              dataSource === "NSE"
+                ? "bg-primary text-white"
+                : "text-gray-600 hover:bg-gray-50"
+            }`}
+            title="NSE MF Desk (UCC registered investors)"
+          >
+            NSE
+          </button>
+        </div>
+
         <div>
           <input
             type="search"
             className="grow bg-transparent border border-accent rounded-xl py-1 focus:outline-none px-3 sm:min-w-80 sm:min-h-10"
-            placeholder="Search"
+            placeholder={dataSource === "NSE" ? "Search NSE schemes..." : "Search"}
             onChange={(e) => onChangeSearch(e)}
           />
         </div>
+        {dataSource === "NSE" && nseCategories.length > 0 && (
+          <div>
+            <select
+              value={nseCategoryFilter}
+              onChange={(e) => {
+                setNseCategoryFilter(e.target.value);
+                setPage(1);
+              }}
+              className="border border-accent rounded-xl px-3 h-[34px] sm:h-[40px] text-xs sm:text-sm bg-white focus:outline-none"
+            >
+              <option value="">All Categories</option>
+              {nseCategories.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         <div>
           <div className="drawer drawer-end z-40 ">
             <input
@@ -1068,19 +1304,17 @@ const FundPicker: NextPage = () => {
                             <div >
                               {/* <div tabIndex={0} role="button" className="btn m-1">Click  ⬇️</div> */}
                               <div
-                                data-tip="Transact"
+                                data-tip={nseResolving ? "Resolving on NSE..." : "Transact"}
                                 tabIndex={0}
                                 role="button"
-                                className="btn btn-sm btnStyle py-0 px-2 text-sm font-normal border-0 rounded-lg tooltip tooltip-bottom"
-
+                                onClick={() => !nseResolving && handleNseTransact(item)}
+                                className={`btn btn-sm btnStyle py-0 px-2 text-sm font-normal border-0 rounded-lg tooltip tooltip-bottom ${
+                                  nseResolving ? "opacity-60 cursor-wait" : ""
+                                }`}
                               >
                                 <GrTransaction
                                   size={14}
                                   className="text-primary"
-                                  onClick={() => {
-                                    setSelectedScheme(item);
-                                    setshowInvestorPopup(true);
-                                  }}
                                 />
                               </div>
                             </div>

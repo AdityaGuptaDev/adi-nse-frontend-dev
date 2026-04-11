@@ -121,7 +121,7 @@ export default function NseNewInvestment() {
   };
 
   return (
-    <div className="p-4 md:p-6">
+    <div className="nse-module p-4 md:p-6">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-xl font-bold text-gray-800">Invest Online NSE / New Investment</h1>
@@ -136,7 +136,7 @@ export default function NseNewInvestment() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
-              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1] focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
               placeholder="Search by scheme name, AMC, or code..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -146,7 +146,7 @@ export default function NseNewInvestment() {
         <div className="w-full md:w-64">
           <label className="text-xs text-gray-500 font-medium mb-1 block">Filter</label>
           <select
-            className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#4bc5c1]"
+            className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
           >
@@ -164,7 +164,7 @@ export default function NseNewInvestment() {
           onClick={() => setActiveTab("all")}
           className={`px-6 py-2.5 text-sm font-medium border-b-2 transition-colors ${
             activeTab === "all"
-              ? "border-[#4bc5c1] text-[#4bc5c1]"
+              ? "border-[#F59E0B] text-[#F59E0B]"
               : "border-transparent text-gray-500 hover:text-gray-700"
           }`}
         >
@@ -174,7 +174,7 @@ export default function NseNewInvestment() {
           onClick={() => setActiveTab("nfo")}
           className={`px-6 py-2.5 text-sm font-medium border-b-2 transition-colors ${
             activeTab === "nfo"
-              ? "border-[#4bc5c1] text-[#4bc5c1]"
+              ? "border-[#F59E0B] text-[#F59E0B]"
               : "border-transparent text-gray-500 hover:text-gray-700"
           }`}
         >
@@ -212,7 +212,7 @@ export default function NseNewInvestment() {
               <tr>
                 <td colSpan={7} className="text-center py-16 text-gray-400">
                   <div className="flex flex-col items-center gap-2">
-                    <svg className="animate-spin h-6 w-6 text-[#4bc5c1]" viewBox="0 0 24 24">
+                    <svg className="animate-spin h-6 w-6 text-[#F59E0B]" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
@@ -230,7 +230,7 @@ export default function NseNewInvestment() {
               paginatedSchemes.map((scheme, idx) => (
                 <tr key={scheme.scheme_code || idx} className="hover:bg-gray-50/50 transition-colors">
                   <td className="px-4 py-3">
-                    <div className="font-medium text-[#4bc5c1] hover:underline cursor-pointer text-sm">
+                    <div className="font-medium text-[#F59E0B] hover:underline cursor-pointer text-sm">
                       {scheme.scheme_name || "--"}
                     </div>
                     <div className="text-[10px] text-gray-400 mt-0.5 font-mono">
@@ -253,7 +253,7 @@ export default function NseNewInvestment() {
                   <td className="px-4 py-3 text-center">
                     <button
                       onClick={() => handleTransact(scheme)}
-                      className="px-4 py-1.5 bg-[#4bc5c1] text-white rounded-md text-xs font-semibold hover:bg-[#3db5b1] transition-colors"
+                      className="px-4 py-1.5 bg-[#F59E0B] text-white rounded-md text-xs font-semibold hover:bg-[#D97706] transition-colors"
                     >
                       Transact
                     </button>
@@ -290,7 +290,7 @@ export default function NseNewInvestment() {
                   key={p}
                   onClick={() => setPage(p)}
                   className={`w-8 h-8 rounded-lg text-xs font-medium transition-colors ${
-                    p === page ? "bg-[#4bc5c1] text-white" : "border border-gray-200 hover:bg-gray-50"
+                    p === page ? "bg-[#F59E0B] text-white" : "border border-gray-200 hover:bg-gray-50"
                   }`}
                 >
                   {p}

@@ -209,7 +209,7 @@ function RecordCard({ record, index }: { record: AuthRecord; index: number }) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-white rounded-lg p-4 border border-gray-100">
               <div className="flex items-center gap-2 mb-3">
-                <FiUser className="w-4 h-4 text-[#4bc5c1]" />
+                <FiUser className="w-4 h-4 text-[#F59E0B]" />
                 <h4 className="text-sm font-semibold text-gray-700">Investor Details</h4>
               </div>
               <InfoRow label="Name" value={record.primary_holder_name} />
@@ -227,7 +227,7 @@ function RecordCard({ record, index }: { record: AuthRecord; index: number }) {
 
             <div className="bg-white rounded-lg p-4 border border-gray-100">
               <div className="flex items-center gap-2 mb-3">
-                <FiShield className="w-4 h-4 text-[#4bc5c1]" />
+                <FiShield className="w-4 h-4 text-[#F59E0B]" />
                 <h4 className="text-sm font-semibold text-gray-700">Authorization & KYC</h4>
               </div>
               <InfoRow label="Auth Email Sent" value={record.auth_email_sent} />
@@ -247,7 +247,7 @@ function RecordCard({ record, index }: { record: AuthRecord; index: number }) {
 
             <div className="bg-white rounded-lg p-4 border border-gray-100">
               <div className="flex items-center gap-2 mb-3">
-                <FiCreditCard className="w-4 h-4 text-[#4bc5c1]" />
+                <FiCreditCard className="w-4 h-4 text-[#F59E0B]" />
                 <h4 className="text-sm font-semibold text-gray-700">Documents & Demat</h4>
               </div>
               {holders.map((h: any, i) => (
@@ -282,7 +282,7 @@ function RecordCard({ record, index }: { record: AuthRecord; index: number }) {
           {banks.length > 0 && (
             <div className="bg-white rounded-lg p-4 border border-gray-100">
               <div className="flex items-center gap-2 mb-3">
-                <BsBank2 className="w-4 h-4 text-[#4bc5c1]" />
+                <BsBank2 className="w-4 h-4 text-[#F59E0B]" />
                 <h4 className="text-sm font-semibold text-gray-700">Bank Accounts</h4>
               </div>
               <div className="overflow-x-auto">
@@ -388,7 +388,7 @@ export default function NseClientAuth() {
   const countByStatus = (status: string) => records.filter((r) => r.auth_status?.toUpperCase() === status).length;
 
   return (
-    <div className="p-4 md:p-6">
+    <div className="nse-module p-4 md:p-6">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-xl font-bold text-gray-800">Client Authorization Report</h1>
@@ -404,7 +404,7 @@ export default function NseClientAuth() {
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1] focus:border-transparent"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
             />
           </div>
           <div>
@@ -414,7 +414,7 @@ export default function NseClientAuth() {
               value={toDate}
               max={formatForInput(today)}
               onChange={(e) => setToDate(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1] focus:border-transparent"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
             />
           </div>
           <div>
@@ -424,7 +424,7 @@ export default function NseClientAuth() {
               value={clientCode}
               onChange={(e) => setClientCode(e.target.value.toUpperCase())}
               placeholder="e.g. K123"
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1] focus:border-transparent"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
             />
           </div>
           <div>
@@ -432,7 +432,7 @@ export default function NseClientAuth() {
             <select
               value={authStatus}
               onChange={(e) => setAuthStatus(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#4bc5c1]"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
             >
               <option value="">All</option>
               <option value="PENDING">Pending</option>
@@ -445,7 +445,7 @@ export default function NseClientAuth() {
             <select
               value={dateType}
               onChange={(e) => setDateType(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#4bc5c1]"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
             >
               <option value="AUTH_SENT_DATE">Auth Sent Date</option>
               <option value="AUTH_DONE_DATE">Auth Done Date</option>
@@ -456,7 +456,7 @@ export default function NseClientAuth() {
           <button
             onClick={handleSearch}
             disabled={loading}
-            className="flex items-center gap-2 px-6 py-2.5 bg-[#4bc5c1] text-white rounded-lg text-sm font-semibold hover:bg-[#3db5b1] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-6 py-2.5 bg-[#F59E0B] text-white rounded-lg text-sm font-semibold hover:bg-[#D97706] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <FiSearch className="w-4 h-4" />
             {loading ? "Searching..." : "Search"}
@@ -495,7 +495,7 @@ export default function NseClientAuth() {
       {loading && (
         <div className="text-center py-16 text-gray-400">
           <div className="flex flex-col items-center gap-2">
-            <svg className="animate-spin h-6 w-6 text-[#4bc5c1]" viewBox="0 0 24 24">
+            <svg className="animate-spin h-6 w-6 text-[#F59E0B]" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>

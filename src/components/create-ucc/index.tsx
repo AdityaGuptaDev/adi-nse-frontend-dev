@@ -1093,7 +1093,7 @@ const onSubmit = async (data: any) => {
     const errResp = error?.response?.data;
     const errPayload = errResp?.data ?? errResp ?? {};
     const errRegDetails = errPayload?.data?.ucc?.reg_details?.[0] ?? errPayload?.ucc?.reg_details?.[0];
-    const errMsg =
+    const rawMsg: string =
       errRegDetails?.reg_remark ||
       errPayload?.remark ||
       errResp?.remark ||
@@ -1103,10 +1103,21 @@ const onSubmit = async (data: any) => {
       (typeof errResp === "string" ? errResp : null) ||
       error?.message ||
       "Failed to create UCC. Please try again.";
+
+    // NSE requires FATCA to succeed BEFORE UCC — distinguish that failure so
+    // the user knows which step to fix. The backend throws with a prefix of
+    // "NSE FATCA upload rejected" or "NSE FATCA upload failed".
+    const isFatcaFailure = /NSE FATCA|FATCA upload/i.test(rawMsg);
+    const errMsg = isFatcaFailure
+      ? `FATCA registration failed — ${rawMsg
+          .replace(/NSE FATCA upload (rejected|failed)[^—:]*[—:]?\s*/i, "")
+          .replace(/\.\s*UCC not attempted\.?$/i, "")
+          .trim() || "NSE rejected the FATCA details"}. Please review Place of Birth, Country of Birth, Tax Residence, Income Slab and Source of Wealth in Step 2.`
+      : rawMsg;
     setUccResultModal({
       open: true,
       success: false,
-      title: "UCC Creation Failed",
+      title: isFatcaFailure ? "FATCA Registration Failed" : "UCC Creation Failed",
       message: typeof errMsg === "string" ? errMsg : JSON.stringify(errMsg),
     });
   } finally {
@@ -2472,7 +2483,7 @@ const onSubmit = async (data: any) => {
   const stepRenderers = [renderStep0, renderStep1, renderStep2, renderStep3];
 
   return (
-    <div className="p-4">
+    <div className="nse-module p-4">
       {/* ── Stepper ── */}
       <div className="flex items-center justify-center mb-6 gap-0">
         {STEP_LABELS.map((label, i) => (

@@ -22,6 +22,7 @@ import { Investor } from "@/services/searchReportService";
 import OrderPopup from "./new-order";
 import { searchByISIN } from "@/api/transaction";
 import { useFundStore } from "@/store/useFundStore";
+import { routeInvestorToOrderForm } from "@/utils/investorOrderRouting";
 import TopPerformingSchemes from "./(components)/top-performing-schemes";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -69,7 +70,7 @@ function MutualFund() {
   const [showInvestorPicker, setshowInvestorPicker] = useState(false);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('all');
-  const { setSchemeData, setInvestors } = useFundStore();
+  const { setSchemeData, setInvestors, setDataSource } = useFundStore();
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [showInvestmentHelper, setShowInvestmentHelper] = useState(true);
   const [helperAnimation, setHelperAnimation] = useState<'idle' | 'bounce' | 'wave' | 'jump'>('bounce');
@@ -164,14 +165,23 @@ function MutualFund() {
 
     if (investorList.length > 1) {
       setshowInvestorPopup(true);
-    } else {
-      if (investorList.length === 1) {
-        setSchemeData(scheme);
-        setInvestors(investorList);
-        router.push("/mutual-fund/new-order");
-      }
+      return;
     }
-  }, [fetchByISIN, investorList, router, setSchemeData, setInvestors]);
+    if (investorList.length === 1) {
+      // Centralized routing — picks MFU (/mutual-fund/new-order) for CAN
+      // investors and NSE (/nse-order-form) for UCC investors. The helper
+      // also falls back to /nse/ucc/search-by-mobile if the investor object
+      // doesn't carry inline UCC fields.
+      routeInvestorToOrderForm({
+        router,
+        scheme,
+        investorList,
+        store: { setSchemeData, setInvestors, setDataSource },
+        onStart: () => setLoading(true),
+        onFinish: () => setLoading(false),
+      });
+    }
+  }, [fetchByISIN, investorList, router, setSchemeData, setInvestors, setDataSource]);
 
   const getComponents = useCallback(() => {
     return [

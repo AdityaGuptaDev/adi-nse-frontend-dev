@@ -16,11 +16,17 @@ export interface Investor {
 }
 
 
+// "MFU" → CAN-backed Morningstar / MFU flow → /mutual-fund/new-order
+// "NSE" → UCC-backed NSE MF Desk flow → /nse-order-form
+export type FundDataSource = "MFU" | "NSE";
+
 interface FundStore {
     schemeData: SchemeData | null;
     investorList: Investor[];
+    dataSource: FundDataSource;
     setSchemeData: (scheme: SchemeData | null) => void;
     setInvestors: (investors: Investor[]) => void;
+    setDataSource: (source: FundDataSource) => void;
     clearData: () => void;
 }
 
@@ -29,9 +35,12 @@ export const useFundStore = create<FundStore>()(
         (set) => ({
             schemeData: null,
             investorList: [],
+            dataSource: "MFU",
             setSchemeData: (schemeData) => set({ schemeData }),
             setInvestors: (investorList) => set({ investorList }),
-            clearData: () => set({ schemeData: null, investorList: [] }),
+            setDataSource: (dataSource) => set({ dataSource }),
+            clearData: () =>
+                set({ schemeData: null, investorList: [], dataSource: "MFU" }),
         }),
         {
             name: "fund-store", // key in localStorage

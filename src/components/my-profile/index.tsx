@@ -15,6 +15,17 @@ import OnBoarding from '../on-boarding';
 import { CgSoftwareDownload } from 'react-icons/cg';
 import CANEditPopup from '../kyc-quick-summary/(components)/CANEditPopup';
 import { User2Icon } from 'lucide-react';
+import {
+    FiUser,
+    FiMail,
+    FiPhone,
+    FiMapPin,
+    FiCalendar,
+    FiCreditCard,
+    FiCheckCircle,
+    FiXCircle,
+    FiHome,
+} from 'react-icons/fi';
 
 function MyProfile() {
     const router = useRouter();
@@ -273,10 +284,13 @@ if (userData?.partner?.userType_id) {
         }
     };
 
+    // Per-session key so "Remind me later" doesn't re-pop on every page nav
+    // within the same browser tab. A fresh login or tab reopens the prompt.
+    const ONBOARDING_DISMISSED_KEY = "ONBOARDING_REMINDER_DISMISSED";
+
     useEffect(() => {
         const checkOnboarding = async () => {
             const userData = getLS(USER_DATA);
-            console.log("User Data=", userData?.InvestorRegistration);
             const userTypeVal = userData?.userTypeId ?? 0;
 
             // Partners/admins never see onboarding popup
@@ -285,50 +299,69 @@ if (userData?.partner?.userType_id) {
                 return;
             }
 
-            if (userTypeVal === 2) {
-                const investor = userData?.InvestorRegistration;
+            if (userTypeVal !== 2) {
+                setOnBoardingModal(false);
+                return;
+            }
 
-                // If KYC is complete, no popup
-                if (investor?.is_kyc_complete === true) {
+            // User dismissed it earlier in this tab — respect that until they
+            // close the tab / log out.
+            try {
+                if (sessionStorage.getItem(ONBOARDING_DISMISSED_KEY) === "1") {
                     setOnBoardingModal(false);
                     return;
                 }
+            } catch {
+                // sessionStorage may be unavailable in private mode — fall through.
+            }
 
-                // If CAN is registered, skip onboarding popup
-                if (investor?.is_CAN_registered === true) {
-                    setOnBoardingModal(false);
-                    return;
-                }
+            const investor = userData?.InvestorRegistration;
 
-                // Check if UCC is created via NSE API
-                if (investor?.reg_mobile) {
-                    try {
-                        const res = await api.get(`/nse/ucc/search-by-mobile/${investor.reg_mobile}`);
-                        const payload = res?.data?.data ?? res?.data ?? {};
-                        if (payload?.status === "S" && payload?.data) {
-                            const uccData = payload.data;
-                            if (uccData.uccCreated === 1 || uccData.uccCreated === true) {
-                                console.log("UCC created - no onboarding popup in profile");
-                                setOnBoardingModal(false);
-                                return;
-                            }
+            // Hide if we already have a CAN OR a UCC on file — those are the
+            // two execution lanes and having either means onboarding is done
+            // enough to transact.
+            if (investor?.is_CAN_registered === true) {
+                setOnBoardingModal(false);
+                return;
+            }
+
+            // Check UCC via backend — covers the NSE-registered lane.
+            if (investor?.reg_mobile) {
+                try {
+                    const res = await api.get(`/nse/ucc/search-by-mobile/${investor.reg_mobile}`);
+                    const payload = res?.data?.data ?? res?.data ?? {};
+                    if (payload?.status === "S" && payload?.data) {
+                        const uccData = payload.data;
+                        const hasUcc =
+                            uccData.uccCreated === 1 ||
+                            uccData.uccCreated === true ||
+                            !!uccData.clientCode;
+                        if (hasUcc) {
+                            setUccDetails(uccData);
+                            setOnBoardingModal(false);
+                            return;
                         }
-                    } catch {
-                        console.log("UCC check failed in profile, continuing");
                     }
-                }
-
-                // None of the above - show onboarding
-                if (!investor || investor.is_kyc_complete === false || investor.is_kyc_complete === null) {
-                    setOnBoardingModal(true);
-                } else {
-                    setOnBoardingModal(false);
+                } catch {
+                    // UCC service may legitimately return 404 — fall through.
                 }
             }
+
+            // Neither CAN nor UCC → show the "Go with MFU / Go with NSE" prompt.
+            setOnBoardingModal(true);
         };
 
         checkOnboarding();
     }, []);
+
+    const handleOnboardingDismiss = () => {
+        setOnBoardingModal(false);
+        try {
+            sessionStorage.setItem(ONBOARDING_DISMISSED_KEY, "1");
+        } catch {
+            // ignore
+        }
+    };
 
     useEffect(() => {
         if (investorList?.GroupMemmber && investorList?.GroupMemmber.length > 0) {
@@ -339,6 +372,70 @@ if (userData?.partner?.userType_id) {
             setExpandedMembers(initialExpandedState);
         }
     }, [investorList?.GroupMemmber]);
+
+    // ══════════════════════════════════════════
+    //  Merged profile view — falls back to UCC fields when the CAN-based
+    //  investorList is empty (UCC-only onboarding). This fixes the bug where
+    //  UCC investors saw blank PAN / Mobile / Address / DOB in the header.
+    // ══════════════════════════════════════════
+    const pickFirst = (...vals: any[]): string => {
+        for (const v of vals) {
+            if (v !== undefined && v !== null && `${v}`.trim() !== "") return `${v}`.trim();
+        }
+        return "";
+    };
+
+    const uccFullName = pickFirst(
+        [
+            uccDetails?.primaryHolderFirstName,
+            uccDetails?.primaryHolderMiddleName,
+            uccDetails?.primaryHolderLastName,
+        ]
+            .filter((p: any) => p && `${p}`.trim() !== "")
+            .join(" ")
+    );
+
+    const uccFullAddress = [
+        uccDetails?.address1,
+        uccDetails?.address2,
+        uccDetails?.address3,
+        uccDetails?.city,
+        uccDetails?.state,
+        uccDetails?.pincode,
+    ]
+        .filter((p: any) => p && `${p}`.trim() !== "")
+        .join(", ");
+
+    const hasUcc =
+        !!uccDetails &&
+        (uccDetails.uccCreated === 1 ||
+            uccDetails.uccCreated === true ||
+            !!uccDetails.clientCode);
+
+    const profileView = {
+        name: pickFirst(investorList?.name, uccFullName, userData?.name),
+        pan: pickFirst(investorList?.pan_no, uccDetails?.primaryHolderPan),
+        dob: pickFirst(investorList?.dob, uccDetails?.primaryHolderDobIncorporation),
+        mobile: pickFirst(investorList?.reg_mobile, uccDetails?.indianMobileNo),
+        email: pickFirst(investorList?.reg_email, uccDetails?.email),
+        address: pickFirst(investorList?.AddressDetail?.address1, uccFullAddress),
+        city: pickFirst(investorList?.AddressDetail?.city, uccDetails?.city),
+        state: pickFirst(investorList?.AddressDetail?.state, uccDetails?.state),
+        pincode: pickFirst(investorList?.AddressDetail?.pincode, uccDetails?.pincode),
+        accountHolding: pickFirst(investorList?.accountHolding),
+        bankName: pickFirst(uccDetails?.bankName1, uccDetails?.bankName2),
+        bankAccountNo: pickFirst(uccDetails?.accountNo1, uccDetails?.accountNo2),
+        bankIfsc: pickFirst(uccDetails?.ifscCode1, uccDetails?.ifscCode2),
+        uccClientCode: pickFirst(uccDetails?.clientCode),
+        isCanRegistered: !!investorList?.is_CAN_registered,
+        isKycDone: !!investorList?.isKYCDone,
+        isKycComplete: !!investorList?.is_kyc_complete,
+        percentage: formatNumber(investorList?.percentage),
+        memberTypeLabel:
+            investorList?.member_type === MEMBER_TYPE?.OWNER ? "Owner | Individual" : "Member",
+    };
+
+    const profileCompleted = profileView.percentage === 100 || hasUcc;
 
     return (
         <>
@@ -367,11 +464,12 @@ if (userData?.partner?.userType_id) {
             />
 
             {onBoardingModal && (
-                <div>
-                    <OnBoarding onBoardingModal={onBoardingModal} />
-                </div>
+                <OnBoarding
+                    onBoardingModal={onBoardingModal}
+                    onClose={handleOnboardingDismiss}
+                />
             )}
-            {!onBoardingModal && (
+            {(
                 <div className="p-6">
                     <div className="max-w-7xl mx-auto">
                         <div className='flex flex-col gap-2 justify-end fixed bottom-1/2 right-0 z-50 bg-white rounded-tl-2xl rounded-bl-2xl shadow p-2'>
@@ -499,105 +597,186 @@ if (userData?.partner?.userType_id) {
 
                                 {/* Profile Header - Only show for userType 2 */}
                                 {(userType === 2 || userType === 4 || userType === 6) && (
-                                    <div className="bg-white rounded-2xl  px-6 flex flex-col gap-4 mb-2">
-                                        <div className="items-start gap-4">
-                                            <div>
-                                                <CustomText tag="h2" className="text-2xl font-semibold text-secondary  mb-2">{investorList?.name} ( {investorList?.member_type === MEMBER_TYPE?.OWNER ? "Owner | Individual" : "Member"} )</CustomText>
+                                    <div className="bg-white rounded-2xl shadow-sm overflow-hidden mb-4 border border-gray-100">
+                                        {/* Gradient banner with avatar + name */}
+                                        <div className="bg-gradient-to-r from-[#F59E0B] to-[#D97706] px-6 py-6">
+                                            <div className="flex items-start gap-4">
+                                                <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
+                                                    {profileView.name ? profileView.name.charAt(0).toUpperCase() : <FiUser className="w-8 h-8" />}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <h2 className="text-white text-2xl font-semibold truncate">
+                                                        {profileView.name || "Investor"}
+                                                    </h2>
+                                                    <p className="text-white/80 text-sm mt-0.5">{profileView.memberTypeLabel}</p>
+                                                    <div className="flex flex-wrap items-center gap-2 mt-3">
+                                                        {profileView.isKycDone ? (
+                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-green-50 text-green-700 border border-green-200">
+                                                                <FiCheckCircle className="w-3 h-3" /> KYC Verified
+                                                            </span>
+                                                        ) : (
+                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-red-50 text-red-700 border border-red-200">
+                                                                <FiXCircle className="w-3 h-3" /> KYC Pending
+                                                            </span>
+                                                        )}
+                                                        {profileView.isCanRegistered && (
+                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-white/95 text-[#D97706]">
+                                                                <FiCheckCircle className="w-3 h-3" /> CAN {canDetails?.can_number || "Registered"}
+                                                            </span>
+                                                        )}
+                                                        {hasUcc && (
+                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-white/95 text-[#D97706]">
+                                                                <FiCheckCircle className="w-3 h-3" /> NSE UCC {profileView.uccClientCode || "Created"}
+                                                            </span>
+                                                        )}
+                                                        <span
+                                                            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold ${
+                                                                profileCompleted
+                                                                    ? "bg-green-50 text-green-700 border border-green-200"
+                                                                    : "bg-amber-50 text-amber-700 border border-amber-200"
+                                                            }`}
+                                                        >
+                                                            Profile {profileCompleted ? "Completed" : "Pending"}
+                                                        </span>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <div className='flex justify-between text-sm mt-4'>
-                                            <div className="flex flex-col gap-2 text-sm text-gray-700 w-2/3">
-                                                <div className='flex gap-6'>
-                                                    <span className='inlineLabel'>PAN</span>:
-                                                    <span className='font-bold'>{investorList?.pan_no}</span>
-                                                </div>
-                                                <div className='flex gap-6'>
-                                                    <span className='inlineLabel'>KYC Status</span>:
-                                                    <span className={`font-bold ${investorList?.isKYCDone ? 'text-green-500' : 'text-red-500'}`}>
-                                                        {investorList?.isKYCDone ? "Verified" : "Not Verified"}
-                                                    </span>
-                                                    {investorList?.is_kyc_complete && !investorList?.isKYCDone && <div
+                                        {/* Action row */}
+                                        <div className="flex flex-wrap items-center gap-2 px-6 py-3 border-b border-gray-100 bg-gray-50">
+                                            {profileView.isKycComplete && !profileView.isKycDone && (
+                                                <button
+                                                    onClick={() => checkPANStatus(investorList)}
+                                                    className="px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 text-xs font-semibold hover:bg-blue-100 transition-colors"
+                                                >
+                                                    Check KYC Status
+                                                </button>
+                                            )}
+                                            {profileCompleted ? (
+                                                <>
+                                                    <button
                                                         onClick={() => {
-                                                            checkPANStatus(investorList)
-                                                        }} className="text-blue-600 underline ml-1 cursor-pointer">(Check KYC Status)</div>
-                                                    }
+                                                            removeLS(MEMBER_DATA);
+                                                            removeLS(ADD_MEMBER);
+                                                            router.push(`/kyc-quick-summary`);
+                                                        }}
+                                                        className="px-4 py-1.5 rounded-full bg-[#F59E0B] text-white text-xs font-semibold hover:bg-[#D97706] transition-colors"
+                                                    >
+                                                        View / Edit
+                                                    </button>
+                                                    {profileView.isCanRegistered && (
+                                                        <button
+                                                            onClick={() => handleOpenCANEdit(investorList)}
+                                                            className="px-4 py-1.5 rounded-full bg-green-600 text-white text-xs font-semibold hover:bg-green-700 transition-colors"
+                                                        >
+                                                            Update CAN
+                                                        </button>
+                                                    )}
+                                                </>
+                                            ) : (
+                                                <button
+                                                    onClick={() => {
+                                                        removeLS(MEMBER_DATA);
+                                                        removeLS(ADD_MEMBER);
+                                                        const ud = getLS(USER_DATA);
+                                                        ud.InvestorRegistration = investorList;
+                                                        setLS(USER_DATA, ud);
+                                                        router.push(`/initial-KYC`);
+                                                    }}
+                                                    className="px-4 py-1.5 rounded-full bg-[#F59E0B] text-white text-xs font-semibold hover:bg-[#D97706] transition-colors"
+                                                >
+                                                    Initial KYC
+                                                </button>
+                                            )}
+                                            {profileView.isKycComplete && profileView.isKycDone && (
+                                                <Link
+                                                    href={`/account-holding`}
+                                                    className="px-4 py-1.5 rounded-full border border-[#F59E0B] text-[#D97706] text-xs font-semibold hover:bg-[#F59E0B]/10 transition-colors"
+                                                >
+                                                    Link Account Holding
+                                                </Link>
+                                            )}
+                                        </div>
+
+                                        {/* Details grid */}
+                                        <div className="px-6 py-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-4 text-sm">
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center flex-shrink-0">
+                                                    <FiCreditCard className="w-4 h-4" />
                                                 </div>
-                                                {/* CAN Number */}
-                                                {investorList?.is_CAN_registered && (
-                                                    <div className='flex gap-6'>
-                                                        <span className='inlineLabel'>CAN Number</span>:
-                                                        <span className='font-bold text-green-600'>{canDetails?.can_number || "Registered"}</span>
-                                                    </div>
-                                                )}
-                                                {/* UCC/NSE Client Code */}
-                                                {uccDetails && (uccDetails.uccCreated === 1 || uccDetails.uccCreated === true) && (
-                                                    <div className='flex gap-6'>
-                                                        <span className='inlineLabel'>NSE UCC</span>:
-                                                        <span className='font-bold text-[#4bc5c1]'>{uccDetails.clientCode || uccDetails.primaryHolderPan || "Created"}</span>
-                                                    </div>
-                                                )}
-                                                <div className='flex gap-6'>
-                                                    <span className='inlineLabel'>Profile</span>:
-                                                    <div className="flex items-center gap-2">
-                                                        <span className='font-bold'>{formatNumber(investorList?.percentage) == 100 ? 'Completed' : 'Pending'}</span>
-                                                        {formatNumber(investorList?.percentage) == 100 ? (
-                                                            <>
-                                                                <CustomButton
-                                                                    onClick={() => {
-                                                                        removeLS(MEMBER_DATA)
-                                                                        removeLS(ADD_MEMBER)
-                                                                        router.push(`/kyc-quick-summary`)
-                                                                    }}
-                                                                    className="w-fit h-auto px-2 py-0.5 rounded text-xs font-medium"
-                                                                    label="View/Edit"
-                                                                />
-                                                                <CustomButton
-                                                                    onClick={() => handleOpenCANEdit(investorList)}
-                                                                    className="w-fit h-auto px-2 py-0.5 rounded text-xs font-medium bg-green-600 hover:bg-green-700"
-                                                                    label="Update CAN"
-                                                                />
-                                                            </>
-                                                        ) : (
-                                                            <CustomButton onClick={() => {
-                                                                removeLS(MEMBER_DATA)
-                                                                removeLS(ADD_MEMBER)
-                                                                let userData = getLS(USER_DATA);
-                                                                userData.InvestorRegistration = investorList;
-                                                                setLS(USER_DATA, userData);
-                                                                router.push(`/initial-KYC`)
-                                                            }} className="w-fit h-auto px-2 py-0.5 rounded text-xs font-medium ml-2" label="Initial Kyc" />
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                <div className='flex gap-6'>
-                                                    <span className='inlineLabel'>Address</span>:
-                                                    <span className='font-bold'>{investorList?.AddressDetail?.address1}</span>
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">PAN</div>
+                                                    <div className="font-mono font-semibold text-gray-800 truncate">{profileView.pan || "—"}</div>
                                                 </div>
                                             </div>
-                                            <div className="flex flex-col gap-2 w-1/3">
-                                                <div className="flex flex-col gap-2 text-sm text-gray-700">
-                                                    <div className='flex gap-6'>
-                                                        <span className='inlineLabel'>DOB</span>:
-                                                        <span className='font-bold'>{investorList?.dob ? formatDates(investorList?.dob) : '-'}</span>
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center flex-shrink-0">
+                                                    <FiCalendar className="w-4 h-4" />
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Date of Birth</div>
+                                                    <div className="font-semibold text-gray-800">{profileView.dob ? formatDates(profileView.dob) : "—"}</div>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center flex-shrink-0">
+                                                    <FiPhone className="w-4 h-4" />
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Mobile</div>
+                                                    <div className="font-semibold text-gray-800 truncate">{profileView.mobile || "—"}</div>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center flex-shrink-0">
+                                                    <FiMail className="w-4 h-4" />
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Email</div>
+                                                    <div className="font-semibold text-gray-800 truncate" title={profileView.email}>{profileView.email || "—"}</div>
+                                                </div>
+                                            </div>
+                                            <div className="flex items-start gap-3 md:col-span-2">
+                                                <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center flex-shrink-0">
+                                                    <FiMapPin className="w-4 h-4" />
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Address</div>
+                                                    <div className="font-semibold text-gray-800 break-words">{profileView.address || "—"}</div>
+                                                </div>
+                                            </div>
+                                            {(profileView.bankName || profileView.bankAccountNo) && (
+                                                <div className="flex items-start gap-3 md:col-span-2 lg:col-span-3">
+                                                    <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center flex-shrink-0">
+                                                        <FiHome className="w-4 h-4" />
                                                     </div>
-                                                    <div className='flex gap-6'>
-                                                        <span className='inlineLabel'>Mobile No.</span>:
-                                                        <span className='font-bold'>{investorList?.reg_mobile}</span>
-                                                    </div>
-                                                    <div className='flex gap-6'>
-                                                        <span className='inlineLabel'>Email ID</span>:
-                                                        <span className='font-bold'>{investorList?.reg_email}</span>
-                                                    </div>
-                                                    <div className='flex gap-6'>
-                                                        <span className='inlineLabel'>Account Holding</span>:
-                                                        <span className='font-bold'>{investorList?.accountHolding || 'Not Linked'}</span>
+                                                    <div className="min-w-0 flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                                        <div>
+                                                            <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Bank</div>
+                                                            <div className="font-semibold text-gray-800 truncate" title={profileView.bankName}>{profileView.bankName || "—"}</div>
+                                                        </div>
+                                                        <div>
+                                                            <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Account No</div>
+                                                            <div className="font-mono font-semibold text-gray-800">
+                                                                {profileView.bankAccountNo ? `****${profileView.bankAccountNo.slice(-4)}` : "—"}
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">IFSC</div>
+                                                            <div className="font-mono font-semibold text-gray-800">{profileView.bankIfsc || "—"}</div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div className='border-b border-accent mt-1'></div>
-                                                {investorList?.is_kyc_complete && investorList?.isKYCDone && (
-                                                    <Link href={`/account-holding`} className="text-blue-600 underline  mt-1">Link account holding</Link>
-                                                )}
+                                            )}
+                                            <div className="flex items-start gap-3">
+                                                <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center flex-shrink-0">
+                                                    <FiUser className="w-4 h-4" />
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Account Holding</div>
+                                                    <div className="font-semibold text-gray-800">{profileView.accountHolding || "Not Linked"}</div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

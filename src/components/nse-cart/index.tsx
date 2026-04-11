@@ -12,8 +12,8 @@ export default function NseCart() {
   const router = useRouter();
 
   return (
-    <div className="p-6 max-w-[700px] mx-auto">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">My Cart</h1>
+    <div className="nse-module p-6 max-w-[700px] mx-auto">
+      <h1 className="text-2xl font-bold text-white mb-6">My Cart</h1>
 
       <div className="bg-white rounded-xl shadow-sm border p-12 text-center">
         {/* Empty cart icon */}
@@ -23,7 +23,7 @@ export default function NseCart() {
             className="w-10 h-10"
             fill="none"
             viewBox="0 0 24 24"
-            stroke="#4bc5c1"
+            stroke="#F59E0B"
             strokeWidth={1.5}
           >
             <path
@@ -44,7 +44,7 @@ export default function NseCart() {
         <button
           onClick={() => router.push("/nse-new-investment")}
           className="px-8 py-3 rounded-lg text-white font-medium text-sm"
-          style={{ backgroundColor: "#4bc5c1" }}
+          style={{ backgroundColor: "#F59E0B" }}
         >
           Browse Schemes
         </button>

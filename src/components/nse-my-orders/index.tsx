@@ -89,7 +89,7 @@ export default function NseMyOrders() {
   }).length;
 
   const summaryCards = [
-    { label: "Total Orders", count: totalOrders, color: "#4bc5c1" },
+    { label: "Total Orders", count: totalOrders, color: "#F59E0B" },
     { label: "Auth Pending", count: authPending, color: "#f59e0b" },
     { label: "Payment Pending", count: paymentPending, color: "#f97316" },
     { label: "In Progress", count: inProgress, color: "#3b82f6" },
@@ -136,7 +136,7 @@ export default function NseMyOrders() {
   };
 
   return (
-    <div className="p-6 max-w-[1400px] mx-auto">
+    <div className="nse-module p-6 max-w-[1400px] mx-auto">
       {/* ── Header ── */}
       <h1 className="text-2xl font-bold text-gray-800 mb-6">My Orders</h1>
 
@@ -163,7 +163,7 @@ export default function NseMyOrders() {
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1]"
+            className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
           />
         </div>
         <div>
@@ -172,14 +172,14 @@ export default function NseMyOrders() {
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1]"
+            className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
           />
         </div>
         <button
           onClick={fetchOrders}
           disabled={loading}
           className="px-6 py-2 rounded-lg text-white font-medium text-sm disabled:opacity-50"
-          style={{ backgroundColor: "#4bc5c1" }}
+          style={{ backgroundColor: "#F59E0B" }}
         >
           {loading ? "Searching..." : "Search"}
         </button>
@@ -260,7 +260,7 @@ export default function NseMyOrders() {
                           router.push(`/nse-order-tracking?order_id=${o.order_id}`)
                         }
                         className="text-xs font-medium underline"
-                        style={{ color: "#4bc5c1" }}
+                        style={{ color: "#F59E0B" }}
                       >
                         Track Order
                       </button>

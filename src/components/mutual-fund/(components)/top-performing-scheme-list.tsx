@@ -34,6 +34,7 @@ import { getInvestor } from "@/api/holder";
 import { Investor } from "@/services/searchReportService";
 
 import { useFundStore } from "@/store/useFundStore";
+import { routeInvestorToOrderForm } from "@/utils/investorOrderRouting";
 
 
 type ReturnColumnKey =
@@ -75,7 +76,8 @@ const MutualFundClassesList = () => {
 
   const [sipData, setSipData] = useState<any[]>([]);
   const [selectedInvestor, setSelectedInvestor] = useState<Investor | null>(null);
-  const { setSchemeData, setInvestors } = useFundStore();
+  const { setSchemeData, setInvestors, setDataSource } = useFundStore();
+  const [routingLoading, setRoutingLoading] = useState(false);
 
 
 
@@ -556,30 +558,22 @@ const MutualFundClassesList = () => {
   const handleSchemeClick = (scheme: any) => {
     setSelectedScheme(scheme)
     fetchByISIN(scheme?.schemeISIN);
-    console.log("Investor LIstsss ===", investorList, "count :-", investorList.length)
-
-    //setShowOrderPopup(true)
-
-    // setshowInvestorPicker(true);
-    //return false;
 
     if (investorList.length > 1) {
-
-      setshowInvestorPopup(true)
-
-    } else {
-      if (investorList.length === 1) {
-        // setSelectedInvestor(investorList[0])
-        // setShowOrderPopup(true)
-        setSchemeData(scheme);
-        setInvestors(investorList)
-        router.push("/mutual-fund/new-order");
-      }
-
+      setshowInvestorPopup(true);
+      return;
     }
-
-    console.log("Scheme clicked:", scheme);
-    // Handle the clicked scheme here (navigate, show details, etc.)
+    if (investorList.length === 1) {
+      // Unified routing — CAN → MFU new-order, UCC → NSE order form.
+      routeInvestorToOrderForm({
+        router,
+        scheme,
+        investorList,
+        store: { setSchemeData, setInvestors, setDataSource },
+        onStart: () => setRoutingLoading(true),
+        onFinish: () => setRoutingLoading(false),
+      });
+    }
   };
 
   return (

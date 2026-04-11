@@ -70,7 +70,7 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 }) => {
     const modalRef = useRef<HTMLDialogElement>(null);
     const router = useRouter();
-    const { schemeData, investorList, clearData } = useFundStore();
+    const { schemeData, investorList, dataSource, clearData } = useFundStore();
 
     const [sipData, setSipData] = useState<any[]>([]);
     const [transactionType, setTransactionType] = useState("");
@@ -219,6 +219,50 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
             router.push('/fund-explore');
         }
     }, [])
+
+    // ════════════════════════════════════════════════════════════════════════
+    // NSE / UCC redirect guard
+    //
+    // This page is the MFU (CAN) order form. If the store says the user is
+    // in the NSE flow, OR if the investor in hand has no CAN on file but
+    // does have a UCC, route them to the NSE-specific /nse-order-form so the
+    // UCC selector and NSE transaction payload are used instead of CAN.
+    //
+    // We do this in an effect (not render) so the existing MFU render path
+    // stays untouched for CAN investors.
+    // ════════════════════════════════════════════════════════════════════════
+    useEffect(() => {
+        if (!investorList || investorList.length === 0) return;
+
+        const first = investorList[0] as any;
+        const hasCan = !!first?.InvestorAccountHolding?.[0]?.CAN_Id;
+        const hasUcc =
+            !!first?.UCCRegistration?.clientCode ||
+            !!first?.ucc_client_code ||
+            first?.uccCreated === 1 ||
+            first?.uccCreated === true ||
+            first?.ucc_created === true;
+
+        const forceNse = dataSource === "NSE" || (!hasCan && hasUcc);
+        if (!forceNse) return;
+
+        // Build query params from whatever scheme data is already in the
+        // store. Both flows expect scheme_code / scheme_name / isin / amc_code
+        // / min_amount. Morningstar schemeData has schemeISIN but not an NSE
+        // scheme_code — the /nse-order-form ISIN guard will resolve it.
+        const sd: any = schemeData || {};
+        const params = new URLSearchParams({
+            scheme_code: sd.nse_scheme_code || sd.scheme_code || sd.schemeISIN || "",
+            scheme_name: sd.name || sd.ms_fullname || "",
+            amc_code: sd.nse_amc_code || sd.amc_code || "",
+            isin: sd.schemeISIN || sd.isin || "",
+            min_amount: sd.nse_min_purchase_amount || sd.min_purchase_amount || "100",
+        });
+        // Clearing the MFU store prevents "back" returning to a half-filled
+        // MFU form under an NSE investor.
+        clearData();
+        router.replace(`/nse-order-form?${params.toString()}`);
+    }, [dataSource, investorList, schemeData, router, clearData])
 
 
     const addToCart = async () => {
@@ -771,7 +815,7 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                 <div className="text-gray-600 font-medium space-y-6">
 
                                     <p>Scheme</p>
-                                    <p>CAN</p>
+                                    <p>{dataSource === "NSE" ? "UCC" : "CAN"}</p>
                                     <p>Folio</p>
                                     <p>First Holder</p>
                                     <p>KYC Status</p>
@@ -794,14 +838,18 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                         {showCanList && (
                                             <div className="absolute  top-8 left-0 z-50 min-w-[600px] bg-white border border-gray-200 rounded-lg shadow-lg ">
                                                 <div className="p-3 border-b border-gray-100">
-                                                    <h4 className="font-medium text-gray-900 text-sm">Select CAN</h4>
+                                                    <h4 className="font-medium text-gray-900 text-sm">
+                                                        Select {dataSource === "NSE" ? "UCC" : "CAN"}
+                                                    </h4>
                                                 </div>
                                                 <div className="max-h-60 overflow-auto">
                                                     <table className="w-full text-xs ">
                                                         <thead className="bg-gray-50">
                                                             <tr className="border-b border-gray-200">
                                                                 <th className="py-2 px-3 text-left">Select</th>
-                                                                <th className="py-2 px-3 text-left">CAN</th>
+                                                                <th className="py-2 px-3 text-left">
+                                                                    {dataSource === "NSE" ? "UCC" : "CAN"}
+                                                                </th>
                                                                 <th className="py-2 px-3 text-left">Primary Holder</th>
                                                                 <th className="py-2 px-3 text-left">Tax Status</th>
                                                                 <th className="py-2 px-3 text-left">Joint 1</th>

@@ -2,10 +2,23 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import api from "@/utils/api";
-import { handleServerError, toastAlert } from "@/utils/helpers";
+import { decryptQuery, handleServerError, toastAlert } from "@/utils/helpers";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { FiEdit, FiFileText, FiCreditCard, FiTrash2, FiMoreVertical } from "react-icons/fi";
+import {
+  FiEdit,
+  FiFileText,
+  FiCreditCard,
+  FiTrash2,
+  FiMoreVertical,
+  FiDownload,
+  FiExternalLink,
+  FiMail,
+  FiUpload,
+  FiList,
+  FiChevronDown,
+  FiChevronUp,
+} from "react-icons/fi";
 import { BsBank2 } from "react-icons/bs";
 
 // ── Types ──
@@ -27,6 +40,9 @@ interface Investor {
   reg_id: string | null;
   reg_status: string | null;
   reg_remark: string | null;
+  fatca_uploaded?: boolean | null;
+  fatca_status?: string | null;
+  fatca_remark?: string | null;
   created_at: string | null;
   updated_at: string | null;
   banks?: BankDetail[];
@@ -39,6 +55,103 @@ interface Investor {
     reg_remark: string | null;
     submitted_at: string | null;
   } | null;
+}
+
+// Normalized mandate shape — unified view over both:
+//  - the response from POST /nse/mandate-purchase (after create)
+//  - each report_data row from POST /nse/mandate-status (list fetch)
+interface NormalizedMandate {
+  mandate_id: string | null;
+  status: string | null;
+  remark: string | null;
+  client_code: string | null;
+  amount: string | null;
+  mandate_type: string | null;
+  account_no: string | null;
+  ifsc_code: string | null;
+  bank_name: string | null;
+  bank_branch: string | null;
+  start_date: string | null;
+  end_date: string | null;
+  registration_date: string | null;
+  approved_date: string | null;
+  umrn_no: string | null;
+  source: "created" | "status";
+}
+
+const _clean = (v: any): string | null => {
+  const s = (v ?? "").toString().trim();
+  return s === "" ? null : s;
+};
+
+function normalizeMandateFromCreate(r: any): NormalizedMandate {
+  return {
+    mandate_id: _clean(r?.reg_id),
+    status: _clean(r?.reg_status),
+    remark: _clean(r?.reg_remark),
+    client_code: _clean(r?.client_code),
+    amount: _clean(r?.amount),
+    mandate_type: _clean(r?.mandate_type),
+    account_no: _clean(r?.account_no),
+    ifsc_code: _clean(r?.ifsc_code),
+    bank_name: null,
+    bank_branch: null,
+    start_date: _clean(r?.start_date),
+    end_date: _clean(r?.end_date),
+    registration_date: null,
+    approved_date: null,
+    umrn_no: null,
+    source: "created",
+  };
+}
+
+function normalizeMandateFromStatus(r: any): NormalizedMandate {
+  return {
+    mandate_id: _clean(r?.mandateId || r?.mandate_id),
+    status: _clean(r?.status),
+    remark: _clean(r?.remarks || r?.rejectReason),
+    client_code: _clean(r?.clientCode || r?.client_code),
+    amount: _clean(r?.amount),
+    mandate_type: _clean(r?.mandateType || r?.mandate_type),
+    account_no: _clean(r?.bankAccountNumber || r?.account_no),
+    ifsc_code: _clean(r?.ifscCode || r?.ifsc_code),
+    bank_name: _clean(r?.bankName),
+    bank_branch: _clean(r?.bankBranch),
+    start_date: _clean(r?.startDate),
+    end_date: _clean(r?.endDate),
+    registration_date: _clean(r?.registrationDate),
+    approved_date: _clean(r?.approvedDate),
+    umrn_no: _clean(r?.umrnNo),
+    source: "status",
+  };
+}
+
+// NSE mandate-status requires a date window. Use last 5 years → today.
+function buildMandateStatusDateRange(): { from: string; to: string } {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const fmt = (d: Date) => `${pad(d.getDate())}-${pad(d.getMonth() + 1)}-${d.getFullYear()}`;
+  const today = new Date();
+  const past = new Date();
+  past.setFullYear(past.getFullYear() - 5);
+  return { from: fmt(past), to: fmt(today) };
+}
+
+async function fetchMandatesForClient(clientCode: string): Promise<NormalizedMandate[]> {
+  if (!clientCode) return [];
+  const { from, to } = buildMandateStatusDateRange();
+  const res = await api.post("/nse/mandate-status", {
+    mandate_id: "",
+    client_code: clientCode,
+    from_date: from,
+    to_date: to,
+  });
+  // Backend wraps as { status:"S", data:<nseResponse> } and encrypts — the
+  // axios interceptor decrypts into res.data.data, so the NSE payload sits
+  // at res.data.data.data.
+  const outer = res?.data?.data ?? {};
+  const inner = outer?.data ?? outer;
+  const rows: any[] = inner?.report_data || outer?.report_data || [];
+  return rows.map(normalizeMandateFromStatus);
 }
 
 interface BankDetail {
@@ -96,6 +209,7 @@ function ActionMenu({
   investor,
   onEdit,
   onCreateMandate,
+  onMandateDetails,
   onManageBanks,
   onSubmitFatca,
   onDelete,
@@ -103,6 +217,7 @@ function ActionMenu({
   investor: Investor;
   onEdit: () => void;
   onCreateMandate: () => void;
+  onMandateDetails: () => void;
   onManageBanks: () => void;
   onSubmitFatca: () => void;
   onDelete: () => void;
@@ -118,11 +233,18 @@ function ActionMenu({
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  const fatcaAlreadyDone = !!investor.fatca_uploaded;
   const items = [
     { icon: <FiEdit className="w-4 h-4" />, label: "Edit Profile", onClick: onEdit },
     { icon: <FiCreditCard className="w-4 h-4" />, label: "Create Mandate", onClick: onCreateMandate, disabled: !investor.ucc_created },
+    { icon: <FiList className="w-4 h-4" />, label: "Mandate Details", onClick: onMandateDetails, disabled: !investor.ucc_created },
     { icon: <BsBank2 className="w-4 h-4" />, label: "Manage Banks", onClick: onManageBanks, disabled: !investor.ucc_created },
-    { icon: <FiFileText className="w-4 h-4" />, label: "Submit FATCA", onClick: onSubmitFatca, disabled: !investor.ucc_created },
+    {
+      icon: <FiFileText className="w-4 h-4" />,
+      label: fatcaAlreadyDone ? "FATCA Submitted ✓" : "Submit FATCA",
+      onClick: fatcaAlreadyDone ? () => {} : onSubmitFatca,
+      disabled: !investor.ucc_created || fatcaAlreadyDone,
+    },
     { icon: <FiTrash2 className="w-4 h-4 text-red-500" />, label: "Delete Profile", onClick: onDelete, danger: true },
   ];
 
@@ -269,18 +391,54 @@ function MandateModal({
 
 const res = await rawApi.post("/nse/mandate-purchase", payload);
 
-      //const res = await api.post("/nse/mandate-purchase", payload);
-      const responseData = res?.data?.data ?? res?.data;
+      // Backend response is AES-encrypted via sendEncryptedResponse — rawApi
+      // skips the interceptor, so decrypt the payload here manually.
+      const rawBody = res?.data;
+      let decryptedBody: any = rawBody?.data;
+      try {
+        if (typeof decryptedBody === "string") {
+          decryptedBody = decryptQuery(decryptedBody);
+        }
+      } catch (e) {
+        console.error("Failed to decrypt mandate response", e);
+      }
 
-      if (responseData?.status === "S") {
-        const regData = responseData?.data?.reg_data?.[0] || responseData?.data?.[0] || {};
+      const innerStatus = decryptedBody?.status ?? rawBody?.status;
+      const isSuccess =
+        innerStatus === "S" || innerStatus === true || rawBody?.status === true;
+
+      if (isSuccess) {
+        const regData =
+          decryptedBody?.data?.reg_data?.[0] ||
+          decryptedBody?.reg_data?.[0] ||
+          decryptedBody?.data?.[0] ||
+          {};
+
+        if (!regData?.reg_id && !regData?.reg_status) {
+          toastAlert("error", "Mandate response did not contain registration details");
+          return;
+        }
+
         if (regData.reg_status === "REG_FAILED") {
-          toastAlert("error", regData.reg_remark || "Mandate registration failed");
+          toastAlert("error", regData.reg_remark?.trim() || "Mandate registration failed");
         } else {
-          onSuccess(regData);
+          // Merge submitted payload so the success modal + inline details can
+          // show bank / amount / dates without another round-trip.
+          const submitted = payload.reg_data[0] || {};
+          const merged = { ...submitted, ...regData, created_at: new Date().toISOString() };
+          toastAlert(
+            "success",
+            `Mandate created successfully. Reg ID: ${regData.reg_id} (${regData.reg_status})`
+          );
+          onSuccess(merged);
         }
       } else {
-        toastAlert("error", responseData?.remark || "Failed to create mandate");
+        const errMsg =
+          decryptedBody?.remark ||
+          decryptedBody?.message ||
+          rawBody?.message ||
+          "Failed to create mandate";
+        toastAlert("error", errMsg);
       }
     } catch (err) {
       handleServerError(err);
@@ -296,7 +454,7 @@ const res = await rawApi.post("/nse/mandate-purchase", payload);
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#4bc5c1] to-[#3db5b1] px-6 py-4 rounded-t-2xl flex items-center justify-between">
+        <div className="bg-gradient-to-r from-[#F59E0B] to-[#D97706] px-6 py-4 rounded-t-2xl flex items-center justify-between">
           <h2 className="text-white text-lg font-semibold">Submit Mandate</h2>
           <button onClick={onClose} className="text-white hover:text-white/80 text-2xl leading-none">&times;</button>
         </div>
@@ -359,7 +517,7 @@ const res = await rawApi.post("/nse/mandate-purchase", payload);
                           value={bank.account_no}
                           checked={selectedBank === bank.account_no}
                           onChange={() => setSelectedBank(bank.account_no)}
-                          className="w-4 h-4 text-[#4bc5c1] border-gray-300 focus:ring-[#4bc5c1] cursor-pointer"
+                          className="w-4 h-4 text-[#F59E0B] border-gray-300 focus:ring-[#F59E0B] cursor-pointer"
                         />
                       </td>
                       <td className="py-2.5">
@@ -405,7 +563,7 @@ const res = await rawApi.post("/nse/mandate-purchase", payload);
                       value="X"
                       checked={mandateType === "X"}
                       onChange={() => setMandateType("X")}
-                      className="w-4 h-4 text-[#4bc5c1] border-gray-300 focus:ring-[#4bc5c1]"
+                      className="w-4 h-4 text-[#F59E0B] border-gray-300 focus:ring-[#F59E0B]"
                     />
                     <span className="text-sm text-gray-700">Physical</span>
                   </label>
@@ -416,7 +574,7 @@ const res = await rawApi.post("/nse/mandate-purchase", payload);
                       value="E"
                       checked={mandateType === "E"}
                       onChange={() => setMandateType("E")}
-                      className="w-4 h-4 text-[#4bc5c1] border-gray-300 focus:ring-[#4bc5c1]"
+                      className="w-4 h-4 text-[#F59E0B] border-gray-300 focus:ring-[#F59E0B]"
                     />
                     <span className="text-sm text-gray-700">eNACH</span>
                   </label>
@@ -432,7 +590,7 @@ const res = await rawApi.post("/nse/mandate-purchase", payload);
                     value={startDate}
                     min={todayISO}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1] focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -442,7 +600,7 @@ const res = await rawApi.post("/nse/mandate-purchase", payload);
                     value={endDate}
                     min={startDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1] focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                   />
                 </div>
                 <div>
@@ -452,7 +610,7 @@ const res = await rawApi.post("/nse/mandate-purchase", payload);
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="Enter amount"
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1] focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                   />
                 </div>
               </div>
@@ -465,7 +623,7 @@ const res = await rawApi.post("/nse/mandate-purchase", payload);
           <button
             onClick={handleSubmit}
             disabled={submitting || banks.length === 0}
-            className="px-8 py-2.5 bg-gradient-to-r from-[#4bc5c1] to-[#3db5b1] text-white rounded-full text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-8 py-2.5 bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white rounded-full text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {submitting ? "Submitting..." : "Submit"}
           </button>
@@ -482,6 +640,369 @@ const res = await rawApi.post("/nse/mandate-purchase", payload);
 }
 
 // ══════════════════════════════════════════
+//  Mandate Link Helpers (GET_LINK / RESEND_COMM)
+// ══════════════════════════════════════════
+// NSE GET_LINK returns a short URL for the mandate:
+//  - Physical (mandate_type "X") → PDF form link the investor must print, sign & send
+//  - eNACH (mandate_type "E")    → hosted authorization page link
+// The backend already proxies this at POST /nse/get-link and /nse/resend-comm.
+// Backend wraps NSE response as { status:"S", data:<nseResponse> } and encrypts;
+// the axios interceptor decrypts into res.data.data, so the NSE payload sits at
+// res.data.data.data — we parse defensively since the exact URL key varies.
+
+function extractShortUrl(payload: any): string | null {
+  if (!payload) return null;
+  if (typeof payload === "string" && /^https?:\/\//i.test(payload)) return payload;
+  const candidates = [
+    payload?.short_url,
+    payload?.shortUrl,
+    payload?.short_link,
+    payload?.link,
+    payload?.url,
+    payload?.pdf_url,
+    payload?.enach_link,
+    payload?.mandate_link,
+    payload?.mandate_url,
+    payload?.form_url,
+  ];
+  for (const c of candidates) {
+    if (typeof c === "string" && c.trim()) return c.trim();
+  }
+  if (Array.isArray(payload) && payload.length) {
+    return extractShortUrl(payload[0]);
+  }
+  if (payload?.data) return extractShortUrl(payload.data);
+  if (payload?.reg_data) return extractShortUrl(payload.reg_data);
+  return null;
+}
+
+async function fetchMandateShortLink(
+  regId: string,
+  mandateType: "X" | "E" | string | null | undefined
+): Promise<string | null> {
+  if (!regId) {
+    toastAlert("error", "Missing Reg ID for mandate link");
+    return null;
+  }
+  // NSE link_type enum: NACH for physical, ENACH for electronic.
+  const linkType = mandateType === "E" ? "ENACH" : "NACH";
+  try {
+    const res = await api.post("/nse/get-link", {
+      reg_id: regId,
+      link_type: linkType,
+    });
+    const outer = res?.data?.data ?? {};
+    const inner = outer?.data ?? outer;
+    const url = extractShortUrl(inner) || extractShortUrl(outer);
+    if (!url) {
+      const remark =
+        inner?.error_remark || inner?.remark || outer?.remark || "No link returned by NSE";
+      toastAlert("error", remark);
+      return null;
+    }
+    return url;
+  } catch (err) {
+    handleServerError(err);
+    return null;
+  }
+}
+
+async function resendMandateEmail(regId: string): Promise<boolean> {
+  if (!regId) {
+    toastAlert("error", "Missing Reg ID for resend");
+    return false;
+  }
+  try {
+    const res = await api.post("/nse/resend-comm", {
+      reg_id: regId,
+      comm_type: "E",
+    });
+    const outer = res?.data?.data ?? {};
+    const inner = outer?.data ?? outer;
+    const ok =
+      outer?.status === "S" ||
+      inner?.response_status === "S" ||
+      inner?.status === "S";
+    if (ok) {
+      toastAlert("success", "Mandate email resent successfully");
+      return true;
+    }
+    toastAlert("error", inner?.error_remark || inner?.remark || "Failed to resend email");
+    return false;
+  } catch (err) {
+    handleServerError(err);
+    return false;
+  }
+}
+
+// ══════════════════════════════════════════
+//  Scan Mandate Image Upload Modal (Physical mandate only)
+// ══════════════════════════════════════════
+// NSE fileupload/MANDATEIMG doc limits:
+//  - client_code: <= 10 chars
+//  - mandate_id: numeric, <= 15 digits
+//  - file_name: <= 30 chars, image or PDF
+//  - file_data: base64 of the scanned signed mandate
+const UPLOAD_MAX_BYTES = 4 * 1024 * 1024;
+const UPLOAD_ACCEPT = ".jpg,.jpeg,.png,.pdf,.tiff,.tif";
+const UPLOAD_MIME_RE = /^(image\/(jpeg|jpg|png|tiff|tif)|application\/pdf)$/i;
+
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      // reader gives "data:<mime>;base64,<data>"; strip the prefix.
+      const comma = result.indexOf(",");
+      resolve(comma >= 0 ? result.slice(comma + 1) : result);
+    };
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
+function MandateScanUploadModal({
+  clientCode,
+  mandateId,
+  investorName,
+  onClose,
+  onUploaded,
+}: {
+  clientCode: string;
+  mandateId: string;
+  investorName?: string;
+  onClose: () => void;
+  onUploaded?: () => void;
+}) {
+  const [file, setFile] = useState<File | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0] || null;
+    if (!f) {
+      setFile(null);
+      return;
+    }
+    if (!UPLOAD_MIME_RE.test(f.type) && !/\.(jpg|jpeg|png|pdf|tiff|tif)$/i.test(f.name)) {
+      toastAlert("error", "Only JPG, PNG, TIFF or PDF files are allowed");
+      e.target.value = "";
+      return;
+    }
+    if (f.size > UPLOAD_MAX_BYTES) {
+      toastAlert("error", "File must be 4 MB or smaller");
+      e.target.value = "";
+      return;
+    }
+    if (f.name.length > 30) {
+      toastAlert("error", "File name must be 30 characters or less");
+      e.target.value = "";
+      return;
+    }
+    setFile(f);
+  };
+
+  const handleSubmit = async () => {
+    if (!file) {
+      toastAlert("error", "Please choose a scanned mandate file");
+      return;
+    }
+    if (!clientCode || clientCode.length > 10) {
+      toastAlert("error", "Invalid client code for this mandate");
+      return;
+    }
+    if (!/^\d{1,15}$/.test(mandateId)) {
+      toastAlert("error", "Invalid mandate ID — must be numeric (<=15 digits)");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const base64 = await fileToBase64(file);
+      const res = await api.post("/nse/mandate-image-upload", {
+        client_code: clientCode,
+        mandate_id: mandateId,
+        file_name: file.name,
+        file_data: base64,
+      });
+      const outer = res?.data?.data ?? {};
+      const inner = outer?.data ?? outer;
+      const nseStatus = inner?.status ?? outer?.status;
+      const nseMessage = inner?.message || outer?.remark || "";
+
+      // NSE returns status "100" on success per doc.
+      if (nseStatus === "100" || outer?.status === "S") {
+        toastAlert("success", nseMessage || "Mandate image uploaded successfully");
+        onUploaded?.();
+        onClose();
+      } else {
+        toastAlert("error", nseMessage || "Mandate image upload failed");
+      }
+    } catch (err) {
+      handleServerError(err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
+      <div
+        className="bg-white rounded-2xl w-full max-w-md mx-4 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="bg-gradient-to-r from-[#F59E0B] to-[#D97706] px-6 py-4 rounded-t-2xl flex items-center justify-between">
+          <h2 className="text-white text-lg font-semibold">Upload Signed Mandate</h2>
+          <button onClick={onClose} className="text-white hover:text-white/80 text-2xl leading-none">
+            &times;
+          </button>
+        </div>
+        <div className="p-6 space-y-4">
+          <div className="text-xs text-gray-500 bg-amber-50 border border-amber-200 rounded-lg p-3">
+            After printing and signing the mandate PDF sent to the investor, scan
+            the signed copy and upload it here. NSE accepts JPG, PNG, TIFF or
+            PDF up to 4 MB.
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 text-xs">
+            {investorName && (
+              <div>
+                <div className="text-gray-400 uppercase tracking-wider text-[10px]">Investor</div>
+                <div className="font-medium text-gray-800">{investorName}</div>
+              </div>
+            )}
+            <div>
+              <div className="text-gray-400 uppercase tracking-wider text-[10px]">UCC</div>
+              <div className="font-mono font-medium text-gray-800">{clientCode}</div>
+            </div>
+            <div className="col-span-2">
+              <div className="text-gray-400 uppercase tracking-wider text-[10px]">Mandate ID</div>
+              <div className="font-mono font-medium text-gray-800">{mandateId}</div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+              Scanned Mandate File
+            </label>
+            <input
+              type="file"
+              accept={UPLOAD_ACCEPT}
+              onChange={handleFileChange}
+              className="block w-full text-xs text-gray-700 file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-[#F59E0B]/10 file:text-[#D97706] hover:file:bg-[#F59E0B]/20 cursor-pointer"
+            />
+            {file && (
+              <div className="mt-2 text-[11px] text-gray-500">
+                Selected: <span className="font-medium text-gray-700">{file.name}</span>{" "}
+                ({(file.size / 1024).toFixed(1)} KB)
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-center gap-3">
+          <button
+            onClick={handleSubmit}
+            disabled={submitting || !file}
+            className="px-8 py-2.5 bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white rounded-full text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {submitting ? "Uploading..." : "Upload"}
+          </button>
+          <button
+            onClick={onClose}
+            className="px-8 py-2.5 border border-gray-300 text-gray-600 rounded-full text-sm font-semibold hover:bg-gray-50 transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════
+//  Mandate Inline Actions (used in list row + success modal)
+// ══════════════════════════════════════════
+function MandateInlineActions({
+  regId,
+  mandateType,
+  regStatus,
+  size = "sm",
+  onUploadScan,
+}: {
+  regId: string | null | undefined;
+  mandateType: string | null | undefined;
+  regStatus: string | null | undefined;
+  size?: "sm" | "md";
+  onUploadScan?: () => void;
+}) {
+  const [linkLoading, setLinkLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+
+  if (regStatus !== "REG_SUCCESS" || !regId) return null;
+
+  const isPhysical = mandateType === "X";
+  const isEnach = mandateType === "E";
+  const padding = size === "sm" ? "px-2.5 py-1" : "px-4 py-2";
+  const fontSize = size === "sm" ? "text-[10px]" : "text-xs";
+  const iconSize = size === "sm" ? "w-3 h-3" : "w-3.5 h-3.5";
+
+  const handleGetLink = async () => {
+    setLinkLoading(true);
+    const url = await fetchMandateShortLink(regId, mandateType);
+    setLinkLoading(false);
+    if (url) window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  const handleResend = async () => {
+    setResendLoading(true);
+    await resendMandateEmail(regId);
+    setResendLoading(false);
+  };
+
+  return (
+    <div className="flex flex-wrap items-center gap-1.5 mt-2">
+      {isPhysical && (
+        <button
+          onClick={handleGetLink}
+          disabled={linkLoading}
+          className={`inline-flex items-center gap-1 ${padding} rounded-full bg-[#F59E0B] text-white ${fontSize} font-semibold hover:bg-[#D97706] transition-colors disabled:opacity-50`}
+        >
+          <FiDownload className={iconSize} />
+          {linkLoading ? "..." : "Download PDF"}
+        </button>
+      )}
+      {isPhysical && onUploadScan && (
+        <button
+          onClick={onUploadScan}
+          className={`inline-flex items-center gap-1 ${padding} rounded-full bg-amber-500 text-white ${fontSize} font-semibold hover:bg-amber-600 transition-colors`}
+        >
+          <FiUpload className={iconSize} />
+          Upload Scan
+        </button>
+      )}
+      {isEnach && (
+        <button
+          onClick={handleGetLink}
+          disabled={linkLoading}
+          className={`inline-flex items-center gap-1 ${padding} rounded-full bg-[#F59E0B] text-white ${fontSize} font-semibold hover:bg-[#D97706] transition-colors disabled:opacity-50`}
+        >
+          <FiExternalLink className={iconSize} />
+          {linkLoading ? "..." : "Open eNACH"}
+        </button>
+      )}
+      <button
+        onClick={handleResend}
+        disabled={resendLoading}
+        className={`inline-flex items-center gap-1 ${padding} rounded-full border border-[#F59E0B] text-[#D97706] ${fontSize} font-semibold hover:bg-[#F59E0B]/10 transition-colors disabled:opacity-50`}
+      >
+        <FiMail className={iconSize} />
+        {resendLoading ? "..." : "Resend Email"}
+      </button>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════
 //  Mandate Success Modal
 // ══════════════════════════════════════════
 function MandateSuccessModal({
@@ -491,6 +1012,31 @@ function MandateSuccessModal({
   mandateData: any;
   onClose: () => void;
 }) {
+  const [linkLoading, setLinkLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [showUpload, setShowUpload] = useState(false);
+  const isPhysical = mandateData?.mandate_type === "X";
+  const isEnach = mandateData?.mandate_type === "E";
+  const canFetchLink = mandateData?.reg_status === "REG_SUCCESS" && !!mandateData?.reg_id;
+
+  const handleGetLink = async () => {
+    setLinkLoading(true);
+    const url = await fetchMandateShortLink(mandateData?.reg_id, mandateData?.mandate_type);
+    setLinkLoading(false);
+    if (url) {
+      window.open(url, "_blank", "noopener,noreferrer");
+      toastAlert(
+        "success",
+        isPhysical ? "Mandate PDF opened in new tab" : "eNACH authorization page opened"
+      );
+    }
+  };
+
+  const handleResend = async () => {
+    setResendLoading(true);
+    await resendMandateEmail(mandateData?.reg_id);
+    setResendLoading(false);
+  };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
       <div
@@ -499,8 +1045,8 @@ function MandateSuccessModal({
       >
         {/* Check Icon */}
         <div className="flex justify-center mb-4">
-          <div className="w-16 h-16 rounded-full border-2 border-[#4bc5c1] flex items-center justify-center">
-            <svg className="w-8 h-8 text-[#4bc5c1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-16 h-16 rounded-full border-2 border-[#F59E0B] flex items-center justify-center">
+            <svg className="w-8 h-8 text-[#F59E0B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
             </svg>
           </div>
@@ -509,34 +1055,138 @@ function MandateSuccessModal({
         <h3 className="text-lg font-semibold text-gray-800 mb-2">
           Your Mandate has been created Successfully.
         </h3>
-        <p className="text-sm text-gray-500 mb-6">
+        <p className="text-sm text-gray-500 mb-5">
           To approve the mandate login to your Net Banking portal and enter your Debit Card details.
         </p>
 
-        {mandateData?.reg_id && (
-          <p className="text-xs text-gray-400 mb-4">
-            Mandate ID: <span className="font-mono font-medium text-gray-600">{mandateData.reg_id}</span>
-          </p>
+        {/* ── Mandate Registration Summary ── */}
+        <div className="bg-gradient-to-br from-[#F59E0B]/5 to-[#D97706]/5 border border-[#F59E0B]/30 rounded-xl p-4 mb-5 text-left">
+          <div className="grid grid-cols-2 gap-3 text-xs">
+            <div>
+              <div className="text-gray-400 uppercase tracking-wider text-[10px] mb-0.5">Reg ID</div>
+              <div className="font-mono font-semibold text-gray-800 break-all">
+                {mandateData?.reg_id || "--"}
+              </div>
+            </div>
+            <div>
+              <div className="text-gray-400 uppercase tracking-wider text-[10px] mb-0.5">Reg Status</div>
+              <span
+                className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                  mandateData?.reg_status === "REG_SUCCESS"
+                    ? "bg-green-50 text-green-700 border border-green-200"
+                    : "bg-amber-50 text-amber-700 border border-amber-200"
+                }`}
+              >
+                {mandateData?.reg_status || "--"}
+              </span>
+            </div>
+            {mandateData?.client_code && (
+              <div>
+                <div className="text-gray-400 uppercase tracking-wider text-[10px] mb-0.5">Client Code</div>
+                <div className="font-mono font-medium text-gray-700">{mandateData.client_code}</div>
+              </div>
+            )}
+            {mandateData?.amount && (
+              <div>
+                <div className="text-gray-400 uppercase tracking-wider text-[10px] mb-0.5">Amount</div>
+                <div className="font-medium text-gray-700">₹ {mandateData.amount}</div>
+              </div>
+            )}
+            {mandateData?.account_no && (
+              <div>
+                <div className="text-gray-400 uppercase tracking-wider text-[10px] mb-0.5">Account No</div>
+                <div className="font-mono font-medium text-gray-700">
+                  ****{String(mandateData.account_no).slice(-4)}
+                </div>
+              </div>
+            )}
+            {mandateData?.ifsc_code && (
+              <div>
+                <div className="text-gray-400 uppercase tracking-wider text-[10px] mb-0.5">IFSC</div>
+                <div className="font-mono font-medium text-gray-700">{mandateData.ifsc_code}</div>
+              </div>
+            )}
+            {mandateData?.start_date && (
+              <div>
+                <div className="text-gray-400 uppercase tracking-wider text-[10px] mb-0.5">Start Date</div>
+                <div className="font-medium text-gray-700">{mandateData.start_date}</div>
+              </div>
+            )}
+            {mandateData?.end_date && (
+              <div>
+                <div className="text-gray-400 uppercase tracking-wider text-[10px] mb-0.5">End Date</div>
+                <div className="font-medium text-gray-700">{mandateData.end_date}</div>
+              </div>
+            )}
+          </div>
+          {mandateData?.reg_remark && mandateData.reg_remark.trim() && (
+            <div className="mt-3 pt-3 border-t border-[#F59E0B]/20">
+              <div className="text-gray-400 uppercase tracking-wider text-[10px] mb-0.5">Remark</div>
+              <div className="text-xs text-gray-600">{mandateData.reg_remark}</div>
+            </div>
+          )}
+        </div>
+
+        {/* ── Action Buttons ── */}
+        {canFetchLink && (
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-3">
+            {isPhysical && (
+              <button
+                onClick={handleGetLink}
+                disabled={linkLoading}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white rounded-full text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+              >
+                <FiDownload className="w-4 h-4" />
+                {linkLoading ? "Fetching..." : "Download Mandate PDF"}
+              </button>
+            )}
+            {isPhysical && (
+              <button
+                onClick={() => setShowUpload(true)}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-500 text-white rounded-full text-sm font-semibold hover:bg-amber-600 transition-colors"
+              >
+                <FiUpload className="w-4 h-4" />
+                Upload Signed Scan
+              </button>
+            )}
+            {isEnach && (
+              <button
+                onClick={handleGetLink}
+                disabled={linkLoading}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white rounded-full text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50"
+              >
+                <FiExternalLink className="w-4 h-4" />
+                {linkLoading ? "Fetching..." : "Open eNACH Link"}
+              </button>
+            )}
+            <button
+              onClick={handleResend}
+              disabled={resendLoading}
+              className="inline-flex items-center gap-2 px-5 py-2.5 border border-[#F59E0B] text-[#D97706] rounded-full text-sm font-semibold hover:bg-[#F59E0B]/10 transition-colors disabled:opacity-50"
+            >
+              <FiMail className="w-4 h-4" />
+              {resendLoading ? "Sending..." : "Resend Email"}
+            </button>
+          </div>
         )}
 
         <div className="flex items-center justify-center gap-3">
           <button
-            onClick={() => {
-              toastAlert("info", "Redirecting to approve mandate...");
-              onClose();
-            }}
-            className="px-6 py-2.5 bg-gradient-to-r from-[#4bc5c1] to-[#3db5b1] text-white rounded-full text-sm font-semibold hover:opacity-90 transition-opacity"
-          >
-            Approve Now
-          </button>
-          <button
             onClick={onClose}
-            className="px-6 py-2.5 bg-gradient-to-r from-[#4bc5c1] to-[#3db5b1] text-white rounded-full text-sm font-semibold hover:opacity-90 transition-opacity"
+            className="px-6 py-2.5 bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white rounded-full text-sm font-semibold hover:opacity-90 transition-opacity"
           >
-            Approve Later
+            Done
           </button>
         </div>
       </div>
+
+      {showUpload && isPhysical && mandateData?.reg_id && mandateData?.client_code && (
+        <MandateScanUploadModal
+          clientCode={mandateData.client_code}
+          mandateId={mandateData.reg_id}
+          onClose={() => setShowUpload(false)}
+        />
+      )}
     </div>
   );
 }
@@ -594,7 +1244,7 @@ function FatcaModal({ investor, onClose }: { investor: Investor; onClose: () => 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
       <div className="bg-white rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto mx-4 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-        <div className="bg-gradient-to-r from-[#4bc5c1] to-[#3db5b1] px-6 py-4 rounded-t-2xl flex items-center justify-between">
+        <div className="bg-gradient-to-r from-[#F59E0B] to-[#D97706] px-6 py-4 rounded-t-2xl flex items-center justify-between">
           <h2 className="text-white text-lg font-semibold">Submit FATCA</h2>
           <button onClick={onClose} className="text-white hover:text-white/80 text-2xl">&times;</button>
         </div>
@@ -606,32 +1256,32 @@ function FatcaModal({ investor, onClose }: { investor: Investor; onClose: () => 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="text-xs text-gray-500 mb-1 block">Place of Birth *</label>
-              <input type="text" value={form.po_bir_inc} onChange={(e) => update("po_bir_inc", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1]" placeholder="e.g. Mumbai" />
+              <input type="text" value={form.po_bir_inc} onChange={(e) => update("po_bir_inc", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]" placeholder="e.g. Mumbai" />
             </div>
             <div>
               <label className="text-xs text-gray-500 mb-1 block">Country of Birth</label>
-              <input type="text" value={form.co_bir_inc} onChange={(e) => update("co_bir_inc", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1]" />
+              <input type="text" value={form.co_bir_inc} onChange={(e) => update("co_bir_inc", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]" />
             </div>
             <div>
               <label className="text-xs text-gray-500 mb-1 block">Tax Residence Country</label>
-              <input type="text" value={form.tax_res1} onChange={(e) => update("tax_res1", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1]" />
+              <input type="text" value={form.tax_res1} onChange={(e) => update("tax_res1", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]" />
             </div>
             <div>
               <label className="text-xs text-gray-500 mb-1 block">Income Slab</label>
-              <select value={form.inc_slab} onChange={(e) => update("inc_slab", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1]">
+              <select value={form.inc_slab} onChange={(e) => update("inc_slab", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]">
                 <option value="31">Below 1 Lac</option><option value="32">&gt;1 to 5 Lacs</option><option value="33">&gt;5 to 10 Lacs</option>
                 <option value="34">&gt;10 to 25 Lacs</option><option value="35">&gt;25 Lacs to 1 Cr</option><option value="36">&gt;1 Crore</option>
               </select>
             </div>
             <div>
               <label className="text-xs text-gray-500 mb-1 block">PEP Status</label>
-              <select value={form.pep_flag} onChange={(e) => update("pep_flag", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1]">
+              <select value={form.pep_flag} onChange={(e) => update("pep_flag", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]">
                 <option value="N">Not Politically Exposed</option><option value="Y">Politically Exposed</option><option value="R">Related to PEP</option>
               </select>
             </div>
             <div>
               <label className="text-xs text-gray-500 mb-1 block">Source of Wealth</label>
-              <select value={form.srce_wealt} onChange={(e) => update("srce_wealt", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1]">
+              <select value={form.srce_wealt} onChange={(e) => update("srce_wealt", e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]">
                 <option value="01">Salary</option><option value="02">Business Income</option><option value="03">Gift</option>
                 <option value="04">Ancestral Property</option><option value="05">Rental Income</option><option value="08">Others</option>
               </select>
@@ -639,7 +1289,7 @@ function FatcaModal({ investor, onClose }: { investor: Investor; onClose: () => 
           </div>
         </div>
         <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-center gap-3">
-          <button onClick={handleSubmit} disabled={submitting} className="px-8 py-2.5 bg-gradient-to-r from-[#4bc5c1] to-[#3db5b1] text-white rounded-full text-sm font-semibold disabled:opacity-50">{submitting ? "Submitting..." : "Submit"}</button>
+          <button onClick={handleSubmit} disabled={submitting} className="px-8 py-2.5 bg-gradient-to-r from-[#F59E0B] to-[#D97706] text-white rounded-full text-sm font-semibold disabled:opacity-50">{submitting ? "Submitting..." : "Submit"}</button>
           <button onClick={onClose} className="px-8 py-2.5 border border-gray-300 text-gray-600 rounded-full text-sm font-semibold hover:bg-gray-50">Cancel</button>
         </div>
       </div>
@@ -691,7 +1341,7 @@ function ManageBanksModal({ investor, onClose, onRefresh }: { investor: Investor
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
       <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto mx-4 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-        <div className="bg-gradient-to-r from-[#4bc5c1] to-[#3db5b1] px-6 py-4 rounded-t-2xl flex items-center justify-between">
+        <div className="bg-gradient-to-r from-[#F59E0B] to-[#D97706] px-6 py-4 rounded-t-2xl flex items-center justify-between">
           <h2 className="text-white text-lg font-semibold">Manage Banks - {investor.name}</h2>
           <button onClick={onClose} className="text-white hover:text-white/80 text-2xl">&times;</button>
         </div>
@@ -712,17 +1362,17 @@ function ManageBanksModal({ investor, onClose, onRefresh }: { investor: Investor
             </tbody>
           </table>
           {!adding ? (
-            <button onClick={() => setAdding(true)} className="px-4 py-2 text-sm text-[#4bc5c1] border border-[#4bc5c1] rounded-lg hover:bg-[#4bc5c1]/5">+ Add Bank</button>
+            <button onClick={() => setAdding(true)} className="px-4 py-2 text-sm text-[#F59E0B] border border-[#F59E0B] rounded-lg hover:bg-[#F59E0B]/5">+ Add Bank</button>
           ) : (
             <div className="border border-gray-200 rounded-xl p-4 space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div><label className="text-xs text-gray-500 mb-1 block">Account Type</label><select value={newBank.account_type} onChange={(e) => setNewBank((p) => ({ ...p, account_type: e.target.value }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"><option value="SB">Savings</option><option value="CB">Current</option></select></div>
                 <div><label className="text-xs text-gray-500 mb-1 block">Default Bank</label><select value={newBank.default_bank_flag} onChange={(e) => setNewBank((p) => ({ ...p, default_bank_flag: e.target.value }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"><option value="N">No</option><option value="Y">Yes</option></select></div>
-                <div><label className="text-xs text-gray-500 mb-1 block">Account Number *</label><input type="text" value={newBank.account_no} onChange={(e) => setNewBank((p) => ({ ...p, account_no: e.target.value }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1]" /></div>
-                <div><label className="text-xs text-gray-500 mb-1 block">IFSC Code *</label><input type="text" value={newBank.ifsc_code} onChange={(e) => setNewBank((p) => ({ ...p, ifsc_code: e.target.value.toUpperCase() }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1]" /></div>
+                <div><label className="text-xs text-gray-500 mb-1 block">Account Number *</label><input type="text" value={newBank.account_no} onChange={(e) => setNewBank((p) => ({ ...p, account_no: e.target.value }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]" /></div>
+                <div><label className="text-xs text-gray-500 mb-1 block">IFSC Code *</label><input type="text" value={newBank.ifsc_code} onChange={(e) => setNewBank((p) => ({ ...p, ifsc_code: e.target.value.toUpperCase() }))} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]" /></div>
               </div>
               <div className="flex gap-2">
-                <button onClick={handleAdd} disabled={submitting} className="px-4 py-2 bg-[#4bc5c1] text-white rounded-lg text-sm disabled:opacity-50">{submitting ? "Adding..." : "Add"}</button>
+                <button onClick={handleAdd} disabled={submitting} className="px-4 py-2 bg-[#F59E0B] text-white rounded-lg text-sm disabled:opacity-50">{submitting ? "Adding..." : "Add"}</button>
                 <button onClick={() => setAdding(false)} className="px-4 py-2 border border-gray-300 rounded-lg text-sm">Cancel</button>
               </div>
             </div>
@@ -753,6 +1403,69 @@ export default function NseInvestorList(_props: any) {
   const [mandateSuccessData, setMandateSuccessData] = useState<any>(null);
   const [fatcaInvestor, setFatcaInvestor] = useState<Investor | null>(null);
   const [banksInvestor, setBanksInvestor] = useState<Investor | null>(null);
+  const [scanUploadTarget, setScanUploadTarget] = useState<{
+    clientCode: string;
+    mandateId: string;
+    investorName: string;
+  } | null>(null);
+
+  // Per-investor mandate list state keyed by investor.id.
+  const [expandedInvestorIds, setExpandedInvestorIds] = useState<Set<number>>(new Set());
+  const [mandatesByInvestor, setMandatesByInvestor] = useState<Record<number, NormalizedMandate[]>>({});
+  const [mandatesLoadingIds, setMandatesLoadingIds] = useState<Set<number>>(new Set());
+  const [mandatesErrorByInvestor, setMandatesErrorByInvestor] = useState<Record<number, string | null>>({});
+
+  const loadMandatesForInvestor = useCallback(
+    async (inv: Investor) => {
+      const clientCode = inv.client_code?.trim();
+      if (!clientCode) {
+        setMandatesErrorByInvestor((prev) => ({ ...prev, [inv.id]: "Missing client code" }));
+        return;
+      }
+      setMandatesLoadingIds((prev) => {
+        const next = new Set(prev);
+        next.add(inv.id);
+        return next;
+      });
+      setMandatesErrorByInvestor((prev) => ({ ...prev, [inv.id]: null }));
+      try {
+        const list = await fetchMandatesForClient(clientCode);
+        setMandatesByInvestor((prev) => ({ ...prev, [inv.id]: list }));
+        if (list.length === 0) {
+          setMandatesErrorByInvestor((prev) => ({ ...prev, [inv.id]: "No mandates found" }));
+        }
+      } catch (err) {
+        handleServerError(err);
+        setMandatesErrorByInvestor((prev) => ({ ...prev, [inv.id]: "Failed to load mandates" }));
+      } finally {
+        setMandatesLoadingIds((prev) => {
+          const next = new Set(prev);
+          next.delete(inv.id);
+          return next;
+        });
+      }
+    },
+    []
+  );
+
+  const toggleMandateDetails = useCallback(
+    (inv: Investor) => {
+      setExpandedInvestorIds((prev) => {
+        const next = new Set(prev);
+        if (next.has(inv.id)) {
+          next.delete(inv.id);
+        } else {
+          next.add(inv.id);
+          // Lazy-load the first time it's opened.
+          if (!mandatesByInvestor[inv.id]) {
+            loadMandatesForInvestor(inv);
+          }
+        }
+        return next;
+      });
+    },
+    [mandatesByInvestor, loadMandatesForInvestor]
+  );
 
   // Filters
   const [search, setSearch] = useState("");
@@ -808,7 +1521,7 @@ export default function NseInvestorList(_props: any) {
   //  RENDER
   // ══════════════════════════════════════════
   return (
-    <div className="p-4 md:p-6">
+    <div className="nse-module p-4 md:p-6">
       {/* ── Toolbar ── */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-5">
         {/* Search */}
@@ -910,7 +1623,8 @@ export default function NseInvestorList(_props: any) {
                   "--";
 
                 return (
-                  <tr key={inv.id} className="hover:bg-gray-50/50 transition-colors">
+                  <React.Fragment key={inv.id}>
+                  <tr className="hover:bg-gray-50/50 transition-colors">
                     <td className="px-4 py-3 text-gray-400 font-mono text-xs">{serial}</td>
                     <td className="px-4 py-3">
                       <div className="font-medium text-gray-800">{inv.name || "--"}</div>
@@ -987,12 +1701,183 @@ export default function NseInvestorList(_props: any) {
                         investor={inv}
                         onEdit={() => router.push(`/create-ucc?id=${inv.id}`)}
                         onCreateMandate={() => setMandateInvestor(inv)}
+                        onMandateDetails={() => toggleMandateDetails(inv)}
                         onManageBanks={() => setBanksInvestor(inv)}
                         onSubmitFatca={() => setFatcaInvestor(inv)}
                         onDelete={() => toastAlert("info", "Delete Profile coming soon")}
                       />
                     </td>
                   </tr>
+                  {expandedInvestorIds.has(inv.id) && (
+                    <tr className="bg-gradient-to-r from-[#F59E0B]/5 to-transparent border-b border-gray-100">
+                      <td></td>
+                      <td colSpan={12} className="px-4 py-3">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#D97706] uppercase tracking-wider">
+                            <FiCreditCard className="w-3.5 h-3.5" />
+                            Mandate Details
+                            {mandatesByInvestor[inv.id] && (
+                              <span className="text-gray-400 normal-case font-normal">
+                                ({mandatesByInvestor[inv.id].length})
+                              </span>
+                            )}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => loadMandatesForInvestor(inv)}
+                              disabled={mandatesLoadingIds.has(inv.id)}
+                              className="text-[10px] text-[#D97706] hover:underline disabled:opacity-50"
+                            >
+                              {mandatesLoadingIds.has(inv.id) ? "Refreshing..." : "Refresh"}
+                            </button>
+                            <button
+                              onClick={() => toggleMandateDetails(inv)}
+                              className="text-gray-400 hover:text-gray-600"
+                              aria-label="Collapse"
+                            >
+                              <FiChevronUp className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+
+                        {mandatesLoadingIds.has(inv.id) && !mandatesByInvestor[inv.id] ? (
+                          <div className="text-xs text-gray-400 py-4 text-center">Loading mandates...</div>
+                        ) : mandatesErrorByInvestor[inv.id] && !mandatesByInvestor[inv.id]?.length ? (
+                          <div className="text-xs text-gray-400 py-4 text-center">
+                            {mandatesErrorByInvestor[inv.id]}
+                          </div>
+                        ) : (
+                          <div className="space-y-2">
+                            {(mandatesByInvestor[inv.id] || []).map((m, mIdx) => {
+                              const statusLower = (m.status || "").toLowerCase();
+                              const statusClass =
+                                statusLower.includes("success") || statusLower.includes("active") || statusLower.includes("approved")
+                                  ? "bg-green-50 text-green-700 border border-green-200"
+                                  : statusLower.includes("reject") || statusLower.includes("fail")
+                                  ? "bg-red-50 text-red-600 border border-red-200"
+                                  : "bg-amber-50 text-amber-700 border border-amber-200";
+                              return (
+                                <div
+                                  key={`${m.mandate_id || mIdx}-${mIdx}`}
+                                  className="bg-white border border-gray-100 rounded-lg p-3"
+                                >
+                                  <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-x-4 gap-y-2 text-xs">
+                                    <div>
+                                      <div className="text-gray-400 text-[10px] uppercase">Mandate ID</div>
+                                      <div className="font-mono font-semibold text-gray-800">{m.mandate_id || "--"}</div>
+                                    </div>
+                                    <div>
+                                      <div className="text-gray-400 text-[10px] uppercase">Status</div>
+                                      <span className={`inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold ${statusClass}`}>
+                                        {m.status || "--"}
+                                      </span>
+                                    </div>
+                                    {m.mandate_type && (
+                                      <div>
+                                        <div className="text-gray-400 text-[10px] uppercase">Type</div>
+                                        <div className="font-medium text-gray-700">
+                                          {m.mandate_type === "X" ? "Physical" : m.mandate_type === "E" ? "eNACH" : m.mandate_type}
+                                        </div>
+                                      </div>
+                                    )}
+                                    {m.amount && (
+                                      <div>
+                                        <div className="text-gray-400 text-[10px] uppercase">Amount</div>
+                                        <div className="font-medium text-gray-700">₹ {m.amount}</div>
+                                      </div>
+                                    )}
+                                    {m.bank_name && (
+                                      <div>
+                                        <div className="text-gray-400 text-[10px] uppercase">Bank</div>
+                                        <div className="font-medium text-gray-700 truncate" title={m.bank_name}>
+                                          {m.bank_name}
+                                          {m.bank_branch ? ` (${m.bank_branch})` : ""}
+                                        </div>
+                                      </div>
+                                    )}
+                                    {m.account_no && (
+                                      <div>
+                                        <div className="text-gray-400 text-[10px] uppercase">A/C No</div>
+                                        <div className="font-mono font-medium text-gray-700">
+                                          ****{String(m.account_no).slice(-4)}
+                                        </div>
+                                      </div>
+                                    )}
+                                    {m.ifsc_code && (
+                                      <div>
+                                        <div className="text-gray-400 text-[10px] uppercase">IFSC</div>
+                                        <div className="font-mono font-medium text-gray-700">{m.ifsc_code}</div>
+                                      </div>
+                                    )}
+                                    {m.umrn_no && (
+                                      <div>
+                                        <div className="text-gray-400 text-[10px] uppercase">UMRN</div>
+                                        <div className="font-mono font-medium text-gray-700">{m.umrn_no}</div>
+                                      </div>
+                                    )}
+                                    {m.registration_date && (
+                                      <div>
+                                        <div className="text-gray-400 text-[10px] uppercase">Reg Date</div>
+                                        <div className="font-medium text-gray-700">{m.registration_date}</div>
+                                      </div>
+                                    )}
+                                    {m.start_date && (
+                                      <div>
+                                        <div className="text-gray-400 text-[10px] uppercase">Start</div>
+                                        <div className="font-medium text-gray-700">{m.start_date}</div>
+                                      </div>
+                                    )}
+                                    {m.end_date && (
+                                      <div>
+                                        <div className="text-gray-400 text-[10px] uppercase">End</div>
+                                        <div className="font-medium text-gray-700">{m.end_date}</div>
+                                      </div>
+                                    )}
+                                    {m.approved_date && (
+                                      <div>
+                                        <div className="text-gray-400 text-[10px] uppercase">Approved</div>
+                                        <div className="font-medium text-gray-700">{m.approved_date}</div>
+                                      </div>
+                                    )}
+                                    {m.remark && (
+                                      <div className="col-span-2 md:col-span-4 lg:col-span-6">
+                                        <div className="text-gray-400 text-[10px] uppercase">Remark</div>
+                                        <div className="text-gray-600">{m.remark}</div>
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="mt-1">
+                                    <MandateInlineActions
+                                      regId={m.mandate_id}
+                                      mandateType={m.mandate_type}
+                                      // The NSE status report uses a human-readable status string
+                                      // (e.g. "SCAN IMAGE NOT UPLOADED"), not REG_SUCCESS — so treat
+                                      // any row returned from the status report as eligible for the
+                                      // download / resend / upload actions.
+                                      regStatus={m.source === "created" ? m.status : "REG_SUCCESS"}
+                                      onUploadScan={() => {
+                                        const cc = m.client_code || inv.client_code;
+                                        if (m.mandate_id && cc) {
+                                          setScanUploadTarget({
+                                            clientCode: cc,
+                                            mandateId: m.mandate_id,
+                                            investorName: inv.name || "",
+                                          });
+                                        } else {
+                                          toastAlert("error", "Missing client code or mandate ID");
+                                        }
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  )}
+                  </React.Fragment>
                 );
               })
             )}
@@ -1062,6 +1947,23 @@ export default function NseInvestorList(_props: any) {
           investor={mandateInvestor}
           onClose={() => setMandateInvestor(null)}
           onSuccess={(data) => {
+            const targetInv = mandateInvestor;
+            const newMandate = normalizeMandateFromCreate(data);
+
+            // Merge into the per-investor mandates cache and auto-expand.
+            setMandatesByInvestor((prev) => {
+              const existing = prev[targetInv.id] || [];
+              return { ...prev, [targetInv.id]: [newMandate, ...existing] };
+            });
+            setExpandedInvestorIds((prev) => {
+              const next = new Set(prev);
+              next.add(targetInv.id);
+              return next;
+            });
+            // Refetch from NSE in background so the status column reflects
+            // server-side truth (e.g. "SCAN IMAGE NOT UPLOADED").
+            loadMandatesForInvestor(targetInv);
+
             setMandateInvestor(null);
             setMandateSuccessData(data);
           }}
@@ -1090,6 +1992,16 @@ export default function NseInvestorList(_props: any) {
           investor={banksInvestor}
           onClose={() => setBanksInvestor(null)}
           onRefresh={() => { setBanksInvestor(null); fetchInvestors(); }}
+        />
+      )}
+
+      {/* ── Scan Mandate Upload Modal ── */}
+      {scanUploadTarget && (
+        <MandateScanUploadModal
+          clientCode={scanUploadTarget.clientCode}
+          mandateId={scanUploadTarget.mandateId}
+          investorName={scanUploadTarget.investorName}
+          onClose={() => setScanUploadTarget(null)}
         />
       )}
     </div>

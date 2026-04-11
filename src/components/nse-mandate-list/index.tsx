@@ -11,6 +11,7 @@ interface MandateRow {
   clientCode: string;
   clientName: string;
   bankName: string;
+  bankBranch: string;
   accountNo: string;
   amount: string;
   status: string;
@@ -18,6 +19,11 @@ interface MandateRow {
   registrationDate: string;
   approvedDate: string;
   mandateCollectionType: string;
+  mandateType: string;
+  startDate: string;
+  endDate: string;
+  rejectReason: string;
+  remarks: string;
 }
 
 // ── Helpers ──
@@ -78,19 +84,37 @@ export default function NseMandateList() {
         from_date: toApiDate(fromDate),
         to_date: toApiDate(toDate),
       });
-      const rows: any[] = res?.data?.data?.report_data || [];
+      // Backend wraps NSE response as { status: "S", data: <nseResponse> } and
+      // encrypts it. The axios interceptor decrypts into res.data.data, so the
+      // actual NSE payload (with report_data) lives at res.data.data.data.
+      const outer = res?.data?.data ?? {};
+      const inner = outer?.data ?? outer;
+      const rows: any[] =
+        inner?.report_data ||
+        outer?.report_data ||
+        [];
+      const clean = (v: any) => {
+        const s = (v ?? "").toString().trim();
+        return s === "" ? "--" : s;
+      };
       const mapped: MandateRow[] = rows.map((r: any) => ({
-        mandateId: r.mandateId || r.mandate_id || "--",
-        clientCode: r.clientCode || r.client_code || "--",
-        clientName: r.clientName || r.client_name || "--",
-        bankName: r.bankName || r.bank_name || "--",
-        accountNo: r.accountNo || r.account_no || "--",
-        amount: r.amount || "--",
-        status: r.status || "--",
-        umrnNo: r.umrnNo || r.umrn_no || "--",
-        registrationDate: r.registrationDate || r.registration_date || "--",
-        approvedDate: r.approvedDate || r.approved_date || "--",
-        mandateCollectionType: r.mandateCollectionType || r.mandate_collection_type || "--",
+        mandateId: clean(r.mandateId || r.mandate_id),
+        clientCode: clean(r.clientCode || r.client_code),
+        clientName: clean(r.clientName || r.client_name),
+        bankName: clean(r.bankName || r.bank_name),
+        bankBranch: clean(r.bankBranch || r.bank_branch),
+        accountNo: clean(r.bankAccountNumber || r.accountNo || r.account_no),
+        amount: clean(r.amount),
+        status: clean(r.status),
+        umrnNo: clean(r.umrnNo || r.umrn_no),
+        registrationDate: clean(r.registrationDate || r.registration_date),
+        approvedDate: clean(r.approvedDate || r.approved_date),
+        mandateCollectionType: clean(r.mandateCollectionType || r.mandate_collection_type),
+        mandateType: clean(r.mandateType || r.mandate_type),
+        startDate: clean(r.startDate || r.start_date),
+        endDate: clean(r.endDate || r.end_date),
+        rejectReason: clean(r.rejectReason || r.reject_reason),
+        remarks: clean(r.remarks),
       }));
       setMandates(mapped);
       setFetched(true);
@@ -103,8 +127,8 @@ export default function NseMandateList() {
   };
 
   return (
-    <div className="p-6 max-w-[1400px] mx-auto">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Mandate List</h1>
+    <div className="nse-module p-6 max-w-[1400px] mx-auto">
+      <h1 className="text-2xl font-bold text-white mb-6">Mandate List</h1>
 
       {/* ── Filter ── */}
       <div className="bg-white rounded-xl shadow-sm border p-4 mb-6 flex flex-wrap items-end gap-4">
@@ -114,7 +138,7 @@ export default function NseMandateList() {
             type="date"
             value={fromDate}
             onChange={(e) => setFromDate(e.target.value)}
-            className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1]"
+            className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
           />
         </div>
         <div>
@@ -123,7 +147,7 @@ export default function NseMandateList() {
             type="date"
             value={toDate}
             onChange={(e) => setToDate(e.target.value)}
-            className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1]"
+            className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
           />
         </div>
         <div>
@@ -133,14 +157,14 @@ export default function NseMandateList() {
             value={clientCode}
             onChange={(e) => setClientCode(e.target.value)}
             placeholder="Optional"
-            className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1] w-[160px]"
+            className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B] w-[160px]"
           />
         </div>
         <button
           onClick={fetchMandates}
           disabled={loading}
           className="px-6 py-2 rounded-lg text-white font-medium text-sm disabled:opacity-50"
-          style={{ backgroundColor: "#4bc5c1" }}
+          style={{ backgroundColor: "#F59E0B" }}
         >
           {loading ? "Searching..." : "Search"}
         </button>
@@ -152,40 +176,55 @@ export default function NseMandateList() {
           <thead>
             <tr className="border-b" style={{ backgroundColor: "#f0fdfa" }}>
               <th className="text-left px-4 py-3 text-gray-600 font-semibold">Client Code</th>
+              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Client Name</th>
               <th className="text-left px-4 py-3 text-gray-600 font-semibold">Mandate ID</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Bank Name</th>
+              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Type</th>
+              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Bank</th>
               <th className="text-left px-4 py-3 text-gray-600 font-semibold">Account No</th>
               <th className="text-right px-4 py-3 text-gray-600 font-semibold">Amount</th>
               <th className="text-center px-4 py-3 text-gray-600 font-semibold">Status</th>
               <th className="text-left px-4 py-3 text-gray-600 font-semibold">UMRN</th>
               <th className="text-left px-4 py-3 text-gray-600 font-semibold">Reg Date</th>
+              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Start Date</th>
+              <th className="text-left px-4 py-3 text-gray-600 font-semibold">End Date</th>
               <th className="text-left px-4 py-3 text-gray-600 font-semibold">Approved Date</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Collection Type</th>
+              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Collection</th>
             </tr>
           </thead>
           <tbody>
             {!fetched ? (
               <tr>
-                <td colSpan={10} className="text-center py-12 text-gray-400">
+                <td colSpan={14} className="text-center py-12 text-gray-400">
                   Select filters and click Search to view mandates
                 </td>
               </tr>
             ) : mandates.length === 0 ? (
               <tr>
-                <td colSpan={10} className="text-center py-12 text-gray-400">
+                <td colSpan={14} className="text-center py-12 text-gray-400">
                   No mandates found
                 </td>
               </tr>
             ) : (
               mandates.map((m, idx) => (
                 <tr key={idx} className="border-b hover:bg-gray-50 transition">
-                  <td className="px-4 py-3">{m.clientCode}</td>
-                  <td className="px-4 py-3 font-medium" style={{ color: "#4bc5c1" }}>
+                  <td className="px-4 py-3 font-mono text-xs">{m.clientCode}</td>
+                  <td className="px-4 py-3">{m.clientName}</td>
+                  <td className="px-4 py-3 font-medium font-mono text-xs" style={{ color: "#F59E0B" }}>
                     {m.mandateId}
                   </td>
-                  <td className="px-4 py-3">{m.bankName}</td>
-                  <td className="px-4 py-3">{m.accountNo}</td>
-                  <td className="px-4 py-3 text-right">{m.amount}</td>
+                  <td className="px-4 py-3 text-xs">
+                    {m.mandateType === "X" ? "Physical" : m.mandateType === "E" ? "eNACH" : m.mandateType}
+                  </td>
+                  <td className="px-4 py-3">
+                    <div className="text-sm">{m.bankName}</div>
+                    {m.bankBranch !== "--" && (
+                      <div className="text-xs text-gray-400">{m.bankBranch}</div>
+                    )}
+                  </td>
+                  <td className="px-4 py-3 font-mono text-xs">
+                    {m.accountNo !== "--" ? `****${m.accountNo.slice(-4)}` : "--"}
+                  </td>
+                  <td className="px-4 py-3 text-right">₹ {m.amount}</td>
                   <td className="px-4 py-3 text-center">
                     <span
                       className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${statusBadge(m.status)}`}
@@ -193,10 +232,12 @@ export default function NseMandateList() {
                       {m.status}
                     </span>
                   </td>
-                  <td className="px-4 py-3">{m.umrnNo}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{m.registrationDate}</td>
-                  <td className="px-4 py-3 whitespace-nowrap">{m.approvedDate}</td>
-                  <td className="px-4 py-3">{m.mandateCollectionType}</td>
+                  <td className="px-4 py-3 font-mono text-xs">{m.umrnNo}</td>
+                  <td className="px-4 py-3 whitespace-nowrap text-xs">{m.registrationDate}</td>
+                  <td className="px-4 py-3 whitespace-nowrap text-xs">{m.startDate}</td>
+                  <td className="px-4 py-3 whitespace-nowrap text-xs">{m.endDate}</td>
+                  <td className="px-4 py-3 whitespace-nowrap text-xs">{m.approvedDate}</td>
+                  <td className="px-4 py-3 text-xs">{m.mandateCollectionType}</td>
                 </tr>
               ))
             )}

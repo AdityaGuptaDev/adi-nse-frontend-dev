@@ -176,8 +176,8 @@ export default function NseSystematicOrders() {
   };
 
   return (
-    <div className="p-6 max-w-[1400px] mx-auto">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Systematic Orders</h1>
+    <div className="nse-module p-6 max-w-[1400px] mx-auto">
+      <h1 className="text-2xl font-bold text-white mb-6">Systematic Orders</h1>
 
       {/* ── Tabs ── */}
       <div className="flex gap-1 mb-6 bg-gray-100 rounded-lg p-1 w-fit">
@@ -192,7 +192,7 @@ export default function NseSystematicOrders() {
             }`}
             style={
               activeTab === tab.key
-                ? { backgroundColor: "#4bc5c1" }
+                ? { backgroundColor: "#F59E0B" }
                 : undefined
             }
           >

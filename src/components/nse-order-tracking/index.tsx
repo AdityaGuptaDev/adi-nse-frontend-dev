@@ -128,7 +128,7 @@ export default function NseOrderTracking() {
       <div className="flex items-center justify-center min-h-[400px]">
         <div
           className="animate-spin rounded-full h-10 w-10 border-4 border-t-transparent"
-          style={{ borderColor: "#4bc5c1", borderTopColor: "transparent" }}
+          style={{ borderColor: "#F59E0B", borderTopColor: "transparent" }}
         />
       </div>
     );
@@ -144,7 +144,7 @@ export default function NseOrderTracking() {
         <button
           onClick={() => router.push("/nse-my-orders")}
           className="px-6 py-2 rounded-lg text-white font-medium"
-          style={{ backgroundColor: "#4bc5c1" }}
+          style={{ backgroundColor: "#F59E0B" }}
         >
           Back to My Orders
         </button>
@@ -153,7 +153,7 @@ export default function NseOrderTracking() {
   }
 
   return (
-    <div className="p-6 max-w-[900px] mx-auto">
+    <div className="nse-module p-6 max-w-[900px] mx-auto">
       {/* ── Header ── */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -161,7 +161,7 @@ export default function NseOrderTracking() {
           <p className="text-gray-500 text-sm mt-1">
             {order.investor_name}{" "}
             <span className="text-gray-400">({order.pan})</span> &middot; Order ID:{" "}
-            <span className="font-semibold" style={{ color: "#4bc5c1" }}>
+            <span className="font-semibold" style={{ color: "#F59E0B" }}>
               {order.order_id}
             </span>
           </p>
@@ -169,7 +169,7 @@ export default function NseOrderTracking() {
         <button
           onClick={() => router.push("/nse-my-orders")}
           className="text-sm underline"
-          style={{ color: "#4bc5c1" }}
+          style={{ color: "#F59E0B" }}
         >
           Back to Orders
         </button>
