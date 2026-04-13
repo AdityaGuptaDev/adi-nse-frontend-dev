@@ -685,11 +685,11 @@ async function fetchMandateShortLink(
     return null;
   }
   // NSE link_type enum: NACH for physical, ENACH for electronic.
-  const linkType = mandateType === "E" ? "ENACH" : "NACH";
+  const linkType = mandateType === "E" ? "MANDATE_AUTH" : "MANDATE_AUTH";
   try {
     const res = await api.post("/nse/get-link", {
-      reg_id: regId,
-      link_type: linkType,
+      productRefId: regId,
+      productType: linkType,
     });
     const outer = res?.data?.data ?? {};
     const inner = outer?.data ?? outer;

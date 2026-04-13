@@ -312,36 +312,26 @@ canvas {
 
 
 /* ══════════════════════════════════════════════════════════════════════
-   NSE Module — dark theme wrapper
+   NSE Module — white + orange theme
    Applied via a `nse-module` className on the outermost div of every
-   NSE-specific page. Mirrors the investor dashboard palette:
-     • Primary surface       — #0A0A0A
-     • Card surfaces         — white (inherited from existing utilities)
-     • Primary accent        — #F59E0B (amber, swapped from teal)
-     • Positive / negative   — #10B981 / #EF4444 (inherited from utilities)
-   The wrapper only affects the outer page chrome. Nested modals, tables,
-   cards, and form fields keep their existing light design so every child
-   component remains readable without a full rewrite.
+   NSE-specific page. Clean light surface with orange accents:
+     • Background            — white (#FFFFFF)
+     • Text                  — dark (#1F2937, gray-800)
+     • Primary accent        — #F59E0B (amber, buttons/badges/focus)
+     • Headings              — #F59E0B (orange) for section titles
    ════════════════════════════════════════════════════════════════════════ */
 .nse-module {
-  background-color: #0A0A0A;
-  color: #F9FAFB;
+  background-color: #ffffff;
+  color: #1F2937;
   min-height: 100vh;
 }
 
-/* Lighten the outermost headings so they read on the dark page. Card
-   contents (anything inside .bg-white) keep their own contrast because
-   Tailwind utility specificity wins over these scoped rules. */
+/* Page titles get the orange accent color */
 .nse-module > h1,
 .nse-module > h2,
 .nse-module > div > h1,
 .nse-module > div > h2 {
-  color: #F9FAFB;
-}
-
-/* Scroll surfaces (e.g. the top-level page padding div) should stay dark. */
-.nse-module .nse-module-surface {
-  background-color: #0A0A0A;
+  color: #D97706;
 }
 
 .tabs .tab {

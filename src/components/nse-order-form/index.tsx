@@ -480,7 +480,7 @@ export default function NseOrderForm() {
           let paymentLink = "";
           try {
             const linkRes = await api.post("/nse/get-link", {
-              productType: transactionType === "P" ? "PUR" : "RED",
+              productType: transactionType === "MANDATE_AUTH",
               productRefId: txnData.trxn_order_id || "",
             });
             const linkData = linkRes?.data?.data ?? linkRes?.data;

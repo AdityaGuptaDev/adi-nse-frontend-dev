@@ -177,7 +177,7 @@ export default function NseSystematicOrders() {
 
   return (
     <div className="nse-module p-6 max-w-[1400px] mx-auto">
-      <h1 className="text-2xl font-bold text-white mb-6">Systematic Orders</h1>
+      <h1 className="text-2xl font-bold text-[#D97706] mb-6">Systematic Orders</h1>
 
       {/* ── Tabs ── */}
       <div className="flex gap-1 mb-6 bg-gray-100 rounded-lg p-1 w-fit">

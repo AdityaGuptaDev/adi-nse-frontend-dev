@@ -71,7 +71,7 @@ export default function NseKycStatus() {
 
   return (
     <div className="nse-module p-6 max-w-[700px] mx-auto">
-      <h1 className="text-2xl font-bold text-white mb-6">KYC Status Check</h1>
+      <h1 className="text-2xl font-bold text-[#D97706] mb-6">KYC Status Check</h1>
 
       {/* ── Search ── */}
       <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">

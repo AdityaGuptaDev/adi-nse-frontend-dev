@@ -128,7 +128,7 @@ export default function NseMandateList() {
 
   return (
     <div className="nse-module p-6 max-w-[1400px] mx-auto">
-      <h1 className="text-2xl font-bold text-white mb-6">Mandate List</h1>
+      <h1 className="text-2xl font-bold text-[#D97706] mb-6">Mandate List</h1>
 
       {/* ── Filter ── */}
       <div className="bg-white rounded-xl shadow-sm border p-4 mb-6 flex flex-wrap items-end gap-4">

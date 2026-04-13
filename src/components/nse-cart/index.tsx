@@ -13,7 +13,7 @@ export default function NseCart() {
 
   return (
     <div className="nse-module p-6 max-w-[700px] mx-auto">
-      <h1 className="text-2xl font-bold text-white mb-6">My Cart</h1>
+      <h1 className="text-2xl font-bold text-[#D97706] mb-6">My Cart</h1>
 
       <div className="bg-white rounded-xl shadow-sm border p-12 text-center">
         {/* Empty cart icon */}
