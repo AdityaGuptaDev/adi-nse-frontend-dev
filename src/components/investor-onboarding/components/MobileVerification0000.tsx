@@ -5,7 +5,7 @@ import { ArrowLeft, CheckCircle, Loader2, Phone, RefreshCw, Shield, Smartphone }
     <div>
         <button
             onClick={() => setCurrentScreen('welcome')}
-            className="flex items-center text-gray-600 hover:text-gray-800 mb-6 transition-colors text-sm font-medium group"
+            className="flex items-center text-[#9CA3AF] hover:text-[#F9FAFB] mb-6 transition-colors text-sm font-medium group"
         >
             <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
             Back to Overview
@@ -15,22 +15,22 @@ import { ArrowLeft, CheckCircle, Loader2, Phone, RefreshCw, Shield, Smartphone }
             <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-3 shadow-md">
                 <Smartphone className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-xl font-bold text-gray-900 mb-1">Mobile Verification</h1>
-            <p className="text-gray-600 text-sm">We'll send you a verification code to proceed</p>
+            <h1 className="text-xl font-bold text-[#F9FAFB] mb-1">Mobile Verification</h1>
+            <p className="text-[#9CA3AF] text-sm">We'll send you a verification code to proceed</p>
         </div>
 
         <div className="space-y-4">
             {/* Mobile Input Section */}
-            <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl p-4 border border-gray-200">
+            <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl p-4 border border-[#2A2A2A]">
                 <div className="flex items-center mb-3">
                     <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
                         <Phone className="w-5 h-5 text-blue-600" />
                     </div>
                     <div>
-                        <h3 className="text-sm font-semibold text-gray-900">
+                        <h3 className="text-sm font-semibold text-[#F9FAFB]">
                             {otpSent ? 'Verification Code Sent' : 'Enter Mobile Number'}
                         </h3>
-                        <p className="text-gray-600 text-xs">
+                        <p className="text-[#9CA3AF] text-xs">
                             {otpSent
                                 ? `Code sent to ${partnerData.phone}`
                                 : 'We\'ll send you a verification code'
@@ -41,12 +41,12 @@ import { ArrowLeft, CheckCircle, Loader2, Phone, RefreshCw, Shield, Smartphone }
 
                 <div className="space-y-3">
                     <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
+                        <label className="block text-xs font-medium text-[#E5E7EB] mb-1">
                             Mobile Number
                         </label>
                         <div className="relative">
                             <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center">
-                                <span className="text-gray-500 text-sm font-medium mr-1">+91</span>
+                                <span className="text-[#9CA3AF] text-sm font-medium mr-1">+91</span>
                                 <div className="w-px h-4 bg-gray-300 mx-2"></div>
                             </div>
                             <input
@@ -54,7 +54,7 @@ import { ArrowLeft, CheckCircle, Loader2, Phone, RefreshCw, Shield, Smartphone }
                                 value={partnerData.phone}
                                 onChange={(e) => handlePartnerInputChange('phone', e.target.value)}
                                 placeholder="Enter 10-digit number"
-                                className="w-full pl-16 pr-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-medium transition-all duration-200"
+                                className="w-full pl-16 pr-4 py-3 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-medium transition-all duration-200"
                                 maxLength={10}
                                 disabled={otpSent}
                             />
@@ -108,8 +108,8 @@ import { ArrowLeft, CheckCircle, Loader2, Phone, RefreshCw, Shield, Smartphone }
                             <Lock className="w-5 h-5 text-emerald-600" />
                         </div>
                         <div>
-                            <h3 className="text-sm font-semibold text-gray-900">Enter Verification Code</h3>
-                            <p className="text-gray-600 text-xs">
+                            <h3 className="text-sm font-semibold text-[#F9FAFB]">Enter Verification Code</h3>
+                            <p className="text-[#9CA3AF] text-xs">
                                 Code sent to <span className="font-semibold">{partnerData.phone}</span>
                             </p>
                         </div>
@@ -118,7 +118,7 @@ import { ArrowLeft, CheckCircle, Loader2, Phone, RefreshCw, Shield, Smartphone }
                     <div className="space-y-4">
                         {/* OTP Input Boxes */}
                         <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-2 text-center">
+                            <label className="block text-xs font-medium text-[#E5E7EB] mb-2 text-center">
                                 6-digit Verification Code
                             </label>
                             <div className="flex justify-center space-x-2 mb-3">
@@ -133,7 +133,7 @@ import { ArrowLeft, CheckCircle, Loader2, Phone, RefreshCw, Shield, Smartphone }
                                         onChange={(e) => handleOTPChange(e.target.value, index)}
                                         onKeyDown={(e) => handleKeyDown(e, index)}
                                         onPaste={handlePaste}
-                                        className="w-10 h-11 text-center text-lg font-bold border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-white shadow-sm"
+                                        className="w-10 h-11 text-center text-lg font-bold border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-[#111111] shadow-sm"
                                         disabled={otpState.loading || isFetchingUserData}
                                     />
                                 ))}
@@ -148,14 +148,14 @@ import { ArrowLeft, CheckCircle, Loader2, Phone, RefreshCw, Shield, Smartphone }
 
                         {/* Timer and Resend */}
                         <div className="flex items-center justify-between text-xs px-1">
-                            <span className="text-gray-600 flex items-center">
+                            <span className="text-[#9CA3AF] flex items-center">
                                 <RefreshCw className="w-3 h-3 mr-1" />
                                 {otpState.timer > 0 ? `Resend in ${otpState.timer}s` : "Ready to resend"}
                             </span>
                             <button
                                 onClick={resendOTP}
                                 disabled={!otpState.canResend || otpState.loading}
-                                className="text-blue-600 hover:text-blue-700 font-medium disabled:text-gray-400 flex items-center transition-colors"
+                                className="text-blue-600 hover:text-blue-700 font-medium disabled:text-[#6B7280] flex items-center transition-colors"
                             >
                                 <RefreshCw className="w-3 h-3 mr-1" />
                                 {otpState.loading ? 'Resending...' : 'Resend Code'}

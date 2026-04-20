@@ -462,7 +462,7 @@ function NominationDetail({ steps, setSteps }: any) {
                 <CustomText className="text-xl font-montserrat font-semibold">
                   Nomination Details
                 </CustomText>
-                <p className="text-sm text-gray-600 mt-2">
+                <p className="text-sm text-[#9CA3AF] mt-2">
                   Add nominee details for your investment account. You can add up to 3 nominees and the total allocation must equal 100%.
                 </p>
 
@@ -509,8 +509,8 @@ function NominationDetail({ steps, setSteps }: any) {
                     const nomineeType = nomineesWatch?.[index]?.nominee_Type;
 
                     return (
-                      <div key={index} className="bg-white border-0 border-gray-200 rounded-lg p-0 mb-6 mt-3">
-                        <div className="flex gap-4 items-center justify-between sm:justify-start mb-4 bg-gray-50 p-2 sticky top-0 z-10">
+                      <div key={index} className="bg-[#111111] border-0 border-[#2A2A2A] rounded-lg p-0 mb-6 mt-3">
+                        <div className="flex gap-4 items-center justify-between sm:justify-start mb-4 bg-[#1F1A1A] p-2 sticky top-0 z-10">
                           <CustomText className="text-lg font-montserrat font-semibold text-primary">
                             Nominee {index + 1}
                           </CustomText>
@@ -903,7 +903,7 @@ function NominationDetail({ steps, setSteps }: any) {
                         ) : null}
 
                         {/* {index < fields.length - 1 && (
-                          <div className="border-b border-gray-200 my-6"></div>
+                          <div className="border-b border-[#2A2A2A] my-6"></div>
                         )} */}
                       </div>
                     );
@@ -925,9 +925,9 @@ function NominationDetail({ steps, setSteps }: any) {
 
                   {/* Summary Section */}
                   {isNominee === "Yes" && fields.length > 0 && (
-                    <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                    <div className="mt-6 p-4 bg-[#1F1A1A] rounded-lg">
                       <CustomText className="text-lg font-semibold mb-2">Summary</CustomText>
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-[#9CA3AF]">
                         <p className="text-lg font-semibold">Total Nominees: {fields.length}</p>
                         <p className="text-lg font-semibold">
                           Total Allocation: {

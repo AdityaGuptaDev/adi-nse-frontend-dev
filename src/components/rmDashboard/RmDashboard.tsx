@@ -173,27 +173,27 @@ const CompactRMProfile = ({ rmDetails }: { rmDetails: RmDetails | null }) => {
 
   return (
     <div className="w-full px-4 py-3">
-      <div className="flex items-center justify-between bg-white rounded-xl p-3 border border-gray-200 shadow-sm">
+      <div className="flex items-center justify-between bg-[#111111] rounded-xl p-3 border border-[#2A2A2A] shadow-lg">
         {/* Left side - Avatar and Name */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+          <div className="w-10 h-10 bg-gradient-to-r from-[#F59E0B] to-[#B45309] rounded-full flex items-center justify-center text-white font-bold text-lg">
             {rmDetails.name?.charAt(0).toUpperCase() || 'R'}
           </div>
           <div>
-            <h1 className="text-base font-bold text-gray-900">{rmDetails.name}</h1>
-            <p className="text-xs text-gray-600">Relationship Manager</p>
+            <h1 className="text-base font-bold text-[#F9FAFB]">{rmDetails.name}</h1>
+            <p className="text-xs text-[#9CA3AF]">Relationship Manager</p>
           </div>
         </div>
 
         {/* Right side - Contact info as badges */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1 bg-blue-50 px-2.5 py-1 rounded-lg">
-            <Phone className="w-3 h-3 text-blue-600" />
-            <span className="text-xs font-medium text-blue-700">{rmDetails.mobile}</span>
+          <div className="flex items-center gap-1 bg-[#F59E0B]/10 px-2.5 py-1 rounded-lg border border-[#F59E0B]/30">
+            <Phone className="w-3 h-3 text-[#F59E0B]" />
+            <span className="text-xs font-medium text-[#F59E0B]">{rmDetails.mobile}</span>
           </div>
-          <div className="flex items-center gap-1 bg-green-50 px-2.5 py-1 rounded-lg">
-            <Mail className="w-3 h-3 text-green-600" />
-            <span className="text-xs font-medium text-green-700 truncate max-w-[140px]">
+          <div className="flex items-center gap-1 bg-[#10B981]/10 px-2.5 py-1 rounded-lg border border-[#10B981]/30">
+            <Mail className="w-3 h-3 text-[#10B981]" />
+            <span className="text-xs font-medium text-[#10B981] truncate max-w-[140px]">
               {rmDetails.email}
             </span>
           </div>
@@ -223,39 +223,33 @@ const StatsOverview = ({ rmDetails }: { rmDetails: RmDetails | null }) => {
       label: "Total Investors",
       value: rmDetails ? rmDetails.total_investor : "...",
       icon: User,
-      color: "bg-blue-100 text-blue-600",
+      color: "bg-[#F59E0B]/20 text-[#F59E0B]",
     },
     {
       label: "Total Partners",
       value: rmDetails ? rmDetails.total_partner : "...",
       icon: User,
-      color: "bg-blue-100 text-blue-600",
+      color: "bg-[#F59E0B]/20 text-[#F59E0B]",
     },
-    // {
-    //   label: "Total BCs",
-    //   value: rmDetails ? rmDetails.total_bc : "...",
-    //   icon: User,
-    //   color: "bg-blue-100 text-blue-600",
-    // },
     {
       label: "AUM",
       value: rmDetails ? formatNumber(parseFloat(rmDetails.total_aum)) : "...",
       icon: BarChart3,
-      color: "bg-green-100 text-green-600",
+      color: "bg-[#10B981]/20 text-[#10B981]",
     },
     {
       label: "Transactions",
       value: rmDetails ? formatNumber(parseFloat(rmDetails.total_transaction)) : "...",
       icon: ArrowLeftRight,
-      color: "bg-indigo-100 text-indigo-600",
+      color: "bg-[#F59E0B]/20 text-[#F59E0B]",
     },
   ];
 
   return (
     <div className="w-full px-4 py-4">
-      <h2 className="text-lg font-semibold text-gray-900 mb-4">Performance Overview</h2>
+      <h2 className="text-lg font-semibold text-[#F9FAFB] mb-4">Performance Overview</h2>
 
-      <div className="bg-white rounded-xl shadow-sm p-5 border border-gray-200">
+      <div className="bg-[#111111] rounded-xl shadow-lg p-5 border border-[#2A2A2A]">
         <div className="flex items-center justify-between">
           {stats.map((stat, idx) => (
             <React.Fragment key={idx}>
@@ -266,16 +260,16 @@ const StatsOverview = ({ rmDetails }: { rmDetails: RmDetails | null }) => {
                   <stat.icon className="w-5 h-5" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-xl font-bold text-gray-900 truncate">
+                  <div className="text-xl font-bold text-[#F9FAFB] truncate">
                     {stat.value}
                   </div>
-                  <div className="text-sm text-gray-600 font-medium truncate">
+                  <div className="text-sm text-[#9CA3AF] font-medium truncate">
                     {stat.label}
                   </div>
                 </div>
               </div>
               {idx < stats.length - 1 && (
-                <div className="w-px h-12 bg-gray-200 mx-2"></div>
+                <div className="w-px h-12 bg-[#2A2A2A] mx-2"></div>
               )}
             </React.Fragment>
           ))}
@@ -308,43 +302,43 @@ const RMQuickActions = () => {
     {
       icon: Plus,
       label: "Add Partner",
-      color: "bg-green-100 text-green-600",
+      color: "bg-[#10B981]/20 text-[#10B981]",
       onClick: () => handleRegister('Partner')
     },
     {
       icon: Plus,
       label: "Add Investor",
-      color: "bg-slate-100 text-indigo-600",
+      color: "bg-[#F59E0B]/20 text-[#F59E0B]",
       onClick: () => handleRegister('Investor')
     },
     {
       icon: Search,
       label: "Fund Finder",
-      color: "bg-yellow-100 text-yellow-600",
+      color: "bg-[#F59E0B]/20 text-[#F59E0B]",
       onClick: () => router.push('/mutual-fund')
     },
     {
       icon: Calculator,
       label: "Calculator",
-      color: "bg-red-100 text-red-600",
+      color: "bg-[#EF4444]/20 text-[#EF4444]",
       onClick: () => router.push('/sip-calculator')
     },
     {
       icon: BarChart2,
       label: "Portfolio",
-      color: "bg-purple-100 text-purple-600",
+      color: "bg-[#F59E0B]/20 text-[#F59E0B]",
       onClick: () => router.push('/portfolio')
     },
     {
       icon: PlayCircle,
       label: "Start SIP",
-      color: "bg-emerald-100 text-emerald-600",
+      color: "bg-[#10B981]/20 text-[#10B981]",
       onClick: () => router.push('/mutual-fund')
     },
     {
       icon: User,
       label: "Reports",
-      color: "bg-sky-100 text-sky-600",
+      color: "bg-[#F59E0B]/20 text-[#F59E0B]",
       onClick: () => router.push('/search-report')
     },
   ];
@@ -352,15 +346,14 @@ const RMQuickActions = () => {
   return (
     <div className="w-full px-4 py-4">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-gray-900">Quick Actions</h2>
+        <h2 className="text-lg font-semibold text-[#F9FAFB]">Quick Actions</h2>
       </div>
       
-      {/* FIXED: Grid layout with proper responsive breakpoints */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-3">
         {actions.map((action, index) => (
           <button
             key={index}
-            className="flex flex-col items-center p-4 bg-white rounded-lg border border-gray-200 hover:shadow-lg focus:shadow-lg transition-all duration-200 hover:scale-105 focus:scale-105 focus:outline-none w-full"
+            className="flex flex-col items-center p-4 bg-[#111111] rounded-lg border border-[#2A2A2A] hover:shadow-xl focus:shadow-xl transition-all duration-200 hover:scale-105 focus:scale-105 focus:outline-none w-full hover:border-[#F59E0B]/50"
             tabIndex={0}
             aria-label={action.label}
             onClick={action.onClick}
@@ -370,7 +363,7 @@ const RMQuickActions = () => {
             >
               <action.icon className="w-6 h-6" />
             </div>
-            <span className="text-sm font-medium text-gray-800 text-center leading-tight">
+            <span className="text-sm font-medium text-[#F9FAFB] text-center leading-tight">
               {action.label}
             </span>
           </button>
@@ -398,20 +391,20 @@ const TopPerformingFunds = ({ funds }: { funds: TopPerformingFund[] }) => {
   const getRiskColor = (riskLevel: string) => {
     switch (riskLevel) {
       case 'Very High Risk':
-        return 'text-red-600 bg-red-50';
+        return 'text-red-400 bg-red-500/20';
       case 'High Risk':
-        return 'text-orange-600 bg-orange-50';
+        return 'text-orange-400 bg-orange-500/20';
       case 'Medium Risk':
-        return 'text-yellow-600 bg-yellow-50';
+        return 'text-yellow-400 bg-yellow-500/20';
       case 'Low Risk':
-        return 'text-green-600 bg-green-50';
+        return 'text-green-400 bg-green-500/20';
       default:
-        return 'text-gray-600 bg-gray-50';
+        return 'text-[#9CA3AF] bg-[#2A2A2A]';
     }
   };
 
   const getReturnColor = (returnValue: number) => {
-    return returnValue > 0 ? 'text-green-600' : 'text-red-600';
+    return returnValue > 0 ? 'text-[#10B981]' : 'text-[#EF4444]';
   };
 
   // Function to truncate text with ellipsis
@@ -422,19 +415,19 @@ const TopPerformingFunds = ({ funds }: { funds: TopPerformingFund[] }) => {
 
   return (
     <div className="w-full px-4 py-4">
-      <div className="flex items-center gap-2">
-        <div className="p-2 rounded-lg bg-yellow-100">
-          <TrendingUp className="w-5 h-5 text-yellow-600" />
+      <div className="flex items-center gap-2 mb-4">
+        <div className="p-2 rounded-lg bg-[#F59E0B]/20">
+          <TrendingUp className="w-5 h-5 text-[#F59E0B]" />
         </div>
-        <h2 className="text-lg font-semibold text-gray-900">Top Performing Funds</h2>
+        <h2 className="text-lg font-semibold text-[#F9FAFB]">Top Performing Funds</h2>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-200">
+      <div className="bg-[#111111] rounded-xl shadow-lg p-4 border border-[#2A2A2A]">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {funds.map((fund, index) => (
             <div
               key={fund.id}
-              className="group bg-gradient-to-br from-white to-gray-50 rounded-lg p-3 border border-gray-200 hover:border-blue-200 transition-all duration-200"
+              className="group bg-gradient-to-br from-[#1F1A1A] to-[#111111] rounded-lg p-3 border border-[#2A2A2A] hover:border-[#F59E0B]/50 transition-all duration-200"
             >
               {/* Fund Header */}
               <div className="flex items-start justify-between mb-3">
@@ -443,18 +436,18 @@ const TopPerformingFunds = ({ funds }: { funds: TopPerformingFund[] }) => {
                     <span className="text-white font-bold text-sm"></span>
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-sm font-bold text-gray-900 truncate" title={fund.fundName}>
+                    <h3 className="text-sm font-bold text-[#F9FAFB] truncate" title={fund.fundName}>
                       {truncateText(fund.fundName, 25)}
                     </h3>
-                    <p className="text-xs text-gray-500 truncate">
+                    <p className="text-xs text-[#9CA3AF] truncate">
                       {truncateText(fund.category, 20)}
                     </p>
                   </div>
                 </div>
                 {fund.rating && (
                   <div className="flex items-center gap-0.5 flex-shrink-0 ml-2">
-                    <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
-                    <span className="text-xs font-medium text-gray-700">{fund.rating.toFixed(1)}</span>
+                    <Star className="w-3 h-3 text-[#F59E0B] fill-[#F59E0B]" />
+                    <span className="text-xs font-medium text-[#F9FAFB]">{fund.rating.toFixed(1)}</span>
                   </div>
                 )}
               </div>
@@ -462,7 +455,7 @@ const TopPerformingFunds = ({ funds }: { funds: TopPerformingFund[] }) => {
               {/* Performance Metrics */}
               <div className="space-y-2 mb-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-600">1Y Return</span>
+                  <span className="text-xs text-[#9CA3AF]">1Y Return</span>
                   <div className="flex items-center gap-1">
                     <TrendingUpIcon className={`w-3 h-3 ${getReturnColor(fund.return1yr)}`} />
                     <span className={`text-sm font-bold ${getReturnColor(fund.return1yr)}`}>
@@ -471,7 +464,7 @@ const TopPerformingFunds = ({ funds }: { funds: TopPerformingFund[] }) => {
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-600">3Y Return</span>
+                  <span className="text-xs text-[#9CA3AF]">3Y Return</span>
                   <span className={`text-sm font-bold ${getReturnColor(fund.return3yr)}`}>
                     {fund.return3yr > 0 ? '+' : ''}{fund.return3yr.toFixed(1)}%
                   </span>
@@ -479,16 +472,16 @@ const TopPerformingFunds = ({ funds }: { funds: TopPerformingFund[] }) => {
               </div>
 
               {/* Fund Details */}
-              <div className="pt-3 border-t border-gray-100">
+              <div className="pt-3 border-t border-[#2A2A2A]">
                 <div className="flex items-center justify-between mb-2">
                   <div className={`px-2 py-1 rounded text-xs font-medium ${getRiskColor(fund.riskLevel)}`}>
                     {fund.riskLevel.split(' ')[0]}
                   </div>
-                  <div className="text-xs font-medium text-gray-700">
+                  <div className="text-xs font-medium text-[#F59E0B]">
                     AUM: {formatNumber(fund.aum)}
                   </div>
                 </div>
-                <div className="text-xs text-gray-500 truncate">
+                <div className="text-xs text-[#9CA3AF] truncate">
                   NAV: ₹{fund.nav.toFixed(2)}
                 </div>
               </div>
@@ -497,18 +490,18 @@ const TopPerformingFunds = ({ funds }: { funds: TopPerformingFund[] }) => {
         </div>
 
         {/* Performance Summary */}
-        <div className="mt-4 pt-4 border-t border-gray-200">
+        <div className="mt-4 pt-4 border-t border-[#2A2A2A]">
           <div className="flex items-center justify-between">
-            <div className="text-sm text-gray-600">
-              <span className="font-medium">{funds.length}</span> top performing funds
+            <div className="text-sm text-[#9CA3AF]">
+              <span className="font-medium text-[#F59E0B]">{funds.length}</span> top performing funds
             </div>
-            <div className="flex items-center gap-4 text-xs text-gray-600">
+            <div className="flex items-center gap-4 text-xs text-[#9CA3AF]">
               <div className="flex items-center gap-1">
-                <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                <div className="w-2 h-2 rounded-full bg-[#10B981]"></div>
                 <span>Positive Returns</span>
               </div>
               <div className="flex items-center gap-1">
-                <div className="w-2 h-2 rounded-full bg-yellow-500"></div>
+                <div className="w-2 h-2 rounded-full bg-[#F59E0B]"></div>
                 <span>Medium Risk</span>
               </div>
             </div>
@@ -536,13 +529,13 @@ const ManagedClientsSection = ({ clients }: { clients: ManagedClient[] }) => {
     investor: {
       title: "Investors",
       icon: UserCheck,
-      headerColor: "bg-blue-50 border-blue-200",
-      iconBg: "bg-blue-100 text-blue-600",
-      countBg: "bg-blue-500/10 text-blue-600",
-      borderColor: "border-blue-100",
-      hoverColor: "hover:bg-blue-50",
-      textColor: "text-blue-700",
-      actionColor: "text-blue-600 hover:text-blue-700",
+      headerColor: "bg-[#F59E0B]/10 border-[#F59E0B]/20",
+      iconBg: "bg-[#F59E0B]/20 text-[#F59E0B]",
+      countBg: "bg-[#F59E0B]/20 text-[#F59E0B]",
+      borderColor: "border-[#F59E0B]/20",
+      hoverColor: "hover:bg-[#F59E0B]/5",
+      textColor: "text-[#F59E0B]",
+      actionColor: "text-[#F59E0B] hover:text-[#FBBF24]",
       description: "Individual investment clients",
       actionLabel: "View All Investors",
       actionPath: "/investors"
@@ -550,13 +543,13 @@ const ManagedClientsSection = ({ clients }: { clients: ManagedClient[] }) => {
     partner: {
       title: "Partners",
       icon: Handshake,
-      headerColor: "bg-emerald-50 border-emerald-200",
-      iconBg: "bg-emerald-100 text-emerald-600",
-      countBg: "bg-emerald-500/10 text-emerald-600",
-      borderColor: "border-emerald-100",
-      hoverColor: "hover:bg-emerald-50",
-      textColor: "text-emerald-700",
-      actionColor: "text-emerald-600 hover:text-emerald-700",
+      headerColor: "bg-[#10B981]/10 border-[#10B981]/20",
+      iconBg: "bg-[#10B981]/20 text-[#10B981]",
+      countBg: "bg-[#10B981]/20 text-[#10B981]",
+      borderColor: "border-[#10B981]/20",
+      hoverColor: "hover:bg-[#10B981]/5",
+      textColor: "text-[#10B981]",
+      actionColor: "text-[#10B981] hover:text-[#059669]",
       description: "Business partners & associates",
       actionLabel: "View All Partners",
       actionPath: "/partners"
@@ -564,13 +557,13 @@ const ManagedClientsSection = ({ clients }: { clients: ManagedClient[] }) => {
     bc: {
       title: "Business Correspondents",
       icon: Building2,
-      headerColor: "bg-indigo-50 border-indigo-200",
-      iconBg: "bg-indigo-100 text-indigo-600",
-      countBg: "bg-indigo-500/10 text-indigo-600",
-      borderColor: "border-indigo-100",
-      hoverColor: "hover:bg-indigo-50",
-      textColor: "text-indigo-700",
-      actionColor: "text-indigo-600 hover:text-indigo-700",
+      headerColor: "bg-[#F59E0B]/10 border-[#F59E0B]/20",
+      iconBg: "bg-[#F59E0B]/20 text-[#F59E0B]",
+      countBg: "bg-[#F59E0B]/20 text-[#F59E0B]",
+      borderColor: "border-[#F59E0B]/20",
+      hoverColor: "hover:bg-[#F59E0B]/5",
+      textColor: "text-[#F59E0B]",
+      actionColor: "text-[#F59E0B] hover:text-[#FBBF24]",
       description: "Business correspondents & agents",
       actionLabel: "View All BCs",
       actionPath: "/business-correspondents"
@@ -624,10 +617,10 @@ const getInitials = (name: string | null | undefined): string => {
   // Get avatar color based on client type
   const getAvatarColor = (type: string) => {
     switch (type) {
-      case 'investor': return 'bg-blue-500/20 text-blue-700';
-      case 'partner': return 'bg-emerald-500/20 text-emerald-700';
-      case 'bc': return 'bg-indigo-500/20 text-indigo-700';
-      default: return 'bg-gray-100 text-gray-700';
+      case 'investor': return 'bg-[#F59E0B]/20 text-[#F59E0B]';
+      case 'partner': return 'bg-[#10B981]/20 text-[#10B981]';
+      case 'bc': return 'bg-[#F59E0B]/20 text-[#F59E0B]';
+      default: return 'bg-[#2A2A2A] text-[#9CA3AF]';
     }
   };
 
@@ -635,15 +628,15 @@ const getInitials = (name: string | null | undefined): string => {
     <div className="w-full px-4 py-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#F59E0B] to-[#B45309] flex items-center justify-center">
             <Users className="w-4 h-4 text-white" />
           </div>
           <div>
-            <h2 className="text-base font-semibold text-gray-900">Managed Clients</h2>
-            <p className="text-xs text-gray-500">All your clients in one place</p>
+            <h2 className="text-base font-semibold text-[#F9FAFB]">Managed Clients</h2>
+            <p className="text-xs text-[#9CA3AF]">All your clients in one place</p>
           </div>
         </div>
-        <div className="text-sm font-medium text-blue-600 bg-blue-50 px-3 py-1 rounded-lg">
+        <div className="text-sm font-medium text-[#F59E0B] bg-[#F59E0B]/10 px-3 py-1 rounded-lg border border-[#F59E0B]/30">
           Total: {clients.length}
         </div>
       </div>
@@ -657,7 +650,7 @@ const getInitials = (name: string | null | undefined): string => {
           return (
             <div
               key={type}
-              className={`rounded-lg border ${config.borderColor} bg-white overflow-hidden hover:shadow-sm transition-shadow duration-200`}
+              className={`rounded-lg border ${config.borderColor} bg-[#111111] overflow-hidden hover:shadow-xl transition-shadow duration-200`}
             >
               {/* Header */}
               <div className={`p-3 ${config.headerColor} border-b ${config.borderColor}`}>
@@ -667,8 +660,8 @@ const getInitials = (name: string | null | undefined): string => {
                       <Icon className="w-4 h-4" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-semibold text-gray-900">{config.title}</h3>
-                      <p className="text-xs text-gray-600">
+                      <h3 className="text-sm font-semibold text-[#F9FAFB]">{config.title}</h3>
+                      <p className="text-xs text-[#9CA3AF]">
                         {clientsOfType.length} {clientsOfType.length === 1 ? 'client' : 'clients'}
                       </p>
                     </div>
@@ -680,7 +673,7 @@ const getInitials = (name: string | null | undefined): string => {
               </div>
 
               {/* Client List */}
-              <div className="p-3 space-y-3 max-h-[320px] overflow-y-auto">
+              <div className="p-3 space-y-3 max-h-[320px] overflow-y-auto custom-scrollbar">
                 {clientsOfType.length > 0 ? (
                   clientsOfType.slice(0, 4).map((client) => {
                     const age = getAgeFromDOB(client.dob);
@@ -695,14 +688,14 @@ const getInitials = (name: string | null | undefined): string => {
                               {getInitials(client.name)}
                             </div>
                             <div>
-                              <h4 className="text-sm font-medium text-gray-900">
+                              <h4 className="text-sm font-medium text-[#F9FAFB]">
                                 {client.name}
                               </h4>
                               <div className="flex items-center gap-1.5 mt-0.5">
-                                <span className="text-xs text-gray-500">
+                                <span className="text-xs text-[#9CA3AF]">
                                   {age ? `${age}y` : formatDOB(client.dob)}
                                 </span>
-                                <span className="text-xs text-gray-400">•</span>
+                                <span className="text-xs text-[#9CA3AF]">•</span>
                                 <span className={`text-xs font-medium ${config.textColor}`}>
                                   {client.client_type.charAt(0).toUpperCase() + client.client_type.slice(1)}
                                 </span>
@@ -714,13 +707,13 @@ const getInitials = (name: string | null | undefined): string => {
                         {/* Client Details - Compact */}
                         <div className="grid grid-cols-2 gap-2 text-xs">
                           <div className="truncate">
-                            <div className="flex items-center gap-1 text-gray-500 mb-1">
+                            <div className="flex items-center gap-1 text-[#9CA3AF] mb-1">
                               <Mail className="w-3 h-3" />
                               <span>Email</span>
                             </div>
                             <a
                               href={`mailto:${client.email}`}
-                              className="font-medium text-gray-900 hover:text-blue-600 transition-colors truncate block"
+                              className="font-medium text-[#F9FAFB] hover:text-[#F59E0B] transition-colors truncate block"
                               title={client.email}
                             >
                               {client.email}
@@ -728,30 +721,30 @@ const getInitials = (name: string | null | undefined): string => {
                           </div>
 
                           <div>
-                            <div className="flex items-center gap-1 text-gray-500 mb-1">
+                            <div className="flex items-center gap-1 text-[#9CA3AF] mb-1">
                               <Phone className="w-3 h-3" />
                               <span>Mobile</span>
                             </div>
                             <a
                               href={`tel:${client.mobile}`}
-                              className="font-medium text-gray-900 hover:text-blue-600 transition-colors"
+                              className="font-medium text-[#F9FAFB] hover:text-[#F59E0B] transition-colors"
                             >
                               {client.mobile}
                             </a>
                           </div>
 
-                          <div className="col-span-2 mt-2 pt-2 border-t border-gray-100">
+                          <div className="col-span-2 mt-2 pt-2 border-t border-[#2A2A2A]">
                             <div className="grid grid-cols-2 gap-2">
                               <div>
-                                <span className="text-gray-500 text-xs">PAN:</span>
-                                <span className="font-mono font-medium text-gray-900 ml-1">
+                                <span className="text-[#9CA3AF] text-xs">PAN:</span>
+                                <span className="font-mono font-medium text-[#F9FAFB] ml-1">
                                   {client.pan}
                                 </span>
                               </div>
                               {client.aadhaar && (
                                 <div>
-                                  <span className="text-gray-500 text-xs">Aadhaar:</span>
-                                  <span className="font-mono font-medium text-gray-900 ml-1">
+                                  <span className="text-[#9CA3AF] text-xs">Aadhaar:</span>
+                                  <span className="font-mono font-medium text-[#F9FAFB] ml-1">
                                     {client.aadhaar.slice(0, 4)}****{client.aadhaar.slice(-4)}
                                   </span>
                                 </div>
@@ -763,17 +756,17 @@ const getInitials = (name: string | null | undefined): string => {
                     );
                   })
                 ) : (
-                  <div className="text-center py-4 border border-dashed border-gray-300 rounded-md">
-                    <UserX className="w-6 h-6 text-gray-300 mx-auto mb-2" />
-                    <p className="text-sm text-gray-500">No {config.title.toLowerCase()} found</p>
-                    <button className="text-xs text-blue-600 hover:text-blue-700 font-medium mt-1">
+                  <div className="text-center py-4 border border-dashed border-[#2A2A2A] rounded-md">
+                    <UserX className="w-6 h-6 text-[#2A2A2A] mx-auto mb-2" />
+                    <p className="text-sm text-[#9CA3AF]">No {config.title.toLowerCase()} found</p>
+                    <button className="text-xs text-[#F59E0B] hover:text-[#FBBF24] font-medium mt-1">
                       + Add New
                     </button>
                   </div>
                 )}
 
                 {clientsOfType.length > 4 && (
-                  <div className="text-center pt-2 border-t border-gray-100">
+                  <div className="text-center pt-2 border-t border-[#2A2A2A]">
                     <button
                       className={`inline-flex items-center gap-1 text-xs font-medium ${config.actionColor}`}
                       onClick={() => router.push(config.actionPath)}
@@ -790,20 +783,20 @@ const getInitials = (name: string | null | undefined): string => {
       </div>
 
       {/* Summary Stats */}
-      <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+      <div className="mt-4 p-3 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A]">
         <div className="flex items-center justify-between text-xs">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-              <span className="text-gray-600">Investors: {groupedClients['investor']?.length || 0}</span>
+              <div className="w-2 h-2 rounded-full bg-[#F59E0B]"></div>
+              <span className="text-[#9CA3AF]">Investors: {groupedClients['investor']?.length || 0}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
-              <span className="text-gray-600">Partners: {groupedClients['partner']?.length || 0}</span>
+              <div className="w-2 h-2 rounded-full bg-[#10B981]"></div>
+              <span className="text-[#9CA3AF]">Partners: {groupedClients['partner']?.length || 0}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="w-2 h-2 rounded-full bg-indigo-500"></div>
-              <span className="text-gray-600">BCs: {groupedClients['bc']?.length || 0}</span>
+              <div className="w-2 h-2 rounded-full bg-[#F59E0B]"></div>
+              <span className="text-[#9CA3AF]">BCs: {groupedClients['bc']?.length || 0}</span>
             </div>
           </div>
         </div>
@@ -814,34 +807,34 @@ const getInitials = (name: string | null | undefined): string => {
 
 const DashboardSkeleton = () => {
   return (
-    <div className="min-h-screen w-full bg-gray-50 font-sans">
+    <div className="min-h-screen w-full bg-[#0A0A0A] font-sans">
       <div className="p-4 w-full">
         <div className="mb-4">
-          <div className="flex items-center justify-between bg-white rounded-xl p-3 border border-gray-200">
+          <div className="flex items-center justify-between bg-[#111111] rounded-xl p-3 border border-[#2A2A2A]">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gray-300 rounded-full animate-pulse"></div>
+              <div className="w-10 h-10 bg-[#2A2A2A] rounded-full animate-pulse"></div>
               <div>
-                <div className="h-4 w-32 bg-gray-300 rounded animate-pulse mb-1"></div>
-                <div className="h-3 w-24 bg-gray-300 rounded animate-pulse"></div>
+                <div className="h-4 w-32 bg-[#2A2A2A] rounded animate-pulse mb-1"></div>
+                <div className="h-3 w-24 bg-[#2A2A2A] rounded animate-pulse"></div>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <div className="h-8 w-24 bg-gray-300 rounded animate-pulse"></div>
-              <div className="h-8 w-32 bg-gray-300 rounded animate-pulse"></div>
+              <div className="h-8 w-24 bg-[#2A2A2A] rounded animate-pulse"></div>
+              <div className="h-8 w-32 bg-[#2A2A2A] rounded animate-pulse"></div>
             </div>
           </div>
         </div>
 
         {/* Stats Skeleton */}
         <div className="mb-6">
-          <div className="h-5 w-40 bg-gray-300 rounded animate-pulse mb-4"></div>
+          <div className="h-5 w-40 bg-[#2A2A2A] rounded animate-pulse mb-4"></div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="flex items-center bg-white rounded-lg shadow-sm p-4 border border-gray-100">
-                <div className="w-10 h-10 bg-gray-300 rounded-lg animate-pulse mr-4"></div>
+              <div key={i} className="flex items-center bg-[#111111] rounded-lg shadow-sm p-4 border border-[#2A2A2A]">
+                <div className="w-10 h-10 bg-[#2A2A2A] rounded-lg animate-pulse mr-4"></div>
                 <div className="flex-1">
-                  <div className="h-6 w-20 bg-gray-300 rounded animate-pulse mb-2"></div>
-                  <div className="h-4 w-24 bg-gray-300 rounded animate-pulse"></div>
+                  <div className="h-6 w-20 bg-[#2A2A2A] rounded animate-pulse mb-2"></div>
+                  <div className="h-4 w-24 bg-[#2A2A2A] rounded animate-pulse"></div>
                 </div>
               </div>
             ))}
@@ -850,12 +843,12 @@ const DashboardSkeleton = () => {
 
         {/* Quick Actions Skeleton */}
         <div className="mb-6">
-          <div className="h-5 w-32 bg-gray-300 rounded animate-pulse mb-4"></div>
+          <div className="h-5 w-32 bg-[#2A2A2A] rounded animate-pulse mb-4"></div>
           <div className="grid grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-3">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-              <div key={i} className="flex flex-col items-center p-3 bg-white rounded-lg border border-gray-200">
-                <div className="w-10 h-10 bg-gray-300 rounded-lg animate-pulse mb-2"></div>
-                <div className="h-3 w-12 bg-gray-300 rounded animate-pulse"></div>
+              <div key={i} className="flex flex-col items-center p-3 bg-[#111111] rounded-lg border border-[#2A2A2A]">
+                <div className="w-10 h-10 bg-[#2A2A2A] rounded-lg animate-pulse mb-2"></div>
+                <div className="h-3 w-12 bg-[#2A2A2A] rounded animate-pulse"></div>
               </div>
             ))}
           </div>
@@ -863,36 +856,36 @@ const DashboardSkeleton = () => {
 
         {/* Top Funds Skeleton */}
         <div className="mb-6">
-          <div className="h-5 w-48 bg-gray-300 rounded animate-pulse mb-4"></div>
+          <div className="h-5 w-48 bg-[#2A2A2A] rounded animate-pulse mb-4"></div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="bg-white rounded-lg p-3 border border-gray-200">
+              <div key={i} className="bg-[#111111] rounded-lg p-3 border border-[#2A2A2A]">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-gray-300 rounded-lg animate-pulse"></div>
+                    <div className="w-8 h-8 bg-[#2A2A2A] rounded-lg animate-pulse"></div>
                     <div className="flex-1">
-                      <div className="h-4 w-32 bg-gray-300 rounded animate-pulse mb-1"></div>
-                      <div className="h-3 w-20 bg-gray-300 rounded animate-pulse"></div>
+                      <div className="h-4 w-32 bg-[#2A2A2A] rounded animate-pulse mb-1"></div>
+                      <div className="h-3 w-20 bg-[#2A2A2A] rounded animate-pulse"></div>
                     </div>
                   </div>
-                  <div className="h-3 w-8 bg-gray-300 rounded animate-pulse"></div>
+                  <div className="h-3 w-8 bg-[#2A2A2A] rounded animate-pulse"></div>
                 </div>
                 <div className="space-y-2 mb-3">
                   <div className="flex justify-between">
-                    <div className="h-3 w-16 bg-gray-300 rounded animate-pulse"></div>
-                    <div className="h-4 w-12 bg-gray-300 rounded animate-pulse"></div>
+                    <div className="h-3 w-16 bg-[#2A2A2A] rounded animate-pulse"></div>
+                    <div className="h-4 w-12 bg-[#2A2A2A] rounded animate-pulse"></div>
                   </div>
                   <div className="flex justify-between">
-                    <div className="h-3 w-16 bg-gray-300 rounded animate-pulse"></div>
-                    <div className="h-4 w-12 bg-gray-300 rounded animate-pulse"></div>
+                    <div className="h-3 w-16 bg-[#2A2A2A] rounded animate-pulse"></div>
+                    <div className="h-4 w-12 bg-[#2A2A2A] rounded animate-pulse"></div>
                   </div>
                 </div>
-                <div className="pt-3 border-t border-gray-100">
+                <div className="pt-3 border-t border-[#2A2A2A]">
                   <div className="flex justify-between mb-2">
-                    <div className="h-6 w-12 bg-gray-300 rounded animate-pulse"></div>
-                    <div className="h-6 w-20 bg-gray-300 rounded animate-pulse"></div>
+                    <div className="h-6 w-12 bg-[#2A2A2A] rounded animate-pulse"></div>
+                    <div className="h-6 w-20 bg-[#2A2A2A] rounded animate-pulse"></div>
                   </div>
-                  <div className="h-3 w-16 bg-gray-300 rounded animate-pulse"></div>
+                  <div className="h-3 w-16 bg-[#2A2A2A] rounded animate-pulse"></div>
                 </div>
               </div>
             ))}
@@ -901,18 +894,18 @@ const DashboardSkeleton = () => {
 
         {/* Managed Clients Skeleton */}
         <div className="mb-6">
-          <div className="h-5 w-48 bg-gray-300 rounded animate-pulse mb-4"></div>
+          <div className="h-5 w-48 bg-[#2A2A2A] rounded animate-pulse mb-4"></div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white rounded-xl p-4 border border-gray-200">
-                <div className="h-8 w-32 bg-gray-300 rounded animate-pulse mb-4"></div>
+              <div key={i} className="bg-[#111111] rounded-xl p-4 border border-[#2A2A2A]">
+                <div className="h-8 w-32 bg-[#2A2A2A] rounded animate-pulse mb-4"></div>
                 <div className="space-y-4">
                   {[1, 2, 3].map((j) => (
-                    <div key={j} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                      <div className="w-10 h-10 bg-gray-300 rounded-full animate-pulse"></div>
+                    <div key={j} className="flex items-center gap-3 p-3 bg-[#1F1A1A] rounded-lg">
+                      <div className="w-10 h-10 bg-[#2A2A2A] rounded-full animate-pulse"></div>
                       <div className="flex-1">
-                        <div className="h-4 w-32 bg-gray-300 rounded animate-pulse mb-1"></div>
-                        <div className="h-3 w-24 bg-gray-300 rounded animate-pulse"></div>
+                        <div className="h-4 w-32 bg-[#2A2A2A] rounded animate-pulse mb-1"></div>
+                        <div className="h-3 w-24 bg-[#2A2A2A] rounded animate-pulse"></div>
                       </div>
                     </div>
                   ))}
@@ -928,22 +921,22 @@ const DashboardSkeleton = () => {
 
 // Enhanced Error Component with user data info
 const EnhancedError = ({ error, userData, onRetry }: { error: string, userData: any, onRetry: () => void }) => (
-  <div className="min-h-screen w-full bg-gray-50 flex items-center justify-center p-4">
+  <div className="min-h-screen w-full bg-[#0A0A0A] flex items-center justify-center p-4">
     <div className="text-center max-w-2xl w-full">
-      <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-      <h2 className="text-xl font-bold text-gray-900 mb-2">Authentication Required</h2>
-      <p className="text-gray-600 text-base mb-6">{error}</p>
+      <AlertCircle className="w-16 h-16 text-[#EF4444] mx-auto mb-4" />
+      <h2 className="text-xl font-bold text-[#F9FAFB] mb-2">Authentication Required</h2>
+      <p className="text-[#9CA3AF] text-base mb-6">{error}</p>
 
       {/* User Data Info */}
       {userData && (
-        <div className="mb-6 p-4 bg-blue-50 rounded-lg text-left">
-          <h3 className="font-bold text-gray-900 text-base mb-2">User Data Found:</h3>
-          <div className="text-sm text-gray-700 space-y-1">
-            <p><span className="font-medium">RM Name:</span> {userData.RM?.Name || userData.name || 'Not found'}</p>
-            <p><span className="font-medium">Email:</span> {userData.RM?.email || userData.email || 'Not found'}</p>
-            <p><span className="font-medium">Mobile:</span> {userData.RM?.mobile || userData.mobile || 'Not found'}</p>
-            <p><span className="font-medium">RM ID:</span> {userData.RM?.id || 'Not found'}</p>
-            <p><span className="font-medium">User ID:</span> {userData.user_id || 'Not found'}</p>
+        <div className="mb-6 p-4 bg-[#F59E0B]/10 rounded-lg border border-[#F59E0B]/30 text-left">
+          <h3 className="font-bold text-[#F9FAFB] text-base mb-2">User Data Found:</h3>
+          <div className="text-sm text-[#9CA3AF] space-y-1">
+            <p><span className="font-medium text-[#F59E0B]">RM Name:</span> {userData.RM?.Name || userData.name || 'Not found'}</p>
+            <p><span className="font-medium text-[#F59E0B]">Email:</span> {userData.RM?.email || userData.email || 'Not found'}</p>
+            <p><span className="font-medium text-[#F59E0B]">Mobile:</span> {userData.RM?.mobile || userData.mobile || 'Not found'}</p>
+            <p><span className="font-medium text-[#F59E0B]">RM ID:</span> {userData.RM?.id || 'Not found'}</p>
+            <p><span className="font-medium text-[#F59E0B]">User ID:</span> {userData.user_id || 'Not found'}</p>
           </div>
         </div>
       )}
@@ -951,27 +944,27 @@ const EnhancedError = ({ error, userData, onRetry }: { error: string, userData: 
       <div className="flex flex-col sm:flex-row gap-4 justify-center">
         <button
           onClick={onRetry}
-          className="px-6 py-2.5 bg-blue-600 text-white text-base rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center shadow"
+          className="px-6 py-2.5 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white text-base rounded-lg hover:opacity-90 transition-colors flex items-center justify-center shadow-lg"
         >
           <RefreshCw className="w-4 h-4 mr-2" />
           Retry Loading
         </button>
         <button
           onClick={() => window.location.href = '/login'}
-          className="px-6 py-2.5 bg-gray-200 text-gray-700 text-base rounded-lg hover:bg-gray-300 transition-colors shadow"
+          className="px-6 py-2.5 bg-[#1F1A1A] text-[#F9FAFB] text-base rounded-lg hover:bg-[#2A2A2A] transition-colors shadow-lg border border-[#2A2A2A]"
         >
           Go to Login
         </button>
       </div>
 
-      <div className="mt-8 text-sm text-gray-500">
+      <div className="mt-8 text-sm text-[#9CA3AF]">
         <p>If the problem persists, please contact support with the information above.</p>
       </div>
     </div>
   </div>
 );
 
-// Main Relationship Manager Dashboard Component - FIXED VERSION
+// Main Relationship Manager Dashboard Component
 const RelationshipManagerDashboard = () => {
   const [rmDetails, setRmDetails] = useState<RmDetails | null>(null);
   const [topFunds, setTopFunds] = useState<TopPerformingFund[]>([]);
@@ -980,7 +973,6 @@ const RelationshipManagerDashboard = () => {
   const [error, setError] = useState<string | null>(null);
   const [userData, setUserData] = useState<any>(null);
 
-  // FIXED: Function to extract user data from USER_DATA (like BC dashboard)
   const extractUserData = () => {
     console.log(" Extracting user data from USER_DATA...");
     const userData = getLS(USER_DATA);
@@ -988,7 +980,6 @@ const RelationshipManagerDashboard = () => {
     return userData;
   };
 
-  // FIXED: Function to extract RM ID from USER_DATA
   const extractRmId = (): string | null => {
     const userData = extractUserData();
     if (!userData) {
@@ -998,7 +989,6 @@ const RelationshipManagerDashboard = () => {
 
     console.log(" Extracting RM ID from USER_DATA:", userData);
     
-    // Try multiple possible locations for RM ID
     const rmId = 
       userData?.RM?.id?.toString() ||         
       userData?.rmId?.toString() ||
@@ -1014,7 +1004,6 @@ const RelationshipManagerDashboard = () => {
     return rmId;
   };
 
-  // Function to fetch RM details
   const fetchRmDetailsWithTimeout = async (rmId: string): Promise<any> => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
@@ -1037,7 +1026,6 @@ const RelationshipManagerDashboard = () => {
     }
   };
 
-  // Function to fetch managed clients
   const fetchManagedClients = async (rmId: string): Promise<ManagedClient[]> => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
@@ -1067,13 +1055,12 @@ const RelationshipManagerDashboard = () => {
     }
   };
 
-  // Function to fetch top performing funds
   const fetchTopPerformingFunds = async (): Promise<TopPerformingFund[]> => {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
 
     try {
-      console.log(`📡 Fetching top performing funds from: ${ApiUrl}/mutual-fund/get-top-performing-funds`);
+      console.log(` Fetching top performing funds from: ${ApiUrl}/mutual-fund/get-top-performing-funds`);
       const response = await api.get(`${ApiUrl}/mutual-fund/get-top-performing-funds`, {
         signal: controller.signal,
         timeout: 10000,
@@ -1089,7 +1076,6 @@ const RelationshipManagerDashboard = () => {
         throw new Error("Invalid response format for top performing funds");
       }
 
-      // Transform API response to our format
       return response.data.data.slice(0, 5).map((fund: any) => ({
         id: fund.id,
         scheme_id: fund.scheme_id,
@@ -1113,7 +1099,6 @@ const RelationshipManagerDashboard = () => {
     }
   };
 
-  // Validate API response structure
   const validateApiResponse = (response: any): RmDetails => {
     console.log(" Validating API response:", response);
 
@@ -1121,7 +1106,6 @@ const RelationshipManagerDashboard = () => {
       throw new Error("Invalid API response: Response is not an object");
     }
 
-    // Check for success status
     if (response.status === 'error') {
       throw new Error(response.message || "API returned an error");
     }
@@ -1161,7 +1145,6 @@ const RelationshipManagerDashboard = () => {
       console.warn(" Missing fields in response:", missingFields);
       console.log(" Actual response data:", rmData);
 
-      // Get user data for fallback values
       const userData = extractUserData();
       const rmUserData = userData?.RM || {};
 
@@ -1209,7 +1192,6 @@ const RelationshipManagerDashboard = () => {
 
       console.log("🚀 Loading dashboard for RM ID:", rmId);
 
-      // Check cache
       const [cachedRmData, cachedFundsData, cachedClientsData] = await Promise.all([
         getCachedRmDetails(rmId),
         getCachedTopFunds(),
@@ -1281,7 +1263,6 @@ const RelationshipManagerDashboard = () => {
     }
   };
 
-  // Retry function
   const handleRetry = () => {
     setError(null);
     setLoading(true);
@@ -1316,7 +1297,7 @@ const RelationshipManagerDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 font-sans">
+    <div className="min-h-screen w-full bg-[#0A0A0A] font-sans">
       <main className="p-4 w-full">
         <div className="w-full space-y-4">
           <CompactRMProfile rmDetails={rmDetails} />
@@ -1326,6 +1307,23 @@ const RelationshipManagerDashboard = () => {
           {managedClients.length > 0 && <ManagedClientsSection clients={managedClients} />}
         </div>
       </main>
+
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #2A2A2A;
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #F59E0B;
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #B45309;
+        }
+      `}</style>
     </div>
   );
 };

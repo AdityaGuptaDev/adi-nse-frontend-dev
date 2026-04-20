@@ -1,297 +1,347 @@
-import { get } from "http";
-
-let paySec: any = {}
-let payOutDtl: any = {}
-let schList: any = []
-let sysSchList: any = []
-let subSeqSec: any = {}
-export function getPaySec(txnType: string, paymentMode: string, micr: string, ifsc: string, accType: string, accNo: string, _amount: string | undefined, beneVan: string, selectedMandate: string): any {
+export function getPaySec(
+    txnType: string,
+    paymentMode: string,
+    micr: string,
+    ifsc: string,
+    accType: string,
+    accNo: string,
+    _amount: string | undefined,
+    beneVan: string,
+    selectedMandate: string
+): any {
+    const today = new Date().toISOString().slice(0, 10);
 
     if (txnType === "B") {
-        paySec = {
+        return {
             payMode: paymentMode,
-            micr: micr,
-            ifsc: ifsc,
-            accType: accType,
-            accNo: accNo,
-            payDate: new Date().toISOString().slice(0, 10),
-            payAmt: _amount?.toString(),
-            beneVan: beneVan,
+            micr,
+            ifsc,
+            accType,
+            accNo,
+            payDate: today,
+            payAmt: _amount?.toString() ?? "",
+            beneVan,
             paymentRefNo: "",
             paymentBankRefNo: "",
             mandateRefNo: selectedMandate,
             paymentConfirmTs: "",
-            amcPaymentTs: ""
-        }
-    } else if (txnType === "V") {
-        paySec = {
+            amcPaymentTs: "",
+        };
+    }
+
+    if (txnType === "V") {
+        return {
             payMode: paymentMode,
-            micr: micr,
-            ifsc: ifsc,
-            accType: accType,
-            accNo: accNo,
-            payDate: new Date().toISOString().slice(0, 10),
-            payAmt: _amount?.toString(),
-            beneVan: beneVan,
+            micr,
+            ifsc,
+            accType,
+            accNo,
+            payDate: today,
+            payAmt: _amount?.toString() ?? "",
+            beneVan,
             paymentRefNo: paymentMode === "DM" ? selectedMandate : "",
             paymentBankRefNo: "",
             mandateRefNo: selectedMandate,
             paymentConfirmTs: "",
-            amcPaymentTs: ""
-        }
+            amcPaymentTs: "",
+        };
     }
-    else if (txnType === "R") {
-        paySec = {
+
+    if (txnType === "R") {
+        return {
             payMode: paymentMode,
-            micr: micr,
-            ifsc: ifsc,
-            accType: accType,
-            accNo: accNo,
+            micr,
+            ifsc,
+            accType,
+            accNo,
             payDate: "",
             payAmt: "",
-            beneVan: beneVan,
+            beneVan,
             paymentRefNo: "",
             paymentBankRefNo: "",
             mandateRefNo: selectedMandate,
             paymentConfirmTs: "",
-            amcPaymentTs: ""
-        }
-    } else if (txnType === "V") {
-        paySec = {
-            payMode: paymentMode,
-            micr: micr,
-            ifsc: ifsc,
-            accType: accType,
-            accNo: accNo,
-            payDate: new Date().toISOString().slice(0, 10),
-            payAmt: _amount?.toString(),
-            beneVan: beneVan,
-            paymentRefNo: "",
-            paymentBankRefNo: "",
-            mandateRefNo: selectedMandate,
-            paymentConfirmTs: "",
-            amcPaymentTs: ""
-        }
+            amcPaymentTs: "",
+        };
     }
-    else if (txnType === "E") {
-        paySec = {
-            payMode: paymentMode,
-            micr: micr,
-            ifsc: ifsc,
-            accType: accType,
-            accNo: accNo,
+
+    // STP Out — the outgoing STP leg has no bank payment; MFU expects an empty
+    // payment section so it does not attempt a debit.
+    if (txnType === "E" || txnType === "Y") {
+        return {
+            payMode: "",
+            micr: "",
+            ifsc: "",
+            accType: "",
+            accNo: "",
             payDate: "",
-            payAmt: _amount?.toString(),
-            beneVan: beneVan,
+            payAmt: "",
+            beneVan: "",
             paymentRefNo: "",
             paymentBankRefNo: "",
-            mandateRefNo: selectedMandate,
+            mandateRefNo: "",
             paymentConfirmTs: "",
-            amcPaymentTs: ""
-        }
+            amcPaymentTs: "",
+        };
     }
 
-    return paySec;
+    // Switch Out ("O") — scheme-to-scheme, no bank leg. Previously this txn
+    // type had no case, so the helper returned a module-level cached object
+    // from the previous invocation, leaking Lumpsum/SIP bank details into the
+    // Switch payload and causing MFU to reject it.
+    if (txnType === "O") {
+        return {
+            payMode: "",
+            micr: "",
+            ifsc: "",
+            accType: "",
+            accNo: "",
+            payDate: "",
+            payAmt: "",
+            beneVan: "",
+            paymentRefNo: "",
+            paymentBankRefNo: "",
+            mandateRefNo: "",
+            paymentConfirmTs: "",
+            amcPaymentTs: "",
+        };
+    }
 
+    // SWP ("J") — payout from scheme to bank; paySec itself carries no debit.
+    if (txnType === "J") {
+        return {
+            payMode: "",
+            micr: "",
+            ifsc: "",
+            accType: "",
+            accNo: "",
+            payDate: "",
+            payAmt: "",
+            beneVan: "",
+            paymentRefNo: "",
+            paymentBankRefNo: "",
+            mandateRefNo: "",
+            paymentConfirmTs: "",
+            amcPaymentTs: "",
+        };
+    }
+
+    return {};
 }
 
-export function getPayOutSec(txnType: string, micr: string, ifsc: string, accType: string, accNo: string): any {
-    payOutDtl = {
+export function getPayOutSec(
+    _txnType: string,
+    micr: string,
+    ifsc: string,
+    _accType: string,
+    accNo: string
+): any {
+    return {
         invAccNo: accNo,
-        micr: micr,
-        ifsc: ifsc
-    }
-    return payOutDtl;
-
+        micr,
+        ifsc,
+    };
 }
 
-export function getSchList(txnType: string, entUnqItrn: string, rtaAmcCode: string, rtaSchCode: string, outRtaSchCode: string, folioSelectionMode: string, selectedFolio: any, option: any, _amount: string | undefined, payOutFlag: string, payOutDtl: any, txnVolTyp: string): any {
-    schList = [];
+export function getSchList(
+    txnType: string,
+    entUnqItrn: string,
+    rtaAmcCode: string,
+    rtaSchCode: string,
+    outRtaSchCode: string,
+    _folioSelectionMode: string,
+    selectedFolio: any,
+    option: any,
+    _amount: string | undefined,
+    _payOutFlag: string,
+    payOutDtl: any,
+    txnVolTyp: string
+): any[] {
+    const schList: any[] = [];
+
     if (txnType === "B") {
         schList.push({
-            entUnqItrn: entUnqItrn,
+            entUnqItrn,
             mfuUtrn: "",
-            rtaAmcCode: rtaAmcCode,
-            rtaSchCode: rtaSchCode,
-            outRtaSchCode: outRtaSchCode,
-            //folio: folioSelectionMode === "new" ? "NEW" : selectedFolio?.folio_no ?? "NEW",
+            rtaAmcCode,
+            rtaSchCode,
+            outRtaSchCode,
             folio: selectedFolio == null ? "NEW" : selectedFolio,
             divOpt: option?.code?.toString() ?? "",
             txnVolTyp: txnVolTyp ?? "",
             vol: _amount ?? "",
             payOutFlag: "",
-            payOutDtl: payOutDtl,
+            payOutDtl,
             priOtpFlag: "",
             priMob: "",
-            priEmail: ""
-
+            priEmail: "",
         });
     } else if (txnType === "O") {
-        let amount = "";
-        if (txnVolTyp === "A") {
-            amount = _amount ?? "0";
-        } else {
-            amount = parseFloat(_amount ?? "0").toFixed(2);
-        }
-
         schList.push({
-            entUnqItrn: entUnqItrn,
+            entUnqItrn,
             mfuUtrn: "",
-            rtaAmcCode: rtaAmcCode,
+            rtaAmcCode,
             rtaSchCode: outRtaSchCode,
             outRtaSchCode: rtaSchCode,
-            //folio: folioSelectionMode === "new" ? "NEW" : selectedFolio?.folio_no ?? "NEW",
             folio: selectedFolio,
             divOpt: option?.code?.toString() ?? "",
             txnVolTyp: txnVolTyp ?? "",
-            vol: "",
+            vol: txnVolTyp === "E" ? "" : _amount ?? "",
             payOutFlag: "",
-            payOutDtl: payOutDtl,
+            payOutDtl,
             priOtpFlag: "",
             priMob: "",
-            priEmail: ""
-
+            priEmail: "",
         });
-    }
-    else if (txnType === "R") {
+    } else if (txnType === "R") {
         schList.push({
-            entUnqItrn: entUnqItrn,
+            entUnqItrn,
             mfuUtrn: "",
-            rtaAmcCode: rtaAmcCode,
-            rtaSchCode: rtaSchCode,
-            outRtaSchCode: outRtaSchCode,
-            //folio: folioSelectionMode === "new" ? "NEW" : selectedFolio?.folio_no ?? "NEW",
+            rtaAmcCode,
+            rtaSchCode,
+            outRtaSchCode,
             folio: selectedFolio,
             divOpt: "",
             txnVolTyp: txnVolTyp ?? "",
-            vol: txnVolTyp == "E" ? "" : _amount,
+            vol: txnVolTyp === "E" ? "" : _amount ?? "",
             payOutFlag: "Y",
-            payOutDtl: payOutDtl,
+            payOutDtl,
             priOtpFlag: "",
             priMob: "",
-            priEmail: ""
-
+            priEmail: "",
         });
     } else if (txnType === "J") {
         schList.push({
-            entUnqItrn: entUnqItrn,
+            entUnqItrn,
             mfuUtrn: "",
-            rtaAmcCode: rtaAmcCode,
-            rtaSchCode: rtaSchCode,
-            outRtaSchCode: outRtaSchCode,
-            //folio: folioSelectionMode === "new" ? "NEW" : selectedFolio?.folio_no ?? "NEW",
+            rtaAmcCode,
+            rtaSchCode,
+            outRtaSchCode,
             folio: selectedFolio,
             divOpt: option?.code?.toString() ?? "",
             txnVolTyp: txnVolTyp ?? "",
             vol: _amount ?? "",
             payOutFlag: "",
-            payOutDtl: payOutDtl,
+            payOutDtl,
             priOtpFlag: "",
             priMob: "",
-            priEmail: ""
-
+            priEmail: "",
         });
     }
+
     return schList;
 }
 
 
+export function getSysSchList(
+    entUnqItrn: string,
+    rtaAmcCode: string,
+    rtaSchCode: string,
+    outRtaSchCode: string,
+    _folioSelectionMode: string,
+    selectedFolio: any,
+    option: any,
+    _amount: string | undefined,
+    selectedFrequency: string,
+    sipDate: string,
+    sipMonth: string,
+    sipYear: string,
+    end_month: string,
+    end_year: string,
+    payOutDtl: any,
+    txnType: any
+): any[] {
+    const sysSchList: any[] = [];
+    const startMonth = sipMonth && sipMonth.length > 1 ? sipMonth : sipMonth ? "0" + sipMonth : "";
 
-export function getSysSchList(entUnqItrn: string, rtaAmcCode: string, rtaSchCode: string, outRtaSchCode: string, folioSelectionMode: string, selectedFolio: any, option: any, _amount: string | undefined, selectedFrequency: string, sipDate: string, sipMonth: string, sipYear: string, end_month: string, end_year: string, payOutDtl: any, txnType: any) {
-    sysSchList = [];
     if (txnType === "J") {
         sysSchList.push({
-            entUnqItrn: entUnqItrn,
-            rtaAmcCode: rtaAmcCode,
-            rtaSchCode: rtaSchCode,
-            outRtaSchCode: outRtaSchCode,
-            //folio: folioSelectionMode === "new" ? "NEW" : selectedFolio?.folio_no ?? "NEW",
+            entUnqItrn,
+            rtaAmcCode,
+            rtaSchCode,
+            outRtaSchCode,
             folio: selectedFolio === null ? "NEW" : selectedFolio,
             divOpt: "",
             txnVolTyp: "F",
             vol: _amount ?? "",
             frequency: selectedFrequency,
             day: sipDate,
-            startMonth: sipMonth.length > 1 ? sipMonth : "0" + sipMonth,
+            startMonth,
             startYear: sipYear,
             endMonth: end_month,
             endYear: end_year,
             payOutFlag: "Y",
-            payOutDtl: payOutDtl,
+            payOutDtl,
             priOtpFlag: "",
             priMob: "",
-            priEmail: ""
+            priEmail: "",
         });
-
     } else if (txnType === "E") {
         sysSchList.push({
-            entUnqItrn: entUnqItrn,
-            rtaAmcCode: rtaAmcCode,
+            entUnqItrn,
+            rtaAmcCode,
             rtaSchCode: outRtaSchCode,
             outRtaSchCode: rtaSchCode,
-            //folio: folioSelectionMode === "new" ? "NEW" : selectedFolio?.folio_no ?? "NEW",
             folio: selectedFolio,
             divOpt: option?.code?.toString() ?? "",
             txnVolTyp: "F",
             vol: _amount ?? "",
             frequency: selectedFrequency,
             day: sipDate,
-            startMonth: sipMonth.length > 1 ? sipMonth : "0" + sipMonth,
+            startMonth,
             startYear: sipYear,
             endMonth: end_month,
             endYear: end_year,
             payOutFlag: "",
-            payOutDtl: payOutDtl,
+            payOutDtl,
             priOtpFlag: "",
             priMob: "",
-            priEmail: ""
+            priEmail: "",
         });
-    }
-
-    else {
+    } else {
         sysSchList.push({
-            entUnqItrn: entUnqItrn,
-            rtaAmcCode: rtaAmcCode,
-            rtaSchCode: rtaSchCode,
-            outRtaSchCode: outRtaSchCode,
-            //folio: folioSelectionMode === "new" ? "NEW" : selectedFolio?.folio_no ?? "NEW",
+            entUnqItrn,
+            rtaAmcCode,
+            rtaSchCode,
+            outRtaSchCode,
             folio: selectedFolio === null ? "NEW" : selectedFolio,
             divOpt: option?.code?.toString() ?? "",
             txnVolTyp: txnType?.txnVolTyp ?? "",
             vol: _amount ?? "",
             frequency: selectedFrequency,
             day: sipDate,
-            startMonth: sipMonth.length > 1 ? sipMonth : "0" + sipMonth,
+            startMonth,
             startYear: sipYear,
             endMonth: end_month,
             endYear: end_year,
             payOutFlag: "",
-            payOutDtl: payOutDtl,
+            payOutDtl,
             priOtpFlag: "",
             priMob: "",
-            priEmail: ""
+            priEmail: "",
         });
     }
-    return sysSchList;
 
+    return sysSchList;
 }
 
 
-export function getSubSeqSec(transactionType: string, payMode: string, micr: string, ifsc: string, accType: string, accNo: string, mandateRefNo: string): any {
-
-
-    subSeqSec = {
-        payMode: payMode,
+export function getSubSeqSec(
+    _transactionType: string,
+    payMode: string,
+    micr: string,
+    ifsc: string,
+    accType: string,
+    accNo: string,
+    mandateRefNo: string
+): any {
+    return {
+        payMode,
         invAccType: accType,
         invAccNo: accNo,
-        micr: micr,
-        ifsc: ifsc,
+        micr,
+        ifsc,
         paymentRefNo: "",
-        mandateRefNo: mandateRefNo
-        //mandateRefNo: "UTIB7020511252010392"
-    }
-
-
-    return subSeqSec;
-
+        mandateRefNo,
+    };
 }

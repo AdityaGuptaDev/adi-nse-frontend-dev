@@ -772,11 +772,11 @@ const MutualFundPortfolio = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-4 bg-white font-sans">
+    <div className="max-w-7xl mx-auto p-4 bg-[#111111] font-sans">
       {/* Header Section */}
       <button
         onClick={() => window.history.back()}
-        className="flex items-center text-gray-600 hover:text-gray-800 transition-colors mb-4"
+        className="flex items-center text-[#9CA3AF] hover:text-[#F9FAFB] transition-colors mb-4"
       >
         <ChevronLeft className="w-5 h-5 mr-2" />
         Back
@@ -787,7 +787,7 @@ const MutualFundPortfolio = () => {
           <span className="text-orange-500">Vedant</span>
           <span className="text-black">Asset</span>
         </h1>
-        <div className="text-right text-xs text-gray-600">
+        <div className="text-right text-xs text-[#9CA3AF]">
           <p>3rd Floor, Gayways House Above Space Furniture, Ranchi</p>
           <p>Phone: 9304955509 | vedantasset@gmail.com</p>
         </div>
@@ -796,12 +796,12 @@ const MutualFundPortfolio = () => {
       {/* API Message Indicator */}
       {apiMessage && !error && (
         <div className={`mb-4 p-3 rounded flex items-center ${
-          aumData.length > 0 ? 'bg-green-50 border border-green-200' : 'bg-blue-50 border border-blue-200'
+          aumData.length > 0 ? 'bg-green-50 border border-green-200' : 'bg-[#1F1A1A] border border-blue-200'
         }`}>
           <AlertCircle className={`w-4 h-4 mr-2 ${
-            aumData.length > 0 ? 'text-green-600' : 'text-blue-600'
+            aumData.length > 0 ? 'text-green-600' : 'text-[#F59E0B]'
           }`} />
-          <span className={aumData.length > 0 ? 'text-green-700' : 'text-blue-700'}>
+          <span className={aumData.length > 0 ? 'text-green-700' : 'text-[#F59E0B]'}>
             {apiMessage}
           </span>
         </div>
@@ -809,16 +809,16 @@ const MutualFundPortfolio = () => {
 
       {/* Search Status Indicator */}
       {isSearchApplied && !apiMessage && !error && (
-        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded flex justify-between items-center">
+        <div className="mb-4 p-3 bg-[#1F1A1A] border border-blue-200 rounded flex justify-between items-center">
           <div className="flex items-center">
-            <Search className="w-4 h-4 text-blue-600 mr-2" />
-            <span className="text-blue-700 font-medium">
+            <Search className="w-4 h-4 text-[#F59E0B] mr-2" />
+            <span className="text-[#F59E0B] font-medium">
               {aumLoading ? 'Loading AUM data...' : `Searching for records...`}
             </span>
           </div>
           <button
             onClick={handleResetSearch}
-            className="text-sm text-blue-600 hover:text-blue-800 underline"
+            className="text-sm text-[#F59E0B] hover:text-[#F59E0B] underline"
           >
             Show all data
           </button>
@@ -837,10 +837,10 @@ const MutualFundPortfolio = () => {
 
       {/* PDF Loading Indicator */}
       {pdfLoading && (
-        <div className="mb-4 p-3 bg-purple-50 border border-purple-200 rounded">
+        <div className="mb-4 p-3 bg-[#1F1A0A] border border-purple-200 rounded">
           <div className="flex items-center justify-center">
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-purple-600 mr-2"></div>
-            <span className="text-purple-700 font-medium">Generating PDF report...</span>
+            <span className="text-[#D97706] font-medium">Generating PDF report...</span>
           </div>
         </div>
       )}
@@ -862,15 +862,15 @@ const MutualFundPortfolio = () => {
       )}
 
       {/* Controls Section */}
-      <div className="flex justify-between items-center mb-4 bg-gray-50 p-4 rounded">
+      <div className="flex justify-between items-center mb-4 bg-[#0A0A0A] p-4 rounded">
         <div className={`grid gap-4 items-end flex-1 ${shouldShowListDropdown ? 'md:grid-cols-6' : 'md:grid-cols-5'}`}>
           {/* Role Dropdown */}
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-gray-700">Role</label>
+            <label className="block text-xs font-medium text-[#F9FAFB]">Role</label>
             <select
               value={selectedRole}
               onChange={(e) => handleRoleChange(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
+              className="w-full px-3 py-2 border border-[#2A2A2A] rounded text-sm focus:outline-none focus:border-[#F59E0B]"
             >
               <option value="">Select Role</option>
               {roleOptions.map((role) => (
@@ -882,15 +882,15 @@ const MutualFundPortfolio = () => {
           {/* List Dropdown - Conditionally rendered */}
           {shouldShowListDropdown && (
             <div className="space-y-1">
-              <label className="block text-xs font-medium text-gray-700">List</label>
+              <label className="block text-xs font-medium text-[#F9FAFB]">List</label>
               <select
                 value={selectedList}
                 onChange={(e) => handleListChange(e.target.value)}
                 disabled={!selectedRole || loading}
-                className={`w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500 ${
+                className={`w-full px-3 py-2 border border-[#2A2A2A] rounded text-sm focus:outline-none focus:border-[#F59E0B] ${
                   !selectedRole || loading
-                    ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                    : 'bg-white'
+                    ? 'bg-[#111111] text-[#9CA3AF] cursor-not-allowed' 
+                    : 'bg-[#111111]'
                 }`}
               >
                 <option value="">{loading ? 'Loading users...' : 'Select List'}</option>
@@ -903,28 +903,28 @@ const MutualFundPortfolio = () => {
 
           {/* From Date */}
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-gray-700">From Date</label>
+            <label className="block text-xs font-medium text-[#F9FAFB]">From Date</label>
             <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] w-4 h-4" />
               <input
                 type="date"
                 value={fromDate}
                 onChange={(e) => setFromDate(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
+                className="w-full pl-9 pr-3 py-2 border border-[#2A2A2A] rounded text-sm focus:outline-none focus:border-[#F59E0B]"
               />
             </div>
           </div>
 
           {/* To Date */}
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-gray-700">To Date</label>
+            <label className="block text-xs font-medium text-[#F9FAFB]">To Date</label>
             <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] w-4 h-4" />
               <input
                 type="date"
                 value={toDate}
                 onChange={(e) => setToDate(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500"
+                className="w-full pl-9 pr-3 py-2 border border-[#2A2A2A] rounded text-sm focus:outline-none focus:border-[#F59E0B]"
               />
             </div>
           </div>
@@ -933,14 +933,14 @@ const MutualFundPortfolio = () => {
 
           {/* Search Button */}
           <div className="space-y-1">
-            <label className="block text-xs font-medium text-gray-700 opacity-0">Search</label>
+            <label className="block text-xs font-medium text-[#F9FAFB] opacity-0">Search</label>
             <button
               onClick={handleDateFilter}
               disabled={aumLoading}
               className={`w-full px-4 py-2 rounded text-sm font-medium transition-colors ${
                 aumLoading
                   ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-blue-600 hover:bg-blue-700 text-white'
+                  : 'bg-[#F59E0B] hover:bg-[#B45309] text-[#F9FAFB]'
               }`}
             >
               {aumLoading ? 'Loading...' : 'Search'}
@@ -951,18 +951,18 @@ const MutualFundPortfolio = () => {
 
       {/* Export Buttons */}
       <div className="flex justify-between items-center mb-4">
-        <div className="text-xs text-gray-600 flex items-center gap-4">
+        <div className="text-xs text-[#9CA3AF] flex items-center gap-4">
           <span>
             Showing <span className="font-semibold">{filteredData.length}</span> records
             {isSearchApplied && aumData.length > 0 && (
-              <span className="text-blue-600 ml-2">(Live AUM Data)</span>
+              <span className="text-[#F59E0B] ml-2">(Live AUM Data)</span>
             )}
           </span>
 
           {filteredData.length > 0 && (
             <span className="flex items-center gap-4">
               <span>
-                <span className="font-bold text-blue-600"> Investments - {filteredData.length}</span> 
+                <span className="font-bold text-[#F59E0B]"> Investments - {filteredData.length}</span> 
               </span>
               <span>
                 <span className="font-bold text-green-600">  AUM Value - ₹{formatCurrency(grandTotal)}</span>
@@ -977,8 +977,8 @@ const MutualFundPortfolio = () => {
             disabled={filteredData.length === 0}
             className={`flex items-center px-3 py-1 rounded text-sm transition-colors ${
               filteredData.length === 0 
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-300' 
-                : 'bg-green-600 hover:bg-green-700 text-white border border-green-600'
+                ? 'bg-[#111111] text-[#9CA3AF] cursor-not-allowed border border-[#2A2A2A]' 
+                : 'bg-green-600 hover:bg-green-700 text-[#F9FAFB] border border-green-600'
             }`}
           >
             <Download className="w-4 h-4 inline-block mr-1" /> Excel
@@ -988,8 +988,8 @@ const MutualFundPortfolio = () => {
             disabled={filteredData.length === 0 || pdfLoading}
             className={`flex items-center px-3 py-1 rounded text-sm transition-colors ${
               filteredData.length === 0 || pdfLoading
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-300' 
-                : 'bg-red-600 hover:bg-red-700 text-white border border-red-600'
+                ? 'bg-[#111111] text-[#9CA3AF] cursor-not-allowed border border-[#2A2A2A]' 
+                : 'bg-red-600 hover:bg-red-700 text-[#F9FAFB] border border-red-600'
             }`}
           >
             <File className="w-4 h-4 inline-block mr-1" /> 
@@ -998,10 +998,10 @@ const MutualFundPortfolio = () => {
           <button
             onClick={handlePrint}
             disabled={filteredData.length === 0}
-            className={`border border-gray-300 px-3 py-1 rounded text-sm transition-colors ${
+            className={`border border-[#2A2A2A] px-3 py-1 rounded text-sm transition-colors ${
               filteredData.length === 0 
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
-                : 'hover:bg-gray-50'
+                ? 'bg-[#111111] text-[#9CA3AF] cursor-not-allowed' 
+                : 'hover:bg-[#0A0A0A]'
             }`}
           >
             <Printer className="w-4 h-4 inline-block mr-1" /> Print
@@ -1011,44 +1011,44 @@ const MutualFundPortfolio = () => {
 
       {/* Table Section */}
       <div className="overflow-x-auto mb-6">
-        <table className="w-full border border-gray-300 text-sm">
-          <thead className="bg-gray-100 sticky top-0">
+        <table className="w-full border border-[#2A2A2A] text-sm">
+          <thead className="bg-[#111111] sticky top-0">
             <tr>
-              <th className="border border-gray-300 px-2 py-2 text-left font-medium">Folio Number</th>
-              <th className="border border-gray-300 px-2 py-2 text-left font-medium">Name</th>
-              <th className="border border-gray-300 px-2 py-2 text-left font-medium">ARN Mutual</th>
-              <th className="border border-gray-300 px-2 py-2 text-left font-medium">Fund Scheme Name</th>
-              <th className="border border-gray-300 px-2 py-2 text-right font-medium">Units</th>
-              <th className="border border-gray-300 px-2 py-2 text-right font-medium">Per Price (₹)</th>
-              <th className="border border-gray-300 px-2 py-2 text-right font-medium">Purchase Price (₹)</th>
-              <th className="border border-gray-300 px-2 py-2 text-right font-medium">AUM (₹)</th>
+              <th className="border border-[#2A2A2A] px-2 py-2 text-left font-medium">Folio Number</th>
+              <th className="border border-[#2A2A2A] px-2 py-2 text-left font-medium">Name</th>
+              <th className="border border-[#2A2A2A] px-2 py-2 text-left font-medium">ARN Mutual</th>
+              <th className="border border-[#2A2A2A] px-2 py-2 text-left font-medium">Fund Scheme Name</th>
+              <th className="border border-[#2A2A2A] px-2 py-2 text-right font-medium">Units</th>
+              <th className="border border-[#2A2A2A] px-2 py-2 text-right font-medium">Per Price (₹)</th>
+              <th className="border border-[#2A2A2A] px-2 py-2 text-right font-medium">Purchase Price (₹)</th>
+              <th className="border border-[#2A2A2A] px-2 py-2 text-right font-medium">AUM (₹)</th>
             </tr>
           </thead>
           <tbody>
             {filteredData.length > 0 ? (
               filteredData.map((item, index) => (
-                <tr key={`${item.folioNumber}-${index}`} className="hover:bg-gray-50">
-                  <td className="border border-gray-300 px-2 py-2">{item.folioNumber}</td>
-                  <td className="border border-gray-300 px-2 py-2">{item.name}</td>
-                  <td className="border border-gray-300 px-2 py-2">{item.arnMutual}</td>
-                  <td className="border border-gray-300 px-2 py-2">{item.fundSchemeName}</td>
-                  <td className="border border-gray-300 px-2 py-2 text-right">
+                <tr key={`${item.folioNumber}-${index}`} className="hover:bg-[#0A0A0A]">
+                  <td className="border border-[#2A2A2A] px-2 py-2">{item.folioNumber}</td>
+                  <td className="border border-[#2A2A2A] px-2 py-2">{item.name}</td>
+                  <td className="border border-[#2A2A2A] px-2 py-2">{item.arnMutual}</td>
+                  <td className="border border-[#2A2A2A] px-2 py-2">{item.fundSchemeName}</td>
+                  <td className="border border-[#2A2A2A] px-2 py-2 text-right">
                     {formatNumber(item.units)}
                   </td>
-                  <td className="border border-gray-300 px-2 py-2 text-right">
+                  <td className="border border-[#2A2A2A] px-2 py-2 text-right">
                     {formatNumber(item.perPrice)}
                   </td>
-                  <td className="border border-gray-300 px-2 py-2 text-right">
+                  <td className="border border-[#2A2A2A] px-2 py-2 text-right">
                     {formatNumber(item.purchasePrice)}
                   </td>
-                  <td className="border border-gray-300 px-2 py-2 text-right font-medium">
+                  <td className="border border-[#2A2A2A] px-2 py-2 text-right font-medium">
                     {formatCurrency(item.aum)}
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={8} className="border border-gray-300 px-2 py-8 text-center text-gray-500">
+                <td colSpan={8} className="border border-[#2A2A2A] px-2 py-8 text-center text-[#9CA3AF]">
                   <div className="flex flex-col items-center gap-2">
                     <Search className="w-8 h-8 text-gray-300" />
                     <p className="font-medium">
@@ -1067,11 +1067,11 @@ const MutualFundPortfolio = () => {
           </tbody>
           {filteredData.length > 0 && (
             <tfoot>
-              <tr className="bg-gray-200 font-semibold">
-                <td colSpan={7} className="border border-gray-300 px-2 py-2 text-right">
+              <tr className="bg-[#1A1A1A] font-semibold">
+                <td colSpan={7} className="border border-[#2A2A2A] px-2 py-2 text-right">
                   Grand Total
                 </td>
-                <td className="border border-gray-300 px-2 py-2 text-right font-bold">
+                <td className="border border-[#2A2A2A] px-2 py-2 text-right font-bold">
                   {formatCurrency(grandTotal)}
                 </td>
               </tr>
@@ -1081,7 +1081,7 @@ const MutualFundPortfolio = () => {
       </div>
 
       {/* Disclaimer */}
-      <div className="mt-6 border-t pt-3 text-xs text-gray-700">
+      <div className="mt-6 border-t pt-3 text-xs text-[#F9FAFB]">
         <strong>Disclaimer:</strong> Mutual Fund investments are subject to market risks, read all scheme related documents carefully. Past performance is not indicative of future results.
       </div>
     </div>

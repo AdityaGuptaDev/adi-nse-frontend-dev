@@ -58,24 +58,24 @@ export default function NseSystematicOrders() {
 
   // ── SIP Table (placeholder) ──
   const renderSIPTable = () => (
-    <div className="bg-white rounded-xl shadow-sm border overflow-x-auto">
+    <div className="bg-[#111111] rounded-xl shadow-sm border overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b" style={{ backgroundColor: "#f0fdfa" }}>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">Client Code</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">Reg No</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">Scheme</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">Frequency</th>
-            <th className="text-right px-4 py-3 text-gray-600 font-semibold">Amount</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">Start Date</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">End Date</th>
-            <th className="text-center px-4 py-3 text-gray-600 font-semibold">Status</th>
-            <th className="text-center px-4 py-3 text-gray-600 font-semibold">Actions</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Client Code</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Reg No</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Scheme</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Frequency</th>
+            <th className="text-right px-4 py-3 text-[#9CA3AF] font-semibold">Amount</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Start Date</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">End Date</th>
+            <th className="text-center px-4 py-3 text-[#9CA3AF] font-semibold">Status</th>
+            <th className="text-center px-4 py-3 text-[#9CA3AF] font-semibold">Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td colSpan={9} className="text-center py-12 text-gray-400">
+            <td colSpan={9} className="text-center py-12 text-[#6B7280]">
               Coming soon - data will load from registration reports
             </td>
           </tr>
@@ -86,24 +86,24 @@ export default function NseSystematicOrders() {
 
   // ── XSIP Table (placeholder) ──
   const renderXSIPTable = () => (
-    <div className="bg-white rounded-xl shadow-sm border overflow-x-auto">
+    <div className="bg-[#111111] rounded-xl shadow-sm border overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b" style={{ backgroundColor: "#f0fdfa" }}>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">Client Code</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">XSIP Reg No</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">Scheme</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">Frequency</th>
-            <th className="text-right px-4 py-3 text-gray-600 font-semibold">Amount</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">Start Date</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">End Date</th>
-            <th className="text-center px-4 py-3 text-gray-600 font-semibold">Status</th>
-            <th className="text-center px-4 py-3 text-gray-600 font-semibold">Mandate ID</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Client Code</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">XSIP Reg No</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Scheme</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Frequency</th>
+            <th className="text-right px-4 py-3 text-[#9CA3AF] font-semibold">Amount</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Start Date</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">End Date</th>
+            <th className="text-center px-4 py-3 text-[#9CA3AF] font-semibold">Status</th>
+            <th className="text-center px-4 py-3 text-[#9CA3AF] font-semibold">Mandate ID</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td colSpan={9} className="text-center py-12 text-gray-400">
+            <td colSpan={9} className="text-center py-12 text-[#6B7280]">
               Coming soon - data will load from registration reports
             </td>
           </tr>
@@ -114,23 +114,23 @@ export default function NseSystematicOrders() {
 
   // ── STP Table (placeholder) ──
   const renderSTPTable = () => (
-    <div className="bg-white rounded-xl shadow-sm border overflow-x-auto">
+    <div className="bg-[#111111] rounded-xl shadow-sm border overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b" style={{ backgroundColor: "#f0fdfa" }}>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">Client Code</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">STP Reg No</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">Source Scheme</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">Target Scheme</th>
-            <th className="text-right px-4 py-3 text-gray-600 font-semibold">Amount</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">Start Date</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">End Date</th>
-            <th className="text-center px-4 py-3 text-gray-600 font-semibold">Status</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Client Code</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">STP Reg No</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Source Scheme</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Target Scheme</th>
+            <th className="text-right px-4 py-3 text-[#9CA3AF] font-semibold">Amount</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Start Date</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">End Date</th>
+            <th className="text-center px-4 py-3 text-[#9CA3AF] font-semibold">Status</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td colSpan={8} className="text-center py-12 text-gray-400">
+            <td colSpan={8} className="text-center py-12 text-[#6B7280]">
               Coming soon - data will load from registration reports
             </td>
           </tr>
@@ -141,23 +141,23 @@ export default function NseSystematicOrders() {
 
   // ── SWP Table (placeholder) ──
   const renderSWPTable = () => (
-    <div className="bg-white rounded-xl shadow-sm border overflow-x-auto">
+    <div className="bg-[#111111] rounded-xl shadow-sm border overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b" style={{ backgroundColor: "#f0fdfa" }}>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">Client Code</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">SWP Reg No</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">Scheme</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">Frequency</th>
-            <th className="text-right px-4 py-3 text-gray-600 font-semibold">Amount</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">Start Date</th>
-            <th className="text-left px-4 py-3 text-gray-600 font-semibold">End Date</th>
-            <th className="text-center px-4 py-3 text-gray-600 font-semibold">Status</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Client Code</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">SWP Reg No</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Scheme</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Frequency</th>
+            <th className="text-right px-4 py-3 text-[#9CA3AF] font-semibold">Amount</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Start Date</th>
+            <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">End Date</th>
+            <th className="text-center px-4 py-3 text-[#9CA3AF] font-semibold">Status</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td colSpan={8} className="text-center py-12 text-gray-400">
+            <td colSpan={8} className="text-center py-12 text-[#6B7280]">
               Coming soon - data will load from registration reports
             </td>
           </tr>
@@ -180,7 +180,7 @@ export default function NseSystematicOrders() {
       <h1 className="text-2xl font-bold text-[#D97706] mb-6">Systematic Orders</h1>
 
       {/* ── Tabs ── */}
-      <div className="flex gap-1 mb-6 bg-gray-100 rounded-lg p-1 w-fit">
+      <div className="flex gap-1 mb-6 bg-[#1F1A1A] rounded-lg p-1 w-fit">
         {tabs.map((tab) => (
           <button
             key={tab.key}
@@ -188,7 +188,7 @@ export default function NseSystematicOrders() {
             className={`px-5 py-2 rounded-md text-sm font-medium transition ${
               activeTab === tab.key
                 ? "text-white shadow-sm"
-                : "text-gray-600 hover:text-gray-800"
+                : "text-[#9CA3AF] hover:text-[#F9FAFB]"
             }`}
             style={
               activeTab === tab.key

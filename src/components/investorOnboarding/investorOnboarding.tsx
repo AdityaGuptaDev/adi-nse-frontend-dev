@@ -1631,8 +1631,8 @@ const KYCVerification: React.FC = () => {
             <div>
               <ShieldUser className="w-8 h-8 text-blue-900" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Investor Registration</h1>
-            <p className="text-gray-600 text-sm">Complete your KYC verification to get started</p>
+            <h1 className="text-2xl font-bold text-[#F9FAFB] mb-2">Investor Registration</h1>
+            <p className="text-[#9CA3AF] text-sm">Complete your KYC verification to get started</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
@@ -1644,13 +1644,13 @@ const KYCVerification: React.FC = () => {
               { icon: Mail, text: 'Email Verification', desc: 'Auto-filled from your details' },
               { icon: Phone, text: 'Mobile Verification', desc: 'Verify your mobile number' }
             ].map((item, index) => (
-              <div key={index} className="flex items-center p-3 bg-white/60 rounded-lg border border-gray-200/50">
+              <div key={index} className="flex items-center p-3 bg-[#111111]/60 rounded-lg border border-[#2A2A2A]/50">
                 <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
                   <item.icon className="w-5 h-5 text-blue-900" />
                 </div>
                 <div>
-                  <span className="text-xs font-semibold text-gray-700">{item.text}</span>
-                  <p className="text-xs text-gray-500">{item.desc}</p>
+                  <span className="text-xs font-semibold text-[#E5E7EB]">{item.text}</span>
+                  <p className="text-xs text-[#9CA3AF]">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -1674,7 +1674,7 @@ const KYCVerification: React.FC = () => {
         <div>
           <button
             onClick={() => setCurrentScreen('welcome')}
-            className="flex items-center text-gray-600 hover:text-gray-800 mb-6 transition-colors text-sm font-medium group"
+            className="flex items-center text-[#9CA3AF] hover:text-[#F9FAFB] mb-6 transition-colors text-sm font-medium group"
           >
             <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
             Back to Overview
@@ -1684,22 +1684,22 @@ const KYCVerification: React.FC = () => {
             <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-3 shadow-md">
               <Smartphone className="w-7 h-7 text-white" />
             </div>
-            <h1 className="text-xl font-bold text-gray-900 mb-1">Mobile Verification</h1>
-            <p className="text-gray-600 text-sm">We'll send you a verification code to proceed</p>
+            <h1 className="text-xl font-bold text-[#F9FAFB] mb-1">Mobile Verification</h1>
+            <p className="text-[#9CA3AF] text-sm">We'll send you a verification code to proceed</p>
           </div>
 
           <div className="space-y-4">
             {/* Mobile Input Section */}
-            <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl p-4 border border-gray-200">
+            <div className="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl p-4 border border-[#2A2A2A]">
               <div className="flex items-center mb-3">
                 <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
                   <Phone className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">
+                  <h3 className="text-sm font-semibold text-[#F9FAFB]">
                     {otpSent ? 'Verification Code Sent' : 'Enter Mobile Number'}
                   </h3>
-                  <p className="text-gray-600 text-xs">
+                  <p className="text-[#9CA3AF] text-xs">
                     {otpSent
                       ? `Code sent to ${partnerData.phone}`
                       : 'We\'ll send you a verification code'
@@ -1710,12 +1710,12 @@ const KYCVerification: React.FC = () => {
 
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className="block text-xs font-medium text-[#E5E7EB] mb-1">
                     Mobile Number
                   </label>
                   <div className="relative">
                     <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center">
-                      <span className="text-gray-500 text-sm font-medium mr-1">+91</span>
+                      <span className="text-[#9CA3AF] text-sm font-medium mr-1">+91</span>
                       <div className="w-px h-4 bg-gray-300 mx-2"></div>
                     </div>
                     <input
@@ -1723,7 +1723,7 @@ const KYCVerification: React.FC = () => {
                       value={partnerData.phone}
                       onChange={(e) => handlePartnerInputChange('phone', e.target.value)}
                       placeholder="Enter 10-digit number"
-                      className="w-full pl-16 pr-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-medium transition-all duration-200"
+                      className="w-full pl-16 pr-4 py-3 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent font-medium transition-all duration-200"
                       maxLength={10}
                       disabled={otpSent}
                     />
@@ -1777,8 +1777,8 @@ const KYCVerification: React.FC = () => {
                     <Lock className="w-5 h-5 text-emerald-600" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-semibold text-gray-900">Enter Verification Code</h3>
-                    <p className="text-gray-600 text-xs">
+                    <h3 className="text-sm font-semibold text-[#F9FAFB]">Enter Verification Code</h3>
+                    <p className="text-[#9CA3AF] text-xs">
                       Code sent to <span className="font-semibold">{partnerData.phone}</span>
                     </p>
                   </div>
@@ -1787,7 +1787,7 @@ const KYCVerification: React.FC = () => {
                 <div className="space-y-4">
                   {/* OTP Input Boxes */}
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-2 text-center">
+                    <label className="block text-xs font-medium text-[#E5E7EB] mb-2 text-center">
                       6-digit Verification Code
                     </label>
                     <div className="flex justify-center space-x-2 mb-3">
@@ -1802,7 +1802,7 @@ const KYCVerification: React.FC = () => {
                           onChange={(e) => handleOTPChange(e.target.value, index)}
                           onKeyDown={(e) => handleKeyDown(e, index)}
                           onPaste={handlePaste}
-                          className="w-10 h-11 text-center text-lg font-bold border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-white shadow-sm"
+                          className="w-10 h-11 text-center text-lg font-bold border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 bg-[#111111] shadow-sm"
                           disabled={otpState.loading || isFetchingUserData}
                         />
                       ))}
@@ -1817,14 +1817,14 @@ const KYCVerification: React.FC = () => {
 
                   {/* Timer and Resend */}
                   <div className="flex items-center justify-between text-xs px-1">
-                    <span className="text-gray-600 flex items-center">
+                    <span className="text-[#9CA3AF] flex items-center">
                       <RefreshCw className="w-3 h-3 mr-1" />
                       {otpState.timer > 0 ? `Resend in ${otpState.timer}s` : "Ready to resend"}
                     </span>
                     <button
                       onClick={resendOTP}
                       disabled={!otpState.canResend || otpState.loading}
-                      className="text-blue-600 hover:text-blue-700 font-medium disabled:text-gray-400 flex items-center transition-colors"
+                      className="text-blue-600 hover:text-blue-700 font-medium disabled:text-[#6B7280] flex items-center transition-colors"
                     >
                       <RefreshCw className="w-3 h-3 mr-1" />
                       {otpState.loading ? 'Resending...' : 'Resend Code'}
@@ -1924,7 +1924,7 @@ const KYCVerification: React.FC = () => {
     // Error Modal Component
     const ErrorModal = () => (
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all duration-300 scale-100">
+        <div className="bg-[#111111] rounded-2xl shadow-2xl max-w-md w-full transform transition-all duration-300 scale-100">
           <div className="bg-gradient-to-r from-red-500 to-orange-600 rounded-t-2xl p-6 text-center">
             <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <Shield className="w-8 h-8 text-white" />
@@ -1955,7 +1955,7 @@ const KYCVerification: React.FC = () => {
               </button>
               <button
                 onClick={() => setShowErrorModal(false)}
-                className="w-full bg-gray-100 text-gray-700 rounded-lg py-3 text-sm font-semibold hover:bg-gray-200 transition-colors"
+                className="w-full bg-[#1F1A1A] text-[#E5E7EB] rounded-lg py-3 text-sm font-semibold hover:bg-[#2A2A2A] transition-colors"
               >
                 Close
               </button>
@@ -1968,7 +1968,7 @@ const KYCVerification: React.FC = () => {
     // Success Modal Component
     const SuccessModal = () => (
       <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all duration-300 scale-100">
+        <div className="bg-[#111111] rounded-2xl shadow-2xl max-w-md w-full transform transition-all duration-300 scale-100">
           <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-t-2xl p-6 text-center">
             <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
               <CheckCircle className="w-8 h-8 text-white" />
@@ -1995,24 +1995,24 @@ const KYCVerification: React.FC = () => {
               </div>
             )}
 
-            <div className="bg-gray-50 rounded-lg p-4 mb-4 border border-gray-200">
-              <h3 className="text-sm font-semibold text-gray-900 mb-3 text-center">Account Details</h3>
+            <div className="bg-[#1F1A1A] rounded-lg p-4 mb-4 border border-[#2A2A2A]">
+              <h3 className="text-sm font-semibold text-[#F9FAFB] mb-3 text-center">Account Details</h3>
               <div className="grid grid-cols-1 gap-2 text-xs">
-                <div className="flex justify-between py-1 border-b border-gray-200">
-                  <span className="text-gray-600">Mobile Number</span>
-                  <span className="font-semibold text-gray-900">{partnerData.phone}</span>
+                <div className="flex justify-between py-1 border-b border-[#2A2A2A]">
+                  <span className="text-[#9CA3AF]">Mobile Number</span>
+                  <span className="font-semibold text-[#F9FAFB]">{partnerData.phone}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-gray-200">
-                  <span className="text-gray-600">Email</span>
-                  <span className="font-semibold text-gray-900">{partnerData.email}</span>
+                <div className="flex justify-between py-1 border-b border-[#2A2A2A]">
+                  <span className="text-[#9CA3AF]">Email</span>
+                  <span className="font-semibold text-[#F9FAFB]">{partnerData.email}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-gray-200">
-                  <span className="text-gray-600">Name</span>
-                  <span className="font-semibold text-gray-900">{partnerData.name}</span>
+                <div className="flex justify-between py-1 border-b border-[#2A2A2A]">
+                  <span className="text-[#9CA3AF]">Name</span>
+                  <span className="font-semibold text-[#F9FAFB]">{partnerData.name}</span>
                 </div>
                 <div className="flex justify-between py-1">
-                  <span className="text-gray-600">PAN Number</span>
-                  <span className="font-semibold text-gray-900">{verification.pan.value}</span>
+                  <span className="text-[#9CA3AF]">PAN Number</span>
+                  <span className="font-semibold text-[#F9FAFB]">{verification.pan.value}</span>
                 </div>
               </div>
             </div>
@@ -2041,7 +2041,7 @@ const KYCVerification: React.FC = () => {
                   </button>
                   <button
                     onClick={() => setShowSuccessModal(false)}
-                    className="w-full bg-gray-100 text-gray-700 rounded-lg py-3 text-sm font-semibold hover:bg-gray-200 transition-colors"
+                    className="w-full bg-[#1F1A1A] text-[#E5E7EB] rounded-lg py-3 text-sm font-semibold hover:bg-[#2A2A2A] transition-colors"
                   >
                     Close
                   </button>
@@ -2067,12 +2067,12 @@ const KYCVerification: React.FC = () => {
 
         {/* Main completion content when modal is closed */}
         {!showSuccessModal && !showErrorModal && (
-          <div className="w-full max-w-2xl bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 text-center border border-gray-200">
+          <div className="w-full max-w-2xl bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 text-center border border-[#2A2A2A]">
             <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
               <CheckCircle className="w-8 h-8 text-green-600" />
             </div>
 
-            <h1 className="text-xl font-bold text-gray-900 mb-3">Registration Completed Successfully!</h1>
+            <h1 className="text-xl font-bold text-[#F9FAFB] mb-3">Registration Completed Successfully!</h1>
 
             {isCANCreated && canNumber && (
               <div className="bg-green-50 border-2 border-green-300 rounded-lg p-4 mb-4">
@@ -2109,32 +2109,32 @@ const KYCVerification: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-3">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 mb-4 border border-gray-200">
+        <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 mb-4 border border-[#2A2A2A]">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <ShieldUser className="w-8 h-8 text-blue-600 mr-3" />
               <div>
-                <h1 className="text-lg font-bold text-gray-900">Investor Registration Dashboard</h1>
-                <p className="text-gray-600 text-xs">Complete all verification steps to finish registration</p>
+                <h1 className="text-lg font-bold text-[#F9FAFB]">Investor Registration Dashboard</h1>
+                <p className="text-[#9CA3AF] text-xs">Complete all verification steps to finish registration</p>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-xs text-gray-600">Mobile Verified</p>
-              <p className="font-semibold text-gray-900 text-sm">{(partnerData.phone)}</p>
+              <p className="text-xs text-[#9CA3AF]">Mobile Verified</p>
+              <p className="font-semibold text-[#F9FAFB] text-sm">{(partnerData.phone)}</p>
             </div>
           </div>
 
           {/* Progress Bar */}
           <div className="mt-4">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-xs font-medium text-gray-700">
+              <span className="text-xs font-medium text-[#E5E7EB]">
                 Overall Verification Progress
               </span>
               <span className="text-xs font-semibold text-blue-600">
                 {Math.round(verificationProgress())}% Complete
               </span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="w-full bg-[#2A2A2A] rounded-full h-2">
               <div
                 className="bg-blue-600 h-2 rounded-full transition-all duration-500"
                 style={{ width: `${verificationProgress()}%` }}
@@ -2146,15 +2146,15 @@ const KYCVerification: React.FC = () => {
         {/* Verification Steps Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
           {/* Personal Details Card */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
                   <User className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">Personal Details</h3>
-                  <p className="text-gray-600 text-xs">Your personal information</p>
+                  <h3 className="text-sm font-semibold text-[#F9FAFB]">Personal Details</h3>
+                  <p className="text-[#9CA3AF] text-xs">Your personal information</p>
                 </div>
               </div>
               <button
@@ -2172,54 +2172,54 @@ const KYCVerification: React.FC = () => {
             <div className="space-y-3">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Full Name</label>
+                  <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Full Name</label>
                   {isEditing.personal ? (
                     <input
                       type="text"
                       value={partnerData.name}
                       onChange={(e) => handlePartnerInputChange('name', e.target.value)}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   ) : (
-                    <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">{partnerData.name || 'Not available'}</p>
+                    <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">{partnerData.name || 'Not available'}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Date of Birth</label>
+                  <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Date of Birth</label>
                   {isEditing.personal ? (
                     <input
                       type="date"
                       value={partnerData.dob}
                       onChange={(e) => handlePartnerInputChange('dob', e.target.value)}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   ) : (
-                    <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">{partnerData.dob || 'Not available'}</p>
+                    <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">{partnerData.dob || 'Not available'}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Age</label>
+                  <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Age</label>
                   {isEditing.personal ? (
                     <input
                       type="number"
                       value={partnerData.age}
                       onChange={(e) => handlePartnerInputChange('age', e.target.value)}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   ) : (
-                    <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">{partnerData.age || 'Not available'}</p>
+                    <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">{partnerData.age || 'Not available'}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Gender</label>
+                  <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Gender</label>
                   {isEditing.personal ? (
                     <select
                       value={partnerData.gender}
                       onChange={(e) => handlePartnerInputChange('gender', e.target.value)}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="">Select Gender</option>
                       <option value="Male">Male</option>
@@ -2227,29 +2227,29 @@ const KYCVerification: React.FC = () => {
                       <option value="Other">Other</option>
                     </select>
                   ) : (
-                    <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">{partnerData.gender || 'Not available'}</p>
+                    <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">{partnerData.gender || 'Not available'}</p>
                   )}
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Address</label>
+                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Address</label>
                 {isEditing.personal ? (
                   <textarea
                     value={partnerData.address}
                     onChange={(e) => handlePartnerInputChange('address', e.target.value)}
                     rows={2}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                   />
                 ) : (
-                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm whitespace-pre-wrap">{partnerData.address || 'Not available'}</p>
+                  <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm whitespace-pre-wrap">{partnerData.address || 'Not available'}</p>
                 )}
               </div>
             </div>
           </div>
 
           {/* Aadhaar Verification Card */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center">
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${verification.aadhaar.verified ? 'bg-green-100' : 'bg-blue-100'
@@ -2258,8 +2258,8 @@ const KYCVerification: React.FC = () => {
                     }`} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">Aadhaar Verification</h3>
-                  <p className="text-gray-600 text-xs">Auto-filled from your details</p>
+                  <h3 className="text-sm font-semibold text-[#F9FAFB]">Aadhaar Verification</h3>
+                  <p className="text-[#9CA3AF] text-xs">Auto-filled from your details</p>
                 </div>
               </div>
               <button
@@ -2276,18 +2276,18 @@ const KYCVerification: React.FC = () => {
 
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Aadhaar Number</label>
+                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Aadhaar Number</label>
                 {isEditing.aadhaar ? (
                   <input
                     type="text"
                     value={verification.aadhaar.value}
                     onChange={(e) => handleAadhaarChange(e.target.value)}
                     placeholder="Enter 12-digit Aadhaar"
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     maxLength={14}
                   />
                 ) : (
-                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                  <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                     {verification.aadhaar.value ? maskAadhar(verification.aadhaar.value) : 'Not available'}
                   </p>
                 )}
@@ -2296,7 +2296,7 @@ const KYCVerification: React.FC = () => {
           </div>
 
           {/* PAN Verification Card */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center">
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${verification.pan.verified ? 'bg-green-100' : verification.pan.validationMessage ? 'bg-yellow-100' : 'bg-blue-100'
@@ -2305,8 +2305,8 @@ const KYCVerification: React.FC = () => {
                     }`} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">PAN Verification</h3>
-                  <p className="text-gray-600 text-xs">Auto-filled from your details</p>
+                  <h3 className="text-sm font-semibold text-[#F9FAFB]">PAN Verification</h3>
+                  <p className="text-[#9CA3AF] text-xs">Auto-filled from your details</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -2339,7 +2339,7 @@ const KYCVerification: React.FC = () => {
 
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">PAN Number</label>
+                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">PAN Number</label>
                 {isEditing.pan ? (
                   <div className="space-y-2">
                     <input
@@ -2347,7 +2347,7 @@ const KYCVerification: React.FC = () => {
                       value={verification.pan.value}
                       onChange={(e) => handlePanChange(e.target.value)}
                       placeholder="ABCDE1234F"
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                      className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
                       maxLength={10}
                     />
                     {verification.pan.value && verification.pan.value.length === 10 && !verification.pan.verified && (
@@ -2368,7 +2368,7 @@ const KYCVerification: React.FC = () => {
                     )}
                   </div>
                 ) : (
-                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm font-semibold">
+                  <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm font-semibold">
                     {verification.pan.value || 'Not available'}
                   </p>
                 )}
@@ -2446,7 +2446,7 @@ const KYCVerification: React.FC = () => {
 
               {/* KYC Initial Component */}
               {showKYCInitial && (
-                <div className="p-4 bg-white border border-orange-200 rounded-lg mt-4">
+                <div className="p-4 bg-[#111111] border border-orange-200 rounded-lg mt-4">
                   <div className="flex justify-between items-center mb-3">
                     <h4 className="text-sm font-semibold text-orange-800">KYC Verification in Progress</h4>
                     <div className="flex gap-2">
@@ -2541,7 +2541,7 @@ const KYCVerification: React.FC = () => {
           </div>
 
           {/* Bank Verification Card - SIMPLIFIED */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center">
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${verification.bank.verified ? 'bg-green-100' : 'bg-blue-100'
@@ -2550,8 +2550,8 @@ const KYCVerification: React.FC = () => {
                     }`} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">Bank Verification</h3>
-                  <p className="text-gray-600 text-xs">Auto-filled from your details</p>
+                  <h3 className="text-sm font-semibold text-[#F9FAFB]">Bank Verification</h3>
+                  <p className="text-[#9CA3AF] text-xs">Auto-filled from your details</p>
                 </div>
               </div>
               <button
@@ -2569,35 +2569,35 @@ const KYCVerification: React.FC = () => {
             <div className="space-y-3">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Account Number</label>
+                  <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Account Number</label>
                   {isEditing.bank ? (
                     <input
                       type="text"
                       value={verification.bank.accountNumber}
                       onChange={(e) => handleBankChange('accountNumber', e.target.value)}
                       placeholder="Enter account number"
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   ) : (
-                    <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                    <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                       {verification.bank.accountNumber ? (verification.bank.accountNumber) : 'Not available'}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">IFSC Code</label>
+                  <label className="block text-xs font-medium text-[#E5E7EB] mb-1">IFSC Code</label>
                   {isEditing.bank ? (
                     <input
                       type="text"
                       value={verification.bank.ifsc}
                       onChange={(e) => handleBankChange('ifsc', e.target.value)}
                       placeholder="Enter IFSC code"
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                      className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
                       maxLength={11}
                     />
                   ) : (
-                    <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                    <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                       {verification.bank.ifsc || 'Not available'}
                     </p>
                   )}
@@ -2607,34 +2607,34 @@ const KYCVerification: React.FC = () => {
               {/* Simplified Bank Details - Only essential fields */}
               <div className="grid grid-cols-1 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Bank Name</label>
+                  <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Bank Name</label>
                   {isEditing.bank ? (
                     <input
                       type="text"
                       value={verification.bank.bankName}
                       onChange={(e) => handleBankChange('bankName', e.target.value)}
                       placeholder="Bank name"
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   ) : (
-                    <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                    <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                       {verification.bank.bankName || 'Not available'}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">MICR Code</label>
+                  <label className="block text-xs font-medium text-[#E5E7EB] mb-1">MICR Code</label>
                   {isEditing.bank ? (
                     <input
                       type="text"
                       value={verification.bank.micr}
                       onChange={(e) => handleBankChange('micr', e.target.value)}
                       placeholder="MICR code"
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   ) : (
-                    <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                    <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                       {verification.bank.micr || 'Not available'}
                     </p>
                   )}
@@ -2653,27 +2653,27 @@ const KYCVerification: React.FC = () => {
           </div>
 
           {/* Address Selection Card */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
             <div className="flex items-center mb-3">
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
                 <User className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-gray-900">Address Selection</h3>
-                <p className="text-gray-600 text-xs">Choose your preferred address</p>
+                <h3 className="text-sm font-semibold text-[#F9FAFB]">Address Selection</h3>
+                <p className="text-[#9CA3AF] text-xs">Choose your preferred address</p>
               </div>
             </div>
 
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Select Address</label>
+                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Select Address</label>
                 <div className="space-y-2 max-h-48 overflow-y-auto">
                   {addresses.map((address, index) => (
                     <div
                       key={index}
                       className={`p-2 border rounded-lg cursor-pointer transition-colors ${selectedAddressIndex === index
                         ? 'border-blue-500 bg-blue-50'
-                        : 'border-gray-300 hover:border-gray-400'
+                        : 'border-[#3A3A3A] hover:border-gray-400'
                         }`}
                       onClick={() => handleAddressSelect(index)}
                     >
@@ -2685,11 +2685,11 @@ const KYCVerification: React.FC = () => {
                           className="mt-0.5 mr-2"
                         />
                         <div className="flex-1">
-                          <p className="text-xs font-medium text-gray-900">
+                          <p className="text-xs font-medium text-[#F9FAFB]">
                             {address.type || 'Address'} {address.sequence}
                           </p>
-                          <p className="text-xs text-gray-600 mt-0.5">{address.address}</p>
-                          <p className="text-xs text-gray-500 mt-0.5">
+                          <p className="text-xs text-[#9CA3AF] mt-0.5">{address.address}</p>
+                          <p className="text-xs text-[#9CA3AF] mt-0.5">
                             {address.state} - {address.postal}
                           </p>
                         </div>
@@ -2697,18 +2697,18 @@ const KYCVerification: React.FC = () => {
                     </div>
                   ))}
                   {addresses.length === 0 && (
-                    <p className="text-gray-500 text-xs text-center py-3">No addresses available</p>
+                    <p className="text-[#9CA3AF] text-xs text-center py-3">No addresses available</p>
                   )}
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Selected Address</label>
+                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Selected Address</label>
                 <textarea
                   value={partnerData.address}
                   onChange={(e) => handlePartnerInputChange('address', e.target.value)}
                   rows={3}
-                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                   placeholder="Selected address will appear here"
                 />
               </div>
@@ -2716,7 +2716,7 @@ const KYCVerification: React.FC = () => {
           </div>
 
           {/* Email Verification Card */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center">
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${verification.email.verified ? 'bg-green-100' : 'bg-blue-100'
@@ -2725,8 +2725,8 @@ const KYCVerification: React.FC = () => {
                     }`} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">Email Verification</h3>
-                  <p className="text-gray-600 text-xs">Auto-filled from your details</p>
+                  <h3 className="text-sm font-semibold text-[#F9FAFB]">Email Verification</h3>
+                  <p className="text-[#9CA3AF] text-xs">Auto-filled from your details</p>
                 </div>
               </div>
               <button
@@ -2743,17 +2743,17 @@ const KYCVerification: React.FC = () => {
 
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Email Address</label>
+                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Email Address</label>
                 {isEditing.email ? (
                   <input
                     type="email"
                     value={verification.email.value}
                     onChange={(e) => handleEmailChange(e.target.value)}
                     placeholder="Enter your email"
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 ) : (
-                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                  <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                     {verification.email.value ? (verification.email.value) : 'Not available'}
                   </p>
                 )}
@@ -2762,17 +2762,17 @@ const KYCVerification: React.FC = () => {
           </div>
 
           {/* FATCA Details Card */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${canEditFatcaAndNominee ? 'bg-purple-100' : 'bg-gray-100'
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${canEditFatcaAndNominee ? 'bg-purple-100' : 'bg-[#1F1A1A]'
                   }`}>
-                  <FileText className={`w-5 h-5 ${canEditFatcaAndNominee ? 'text-purple-600' : 'text-gray-400'
+                  <FileText className={`w-5 h-5 ${canEditFatcaAndNominee ? 'text-purple-600' : 'text-[#6B7280]'
                     }`} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">FATCA Declaration</h3>
-                  <p className="text-gray-600 text-xs">
+                  <h3 className="text-sm font-semibold text-[#F9FAFB]">FATCA Declaration</h3>
+                  <p className="text-[#9CA3AF] text-xs">
                     {canEditFatcaAndNominee ? 'Financial information' : 'Validate PAN to edit'}
                   </p>
                 </div>
@@ -2784,7 +2784,7 @@ const KYCVerification: React.FC = () => {
                   ? 'bg-green-600 text-white hover:bg-green-700'
                   : canEditFatcaAndNominee
                     ? 'bg-blue-600 text-white hover:bg-blue-700'
-                    : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    : 'bg-gray-300 text-[#9CA3AF] cursor-not-allowed'
                   } transition-colors`}
               >
                 {isEditing.fatca ? <Save className="w-3 h-3 mr-1" /> : <Edit className="w-3 h-3 mr-1" />}
@@ -2803,17 +2803,17 @@ const KYCVerification: React.FC = () => {
             )}
             <div className="space-y-4">
               {/* Applicant Info */}
-              <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                <h4 className="text-xs font-semibold text-gray-900 mb-2">Applicant: {partnerData.name || 'ADITYA GUPTA'}</h4>
+              <div className="bg-[#1F1A1A] p-3 rounded-lg border border-[#2A2A2A]">
+                <h4 className="text-xs font-semibold text-[#F9FAFB] mb-2">Applicant: {partnerData.name || 'ADITYA GUPTA'}</h4>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {/* Address Type - UPDATED */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Address Type</label>
+                  <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Address Type</label>
                   {isEditing.fatca ? (
                     loadingFatcaDropdown ? (
-                      <div className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-100">
+                      <div className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg bg-[#1F1A1A]">
                         <div className="flex items-center">
                           <Loader2 className="w-3 h-3 animate-spin mr-2" />
                           Loading...
@@ -2823,7 +2823,7 @@ const KYCVerification: React.FC = () => {
                       <select
                         value={fatcaDetails.address_type}
                         onChange={(e) => handleFatcaChange('address_type', e.target.value)}
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       >
                         <option value="">Select Address Type</option>
                         {fatcaDropdownData.addresslist.map((address) => (
@@ -2834,7 +2834,7 @@ const KYCVerification: React.FC = () => {
                       </select>
                     )
                   ) : (
-                    <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                    <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                       {fatcaDetails.address_type || 'Not provided'}
                     </p>
                   )}
@@ -2842,10 +2842,10 @@ const KYCVerification: React.FC = () => {
 
                 {/* Income Slab - UPDATED */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Income Slab</label>
+                  <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Income Slab</label>
                   {isEditing.fatca ? (
                     loadingFatcaDropdown ? (
-                      <div className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-100">
+                      <div className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg bg-[#1F1A1A]">
                         <div className="flex items-center">
                           <Loader2 className="w-3 h-3 animate-spin mr-2" />
                           Loading...
@@ -2855,7 +2855,7 @@ const KYCVerification: React.FC = () => {
                       <select
                         value={fatcaDetails.income_slab}
                         onChange={(e) => handleFatcaChange('income_slab', e.target.value)}
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       >
                         <option value="">Select Income Range</option>
                         {fatcaDropdownData.annualIncome.map((income) => (
@@ -2866,7 +2866,7 @@ const KYCVerification: React.FC = () => {
                       </select>
                     )
                   ) : (
-                    <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                    <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                       {fatcaDetails.income_slab || 'Not provided'}
                     </p>
                   )}
@@ -2874,17 +2874,17 @@ const KYCVerification: React.FC = () => {
 
                 {/* Place of Birth */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Place of Birth</label>
+                  <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Place of Birth</label>
                   {isEditing.fatca ? (
                     <input
                       type="text"
                       value={fatcaDetails.place_of_birth}
                       onChange={(e) => handleFatcaChange('place_of_birth', e.target.value)}
                       placeholder="Enter place of birth"
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   ) : (
-                    <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                    <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                       {fatcaDetails.place_of_birth || 'Not provided'}
                     </p>
                   )}
@@ -2892,12 +2892,12 @@ const KYCVerification: React.FC = () => {
 
                 {/* Country of Birth */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Country of Birth</label>
+                  <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Country of Birth</label>
                   {isEditing.fatca ? (
                     <select
                       value={fatcaDetails.country_of_birth}
                       onChange={(e) => handleFatcaChange('country_of_birth', e.target.value)}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="India">India</option>
                       <option value="USA">USA</option>
@@ -2905,7 +2905,7 @@ const KYCVerification: React.FC = () => {
                       <option value="Other">Other</option>
                     </select>
                   ) : (
-                    <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                    <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                       {fatcaDetails.country_of_birth}
                     </p>
                   )}
@@ -2913,10 +2913,10 @@ const KYCVerification: React.FC = () => {
 
                 {/* Occupation - UPDATED */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Occupation</label>
+                  <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Occupation</label>
                   {isEditing.fatca ? (
                     loadingFatcaDropdown ? (
-                      <div className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-100">
+                      <div className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg bg-[#1F1A1A]">
                         <div className="flex items-center">
                           <Loader2 className="w-3 h-3 animate-spin mr-2" />
                           Loading...
@@ -2926,7 +2926,7 @@ const KYCVerification: React.FC = () => {
                       <select
                         value={fatcaDetails.occupation}
                         onChange={(e) => handleFatcaChange('occupation', e.target.value)}
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       >
                         <option value="">Select Occupation</option>
                         {fatcaDropdownData.occupationList.map((occupation) => (
@@ -2937,7 +2937,7 @@ const KYCVerification: React.FC = () => {
                       </select>
                     )
                   ) : (
-                    <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                    <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                       {fatcaDetails.occupation || 'Not provided'}
                     </p>
                   )}
@@ -2945,12 +2945,12 @@ const KYCVerification: React.FC = () => {
 
                 {/* Citizenship */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Citizenship</label>
+                  <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Citizenship</label>
                   {isEditing.fatca ? (
                     <select
                       value={fatcaDetails.citizenship}
                       onChange={(e) => handleFatcaChange('citizenship', e.target.value)}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="India">India</option>
                       <option value="USA">USA</option>
@@ -2958,7 +2958,7 @@ const KYCVerification: React.FC = () => {
                       <option value="Other">Other</option>
                     </select>
                   ) : (
-                    <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                    <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                       {fatcaDetails.citizenship}
                     </p>
                   )}
@@ -2966,10 +2966,10 @@ const KYCVerification: React.FC = () => {
 
                 {/* Wealth Source - UPDATED */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Wealth Source</label>
+                  <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Wealth Source</label>
                   {isEditing.fatca ? (
                     loadingFatcaDropdown ? (
-                      <div className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-100">
+                      <div className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg bg-[#1F1A1A]">
                         <div className="flex items-center">
                           <Loader2 className="w-3 h-3 animate-spin mr-2" />
                           Loading...
@@ -2979,7 +2979,7 @@ const KYCVerification: React.FC = () => {
                       <select
                         value={fatcaDetails.wealth_source}
                         onChange={(e) => handleFatcaChange('wealth_source', e.target.value)}
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       >
                         <option value="">Select Wealth Source</option>
                         {fatcaDropdownData.incomeList.map((income) => (
@@ -2990,7 +2990,7 @@ const KYCVerification: React.FC = () => {
                       </select>
                     )
                   ) : (
-                    <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                    <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                       {fatcaDetails.wealth_source || 'Not provided'}
                     </p>
                   )}
@@ -2998,12 +2998,12 @@ const KYCVerification: React.FC = () => {
 
                 {/* Nationality */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Nationality</label>
+                  <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Nationality</label>
                   {isEditing.fatca ? (
                     <select
                       value={fatcaDetails.nationality}
                       onChange={(e) => handleFatcaChange('nationality', e.target.value)}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="India">India</option>
                       <option value="USA">USA</option>
@@ -3011,7 +3011,7 @@ const KYCVerification: React.FC = () => {
                       <option value="Other">Other</option>
                     </select>
                   ) : (
-                    <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                    <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                       {fatcaDetails.nationality}
                     </p>
                   )}
@@ -3019,19 +3019,19 @@ const KYCVerification: React.FC = () => {
 
                 {/* Politically Exposed */}
                 <div>
-                  <label className="block text-xs font-medium text-gray-700 mb-1">Politically Exposed</label>
+                  <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Politically Exposed</label>
                   {isEditing.fatca ? (
                     <select
                       value={fatcaDetails.politically_exposed}
                       onChange={(e) => handleFatcaChange('politically_exposed', e.target.value)}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="">Select</option>
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
                     </select>
                   ) : (
-                    <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                    <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                       {fatcaDetails.politically_exposed || 'Not provided'}
                     </p>
                   )}
@@ -3039,7 +3039,7 @@ const KYCVerification: React.FC = () => {
 
                 {/* Tax Resident Other */}
                 <div className="md:col-span-2">
-                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                  <label className="block text-xs font-medium text-[#E5E7EB] mb-1">
                     Are you a Tax Resident of any country other than India?
                   </label>
                   {isEditing.fatca ? (
@@ -3058,7 +3058,7 @@ const KYCVerification: React.FC = () => {
                       ))}
                     </div>
                   ) : (
-                    <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm font-semibold">
+                    <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm font-semibold">
                       {fatcaDetails.tax_resident_other}
                     </p>
                   )}
@@ -3069,7 +3069,7 @@ const KYCVerification: React.FC = () => {
               {fatcaDetails.tax_resident_other === "Yes" && (
                 <div className="border-t pt-4">
                   <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-xs font-semibold text-gray-900">Tax Resident Countries</h4>
+                    <h4 className="text-xs font-semibold text-[#F9FAFB]">Tax Resident Countries</h4>
                     {isEditing.fatca && fatcaDetails.tax_resident_countries.length < 3 && (
                       <button
                         onClick={addTaxResidentCountry}
@@ -3083,9 +3083,9 @@ const KYCVerification: React.FC = () => {
 
                   <div className="space-y-4">
                     {fatcaDetails.tax_resident_countries.map((country, index) => (
-                      <div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50/50">
+                      <div key={index} className="border border-[#2A2A2A] rounded-lg p-4 bg-[#1F1A1A]/50">
                         <div className="flex items-center justify-between mb-3">
-                          <h5 className="text-xs font-semibold text-gray-900">Country {index + 1}</h5>
+                          <h5 className="text-xs font-semibold text-[#F9FAFB]">Country {index + 1}</h5>
                           {isEditing.fatca && fatcaDetails.tax_resident_countries.length > 1 && (
                             <button
                               onClick={() => removeTaxResidentCountry(index)}
@@ -3100,12 +3100,12 @@ const KYCVerification: React.FC = () => {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                           {/* Country */}
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">Country</label>
+                            <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Country</label>
                             {isEditing.fatca ? (
                               <select
                                 value={country.country}
                                 onChange={(e) => handleTaxResidentChange(index, 'country', e.target.value)}
-                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               >
                                 <option value="">Select Country</option>
                                 <option value="USA">United States</option>
@@ -3120,7 +3120,7 @@ const KYCVerification: React.FC = () => {
                                 <option value="Other">Other</option>
                               </select>
                             ) : (
-                              <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                              <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                 {country.country || 'Not provided'}
                               </p>
                             )}
@@ -3128,17 +3128,17 @@ const KYCVerification: React.FC = () => {
 
                           {/* Tax Payer ID Number */}
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">Tax Payer ID Number</label>
+                            <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Tax Payer ID Number</label>
                             {isEditing.fatca ? (
                               <input
                                 type="text"
                                 value={country.tax_payer_id}
                                 onChange={(e) => handleTaxResidentChange(index, 'tax_payer_id', e.target.value)}
                                 placeholder="Enter tax payer ID"
-                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               />
                             ) : (
-                              <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                              <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                 {country.tax_payer_id || 'Not provided'}
                               </p>
                             )}
@@ -3146,12 +3146,12 @@ const KYCVerification: React.FC = () => {
 
                           {/* ID Document Type */}
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">ID Document Type</label>
+                            <label className="block text-xs font-medium text-[#E5E7EB] mb-1">ID Document Type</label>
                             {isEditing.fatca ? (
                               <select
                                 value={country.id_document_type}
                                 onChange={(e) => handleTaxResidentChange(index, 'id_document_type', e.target.value)}
-                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               >
                                 <option value="">Select Document Type</option>
                                 <option value="Passport">Passport</option>
@@ -3162,7 +3162,7 @@ const KYCVerification: React.FC = () => {
                                 <option value="Other">Other</option>
                               </select>
                             ) : (
-                              <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                              <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                 {country.id_document_type || 'Not provided'}
                               </p>
                             )}
@@ -3177,15 +3177,15 @@ const KYCVerification: React.FC = () => {
           </div>
 
           {/* Nominee Details Card - UPDATED WITH API DATA */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
                   <Users className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">Nominee Details</h3>
-                  <p className="text-gray-600 text-xs">
+                  <h3 className="text-sm font-semibold text-[#F9FAFB]">Nominee Details</h3>
+                  <p className="text-[#9CA3AF] text-xs">
                     {nominees[0].nominee_opt === "No" ? "No Nominee" : `Nominee information (${nominees.length}/5)`}
                   </p>
                 </div>
@@ -3215,10 +3215,10 @@ const KYCVerification: React.FC = () => {
 
             <div className="space-y-6">
               {nominees.map((nominee, index) => (
-                <div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50/50">
+                <div key={index} className="border border-[#2A2A2A] rounded-lg p-4 bg-[#1F1A1A]/50">
                   {/* Nominee Header with Remove Button */}
                   <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-xs font-semibold text-gray-900">
+                    <h4 className="text-xs font-semibold text-[#F9FAFB]">
                       {nominees.length > 1 ? `Nominee ${index + 1} ${nominee.nominee_name && `- ${nominee.nominee_name}`}` : 'Nominee Details'}
                     </h4>
                     {nominees.length > 1 && nominee.nominee_opt === "Yes" && (
@@ -3235,7 +3235,7 @@ const KYCVerification: React.FC = () => {
                   <div className="space-y-4">
                     {/* Nominee Option */}
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-2">Nominee Opt</label>
+                      <label className="block text-xs font-medium text-[#E5E7EB] mb-2">Nominee Opt</label>
                       {isEditing.nominee ? (
                         <div className="flex gap-4">
                           {["Yes", "No", "No, but verify later"].map(option => (
@@ -3259,7 +3259,7 @@ const KYCVerification: React.FC = () => {
                           ))}
                         </div>
                       ) : (
-                        <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm font-semibold">
+                        <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm font-semibold">
                           {nominee.nominee_opt}
                         </p>
                       )}
@@ -3271,40 +3271,40 @@ const KYCVerification: React.FC = () => {
                         {/* Basic Information Grid */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">Nominee Name</label>
+                            <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Nominee Name</label>
                             {isEditing.nominee ? (
                               <input
                                 type="text"
                                 value={nominee.nominee_name}
                                 onChange={(e) => handleNomineeChange(index, 'nominee_name', e.target.value)}
                                 placeholder="Enter nominee name"
-                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               />
                             ) : (
-                              <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                              <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                 {nominee.nominee_name || 'Not provided'}
                               </p>
                             )}
                           </div>
 
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">Date of Birth</label>
+                            <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Date of Birth</label>
                             {isEditing.nominee ? (
                               <input
                                 type="date"
                                 value={nominee.nominee_DOB}
                                 onChange={(e) => handleNomineeChange(index, 'nominee_DOB', e.target.value)}
-                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               />
                             ) : (
-                              <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                              <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                 {nominee.nominee_DOB || 'Not provided'}
                               </p>
                             )}
                           </div>
 
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">Nominee Type</label>
+                            <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Nominee Type</label>
                             {isEditing.nominee ? (
                               <div className="flex gap-4">
                                 {["Major", "Minor"].map(type => (
@@ -3321,7 +3321,7 @@ const KYCVerification: React.FC = () => {
                                 ))}
                               </div>
                             ) : (
-                              <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                              <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                 {nominee.nominee_Type || 'Not provided'}
                               </p>
                             )}
@@ -3329,10 +3329,10 @@ const KYCVerification: React.FC = () => {
 
                           {/* Relation - UPDATED WITH API DATA */}
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">Relation</label>
+                            <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Relation</label>
                             {isEditing.nominee ? (
                               loadingNomineeDropdown ? (
-                                <div className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-100">
+                                <div className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg bg-[#1F1A1A]">
                                   <div className="flex items-center">
                                     <Loader2 className="w-3 h-3 animate-spin mr-2" />
                                     Loading...
@@ -3342,7 +3342,7 @@ const KYCVerification: React.FC = () => {
                                 <select
                                   value={nominee.relation}
                                   onChange={(e) => handleNomineeChange(index, 'relation', e.target.value)}
-                                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                  className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 >
                                   <option value="">Select Relation</option>
                                   {nomineeDropdownData.nomineeRelationShipType.map((relation) => (
@@ -3353,58 +3353,58 @@ const KYCVerification: React.FC = () => {
                                 </select>
                               )
                             ) : (
-                              <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                              <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                 {nominee.relation || 'Not provided'}
                               </p>
                             )}
                           </div>
 
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">Percentage Allocation</label>
+                            <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Percentage Allocation</label>
                             {isEditing.nominee ? (
                               <input
                                 type="text"
                                 value={nominee.percentage_allocation}
                                 onChange={(e) => handleNomineeChange(index, 'percentage_allocation', e.target.value)}
                                 placeholder="e.g., 50"
-                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               />
                             ) : (
-                              <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                              <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                 {nominee.percentage_allocation ? `${nominee.percentage_allocation}%` : 'Not provided'}
                               </p>
                             )}
                           </div>
 
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">Mobile Number</label>
+                            <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Mobile Number</label>
                             {isEditing.nominee ? (
                               <input
                                 type="tel"
                                 value={nominee.mobile_number}
                                 onChange={(e) => handleNomineeChange(index, 'mobile_number', e.target.value)}
                                 placeholder="Nominee mobile number"
-                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               />
                             ) : (
-                              <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                              <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                 {nominee.mobile_number || 'Not provided'}
                               </p>
                             )}
                           </div>
 
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">Email Address</label>
+                            <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Email Address</label>
                             {isEditing.nominee ? (
                               <input
                                 type="email"
                                 value={nominee.email_address}
                                 onChange={(e) => handleNomineeChange(index, 'email_address', e.target.value)}
                                 placeholder="Nominee email address"
-                                className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                               />
                             ) : (
-                              <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                              <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                 {nominee.email_address || 'Not provided'}
                               </p>
                             )}
@@ -3413,54 +3413,54 @@ const KYCVerification: React.FC = () => {
 
                         {/* Address Information */}
                         <div className="border-t pt-3">
-                          <h4 className="text-xs font-semibold text-gray-900 mb-2">Address Information</h4>
+                          <h4 className="text-xs font-semibold text-[#F9FAFB] mb-2">Address Information</h4>
                           <div className="grid grid-cols-1 gap-3">
                             <div>
-                              <label className="block text-xs font-medium text-gray-700 mb-1">Address Line 1</label>
+                              <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Address Line 1</label>
                               {isEditing.nominee ? (
                                 <input
                                   type="text"
                                   value={nominee.address_line_1}
                                   onChange={(e) => handleNomineeChange(index, 'address_line_1', e.target.value)}
                                   placeholder="Address line 1"
-                                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                  className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                               ) : (
-                                <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                                <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                   {nominee.address_line_1 || 'Not provided'}
                                 </p>
                               )}
                             </div>
 
                             <div>
-                              <label className="block text-xs font-medium text-gray-700 mb-1">Address Line 2</label>
+                              <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Address Line 2</label>
                               {isEditing.nominee ? (
                                 <input
                                   type="text"
                                   value={nominee.address_line_2}
                                   onChange={(e) => handleNomineeChange(index, 'address_line_2', e.target.value)}
                                   placeholder="Address line 2"
-                                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                  className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                               ) : (
-                                <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                                <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                   {nominee.address_line_2 || 'Not provided'}
                                 </p>
                               )}
                             </div>
 
                             <div>
-                              <label className="block text-xs font-medium text-gray-700 mb-1">Address Line 3</label>
+                              <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Address Line 3</label>
                               {isEditing.nominee ? (
                                 <input
                                   type="text"
                                   value={nominee.address_line_3}
                                   onChange={(e) => handleNomineeChange(index, 'address_line_3', e.target.value)}
                                   placeholder="Address line 3"
-                                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                  className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                               ) : (
-                                <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                                <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                   {nominee.address_line_3 || 'Not provided'}
                                 </p>
                               )}
@@ -3468,51 +3468,51 @@ const KYCVerification: React.FC = () => {
 
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                               <div>
-                                <label className="block text-xs font-medium text-gray-700 mb-1">City</label>
+                                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">City</label>
                                 {isEditing.nominee ? (
                                   <input
                                     type="text"
                                     value={nominee.city}
                                     onChange={(e) => handleNomineeChange(index, 'city', e.target.value)}
                                     placeholder="City"
-                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                   />
                                 ) : (
-                                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                                  <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                     {nominee.city || 'Not provided'}
                                   </p>
                                 )}
                               </div>
 
                               <div>
-                                <label className="block text-xs font-medium text-gray-700 mb-1">State</label>
+                                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">State</label>
                                 {isEditing.nominee ? (
                                   <input
                                     type="text"
                                     value={nominee.state}
                                     onChange={(e) => handleNomineeChange(index, 'state', e.target.value)}
                                     placeholder="State"
-                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                   />
                                 ) : (
-                                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                                  <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                     {nominee.state || 'Not provided'}
                                   </p>
                                 )}
                               </div>
 
                               <div>
-                                <label className="block text-xs font-medium text-gray-700 mb-1">Pin Code</label>
+                                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Pin Code</label>
                                 {isEditing.nominee ? (
                                   <input
                                     type="text"
                                     value={nominee.pin_code}
                                     onChange={(e) => handleNomineeChange(index, 'pin_code', e.target.value)}
                                     placeholder="Pin code"
-                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                   />
                                 ) : (
-                                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                                  <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                     {nominee.pin_code || 'Not provided'}
                                   </p>
                                 )}
@@ -3520,10 +3520,10 @@ const KYCVerification: React.FC = () => {
 
                               {/* Country - UPDATED WITH API DATA */}
                               <div>
-                                <label className="block text-xs font-medium text-gray-700 mb-1">Country</label>
+                                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Country</label>
                                 {isEditing.nominee ? (
                                   loadingNomineeDropdown ? (
-                                    <div className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-100">
+                                    <div className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg bg-[#1F1A1A]">
                                       <div className="flex items-center">
                                         <Loader2 className="w-3 h-3 animate-spin mr-2" />
                                         Loading...
@@ -3533,7 +3533,7 @@ const KYCVerification: React.FC = () => {
                                     <select
                                       value={nominee.country}
                                       onChange={(e) => handleNomineeChange(index, 'country', e.target.value)}
-                                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                      className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     >
                                       <option value="">Select Country</option>
                                       {nomineeDropdownData.nomineeCountry.map((country) => (
@@ -3544,7 +3544,7 @@ const KYCVerification: React.FC = () => {
                                     </select>
                                   )
                                 ) : (
-                                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                                  <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                     {nominee.country || 'Not provided'}
                                   </p>
                                 )}
@@ -3555,14 +3555,14 @@ const KYCVerification: React.FC = () => {
 
                         {/* Identity Information */}
                         <div className="border-t pt-3">
-                          <h4 className="text-xs font-semibold text-gray-900 mb-2">Identity Information</h4>
+                          <h4 className="text-xs font-semibold text-[#F9FAFB] mb-2">Identity Information</h4>
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                             {/* Identity Type - UPDATED WITH API DATA */}
                             <div>
-                              <label className="block text-xs font-medium text-gray-700 mb-1">ID Proof Type</label>
+                              <label className="block text-xs font-medium text-[#E5E7EB] mb-1">ID Proof Type</label>
                               {isEditing.nominee ? (
                                 loadingNomineeDropdown ? (
-                                  <div className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-100">
+                                  <div className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg bg-[#1F1A1A]">
                                     <div className="flex items-center">
                                       <Loader2 className="w-3 h-3 animate-spin mr-2" />
                                       Loading...
@@ -3572,7 +3572,7 @@ const KYCVerification: React.FC = () => {
                                   <select
                                     value={nominee.identity_type}
                                     onChange={(e) => handleNomineeChange(index, 'identity_type', e.target.value)}
-                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                   >
                                     <option value="">Select ID Proof</option>
                                     {nomineeDropdownData.nomineeIdentity.map((identity) => (
@@ -3583,24 +3583,24 @@ const KYCVerification: React.FC = () => {
                                   </select>
                                 )
                               ) : (
-                                <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                                <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                   {nominee.identity_type || 'Not provided'}
                                 </p>
                               )}
                             </div>
 
                             <div>
-                              <label className="block text-xs font-medium text-gray-700 mb-1">ID Proof Number</label>
+                              <label className="block text-xs font-medium text-[#E5E7EB] mb-1">ID Proof Number</label>
                               {isEditing.nominee ? (
                                 <input
                                   type="text"
                                   value={nominee.identity_number}
                                   onChange={(e) => handleNomineeChange(index, 'identity_number', e.target.value)}
                                   placeholder="ID proof number"
-                                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                  className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 />
                               ) : (
-                                <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                                <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                   {nominee.identity_number || 'Not provided'}
                                 </p>
                               )}
@@ -3611,20 +3611,20 @@ const KYCVerification: React.FC = () => {
                         {/* Guardian Information - Only show when nominee type is Minor */}
                         {nominee.nominee_Type === "Minor" && (
                           <div className="border-t pt-3">
-                            <h4 className="text-xs font-semibold text-gray-900 mb-2">Guardian Information (Required for Minor)</h4>
+                            <h4 className="text-xs font-semibold text-[#F9FAFB] mb-2">Guardian Information (Required for Minor)</h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                               <div>
-                                <label className="block text-xs font-medium text-gray-700 mb-1">Guardian Name</label>
+                                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Guardian Name</label>
                                 {isEditing.nominee ? (
                                   <input
                                     type="text"
                                     value={nominee.guardian_name}
                                     onChange={(e) => handleNomineeChange(index, 'guardian_name', e.target.value)}
                                     placeholder="Guardian name"
-                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                   />
                                 ) : (
-                                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                                  <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                     {nominee.guardian_name || 'Not provided'}
                                   </p>
                                 )}
@@ -3632,10 +3632,10 @@ const KYCVerification: React.FC = () => {
 
                               {/* Guardian Relationship - UPDATED WITH API DATA */}
                               <div>
-                                <label className="block text-xs font-medium text-gray-700 mb-1">Guardian Relation</label>
+                                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Guardian Relation</label>
                                 {isEditing.nominee ? (
                                   loadingNomineeDropdown ? (
-                                    <div className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-gray-100">
+                                    <div className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg bg-[#1F1A1A]">
                                       <div className="flex items-center">
                                         <Loader2 className="w-3 h-3 animate-spin mr-2" />
                                         Loading...
@@ -3645,7 +3645,7 @@ const KYCVerification: React.FC = () => {
                                     <select
                                       value={nominee.guardian_relationship}
                                       onChange={(e) => handleNomineeChange(index, 'guardian_relationship', e.target.value)}
-                                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                      className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     >
                                       <option value="">Select Relation</option>
                                       {nomineeDropdownData.nominee_guardian_relationship_types.map((relation) => (
@@ -3656,74 +3656,74 @@ const KYCVerification: React.FC = () => {
                                     </select>
                                   )
                                 ) : (
-                                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                                  <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                     {nominee.guardian_relationship || 'Not provided'}
                                   </p>
                                 )}
                               </div>
 
                               <div>
-                                <label className="block text-xs font-medium text-gray-700 mb-1">Guardian Date of Birth</label>
+                                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Guardian Date of Birth</label>
                                 {isEditing.nominee ? (
                                   <input
                                     type="date"
                                     value={nominee.guardian_DOB}
                                     onChange={(e) => handleNomineeChange(index, 'guardian_DOB', e.target.value)}
-                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                   />
                                 ) : (
-                                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                                  <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                     {nominee.guardian_DOB || 'Not provided'}
                                   </p>
                                 )}
                               </div>
 
                               <div>
-                                <label className="block text-xs font-medium text-gray-700 mb-1">Guardian PAN</label>
+                                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Guardian PAN</label>
                                 {isEditing.nominee ? (
                                   <input
                                     type="text"
                                     value={nominee.guardian_PAN}
                                     onChange={(e) => handleNomineeChange(index, 'guardian_PAN', e.target.value)}
                                     placeholder="Guardian PAN"
-                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                    className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
                                   />
                                 ) : (
-                                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                                  <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                     {nominee.guardian_PAN || 'Not provided'}
                                   </p>
                                 )}
                               </div>
 
                               <div>
-                                <label className="block text-xs font-medium text-gray-700 mb-1">Guardian Mobile</label>
+                                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Guardian Mobile</label>
                                 {isEditing.nominee ? (
                                   <input
                                     type="tel"
                                     value={nominee.guardian_mobile}
                                     onChange={(e) => handleNomineeChange(index, 'guardian_mobile', e.target.value)}
                                     placeholder="Guardian mobile"
-                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                   />
                                 ) : (
-                                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                                  <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                     {nominee.guardian_mobile || 'Not provided'}
                                   </p>
                                 )}
                               </div>
 
                               <div>
-                                <label className="block text-xs font-medium text-gray-700 mb-1">Guardian Email</label>
+                                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Guardian Email</label>
                                 {isEditing.nominee ? (
                                   <input
                                     type="email"
                                     value={nominee.guardian_email}
                                     onChange={(e) => handleNomineeChange(index, 'guardian_email', e.target.value)}
                                     placeholder="Guardian email"
-                                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                   />
                                 ) : (
-                                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                                  <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                                     {nominee.guardian_email || 'Not provided'}
                                   </p>
                                 )}
@@ -3757,7 +3757,7 @@ const KYCVerification: React.FC = () => {
             </div>
           </div>
           {/* Complete Registration Card */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
             <div className="flex items-center mb-3">
               <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${isAllVerified2() ? 'bg-green-100' : 'bg-yellow-100'
                 }`}>
@@ -3765,8 +3765,8 @@ const KYCVerification: React.FC = () => {
                   }`} />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-gray-900">Complete Registration</h3>
-                <p className="text-gray-600 text-xs">Finish your registration</p>
+                <h3 className="text-sm font-semibold text-[#F9FAFB]">Complete Registration</h3>
+                <p className="text-[#9CA3AF] text-xs">Finish your registration</p>
               </div>
             </div>
 
@@ -3807,8 +3807,8 @@ const KYCVerification: React.FC = () => {
 
           {showCanPopup && (
             <div className="fixed inset-0 flex items-center justify-center bg-black/20 z-50 backdrop-blur-md">
-              <div className="bg-white rounded-2xl shadow-2xl w-[90%] max-w-md p-6 relative border border-gray-100">
-                <h2 className="text-xl font-semibold mb-3 text-center text-gray-900">
+              <div className="bg-[#111111] rounded-2xl shadow-2xl w-[90%] max-w-md p-6 relative border border-[#2A2A2A]">
+                <h2 className="text-xl font-semibold mb-3 text-center text-[#F9FAFB]">
                   {canError ? "Registration Status" : "CAN Created Successfully!"}
                 </h2>
 
@@ -3834,29 +3834,29 @@ const KYCVerification: React.FC = () => {
                 </div>
 
                 {!canError ? (
-                  <div className="text-sm text-gray-700 space-y-3">
+                  <div className="text-sm text-[#E5E7EB] space-y-3">
                     <p className="text-center text-green-700 font-medium">
                       Your Customer Application Number (CAN) has been generated successfully.
                     </p>
 
                     <div className="bg-green-50 border border-green-200 rounded-lg p-3 space-y-2">
                       <p>
-                        <span className="font-medium text-gray-800">Name:</span>{" "}
+                        <span className="font-medium text-[#F9FAFB]">Name:</span>{" "}
                         {partnerData.name || "Not available"}
                       </p>
                       <p>
-                        <span className="font-medium text-gray-800">Email:</span>{" "}
+                        <span className="font-medium text-[#F9FAFB]">Email:</span>{" "}
                         {partnerData.email || "Not available"}
                       </p>
                       <p>
-                        <span className="font-medium text-gray-800">CAN Number:</span>{" "}
+                        <span className="font-medium text-[#F9FAFB]">CAN Number:</span>{" "}
                         <span className="text-green-700 font-semibold">
                           {canData?.can || "Not available"}
                         </span>
                       </p>
                       {canData?.link && (
                         <p>
-                          <span className="font-medium text-gray-800">Can Verification Link:</span>{" "}
+                          <span className="font-medium text-[#F9FAFB]">Can Verification Link:</span>{" "}
                           <a
                             href={canData.link}
                             target="_blank"
@@ -3900,7 +3900,7 @@ const KYCVerification: React.FC = () => {
                       </button>
                       <button
                         onClick={() => setShowCanPopup(false)}
-                        className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-300"
+                        className="bg-[#2A2A2A] text-[#F9FAFB] px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-300"
                       >
                         Close
                       </button>
@@ -3918,7 +3918,7 @@ const KYCVerification: React.FC = () => {
                       </button>
                       <button
                         onClick={() => setShowCanPopup(false)}
-                        className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-300"
+                        className="bg-[#2A2A2A] text-[#F9FAFB] px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-300"
                       >
                         Review Details
                       </button>

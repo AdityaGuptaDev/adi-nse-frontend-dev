@@ -13,12 +13,12 @@ export default function PaymentSuccessPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-mainbackground">
-      <div className="max-w-sm w-full bg-white p-6 rounded-2xl shadow-lg">
+      <div className="max-w-sm w-full bg-[#111111] p-6 rounded-2xl shadow-lg">
         {/* Success Icon */}
         <div className="flex justify-center mb-6">
           <div className="w-16 h-16 bg-green-400 rounded-full flex items-center justify-center">
             <svg
-              className="w-8 h-8 text-white"
+              className="w-8 h-8 text-[#F9FAFB]"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -72,7 +72,7 @@ export default function PaymentSuccessPage() {
         {/* OK Button */}
         <div className="flex justify-center">
           <CustomButton
-            className="btn bg-primary text-white text-md w-1/2 border-none rounded-xl"
+            className="btn bg-primary text-[#F9FAFB] text-md w-1/2 border-none rounded-xl"
             onClick={handleOk}
           >
             Ok

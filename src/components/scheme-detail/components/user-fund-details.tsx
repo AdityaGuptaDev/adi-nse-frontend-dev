@@ -205,7 +205,7 @@ function UserFundDetails() {
         <SectionDivider />
 
         {/* Fund Table */}
-        <div className="bg-white  overflow-auto">
+        <div className="bg-[#111111]  overflow-auto">
           <table className="w-full">
             <thead>
               <tr>
@@ -235,7 +235,7 @@ function UserFundDetails() {
                return (
                 <tr
                   key={i}
-                  className="border-t border-field-border hover:bg-gray-50"
+                  className="border-t border-field-border hover:bg-[#1F1A1A]"
                 >
                   <td className="p-4 text-base-content text-sm">{fund?.SchemeMaster?.ms_fullname}</td>
                   <td className="p-4 text-right text-black text-sm">

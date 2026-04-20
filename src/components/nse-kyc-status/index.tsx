@@ -74,8 +74,8 @@ export default function NseKycStatus() {
       <h1 className="text-2xl font-bold text-[#D97706] mb-6">KYC Status Check</h1>
 
       {/* ── Search ── */}
-      <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
-        <label className="block text-sm font-medium text-gray-600 mb-2">
+      <div className="bg-[#111111] rounded-xl shadow-sm border p-6 mb-6">
+        <label className="block text-sm font-medium text-[#9CA3AF] mb-2">
           PAN Number
         </label>
         <div className="flex gap-3">
@@ -101,9 +101,9 @@ export default function NseKycStatus() {
 
       {/* ── Result ── */}
       {result && (
-        <div className="bg-white rounded-xl shadow-sm border p-6">
+        <div className="bg-[#111111] rounded-xl shadow-sm border p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-800">KYC Details</h2>
+            <h2 className="text-lg font-semibold text-[#F9FAFB]">KYC Details</h2>
             <span
               className={`px-3 py-1 rounded-full text-xs font-semibold ${
                 isKycDone
@@ -125,8 +125,8 @@ export default function NseKycStatus() {
               { label: "Status Date", value: result.status_date },
             ].map((item) => (
               <div key={item.label} className="border-b pb-3">
-                <p className="text-xs text-gray-400 mb-0.5">{item.label}</p>
-                <p className="text-sm font-medium text-gray-800">{item.value}</p>
+                <p className="text-xs text-[#6B7280] mb-0.5">{item.label}</p>
+                <p className="text-sm font-medium text-[#F9FAFB]">{item.value}</p>
               </div>
             ))}
           </div>
@@ -134,8 +134,8 @@ export default function NseKycStatus() {
       )}
 
       {searched && !result && (
-        <div className="bg-white rounded-xl shadow-sm border p-6 text-center">
-          <p className="text-gray-400">No KYC data found for this PAN</p>
+        <div className="bg-[#111111] rounded-xl shadow-sm border p-6 text-center">
+          <p className="text-[#6B7280]">No KYC data found for this PAN</p>
         </div>
       )}
     </div>

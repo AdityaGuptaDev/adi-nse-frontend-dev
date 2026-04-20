@@ -129,7 +129,7 @@ function BcList(props: any) {
       icon: <RiEdit2Line />,
       title: "Edit",
       tooltip: "edit",
-      className: "p-2 bg-primary text-white rounded-lg",
+      className: "p-2 bg-primary text-[#F9FAFB] rounded-lg",
       // show: props.permission.edit,
       show: true,
     },
@@ -138,28 +138,28 @@ function BcList(props: any) {
       title: "Mapping",
       tooltip: "mapping",
       show: true,
-      className: "p-2 bg-primary text-white rounded-lg",
+      className: "p-2 bg-primary text-[#F9FAFB] rounded-lg",
     },
     {
       icon: <RiUserUnfollowFill />,
       title: "DeActive",
       tooltip: "DeActive",
       show: true,
-      className: "p-2 bg-primary text-white rounded-lg",
+      className: "p-2 bg-primary text-[#F9FAFB] rounded-lg",
     },
     {
       icon: <RxDashboard />,
       title: "Dashboard",
       tooltip: "Dashboard",
       show: true,
-      className: "p-2 bg-primary text-white rounded-lg",
+      className: "p-2 bg-primary text-[#F9FAFB] rounded-lg",
     },
      {
         icon: <GoPlusCircle />, 
         title: "Create Investor",
         tooltip: "create Investor",
         show: true,
-        className: "p-2 bg-primary text-white rounded-lg",
+        className: "p-2 bg-primary text-[#F9FAFB] rounded-lg",
     },
   ];
 
@@ -434,7 +434,7 @@ const handleDelete = async () => {
                   </div>
                   <div>
                     <CustomButton
-                      className="bg-white !text-black !border !border-gray-300 w-28"
+                      className="bg-[#111111] !text-black !border !border-[#2A2A2A] w-28"
                       onClick={handleCloseModal}
                     >
                       Cancel
@@ -464,7 +464,7 @@ const handleDelete = async () => {
               >
                 <div className="mt-4 text-center">
                   <CustomButton
-                    className="bg-white !text-black !border !border-gray-300 w-28"
+                    className="bg-[#111111] !text-black !border !border-[#2A2A2A] w-28"
                     onClick={() => {
                       deleteCloseModal();
                     }}

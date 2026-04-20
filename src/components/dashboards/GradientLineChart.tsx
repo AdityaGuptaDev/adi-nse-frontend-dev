@@ -67,9 +67,9 @@ const GradientLineChart = () => {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      className="bg-white p-6 rounded-xl shadow-md"
+      className="bg-[#111111] p-6 rounded-xl shadow-md"
     >
-      <h2 className="text-gray-700 font-semibold mb-3">AUM Growth (Animated)</h2>
+      <h2 className="text-[#E5E7EB] font-semibold mb-3">AUM Growth (Animated)</h2>
       <Line ref={chartRef} data={data} options={options} />
     </motion.div>
   );

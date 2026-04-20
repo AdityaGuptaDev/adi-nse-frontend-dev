@@ -62,13 +62,13 @@ export default function LumpsumCalculator() {
   const yearlyGrowth = getYearlyGrowth();
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-[#0A0A0A] p-4">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex items-center mb-6">
           <button
             onClick={() => window.history.back()}
-            className="flex items-center text-gray-600 hover:text-gray-800 transition-colors"
+            className="flex items-center text-[#9CA3AF] hover:text-[#F9FAFB] transition-colors"
           >
             <ChevronLeft className="w-5 h-5 mr-2" />
             Back
@@ -77,25 +77,25 @@ export default function LumpsumCalculator() {
 
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Input Section */}
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
-              <Calculator className="h-5 w-5 text-blue-600" />
+          <div className="bg-[#111111] rounded-lg border border-[#2A2A2A] p-6">
+            <h2 className="text-xl font-semibold text-[#F9FAFB] mb-6 flex items-center gap-2">
+              <Calculator className="h-5 w-5 text-[#F59E0B]" />
               Investment Details
             </h2>
 
             <div className="space-y-6">
               {/* Investment Amount */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
                   One-time Investment Amount
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3 top-3 text-gray-500">₹</span>
+                  <span className="absolute left-3 top-3 text-[#9CA3AF]">₹</span>
                   <input
                     type="number"
                     value={investmentAmount}
                     onChange={(e) => setInvestmentAmount(Number(e.target.value))}
-                    className="w-full pl-8 pr-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    className="w-full pl-8 pr-4 py-2.5 border border-[#2A2A2A] rounded-md focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent outline-none"
                     min="10000"
                     step="10000"
                   />
@@ -107,9 +107,9 @@ export default function LumpsumCalculator() {
                   step="10000"
                   value={investmentAmount}
                   onChange={(e) => setInvestmentAmount(Number(e.target.value))}
-                  className="w-full mt-2 h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                  className="w-full mt-2 h-1.5 bg-[#1A1A1A] rounded-lg appearance-none cursor-pointer slider"
                 />
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <div className="flex justify-between text-xs text-[#9CA3AF] mt-1">
                   <span>₹10,000</span>
                   <span>₹1,00,00,000</span>
                 </div>
@@ -117,14 +117,14 @@ export default function LumpsumCalculator() {
 
               {/* Investment Period */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
                   Investment Period (Years)
                 </label>
                 <input
                   type="number"
                   value={investmentPeriod}
                   onChange={(e) => setInvestmentPeriod(Number(e.target.value))}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                  className="w-full px-4 py-2.5 border border-[#2A2A2A] rounded-md focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent outline-none"
                   min="1"
                   max="50"
                 />
@@ -134,9 +134,9 @@ export default function LumpsumCalculator() {
                   max="50"
                   value={investmentPeriod}
                   onChange={(e) => setInvestmentPeriod(Number(e.target.value))}
-                  className="w-full mt-2 h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                  className="w-full mt-2 h-1.5 bg-[#1A1A1A] rounded-lg appearance-none cursor-pointer slider"
                 />
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <div className="flex justify-between text-xs text-[#9CA3AF] mt-1">
                   <span>1 Year</span>
                   <span>50 Years</span>
                 </div>
@@ -144,7 +144,7 @@ export default function LumpsumCalculator() {
 
               {/* Expected Return */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
                   Expected Annual Return (%)
                 </label>
                 <div className="relative">
@@ -152,12 +152,12 @@ export default function LumpsumCalculator() {
                     type="number"
                     value={expectedReturn}
                     onChange={(e) => setExpectedReturn(Number(e.target.value))}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+                    className="w-full px-4 py-2.5 border border-[#2A2A2A] rounded-md focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent outline-none"
                     min="1"
                     max="30"
                     step="0.5"
                   />
-                  <span className="absolute right-3 top-3 text-gray-500">%</span>
+                  <span className="absolute right-3 top-3 text-[#9CA3AF]">%</span>
                 </div>
                 <input
                   type="range"
@@ -166,9 +166,9 @@ export default function LumpsumCalculator() {
                   step="0.5"
                   value={expectedReturn}
                   onChange={(e) => setExpectedReturn(Number(e.target.value))}
-                  className="w-full mt-2 h-1.5 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                  className="w-full mt-2 h-1.5 bg-[#1A1A1A] rounded-lg appearance-none cursor-pointer slider"
                 />
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <div className="flex justify-between text-xs text-[#9CA3AF] mt-1">
                   <span>1%</span>
                   <span>30%</span>
                 </div>
@@ -180,23 +180,23 @@ export default function LumpsumCalculator() {
           <div className="space-y-6">
             {/* Summary Cards */}
             <div className="grid gap-4">
-              <div className="bg-white rounded-lg border border-gray-200 p-5">
+              <div className="bg-[#111111] rounded-lg border border-[#2A2A2A] p-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Initial Investment</p>
-                    <p className="text-xl font-bold text-gray-800">{formatCurrency(results.initialInvestment)}</p>
+                    <p className="text-sm font-medium text-[#9CA3AF]">Initial Investment</p>
+                    <p className="text-xl font-bold text-[#F9FAFB]">{formatCurrency(results.initialInvestment)}</p>
                   </div>
-                  <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <IndianRupee className="h-5 w-5 text-blue-600" />
+                  <div className="h-10 w-10 bg-[#1F1A1A] rounded-full flex items-center justify-center">
+                    <IndianRupee className="h-5 w-5 text-[#F59E0B]" />
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-lg border border-gray-200 p-5">
+              <div className="bg-[#111111] rounded-lg border border-[#2A2A2A] p-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Future Value</p>
-                    <p className="text-xl font-bold text-gray-800">{formatCurrency(results.futureValue)}</p>
+                    <p className="text-sm font-medium text-[#9CA3AF]">Future Value</p>
+                    <p className="text-xl font-bold text-[#F9FAFB]">{formatCurrency(results.futureValue)}</p>
                   </div>
                   <div className="h-10 w-10 bg-green-100 rounded-full flex items-center justify-center">
                     <TrendingUp className="h-5 w-5 text-green-600" />
@@ -204,43 +204,43 @@ export default function LumpsumCalculator() {
                 </div>
               </div>
 
-              <div className="bg-white rounded-lg border border-gray-200 p-5">
+              <div className="bg-[#111111] rounded-lg border border-[#2A2A2A] p-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Wealth Gained</p>
-                    <p className="text-xl font-bold text-gray-800">{formatCurrency(results.wealthGained)}</p>
+                    <p className="text-sm font-medium text-[#9CA3AF]">Wealth Gained</p>
+                    <p className="text-xl font-bold text-[#F9FAFB]">{formatCurrency(results.wealthGained)}</p>
                   </div>
-                  <div className="h-10 w-10 bg-purple-100 rounded-full flex items-center justify-center">
-                    <PieChart className="h-5 w-5 text-purple-600" />
+                  <div className="h-10 w-10 bg-[#2A1F0A] rounded-full flex items-center justify-center">
+                    <PieChart className="h-5 w-5 text-[#F59E0B]" />
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Visual Breakdown */}
-            <div className="bg-white rounded-lg border border-gray-200 p-5">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Investment Breakdown</h3>
+            <div className="bg-[#111111] rounded-lg border border-[#2A2A2A] p-5">
+              <h3 className="text-lg font-semibold text-[#F9FAFB] mb-4">Investment Breakdown</h3>
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-600">Principal Amount</span>
-                  <span className="text-sm font-semibold text-blue-600">
+                  <span className="text-sm font-medium text-[#9CA3AF]">Principal Amount</span>
+                  <span className="text-sm font-semibold text-[#F59E0B]">
                     {((results.initialInvestment / results.futureValue) * 100 || 0).toFixed(1)}%
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-[#1A1A1A] rounded-full h-2">
                   <div
-                    className="bg-blue-500 h-2 rounded-full transition-all duration-500"
+                    className="bg-[#F59E0B] h-2 rounded-full transition-all duration-500"
                     style={{ width: `${(results.initialInvestment / results.futureValue) * 100 || 0}%` }}
                   ></div>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-600">Capital Gains</span>
+                  <span className="text-sm font-medium text-[#9CA3AF]">Capital Gains</span>
                   <span className="text-sm font-semibold text-green-600">
                     {((results.wealthGained / results.futureValue) * 100 || 0).toFixed(1)}%
                   </span>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="w-full bg-[#1A1A1A] rounded-full h-2">
                   <div
                     className="bg-green-500 h-2 rounded-full transition-all duration-500"
                     style={{ width: `${(results.wealthGained / results.futureValue) * 100 || 0}%` }}
@@ -250,16 +250,16 @@ export default function LumpsumCalculator() {
             </div>
 
             {/* Growth Visualization */}
-            <div className="bg-white rounded-lg border border-gray-200 p-5">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Growth Timeline</h3>
+            <div className="bg-[#111111] rounded-lg border border-[#2A2A2A] p-5">
+              <h3 className="text-lg font-semibold text-[#F9FAFB] mb-4">Growth Timeline</h3>
               <div className="space-y-3 max-h-48 overflow-y-auto">
                 {yearlyGrowth.filter((_, index) => index % Math.max(1, Math.floor(investmentPeriod / 10)) === 0 || index === yearlyGrowth.length - 1).map((data, index) => (
-                  <div key={data.year} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                  <div key={data.year} className="flex items-center justify-between p-2 bg-[#0A0A0A] rounded-lg">
                     <div className="text-sm">
                       <span className="font-medium">Year {data.year}</span>
                     </div>
                     <div className="text-right">
-                      <div className="text-sm font-semibold text-blue-600">
+                      <div className="text-sm font-semibold text-[#F59E0B]">
                         {formatCurrency(data.value)}
                       </div>
                       {data.year > 0 && (
@@ -274,9 +274,9 @@ export default function LumpsumCalculator() {
             </div>
 
             {/* Investment Summary */}
-            <div className="bg-blue-50 border border-blue-100 rounded-lg p-5">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">Investment Summary</h3>
-              <div className="space-y-2 text-sm text-gray-700">
+            <div className="bg-[#1F1A1A] border border-blue-100 rounded-lg p-5">
+              <h3 className="text-lg font-semibold text-[#F9FAFB] mb-4">Investment Summary</h3>
+              <div className="space-y-2 text-sm text-[#F9FAFB]">
                 <p>Lumpsum Amount: <span className="font-semibold">{formatCurrency(investmentAmount)}</span></p>
                 <p>Investment Period: <span className="font-semibold">{investmentPeriod} years</span></p>
                 <p>Expected Return: <span className="font-semibold">{expectedReturn}% per annum</span></p>
@@ -288,31 +288,31 @@ export default function LumpsumCalculator() {
         </div>
 
         {/* Comparison Section */}
-        <div className="mt-8 bg-white rounded-lg border border-gray-200 p-6">
-          <h3 className="text-xl font-semibold text-gray-800 mb-4">Key Metrics</h3>
+        <div className="mt-8 bg-[#111111] rounded-lg border border-[#2A2A2A] p-6">
+          <h3 className="text-xl font-semibold text-[#F9FAFB] mb-4">Key Metrics</h3>
           <div className="grid md:grid-cols-4 gap-6">
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">{expectedReturn}%</div>
-              <div className="text-sm text-gray-600">Expected CAGR</div>
+            <div className="text-center p-4 bg-[#1F1A1A] rounded-lg">
+              <div className="text-2xl font-bold text-[#F59E0B]">{expectedReturn}%</div>
+              <div className="text-sm text-[#9CA3AF]">Expected CAGR</div>
             </div>
             <div className="text-center p-4 bg-green-50 rounded-lg">
               <div className="text-2xl font-bold text-green-600">{(results.futureValue / results.initialInvestment || 0).toFixed(1)}x</div>
-              <div className="text-sm text-gray-600">Return Multiple</div>
+              <div className="text-sm text-[#9CA3AF]">Return Multiple</div>
             </div>
-            <div className="text-center p-4 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{formatNumber(results.wealthGained / investmentPeriod || 0)}</div>
-              <div className="text-sm text-gray-600">Avg. Annual Gain</div>
+            <div className="text-center p-4 bg-[#1F1A0A] rounded-lg">
+              <div className="text-2xl font-bold text-[#F59E0B]">{formatNumber(results.wealthGained / investmentPeriod || 0)}</div>
+              <div className="text-sm text-[#9CA3AF]">Avg. Annual Gain</div>
             </div>
             <div className="text-center p-4 bg-orange-50 rounded-lg">
               <div className="text-2xl font-bold text-orange-600">{investmentPeriod}</div>
-              <div className="text-sm text-gray-600">Years to Goal</div>
+              <div className="text-sm text-[#9CA3AF]">Years to Goal</div>
             </div>
           </div>
         </div>
 
         {/* Disclaimer */}
         <div className="mt-8 text-center">
-          <p className="text-xs text-gray-500 max-w-2xl mx-auto">
+          <p className="text-xs text-[#9CA3AF] max-w-2xl mx-auto">
             *This calculator provides an estimate based on the inputs provided. Actual returns may vary based on market conditions.
             Mutual fund investments are subject to market risks. Please read all scheme related documents carefully before investing.
           </p>

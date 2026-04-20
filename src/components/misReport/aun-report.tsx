@@ -378,8 +378,8 @@ export default function AUMReport() {
   if (loading)
     return (
       <div className="p-6 text-center">
-        <div className="animate-spin border-4 border-gray-300 border-t-blue-600 w-10 h-10 rounded-full mx-auto"></div>
-        <p className="mt-3 text-gray-700">Loading AUM data...</p>
+        <div className="animate-spin border-4 border-[#3A3A3A] border-t-blue-600 w-10 h-10 rounded-full mx-auto"></div>
+        <p className="mt-3 text-[#E5E7EB]">Loading AUM data...</p>
       </div>
     );
 
@@ -389,7 +389,7 @@ export default function AUMReport() {
         <p>Error: {error}</p>
         <button
           onClick={fetchAumData}
-          className="mt-3 px-4 py-2 bg-blue-600 text-white rounded"
+          className="mt-3 px-4 py-2 bg-[#F59E0B] text-[#F9FAFB] rounded"
         >
           Retry
         </button>
@@ -397,12 +397,12 @@ export default function AUMReport() {
     );
 
   return (
-    <div className="max-w-6xl mx-auto p-4 bg-white font-sans">
+    <div className="max-w-6xl mx-auto p-4 bg-[#111111] font-sans">
       {/* Header */}
 
       <button
         onClick={() => window.history.back()}
-        className="flex items-center text-gray-600 hover:text-gray-800 transition-colors"
+        className="flex items-center text-[#9CA3AF] hover:text-[#F9FAFB] transition-colors"
       >
         <ChevronLeft className="w-5 h-5 mr-2" />
         Back
@@ -412,7 +412,7 @@ export default function AUMReport() {
           <span className="text-orange-500">Vedant</span>
           <span className="text-black">Asset</span>
         </h1>
-        <div className="text-right text-xs text-gray-600">
+        <div className="text-right text-xs text-[#9CA3AF]">
           <p>3rd Floor, Gayways House Above Space Furniture, Ranchi</p>
           <p>Phone: 9304955509 | vedantasset@gmail.com</p>
         </div>
@@ -428,7 +428,7 @@ export default function AUMReport() {
           <span className="font-semibold">{pan}</span>
         </div>
         <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-gray-500" />
+          <Calendar className="w-4 h-4 text-[#9CA3AF]" />
           <input
             type="date"
             value={selectedDate}
@@ -437,7 +437,7 @@ export default function AUMReport() {
           />
           <button
             onClick={handleDateFilter}
-            className="bg-blue-600 text-white px-3 py-1 rounded"
+            className="bg-[#F59E0B] text-[#F9FAFB] px-3 py-1 rounded"
           >
             Submit
           </button>
@@ -476,8 +476,8 @@ export default function AUMReport() {
 
       {/* Table */}
       <div className="overflow-x-auto">
-        <table className="w-full border border-gray-300 text-sm">
-          <thead className="bg-gray-100 sticky top-0">
+        <table className="w-full border border-[#2A2A2A] text-sm">
+          <thead className="bg-[#111111] sticky top-0">
             <tr>
               <th className="border px-2 py-1 text-left">Folio Number</th>
               <th className="border px-2 py-1 text-left">ARN</th>
@@ -491,7 +491,7 @@ export default function AUMReport() {
           </thead>
           <tbody>
             {filteredData.map((item, idx) => (
-              <tr key={idx} className="hover:bg-gray-50">
+              <tr key={idx} className="hover:bg-[#0A0A0A]">
                 <td className="border px-2 py-1">{item.out_folio_no}</td>
                 <td className="border px-2 py-1">{item.out_arn}</td>
                 <td className="border px-2 py-1">{item.out_mutual_fund}</td>
@@ -517,7 +517,7 @@ export default function AUMReport() {
             ))}
           </tbody>
           <tfoot>
-            <tr className="bg-gray-200 font-semibold">
+            <tr className="bg-[#1A1A1A] font-semibold">
               <td colSpan={7} className="border px-2 py-1 text-right">
                 Grand Total
               </td>
@@ -542,8 +542,8 @@ export default function AUMReport() {
               <button
                 onClick={() => setActiveChart("bar")}
                 className={`px-3 py-1 rounded text-sm ${activeChart === "bar"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200"
+                  ? "bg-[#F59E0B] text-[#F9FAFB]"
+                  : "bg-[#1A1A1A]"
                   }`}
               >
                 <BarChart3 className="w-4 h-4 inline-block mr-1" /> Bar Chart
@@ -551,8 +551,8 @@ export default function AUMReport() {
               <button
                 onClick={() => setActiveChart("doughnut")}
                 className={`px-3 py-1 rounded text-sm ${activeChart === "doughnut"
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200"
+                  ? "bg-[#F59E0B] text-[#F9FAFB]"
+                  : "bg-[#1A1A1A]"
                   }`}
               >
                 <BarChart3 className="w-4 h-4 inline-block mr-1" /> Doughnut
@@ -574,7 +574,7 @@ export default function AUMReport() {
       )}
 
       {/* Disclaimer */}
-      <div className="mt-6 border-t pt-3 text-xs text-gray-700">
+      <div className="mt-6 border-t pt-3 text-xs text-[#F9FAFB]">
         <strong>Disclaimer:</strong> Mutual Fund investments are subject to
         market risks, read all scheme related documents carefully...
       </div>

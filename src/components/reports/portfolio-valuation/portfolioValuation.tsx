@@ -770,21 +770,21 @@ const ReportConfiguration = () => {
 
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
-          <div className="px-6 py-4 border-b flex justify-between items-center bg-gray-50 sticky top-0 z-10">
-            <h2 className="text-xl font-semibold text-gray-800">Statement of Account</h2>
+        <div className="bg-[#111111] rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
+          <div className="px-6 py-4 border-b flex justify-between items-center bg-[#1F1A1A] sticky top-0 z-10">
+            <h2 className="text-xl font-semibold text-[#F9FAFB]">Statement of Account</h2>
             <button
               onClick={() => setShowSOAModal(false)}
-              className="text-gray-500 hover:text-gray-700 text-xl"
+              className="text-[#9CA3AF] hover:text-[#E5E7EB] text-xl"
             >
               &times;
             </button>
           </div>
 
           <div className="p-6 overflow-auto flex-grow space-y-6">
-            <div className="flex flex-wrap items-center justify-between gap-4 text-sm font-medium text-gray-700">
+            <div className="flex flex-wrap items-center justify-between gap-4 text-sm font-medium text-[#E5E7EB]">
               <div className="flex items-center gap-2">
-                <label className="text-gray-600">View Period:</label>
+                <label className="text-[#9CA3AF]">View Period:</label>
                 <select
                   name="viewPeriod"
                   value={config.viewPeriod}
@@ -802,7 +802,7 @@ const ReportConfiguration = () => {
               </div>
 
               <div className="flex items-center gap-2">
-                <label className="text-gray-600">Transaction Slip Scheme:</label>
+                <label className="text-[#9CA3AF]">Transaction Slip Scheme:</label>
                 <select
                   name="scheme"
                   value={config.scheme}
@@ -823,37 +823,37 @@ const ReportConfiguration = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-50 p-4 rounded-lg shadow-sm">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-[#1F1A1A] p-4 rounded-lg shadow-sm">
               <div>
-                <p className="text-sm text-gray-600"><span className="font-semibold">Name:</span> {selectedSOA.name}</p>
-                <p className="text-sm text-gray-600"><span className="font-semibold">Folio:</span> {selectedSOA.folio}</p>
+                <p className="text-sm text-[#9CA3AF]"><span className="font-semibold">Name:</span> {selectedSOA.name}</p>
+                <p className="text-sm text-[#9CA3AF]"><span className="font-semibold">Folio:</span> {selectedSOA.folio}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600"><span className="font-semibold">Scheme:</span> {selectedSOA.scheme}</p>
-                <p className="text-sm text-gray-600"><span className="font-semibold">Nominee 1:</span> {selectedSOA.nominee}</p>
+                <p className="text-sm text-[#9CA3AF]"><span className="font-semibold">Scheme:</span> {selectedSOA.scheme}</p>
+                <p className="text-sm text-[#9CA3AF]"><span className="font-semibold">Nominee 1:</span> {selectedSOA.nominee}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-600"><span className="font-semibold">Joint 1:</span> -</p>
+                <p className="text-sm text-[#9CA3AF]"><span className="font-semibold">Joint 1:</span> -</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 p-4 rounded-lg shadow-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#1F1A1A] p-4 rounded-lg shadow-sm">
               <div>
-                <p className="text-sm text-gray-600"><span className="font-semibold">Bank:</span> {selectedSOA.bank}</p>
+                <p className="text-sm text-[#9CA3AF]"><span className="font-semibold">Bank:</span> {selectedSOA.bank}</p>
               </div>
-              <div className="flex justify-between text-sm text-gray-600">
+              <div className="flex justify-between text-sm text-[#9CA3AF]">
                 <p><span className="font-semibold">Market Value (Per Unit):</span> ₹ {selectedSOA.marketValuePerUnit.toFixed(4)} as on {selectedSOA.marketValueDate}</p>
                 <p><span className="font-semibold">Total Market Value:</span> ₹ {selectedSOA.totalMarketValue.toFixed(2)}</p>
               </div>
             </div>
 
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-[#9CA3AF]">
               <span className="font-semibold">Unit Balance:</span> {selectedSOA.unitBalance.toFixed(4)}
             </div>
 
-            <div className="overflow-x-auto border border-gray-200 rounded-lg shadow-sm">
-              <table className="min-w-full text-sm text-gray-700">
-                <thead className="bg-gray-100 text-xs uppercase text-gray-600">
+            <div className="overflow-x-auto border border-[#2A2A2A] rounded-lg shadow-sm">
+              <table className="min-w-full text-sm text-[#E5E7EB]">
+                <thead className="bg-[#1F1A1A] text-xs uppercase text-[#9CA3AF]">
                   <tr>
                     <th className="px-4 py-2 border">Date</th>
                     <th className="px-4 py-2 border">Transaction Type</th>
@@ -866,7 +866,7 @@ const ReportConfiguration = () => {
                 </thead>
                 <tbody>
                   {selectedSOA.transactions.map((txn, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
+                    <tr key={index} className="hover:bg-[#1F1A1A]">
                       <td className="px-4 py-2 border">{txn.date}</td>
                       <td className="px-4 py-2 border">{txn.type}</td>
                       <td className="px-4 py-2 border">{txn.arnNo}</td>
@@ -881,7 +881,7 @@ const ReportConfiguration = () => {
             </div>
           </div>
 
-          <div className="px-6 py-4 border-t flex justify-end bg-white sticky bottom-0">
+          <div className="px-6 py-4 border-t flex justify-end bg-[#111111] sticky bottom-0">
             <button
               onClick={() => setShowSOAModal(false)}
               className="px-5 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition duration-200"
@@ -895,11 +895,11 @@ const ReportConfiguration = () => {
   };
 
   const BuildReportMessage = () => (
-    <div className="flex items-center justify-center p-8 bg-gray-50 rounded-lg border border-gray-200">
+    <div className="flex items-center justify-center p-8 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A]">
       <div className="text-center">
         <div className="text-orange-500 text-5xl mb-4">📊</div>
-        <h3 className="text-xl font-semibold text-gray-800 mb-2">Build a report</h3>
-        <p className="text-gray-600 mb-4">Use the form above to generate a report</p>
+        <h3 className="text-xl font-semibold text-[#F9FAFB] mb-2">Build a report</h3>
+        <p className="text-[#9CA3AF] mb-4">Use the form above to generate a report</p>
         <button
           onClick={handleHeaderPlusClick}
           className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition duration-200"
@@ -921,7 +921,7 @@ const ReportConfiguration = () => {
   if (!loading && (!apiData || apiData.length === 0)) {
     return (
       <div className="flex items-center justify-center p-8">
-        <p className="text-gray-600">No portfolio data available</p>
+        <p className="text-[#9CA3AF]">No portfolio data available</p>
       </div>
     );
   }
@@ -954,14 +954,14 @@ const ReportConfiguration = () => {
   };
 
   return (
-    <div className="p-4 bg-white text-sm relative">
+    <div className="p-4 bg-[#111111] text-sm relative">
       {showConfigForm ? (
-        <div className="bg-white p-4 rounded-lg shadow-md mb-4 border border-gray-200">
+        <div className="bg-[#111111] p-4 rounded-lg shadow-md mb-4 border border-[#2A2A2A]">
           <div className="flex justify-between items-center mb-3">
             <div className="flex items-center">
               <button
                 onClick={toggleView}
-                className="mr-2 p-1 text-gray-600 hover:text-orange-500"
+                className="mr-2 p-1 text-[#9CA3AF] hover:text-orange-500"
               >
                 <MdOutlineRemove size={20} />
               </button>
@@ -969,7 +969,7 @@ const ReportConfiguration = () => {
             </div>
             <button
               onClick={handleMinimize}
-              className="p-1 text-gray-600 hover:text-orange-500"
+              className="p-1 text-[#9CA3AF] hover:text-orange-500"
             >
               <FiMinus size={18} />
             </button>
@@ -1073,7 +1073,7 @@ const ReportConfiguration = () => {
             <div className="mb-4">
               <h3 className="font-medium mb-1">Data Options:</h3>
               <div className="flex flex-wrap gap-1">
-                <label className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded">
+                <label className="flex items-center gap-1 bg-[#1F1A1A] px-2 py-0.5 rounded">
                   <input
                     type="checkbox"
                     checked={dataOptions["Merge SIP, STP, Div Reinvest"]}
@@ -1089,7 +1089,7 @@ const ReportConfiguration = () => {
               <h3 className="font-medium mb-1">Data Options:</h3>
               <div className="flex flex-wrap gap-1">
                 {Object.keys(dataOptions).map(option => (
-                  <label key={option} className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded">
+                  <label key={option} className="flex items-center gap-1 bg-[#1F1A1A] px-2 py-0.5 rounded">
                     <input
                       type="checkbox"
                       checked={dataOptions[option as keyof typeof dataOptions]}
@@ -1108,7 +1108,7 @@ const ReportConfiguration = () => {
               <h3 className="font-medium mb-1">MF Allocation Sections:</h3>
               <div className="flex flex-wrap gap-1">
                 {Object.keys(mfAllocations).map(option => (
-                  <label key={option} className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded">
+                  <label key={option} className="flex items-center gap-1 bg-[#1F1A1A] px-2 py-0.5 rounded">
                     <input
                       type="checkbox"
                       checked={mfAllocations[option as keyof typeof mfAllocations]}
@@ -1310,7 +1310,7 @@ const ReportConfiguration = () => {
             )}
 
             {showAdvancedFilters && config.product === "Mutual Fund" && (
-              <div className="col-span-full p-3 border border-gray-200 rounded-lg bg-gray-50">
+              <div className="col-span-full p-3 border border-[#2A2A2A] rounded-lg bg-[#1F1A1A]">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                   <div>
                     <label className="block mb-1 text-xs">Category:</label>
@@ -1396,7 +1396,7 @@ const ReportConfiguration = () => {
                 <div className="flex justify-end gap-2 mt-3">
                   <button
                     onClick={handleResetAdvancedFilters}
-                    className="px-3 py-1 text-xs border border-gray-300 rounded hover:bg-gray-100"
+                    className="px-3 py-1 text-xs border border-[#3A3A3A] rounded hover:bg-[#1F1A1A]"
                   >
                     Reset
                   </button>
@@ -1418,7 +1418,7 @@ const ReportConfiguration = () => {
                 {config.product === "Share & Bond" ? (
                   <>
                     {["Quantity", "Dividend", "Gain", "Holding Days", "Absolute Return", "CAGR"].map(column => (
-                      <label key={column} className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded">
+                      <label key={column} className="flex items-center gap-1 bg-[#1F1A1A] px-2 py-0.5 rounded">
                         <input
                           type="checkbox"
                           checked={config.columns.includes(column)}
@@ -1430,7 +1430,7 @@ const ReportConfiguration = () => {
                     ))}
                   </>
                 ) : config.product === "Other Assets" ? (
-                  <label className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded">
+                  <label className="flex items-center gap-1 bg-[#1F1A1A] px-2 py-0.5 rounded">
                     <input
                       type="checkbox"
                       checked={config.columns.includes("Gain")}
@@ -1452,7 +1452,7 @@ const ReportConfiguration = () => {
                       "Absolute Return",
                       "CAGR"
                     ].filter(col => col !== "").map(column => (
-                      <label key={column} className="flex items-center gap-1 bg-gray-100 px-2 py-0.5 rounded">
+                      <label key={column} className="flex items-center gap-1 bg-[#1F1A1A] px-2 py-0.5 rounded">
                         <input
                           type="checkbox"
                           checked={config.columns.includes(column)}
@@ -1471,7 +1471,7 @@ const ReportConfiguration = () => {
           <div className="flex justify-end gap-2">
             <button
               onClick={handleMinimize}
-              className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100 text-xs"
+              className="px-3 py-1 border border-[#3A3A3A] rounded hover:bg-[#1F1A1A] text-xs"
             >
               Cancel
             </button>
@@ -1497,11 +1497,11 @@ const ReportConfiguration = () => {
           <div className="flex items-center mb-3">
             <button
               onClick={toggleView}
-              className="mr-2 p-1 text-gray-600 hover:text-orange-500"
+              className="mr-2 p-1 text-[#9CA3AF] hover:text-orange-500"
             >
               <MdOutlineRemove size={18} />
             </button>
-            <h2 className="text-lg font-semibold text-gray-800">Report Configuration</h2>
+            <h2 className="text-lg font-semibold text-[#F9FAFB]">Report Configuration</h2>
             <button
               onClick={handleHeaderPlusClick}
               className="ml-2 p-1 text-orange-500 hover:text-orange-700 rounded-full hover:bg-orange-50 transition-colors"
@@ -1510,8 +1510,8 @@ const ReportConfiguration = () => {
             </button>
           </div>
 
-          <div className="w-full bg-white rounded-xl shadow-md border border-gray-200 overflow-x-auto">
-            <table className="min-w-[1000px] divide-y divide-gray-200 text-sm">
+          <div className="w-full bg-[#111111] rounded-xl shadow-md border border-[#2A2A2A] overflow-x-auto">
+            <table className="min-w-[1000px] divide-y divide-[#2A2A2A] text-sm">
               <thead className="bg-gradient-to-r from-orange-500 to-orange-600 sticky top-0 z-10">
                 <tr>
                   {[
@@ -1537,7 +1537,7 @@ const ReportConfiguration = () => {
                   ))}
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-100 text-xs">
+              <tbody className="bg-[#111111] divide-y divide-[#2A2A2A] text-xs">
                 {filteredReportData && filteredReportData.length > 0 ? (
                   filteredReportData.map((investor, index) => {
                     const investorTotals = calculateInvestorTotals(investor);
@@ -1546,15 +1546,15 @@ const ReportConfiguration = () => {
                     return (
                       <React.Fragment key={`investor-${index}`}>
                         {/* Investor Name Row */}
-                        <tr className="bg-gray-50">
-                          <td colSpan={11} className="px-3 py-2 font-semibold text-gray-900">
+                        <tr className="bg-[#1F1A1A]">
+                          <td colSpan={11} className="px-3 py-2 font-semibold text-[#F9FAFB]">
                             {investor.investorName} : {investor.folioNumber}
                           </td>
                         </tr>
 
                         {/* Category Row */}
-                        <tr className="bg-gray-100">
-                          <td colSpan={11} className="px-3 py-2 font-medium text-gray-700">
+                        <tr className="bg-[#1F1A1A]">
+                          <td colSpan={11} className="px-3 py-2 font-medium text-[#E5E7EB]">
                             {investor.category}
                           </td>
                         </tr>
@@ -1564,12 +1564,12 @@ const ReportConfiguration = () => {
                           const isExpanded = expandedRows.has(scheme.transactionId);
                           return (
                             <React.Fragment key={`scheme-${idx}`}>
-                              <tr className="hover:bg-gray-50">
-                                <td className="px-3 py-1.5 text-gray-800">
+                              <tr className="hover:bg-[#1F1A1A]">
+                                <td className="px-3 py-1.5 text-[#F9FAFB]">
                                   <div className="flex items-center gap-1">
                                     <button
                                       onClick={() => toggleRow(scheme.transactionId)}
-                                      className="text-gray-600 hover:text-orange-500"
+                                      className="text-[#9CA3AF] hover:text-orange-500"
                                     >
                                       {isExpanded ? <FiMinus size={12} /> : <FiPlus size={12} />}
                                     </button>
@@ -1607,18 +1607,18 @@ const ReportConfiguration = () => {
                               {/* Expanded Transaction Rows */}
                               {isExpanded &&
                                 scheme.transactions.map((txn, tIdx) => (
-                                  <tr key={`txn-${tIdx}`} className="bg-gray-50 hover:bg-gray-100 text-[11px]">
-                                    <td className="px-3 py-1 pl-8 text-gray-600">{txn.date}</td>
-                                    <td className="px-3 py-1 text-gray-600">{txn.type}</td>
-                                    <td className="px-3 py-1 text-right text-gray-600">{txn.units.toFixed(3)}</td>
-                                    <td className="px-3 py-1 text-right text-gray-600">{formatNumber(txn.nav)}</td>
-                                    <td className="px-3 py-1 text-right text-gray-600">{formatNumber(scheme.currentNav)}</td>
-                                    <td className="px-3 py-1 text-right text-gray-600">{formatNumber(txn.purchaseValue)}</td>
-                                    <td className="px-3 py-1 text-right text-gray-600">{formatNumber(txn.currentValue)}</td>
-                                    <td className="px-3 py-1 text-right text-gray-600">{formatNumber(txn.gain)}</td>
-                                    <td className="px-3 py-1 text-right text-gray-600">{txn.days}</td>
-                                    <td className="px-3 py-1 text-right text-gray-600">{txn.absReturn}</td>
-                                    <td className="px-3 py-1 text-right text-gray-600">{txn.cagr}</td>
+                                  <tr key={`txn-${tIdx}`} className="bg-[#1F1A1A] hover:bg-[#1F1A1A] text-[11px]">
+                                    <td className="px-3 py-1 pl-8 text-[#9CA3AF]">{txn.date}</td>
+                                    <td className="px-3 py-1 text-[#9CA3AF]">{txn.type}</td>
+                                    <td className="px-3 py-1 text-right text-[#9CA3AF]">{txn.units.toFixed(3)}</td>
+                                    <td className="px-3 py-1 text-right text-[#9CA3AF]">{formatNumber(txn.nav)}</td>
+                                    <td className="px-3 py-1 text-right text-[#9CA3AF]">{formatNumber(scheme.currentNav)}</td>
+                                    <td className="px-3 py-1 text-right text-[#9CA3AF]">{formatNumber(txn.purchaseValue)}</td>
+                                    <td className="px-3 py-1 text-right text-[#9CA3AF]">{formatNumber(txn.currentValue)}</td>
+                                    <td className="px-3 py-1 text-right text-[#9CA3AF]">{formatNumber(txn.gain)}</td>
+                                    <td className="px-3 py-1 text-right text-[#9CA3AF]">{txn.days}</td>
+                                    <td className="px-3 py-1 text-right text-[#9CA3AF]">{txn.absReturn}</td>
+                                    <td className="px-3 py-1 text-right text-[#9CA3AF]">{txn.cagr}</td>
                                   </tr>
                                 ))}
                             </React.Fragment>
@@ -1626,76 +1626,76 @@ const ReportConfiguration = () => {
                         })}
 
                         {/* Category Sub Total */}
-                        <tr className="bg-orange-50 border-t border-gray-300 font-semibold text-[12px]">
-                          <td colSpan={5} className="px-3 py-1 text-right text-gray-700">
+                        <tr className="bg-orange-50 border-t border-[#3A3A3A] font-semibold text-[12px]">
+                          <td colSpan={5} className="px-3 py-1 text-right text-[#E5E7EB]">
                             Sub Total - {investor.category} :
                           </td>
-                          <td className="px-3 py-1 text-right text-gray-700">
+                          <td className="px-3 py-1 text-right text-[#E5E7EB]">
                             {formatNumber(categoryTotals.purchaseValue)}
                           </td>
-                          <td className="px-3 py-1 text-right text-gray-700">
+                          <td className="px-3 py-1 text-right text-[#E5E7EB]">
                             {formatNumber(categoryTotals.currentValue)}
                           </td>
-                          <td className="px-3 py-1 text-right text-gray-700">
+                          <td className="px-3 py-1 text-right text-[#E5E7EB]">
                             {formatNumber(categoryTotals.gain)}
                           </td>
-                          <td className="px-3 py-1 text-right text-gray-700">
+                          <td className="px-3 py-1 text-right text-[#E5E7EB]">
                             {Math.round(categoryTotals.holdingDays / categoryTotals.schemeCount)}
                           </td>
-                          <td className="px-3 py-1 text-right text-gray-700">
+                          <td className="px-3 py-1 text-right text-[#E5E7EB]">
                             {(categoryTotals.absReturn / categoryTotals.schemeCount).toFixed(2)}
                           </td>
-                          <td className="px-3 py-1 text-right text-gray-700">
+                          <td className="px-3 py-1 text-right text-[#E5E7EB]">
                             {(categoryTotals.cagr / categoryTotals.schemeCount).toFixed(2)}
                           </td>
                         </tr>
 
                         {/* Investor Sub Total */}
-                        <tr className="bg-orange-50 border-t border-gray-300 font-semibold text-[12px]">
-                          <td colSpan={5} className="px-3 py-1 text-right text-gray-700">
+                        <tr className="bg-orange-50 border-t border-[#3A3A3A] font-semibold text-[12px]">
+                          <td colSpan={5} className="px-3 py-1 text-right text-[#E5E7EB]">
                             Sub Total - {investor.investorName} :
                           </td>
-                          <td className="px-3 py-1 text-right text-gray-700">
+                          <td className="px-3 py-1 text-right text-[#E5E7EB]">
                             {formatNumber(investorTotals.purchaseValue)}
                           </td>
-                          <td className="px-3 py-1 text-right text-gray-700">
+                          <td className="px-3 py-1 text-right text-[#E5E7EB]">
                             {formatNumber(investorTotals.currentValue)}
                           </td>
-                          <td className="px-3 py-1 text-right text-gray-700">
+                          <td className="px-3 py-1 text-right text-[#E5E7EB]">
                             {formatNumber(investorTotals.gain)}
                           </td>
-                          <td className="px-3 py-1 text-right text-gray-700">
+                          <td className="px-3 py-1 text-right text-[#E5E7EB]">
                             {Math.round(investorTotals.holdingDays / investorTotals.schemeCount)}
                           </td>
-                          <td className="px-3 py-1 text-right text-gray-700">
+                          <td className="px-3 py-1 text-right text-[#E5E7EB]">
                             {(investorTotals.absReturn / investorTotals.schemeCount).toFixed(2)}
                           </td>
-                          <td className="px-3 py-1 text-right text-gray-700">
+                          <td className="px-3 py-1 text-right text-[#E5E7EB]">
                             {(investorTotals.cagr / investorTotals.schemeCount).toFixed(2)}
                           </td>
                         </tr>
 
                         {/* Investor Grand Total */}
                         <tr className="bg-orange-100 border-t-2 border-gray-400 font-bold text-[12px]">
-                          <td colSpan={5} className="px-3 py-1 text-right text-gray-800">
+                          <td colSpan={5} className="px-3 py-1 text-right text-[#F9FAFB]">
                             Grand Total :
                           </td>
-                          <td className="px-3 py-1 text-right text-gray-800">
+                          <td className="px-3 py-1 text-right text-[#F9FAFB]">
                             {formatNumber(investorTotals.purchaseValue)}
                           </td>
-                          <td className="px-3 py-1 text-right text-gray-800">
+                          <td className="px-3 py-1 text-right text-[#F9FAFB]">
                             {formatNumber(investorTotals.currentValue)}
                           </td>
-                          <td className="px-3 py-1 text-right text-gray-800">
+                          <td className="px-3 py-1 text-right text-[#F9FAFB]">
                             {formatNumber(investorTotals.gain)}
                           </td>
-                          <td className="px-3 py-1 text-right text-gray-800">
+                          <td className="px-3 py-1 text-right text-[#F9FAFB]">
                             {Math.round(investorTotals.holdingDays / investorTotals.schemeCount)}
                           </td>
-                          <td className="px-3 py-1 text-right text-gray-800">
+                          <td className="px-3 py-1 text-right text-[#F9FAFB]">
                             {(investorTotals.absReturn / investorTotals.schemeCount).toFixed(2)}
                           </td>
-                          <td className="px-3 py-1 text-right text-gray-800">
+                          <td className="px-3 py-1 text-right text-[#F9FAFB]">
                             {(investorTotals.cagr / investorTotals.schemeCount).toFixed(2)}
                           </td>
                         </tr>
@@ -1704,7 +1704,7 @@ const ReportConfiguration = () => {
                   })
                 ) : (
                   <tr>
-                    <td colSpan={11} className="px-3 py-4 text-center text-sm text-gray-500">
+                    <td colSpan={11} className="px-3 py-4 text-center text-sm text-[#9CA3AF]">
                       {loading ? "Loading data..." : "No data available"}
                     </td>
                   </tr>

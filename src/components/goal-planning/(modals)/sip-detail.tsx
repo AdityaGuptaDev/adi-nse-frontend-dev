@@ -110,23 +110,23 @@ const SipPopup: React.FC<SipPopupProps> = ({
       )} */}
 
       <dialog ref={modalRef} className="modal " id={modalId}>
-        <div className="modal-box max-w-2xl w-full rounded-3xl">
+        <div className="modal-box max-w-2xl w-full rounded-3xl bg-[#111111] border border-[#2A2A2A]">
           {/* Header */}
 
-          <div className="flex justify-between items-center border-b border-accent pb-4 mb-4">
-            <h3 className="font-semibold text-md text-gray-950">SIP Detail</h3>
-            <button onClick={closeModal} className="btn btn-circle border-none">
-              <RxCross2 className="text-gray-500 text-2xl" />
+          <div className="flex justify-between items-center border-b border-[#2A2A2A] pb-4 mb-4">
+            <h3 className="font-semibold text-md text-[#F9FAFB]">SIP Detail</h3>
+            <button onClick={closeModal} className="btn btn-circle border-none bg-transparent hover:bg-[#1F1A1A]">
+              <RxCross2 className="text-[#9CA3AF] text-2xl" />
             </button>
           </div>
 
           {/* Fund Info */}
-          <div className=" border-b border-accent pb-6 ">
-            <h2 className="text-sm text-base-content font-medium mb-2">
+          <div className=" border-b border-[#2A2A2A] pb-6 ">
+            <h2 className="text-sm text-[#F9FAFB] font-medium mb-2">
               {/* {schemeData?.ms_fullname} */}
               HDFC Mid-Cap Opportunities Gr
             </h2>
-            <p className="text-base-content text-xs  flex gap-2">
+            <p className="text-[#9CA3AF] text-xs  flex gap-2">
               <span>
                 {/* {schemeData?.SchemeCategory?.Name} */}
                 Equity
@@ -143,7 +143,7 @@ const SipPopup: React.FC<SipPopupProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
             {/* Investor Dropdown */}
             <div className="form-control ">
-              <label className="label text-base-content text-sm">
+              <label className="label text-[#F9FAFB] text-sm">
                 Investor
               </label>
 
@@ -164,13 +164,13 @@ const SipPopup: React.FC<SipPopupProps> = ({
 
             {/* Account Holding Dropdown */}
             <div className="">
-              <label className="label text-base-content text-sm">
+              <label className="label text-[#F9FAFB] text-sm">
                 Account Holding
               </label>
               {/* <div className="dropdown">
                 <label
                   tabIndex={1}
-                  className="btn w-full justify-between bg-white  border border-accent text-placeholder font-normal rounded-lg hover:bg-white"
+                  className="btn w-full justify-between bg-[#111111]  border border-accent text-placeholder font-normal rounded-lg hover:bg-[#111111]"
                 >
                   {selectedAccount || "Select"} <FaChevronDown />
                 </label>
@@ -205,12 +205,12 @@ const SipPopup: React.FC<SipPopupProps> = ({
           {/* Folio Type Radio */}
           <div className="form-control flex gap-5 ">
             <div className=" w-full  mt-5">
-              <CustomLabel className="label text-base-content ">
+              <CustomLabel className="label text-[#F9FAFB] ">
                 Existing Folio
               </CustomLabel>
 
               <div className="flex gap-5 h-8 items-center">
-                <CustomLabel className="text-gray-950 cursor-pointer gap-2 ">
+                <CustomLabel className="text-[#F9FAFB] cursor-pointer gap-2 ">
                   <CustomCheckbox
                     label="New"
                     name="folioType"
@@ -219,7 +219,7 @@ const SipPopup: React.FC<SipPopupProps> = ({
                     onChange={() => setFolioType("new")}
                   />
                 </CustomLabel>
-                <CustomLabel className="text-gray-950 cursor-pointer">
+                <CustomLabel className="text-[#F9FAFB] cursor-pointer">
                   <CustomCheckbox
                     label="Existing"
                     name="folioType"
@@ -268,7 +268,7 @@ const SipPopup: React.FC<SipPopupProps> = ({
           <div className="flex items-center gap-4 mb-4">
             <div className="form-control  w-full">
               <CustomLabel className="label">
-                <span className="label-text  text-sm text-base-content mb-2">
+                <span className="label-text  text-sm text-[#F9FAFB] mb-2">
                   Amount
                 </span>
               </CustomLabel>
@@ -290,7 +290,7 @@ const SipPopup: React.FC<SipPopupProps> = ({
             </div>
             <div className=" w-full ">
               <CustomLabel className="label">
-                <span className="label-text  text-sm text-base-content mb-2">
+                <span className="label-text  text-sm text-[#F9FAFB] mb-2">
                   Date
                 </span>
               </CustomLabel>
@@ -304,7 +304,7 @@ const SipPopup: React.FC<SipPopupProps> = ({
           {/* Form Fields */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="form-control   font-normal  text-sm ">
-              <CustomLabel>No of Years</CustomLabel>
+              <CustomLabel className="text-[#F9FAFB]">No of Years</CustomLabel>
               <CustomSelect
                 items={yearOptions}
                 bindValue="label"
@@ -319,8 +319,8 @@ const SipPopup: React.FC<SipPopupProps> = ({
               />
             </div>
 
-            <div className="form-control text-base-content  font-normal  text-sm">
-              <CustomLabel className="label">From Current Mandate</CustomLabel>
+            <div className="form-control text-[#F9FAFB]  font-normal  text-sm">
+              <CustomLabel className="label text-[#F9FAFB]">From Current Mandate</CustomLabel>
               <CustomSelect
                 items={mandateOptions}
                 bindValue="label"
@@ -334,9 +334,9 @@ const SipPopup: React.FC<SipPopupProps> = ({
           </div>
 
           {/* Actions */}
-          <div className="modal-action flex justify-center">
+          <div className="modal-action flex justify-center border-t border-[#2A2A2A] pt-4">
             <button
-              className="btn btn-primary w-1/3 rounded-2xl text-lg font-normal text-white"
+              className="btn bg-[#F59E0B] hover:bg-[#B45309] border-none w-1/3 rounded-2xl text-lg font-normal text-white"
               onClick={() => {
                 console.log({
                   investor: selectedInvestor,

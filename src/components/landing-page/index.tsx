@@ -92,21 +92,21 @@ const SIPCalculator = () => {
   const yearlyData = generateYearlyData();
 
   return (
-    <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-6 lg:p-8 relative overflow-hidden border border-white/50">
+    <div className="bg-[#111111] backdrop-blur-xl rounded-3xl shadow-2xl p-6 lg:p-8 relative overflow-hidden border border-[#2A2A2A]">
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-amber-300/30 to-rose-300/30 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-emerald-300/30 to-cyan-300/30 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-violet-300/20 rounded-full blur-3xl animate-pulse delay-500"></div>
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-[#F59E0B]/10 to-[#B45309]/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-tr from-[#10B981]/10 to-[#059669]/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#F59E0B]/5 rounded-full blur-3xl animate-pulse delay-500"></div>
       </div>
       
       <div className="flex flex-wrap gap-4 justify-between items-center mb-6 relative z-10">
-        <div className="flex gap-2 p-1.5 bg-gradient-to-r from-amber-100/50 to-rose-100/50 rounded-2xl backdrop-blur-sm border border-white/50">
+        <div className="flex gap-2 p-1.5 bg-[#1F1A1A] rounded-2xl backdrop-blur-sm border border-[#2A2A2A]">
           <button
             onClick={() => setInvestmentType("SIP")}
             className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
               investmentType === "SIP"
-                ? "bg-gradient-to-r from-amber-500 to-rose-500 text-white shadow-lg shadow-amber-500/30 scale-105"
-                : "text-gray-600 hover:text-amber-600 hover:bg-white/50"
+                ? "bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-[#F9FAFB] shadow-lg shadow-[#F59E0B]/30 scale-105"
+                : "text-[#9CA3AF] hover:text-[#F59E0B] hover:bg-[#2A2A2A]"
             }`}
           >
             SIP
@@ -115,16 +115,16 @@ const SIPCalculator = () => {
             onClick={() => setInvestmentType("Lumpsum")}
             className={`px-6 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${
               investmentType === "Lumpsum"
-                ? "bg-gradient-to-r from-amber-500 to-rose-500 text-white shadow-lg shadow-amber-500/30 scale-105"
-                : "text-gray-600 hover:text-amber-600 hover:bg-white/50"
+                ? "bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-[#F9FAFB] shadow-lg shadow-[#F59E0B]/30 scale-105"
+                : "text-[#9CA3AF] hover:text-[#F59E0B] hover:bg-[#2A2A2A]"
             }`}
           >
             Lumpsum
           </button>
         </div>
-        <div className="text-right bg-white/30 backdrop-blur-sm px-4 py-2 rounded-2xl border border-white/50">
-          <p className="text-xs text-gray-600">Potential Value After {investmentPeriod} Years</p>
-          <p className="text-xl font-bold bg-gradient-to-r from-amber-600 to-rose-600 bg-clip-text text-transparent">
+        <div className="text-right bg-[#1F1A1A] backdrop-blur-sm px-4 py-2 rounded-2xl border border-[#2A2A2A]">
+          <p className="text-xs text-[#9CA3AF]">Potential Value After {investmentPeriod} Years</p>
+          <p className="text-xl font-bold bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent">
             {formatInLakhsCrores(results.futureValue)}
           </p>
         </div>
@@ -132,11 +132,11 @@ const SIPCalculator = () => {
 
       <div className="grid md:grid-cols-2 gap-6 mb-8 relative z-10">
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-[#F9FAFB] mb-2">
             {investmentType === "SIP" ? "Monthly SIP Amount" : "Lumpsum Investment"}
           </label>
           <div className="relative group">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">₹</span>
+            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9CA3AF] font-bold">₹</span>
             <input
               type="number"
               value={investmentType === "SIP" ? monthlyAmount : lumpsumAmount}
@@ -148,7 +148,7 @@ const SIPCalculator = () => {
                   setLumpsumAmount(val);
                 }
               }}
-              className="w-full pl-8 pr-4 py-3 bg-white/50 backdrop-blur-sm border-2 border-white/70 rounded-xl focus:border-amber-400 outline-none text-gray-800 transition-all group-hover:shadow-lg group-hover:shadow-amber-500/20"
+              className="w-full pl-8 pr-4 py-3 bg-[#1F1A1A] backdrop-blur-sm border-2 border-[#2A2A2A] rounded-xl focus:border-[#F59E0B] outline-none text-[#F9FAFB] transition-all group-hover:shadow-lg group-hover:shadow-[#F59E0B]/20"
               min="500"
               step="500"
             />
@@ -158,7 +158,7 @@ const SIPCalculator = () => {
               <button
                 key={amt}
                 onClick={() => investmentType === "SIP" ? setMonthlyAmount(amt) : setLumpsumAmount(amt)}
-                className="text-xs px-2 py-1 rounded-lg bg-white/50 backdrop-blur-sm text-gray-600 border border-white/70 hover:from-amber-500 hover:to-rose-500 hover:text-white hover:border-transparent transition-all duration-300"
+                className="text-xs px-2 py-1 rounded-lg bg-[#1F1A1A] backdrop-blur-sm text-[#9CA3AF] border border-[#2A2A2A] hover:from-[#F59E0B] hover:to-[#B45309] hover:text-[#F9FAFB] hover:border-transparent transition-all duration-300"
               >
                 ₹{amt/1000}k
               </button>
@@ -167,8 +167,8 @@ const SIPCalculator = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Investment Period <span className="text-gray-400">(Years)</span>
+          <label className="block text-sm font-semibold text-[#F9FAFB] mb-2">
+            Investment Period <span className="text-[#9CA3AF]">(Years)</span>
           </label>
           <div className="flex items-center gap-3">
             <input
@@ -177,21 +177,21 @@ const SIPCalculator = () => {
               max="30"
               value={investmentPeriod}
               onChange={(e) => setInvestmentPeriod(Number(e.target.value))}
-              className="flex-1 h-2 bg-white/50 rounded-lg appearance-none cursor-pointer accent-amber-500"
+              className="flex-1 h-2 bg-[#2A2A2A] rounded-lg appearance-none cursor-pointer accent-[#F59E0B]"
             />
-            <span className="min-w-[60px] px-3 py-2 bg-white/50 backdrop-blur-sm rounded-lg text-center font-bold text-amber-600 border border-white/70">
+            <span className="min-w-[60px] px-3 py-2 bg-[#1F1A1A] backdrop-blur-sm rounded-lg text-center font-bold text-[#F59E0B] border border-[#2A2A2A]">
               {investmentPeriod}Y
             </span>
           </div>
-          <div className="flex justify-between text-xs text-gray-400 mt-1">
+          <div className="flex justify-between text-xs text-[#9CA3AF] mt-1">
             <span>1Y</span>
             <span>40Y</span>
           </div>
         </div>
 
         <div className="md:col-span-2">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Expected Return Rate <span className="text-gray-400">(Annual)</span>
+          <label className="block text-sm font-semibold text-[#F9FAFB] mb-2">
+            Expected Return Rate <span className="text-[#9CA3AF]">(Annual)</span>
           </label>
           <div className="flex items-center gap-3">
             <input
@@ -201,9 +201,9 @@ const SIPCalculator = () => {
               step="0.1"
               value={expectedReturn}
               onChange={(e) => setExpectedReturn(Number(e.target.value))}
-              className="flex-1 h-2 bg-white/50 rounded-lg appearance-none cursor-pointer accent-amber-500"
+              className="flex-1 h-2 bg-[#2A2A2A] rounded-lg appearance-none cursor-pointer accent-[#F59E0B]"
             />
-            <span className="min-w-[80px] px-3 py-2 bg-white/50 backdrop-blur-sm rounded-lg text-center font-bold text-amber-600 border border-white/70">
+            <span className="min-w-[80px] px-3 py-2 bg-[#1F1A1A] backdrop-blur-sm rounded-lg text-center font-bold text-[#F59E0B] border border-[#2A2A2A]">
               {expectedReturn}%
             </span>
           </div>
@@ -212,13 +212,13 @@ const SIPCalculator = () => {
 
       <div className="mb-8 relative z-10">
         <div className="flex justify-between items-center mb-4">
-          <span className="text-sm font-semibold text-gray-700">Wealth Growth Projection</span>
+          <span className="text-sm font-semibold text-[#F9FAFB]">Wealth Growth Projection</span>
           <div className="flex gap-4 text-xs">
             <span className="flex items-center gap-1">
-              <span className="w-3 h-3 bg-gradient-to-r from-amber-500 to-rose-500 rounded-full animate-pulse"></span> Investment
+              <span className="w-3 h-3 bg-gradient-to-r from-[#F59E0B] to-[#B45309] rounded-full animate-pulse"></span> <span className="text-[#9CA3AF]">Investment</span>
             </span>
             <span className="flex items-center gap-1">
-              <span className="w-3 h-3 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full animate-pulse delay-300"></span> Returns
+              <span className="w-3 h-3 bg-gradient-to-r from-[#10B981] to-[#059669] rounded-full animate-pulse delay-300"></span> <span className="text-[#9CA3AF]">Returns</span>
             </span>
           </div>
         </div>
@@ -239,71 +239,71 @@ const SIPCalculator = () => {
               >
                 <div className="w-full relative">
                   <motion.div 
-                    className="w-full bg-gradient-to-t from-amber-500 to-rose-500 rounded-t-lg transition-all duration-300 group-hover:opacity-80 cursor-pointer relative overflow-hidden"
+                    className="w-full bg-gradient-to-t from-[#F59E0B] to-[#B45309] rounded-t-lg transition-all duration-300 group-hover:opacity-80 cursor-pointer relative overflow-hidden"
                     style={{ height: `${investmentHeight}px` }}
                     initial={{ height: 0 }}
                     animate={{ height: `${investmentHeight}px` }}
                     transition={{ duration: 0.5, delay: index * 0.02 }}
                   >
-                    <div className="absolute inset-0 bg-white/20 shimmer"></div>
-                    <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded-lg px-2 py-1 whitespace-nowrap z-20 shadow-xl">
+                    <div className="absolute inset-0 bg-white/10 shimmer"></div>
+                    <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-[#1F1A1A] text-[#F9FAFB] text-xs rounded-lg px-2 py-1 whitespace-nowrap z-20 shadow-xl border border-[#2A2A2A]">
                       Invested: {formatInLakhsCrores(data.invested)}
                     </div>
                   </motion.div>
                   <motion.div 
-                    className="w-full bg-gradient-to-t from-emerald-500 to-cyan-500 rounded-t-lg transition-all duration-300 group-hover:opacity-80 cursor-pointer relative overflow-hidden"
+                    className="w-full bg-gradient-to-t from-[#10B981] to-[#059669] rounded-t-lg transition-all duration-300 group-hover:opacity-80 cursor-pointer relative overflow-hidden"
                     style={{ height: `${returnsHeight}px` }}
                     initial={{ height: 0 }}
                     animate={{ height: `${returnsHeight}px` }}
                     transition={{ duration: 0.5, delay: index * 0.02 }}
                   >
-                    <div className="absolute inset-0 bg-white/20 shimmer"></div>
-                    <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs rounded-lg px-2 py-1 whitespace-nowrap z-20 shadow-xl">
+                    <div className="absolute inset-0 bg-white/10 shimmer"></div>
+                    <div className="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-[#1F1A1A] text-[#F9FAFB] text-xs rounded-lg px-2 py-1 whitespace-nowrap z-20 shadow-xl border border-[#2A2A2A]">
                       Returns: {formatInLakhsCrores(data.futureValue - data.invested)}
                     </div>
                   </motion.div>
                 </div>
-                <span className="text-xs text-gray-500 mt-2">{data.year}Y</span>
+                <span className="text-xs text-[#9CA3AF] mt-2">{data.year}Y</span>
               </motion.div>
             );
           })}
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-6 p-4 bg-white/50 backdrop-blur-sm rounded-2xl relative z-10 border border-white/70">
+      <div className="grid grid-cols-3 gap-4 mb-6 p-4 bg-[#1F1A1A] backdrop-blur-sm rounded-2xl relative z-10 border border-[#2A2A2A]">
         <motion.div 
           className="text-center"
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <p className="text-xs text-gray-500">Invested Amount</p>
-          <p className="text-sm font-bold text-amber-600">{formatInLakhsCrores(results.investedAmount)}</p>
+          <p className="text-xs text-[#9CA3AF]">Invested Amount</p>
+          <p className="text-sm font-bold text-[#F59E0B]">{formatInLakhsCrores(results.investedAmount)}</p>
         </motion.div>
         <motion.div 
           className="text-center"
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <p className="text-xs text-gray-500">Estimated Returns</p>
-          <p className="text-sm font-bold text-emerald-600">{formatInLakhsCrores(results.estimatedReturns)}</p>
+          <p className="text-xs text-[#9CA3AF]">Estimated Returns</p>
+          <p className="text-sm font-bold text-[#10B981]">{formatInLakhsCrores(results.estimatedReturns)}</p>
         </motion.div>
         <motion.div 
           className="text-center"
           whileHover={{ scale: 1.05 }}
           transition={{ type: "spring", stiffness: 300 }}
         >
-          <p className="text-xs text-gray-500">Total Value</p>
-          <p className="text-sm font-bold text-cyan-600">{formatInLakhsCrores(results.futureValue)}</p>
+          <p className="text-xs text-[#9CA3AF]">Total Value</p>
+          <p className="text-sm font-bold text-[#F59E0B]">{formatInLakhsCrores(results.futureValue)}</p>
         </motion.div>
       </div>
 
       <div className="mb-6 relative z-10">
-        <p className="text-xs text-gray-500 mb-2">Quick Select Plan</p>
+        <p className="text-xs text-[#9CA3AF] mb-2">Quick Select Plan</p>
         <div className="flex gap-2">
           {[
-            { name: "InstaFD", rate: "7.5%", from: "from-amber-500", to: "to-rose-500", icon: "🏦" },
-            { name: "Gold", rate: "12%", from: "from-emerald-500", to: "to-cyan-500", icon: "👑" },
-            { name: "Daily", rate: "12%", from: "from-violet-500", to: "to-purple-500", icon: "⚡" }
+            { name: "InstaFD", rate: "7.5%", from: "from-[#F59E0B]", to: "to-[#B45309]", icon: "🏦" },
+            { name: "Gold", rate: "12%", from: "from-[#10B981]", to: "to-[#059669]", icon: "👑" },
+            { name: "Daily", rate: "12%", from: "from-[#F59E0B]", to: "to-[#B45309]", icon: "⚡" }
           ].map(plan => (
             <motion.button
               key={plan.name}
@@ -315,12 +315,12 @@ const SIPCalculator = () => {
               whileTap={{ scale: 0.95 }}
               className={`flex-1 py-2 px-3 rounded-xl border-2 transition-all ${
                 selectedPlan === plan.name
-                  ? `bg-gradient-to-r ${plan.from} ${plan.to} text-white border-transparent shadow-lg`
-                  : "border-white/70 bg-white/30 backdrop-blur-sm hover:border-amber-400"
+                  ? `bg-gradient-to-r ${plan.from} ${plan.to} text-[#F9FAFB] border-transparent shadow-lg`
+                  : "border-[#2A2A2A] bg-[#1F1A1A] backdrop-blur-sm hover:border-[#F59E0B]"
               }`}
             >
-              <span className="text-xs font-bold block">{plan.name} {plan.icon}</span>
-              <span className={`text-sm font-black ${selectedPlan === plan.name ? "text-white" : `bg-gradient-to-r ${plan.from} ${plan.to} bg-clip-text text-transparent`}`}>
+              <span className="text-xs font-bold block text-[#F9FAFB]">{plan.name} {plan.icon}</span>
+              <span className={`text-sm font-black ${selectedPlan === plan.name ? "text-[#F9FAFB]" : `bg-gradient-to-r ${plan.from} ${plan.to} bg-clip-text text-transparent`}`}>
                 {plan.rate}
               </span>
             </motion.button>
@@ -328,7 +328,7 @@ const SIPCalculator = () => {
         </div>
       </div>
 
-      <p className="text-[10px] text-gray-400 text-center relative z-10">
+      <p className="text-[10px] text-[#9CA3AF] text-center relative z-10">
         Note: Returns are calculated based on the selected investment plan. 
         Actual returns may vary based on market conditions and fund performance.
       </p>
@@ -345,7 +345,7 @@ const MobileAppMockup = () => {
     {
       id: "onboarding",
       title: "Welcome to Vedant Asset",
-      bg: "from-amber-500 to-rose-500",
+      bg: "from-[#F59E0B] to-[#B45309]",
       icon: "✨",
       features: ["Smart Investing", "Expert Guidance", "Better Returns"],
       amount: "₹500",
@@ -355,7 +355,7 @@ const MobileAppMockup = () => {
     {
       id: "dashboard",
       title: "Investment Dashboard",
-      bg: "from-emerald-500 to-cyan-500",
+      bg: "from-[#10B981] to-[#059669]",
       icon: "📊",
       features: ["Real-time Portfolio", "Performance Analytics", "Market Insights"],
       amount: "₹2.5L",
@@ -365,7 +365,7 @@ const MobileAppMockup = () => {
     {
       id: "calculator",
       title: "SIP Calculator",
-      bg: "from-violet-500 to-purple-500",
+      bg: "from-[#F59E0B] to-[#B45309]",
       icon: "🧮",
       features: ["Instant Returns", "Goal Planning", "Comparison Tools"],
       amount: "₹12L",
@@ -375,7 +375,7 @@ const MobileAppMockup = () => {
     {
       id: "invest",
       title: "Easy Investment",
-      bg: "from-blue-500 to-indigo-500",
+      bg: "from-[#F59E0B] to-[#B45309]",
       icon: "💰",
       features: ["Start with ₹500", "Multiple Options", "Instant Updates"],
       amount: "₹50K+",
@@ -397,11 +397,11 @@ const MobileAppMockup = () => {
 
   return (
     <div className="relative w-full max-w-[300px] mx-auto perspective-1000">
-      <div className="absolute inset-0 bg-gradient-to-r from-amber-500/20 to-rose-500/20 rounded-[48px] blur-2xl transform translate-y-4 scale-95"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-[#F59E0B]/20 to-[#B45309]/20 rounded-[48px] blur-2xl transform translate-y-4 scale-95"></div>
       
-      <div className="relative rounded-[48px] bg-gradient-to-br from-gray-900 to-gray-800 p-3 shadow-2xl transform transition-transform hover:scale-105 duration-300">
-        <div className="relative rounded-[40px] bg-gray-100 overflow-hidden aspect-[9/19]">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-7 bg-black rounded-b-2xl z-20"></div>
+      <div className="relative rounded-[48px] bg-gradient-to-br from-[#1F1A1A] to-[#111111] p-3 shadow-2xl transform transition-transform hover:scale-105 duration-300 border border-[#2A2A2A]">
+        <div className="relative rounded-[40px] bg-[#0A0A0A] overflow-hidden aspect-[9/19]">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-24 h-7 bg-[#1F1A1A] rounded-b-2xl z-20"></div>
 
           <AnimatePresence mode="wait">
             <motion.div
@@ -413,13 +413,13 @@ const MobileAppMockup = () => {
               className="absolute inset-0"
             >
               <div className={`absolute inset-0 bg-gradient-to-br ${appScreens[activeScreen].bg}`}>
-                <div className="absolute top-10 -right-10 w-40 h-40 bg-white/20 rounded-full blur-3xl animate-pulse"></div>
-                <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-white/20 rounded-full blur-3xl animate-pulse delay-700"></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-white/10 rounded-full blur-2xl animate-ping"></div>
+                <div className="absolute top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+                <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-white/10 rounded-full blur-3xl animate-pulse delay-700"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-[#111111]/5 rounded-full blur-2xl animate-ping"></div>
               </div>
 
               <div className="relative z-10 h-full p-4 flex flex-col">
-                <div className="flex justify-between items-center text-white/90 text-[10px] mb-3 mt-2">
+                <div className="flex justify-between items-center text-[#F9FAFB]/80 text-[10px] mb-3 mt-2">
                   <span className="font-semibold">9:41</span>
                   <div className="flex gap-1">
                     <span className="text-xs">📶</span>
@@ -434,11 +434,11 @@ const MobileAppMockup = () => {
                   transition={{ delay: 0.1, type: "spring" }}
                   className="flex justify-center mb-3"
                 >
-                  <div className="bg-white/20 backdrop-blur-xl rounded-xl px-4 py-1.5 border border-white/30 shadow-lg">
+                  <div className="bg-white/10 backdrop-blur-xl rounded-xl px-4 py-1.5 border border-white/20 shadow-lg">
                     <img
                       src={`${publicPathName}/logo_light.png`}
                       alt="Vedant Asset"
-                      className="h-5 w-auto brightness-0 invert"
+                      className="h-8 w-auto brightness-0 invert"
                     />
                   </div>
                 </motion.div>
@@ -447,7 +447,7 @@ const MobileAppMockup = () => {
                   initial={{ scale: 0, rotate: -180 }}
                   animate={{ scale: 1, rotate: 0 }}
                   transition={{ delay: 0.2, type: "spring" }}
-                  className="w-12 h-12 bg-white/20 backdrop-blur-xl rounded-2xl flex items-center justify-center text-2xl mb-3 mx-auto border border-white/30 shadow-lg"
+                  className="w-12 h-12 bg-white/10 backdrop-blur-xl rounded-2xl flex items-center justify-center text-2xl mb-3 mx-auto border border-white/20 shadow-lg"
                 >
                   {appScreens[activeScreen].icon}
                 </motion.div>
@@ -456,7 +456,7 @@ const MobileAppMockup = () => {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.3 }}
-                  className="text-white text-base font-bold mb-2 text-center"
+                  className="text-[#F9FAFB] text-base font-bold mb-2 text-center"
                 >
                   {appScreens[activeScreen].title}
                 </motion.h3>
@@ -466,19 +466,19 @@ const MobileAppMockup = () => {
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.35 }}
-                    className="bg-white/20 backdrop-blur-xl rounded-lg px-2 py-1.5 flex-1 border border-white/30"
+                    className="bg-white/10 backdrop-blur-xl rounded-lg px-2 py-1.5 flex-1 border border-white/20"
                   >
-                    <p className="text-white/70 text-[8px]">Min.</p>
-                    <p className="text-white font-bold text-sm">{appScreens[activeScreen].amount}</p>
+                    <p className="text-[#F9FAFB]/70 text-[8px]">Min.</p>
+                    <p className="text-[#F9FAFB] font-bold text-sm">{appScreens[activeScreen].amount}</p>
                   </motion.div>
                   <motion.div 
                     initial={{ x: 20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.4 }}
-                    className="bg-white/20 backdrop-blur-xl rounded-lg px-2 py-1.5 flex-1 border border-white/30"
+                    className="bg-white/10 backdrop-blur-xl rounded-lg px-2 py-1.5 flex-1 border border-white/20"
                   >
-                    <p className="text-white/70 text-[8px]">Returns</p>
-                    <p className="text-white font-bold text-sm">{appScreens[activeScreen].returns}</p>
+                    <p className="text-[#F9FAFB]/70 text-[8px]">Returns</p>
+                    <p className="text-[#F9FAFB] font-bold text-sm">{appScreens[activeScreen].returns}</p>
                   </motion.div>
                 </div>
 
@@ -489,12 +489,12 @@ const MobileAppMockup = () => {
                       initial={{ x: -20, opacity: 0 }}
                       animate={{ x: 0, opacity: 1 }}
                       transition={{ delay: 0.45 + index * 0.1 }}
-                      className="flex items-center gap-1.5 bg-white/10 backdrop-blur-sm rounded-lg p-1.5 border border-white/20"
+                      className="flex items-center gap-1.5 bg-[#111111]/5 backdrop-blur-sm rounded-lg p-1.5 border border-white/10"
                     >
-                      <div className="w-4 h-4 bg-gradient-to-r from-amber-400 to-rose-400 rounded-full flex items-center justify-center text-white text-[8px] shrink-0">
+                      <div className="w-4 h-4 bg-gradient-to-r from-[#F59E0B] to-[#B45309] rounded-full flex items-center justify-center text-[#F9FAFB] text-[8px] shrink-0">
                         ✓
                       </div>
-                      <span className="text-white/90 text-[9px]">{feature}</span>
+                      <span className="text-[#F9FAFB]/80 text-[9px]">{feature}</span>
                     </motion.div>
                   ))}
                 </div>
@@ -503,18 +503,18 @@ const MobileAppMockup = () => {
                   initial={{ scaleY: 0 }}
                   animate={{ scaleY: 1 }}
                   transition={{ delay: 0.7 }}
-                  className="mt-2 bg-white/10 backdrop-blur-xl rounded-lg p-2 border border-white/30"
+                  className="mt-2 bg-[#111111]/5 backdrop-blur-xl rounded-lg p-2 border border-white/10"
                 >
-                  <div className="flex justify-between text-white/70 text-[8px] mb-1">
+                  <div className="flex justify-between text-[#F9FAFB]/70 text-[8px] mb-1">
                     <span>Portfolio Growth</span>
-                    <span className="text-emerald-300">+28%</span>
+                    <span className="text-[#10B981]">+28%</span>
                   </div>
-                  <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
+                  <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: appScreens[activeScreen].chart }}
                       transition={{ delay: 0.8, duration: 1 }}
-                      className="h-full bg-gradient-to-r from-amber-400 to-rose-400 rounded-full"
+                      className="h-full bg-gradient-to-r from-[#F59E0B] to-[#B45309] rounded-full"
                     />
                   </div>
                 </motion.div>
@@ -523,27 +523,27 @@ const MobileAppMockup = () => {
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.9 }}
-                  className="mt-2 mb-3 bg-gradient-to-r from-amber-500 to-rose-500 text-white py-2 rounded-xl font-semibold text-xs hover:shadow-lg hover:shadow-amber-500/50 transition-all transform hover:scale-105"
+                  className="mt-2 mb-3 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-[#F9FAFB] py-2 rounded-xl font-semibold text-xs hover:shadow-lg hover:shadow-[#F59E0B]/30 transition-all transform hover:scale-105"
                 >
                   Get Started Now
                 </motion.button>
 
-                <div className="flex justify-around text-white/80 text-xs">
-                  <span className="text-white bg-white/20 p-1.5 rounded-lg">🏠</span>
-                  <span className="hover:text-white transition-colors p-1.5">📈</span>
-                  <span className="hover:text-white transition-colors p-1.5">💰</span>
-                  <span className="hover:text-white transition-colors p-1.5">👤</span>
+                <div className="flex justify-around text-[#F9FAFB]/80 text-xs">
+                  <span className="text-[#F9FAFB] bg-white/10 p-1.5 rounded-lg">🏠</span>
+                  <span className="hover:text-[#F9FAFB] transition-colors p-1.5">📈</span>
+                  <span className="hover:text-[#F9FAFB] transition-colors p-1.5">💰</span>
+                  <span className="hover:text-[#F9FAFB] transition-colors p-1.5">👤</span>
                 </div>
               </div>
             </motion.div>
           </AnimatePresence>
 
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-20 h-1 bg-gray-400 rounded-full"></div>
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-20 h-1 bg-[#2A2A2A] rounded-full"></div>
         </div>
 
-        <div className="absolute -left-1 top-20 w-1 h-8 bg-gray-700 rounded-l"></div>
-        <div className="absolute -right-1 top-24 w-1 h-12 bg-gray-700 rounded-r"></div>
-        <div className="absolute -right-1 top-40 w-1 h-12 bg-gray-700 rounded-r"></div>
+        <div className="absolute -left-1 top-20 w-1 h-8 bg-[#2A2A2A] rounded-l"></div>
+        <div className="absolute -right-1 top-24 w-1 h-12 bg-[#2A2A2A] rounded-r"></div>
+        <div className="absolute -right-1 top-40 w-1 h-12 bg-[#2A2A2A] rounded-r"></div>
       </div>
 
       <div className="flex justify-center gap-2 mt-3">
@@ -553,8 +553,8 @@ const MobileAppMockup = () => {
             onClick={() => setActiveScreen(index)}
             className={`h-2 rounded-full transition-all duration-300 ${
               activeScreen === index
-                ? "w-6 bg-gradient-to-r from-amber-500 to-rose-500"
-                : "w-2 bg-gray-300 hover:bg-amber-300"
+                ? "w-6 bg-gradient-to-r from-[#F59E0B] to-[#B45309]"
+                : "w-2 bg-[#2A2A2A] hover:bg-[#F59E0B]"
             }`}
           />
         ))}
@@ -569,49 +569,49 @@ const AppFeatures = () => {
       icon: "🚀",
       title: "Lightning Fast",
       desc: "Open account in 5 minutes with paperless KYC",
-      color: "from-amber-500 to-rose-500",
+      color: "from-[#F59E0B] to-[#B45309]",
       stats: "5 min",
-      bg: "from-amber-50 to-rose-50"
+      bg: "from-[#F59E0B]/10 to-[#B45309]/10"
     },
     {
       icon: "📊",
       title: "Live Tracking",
       desc: "Real-time portfolio updates and market insights",
-      color: "from-emerald-500 to-cyan-500",
+      color: "from-[#10B981] to-[#059669]",
       stats: "24/7",
-      bg: "from-emerald-50 to-cyan-50"
+      bg: "from-[#10B981]/10 to-[#059669]/10"
     },
     {
       icon: "🔒",
       title: "Security",
       desc: "256-bit encryption & biometric authentication",
-      color: "from-violet-500 to-purple-500",
+      color: "from-[#F59E0B] to-[#B45309]",
       stats: "Secure",
-      bg: "from-violet-50 to-purple-50"
+      bg: "from-[#F59E0B]/10 to-[#B45309]/10"
     },
     {
       icon: "💬",
       title: "Expert Chat",
       desc: "Direct chat with investment advisors",
-      color: "from-blue-500 to-indigo-500",
+      color: "from-[#F59E0B] to-[#B45309]",
       stats: "Live",
-      bg: "from-blue-50 to-indigo-50"
+      bg: "from-[#F59E0B]/10 to-[#B45309]/10"
     },
     {
       icon: "📱",
       title: "Offline Mode",
       desc: "Access your portfolio without internet",
-      color: "from-pink-500 to-rose-500",
+      color: "from-[#F59E0B] to-[#B45309]",
       stats: "Anywhere",
-      bg: "from-pink-50 to-rose-50"
+      bg: "from-[#F59E0B]/10 to-[#B45309]/10"
     },
     {
       icon: "🎯",
       title: "Goal Planner",
       desc: "AI-powered goal-based investment planning",
-      color: "from-orange-500 to-amber-500",
+      color: "from-[#F59E0B] to-[#B45309]",
       stats: "Smart",
-      bg: "from-orange-50 to-amber-50"
+      bg: "from-[#F59E0B]/10 to-[#B45309]/10"
     }
   ];
 
@@ -625,20 +625,20 @@ const AppFeatures = () => {
           viewport={{ once: true }}
           transition={{ delay: index * 0.1 }}
           whileHover={{ y: -5 }}
-          className={`bg-gradient-to-br ${feature.bg} rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/70 group relative overflow-hidden`}
+          className={`bg-gradient-to-br ${feature.bg} rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 border border-[#2A2A2A] group relative overflow-hidden`}
         >
-          <div className="absolute inset-0 bg-white/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="absolute inset-0 bg-[#111111]/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <div className="relative z-10">
             <div className="flex items-start justify-between mb-4">
               <div className={`w-12 h-12 bg-gradient-to-r ${feature.color} rounded-xl flex items-center justify-center text-2xl transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg`}>
                 {feature.icon}
               </div>
-              <span className={`text-xs font-semibold px-3 py-1 rounded-full bg-gradient-to-r ${feature.color} text-white shadow-md`}>
+              <span className={`text-xs font-semibold px-3 py-1 rounded-full bg-gradient-to-r ${feature.color} text-[#F9FAFB] shadow-md`}>
                 {feature.stats}
               </span>
             </div>
-            <h3 className="text-lg font-bold text-gray-800 mb-2">{feature.title}</h3>
-            <p className="text-sm text-gray-600">{feature.desc}</p>
+            <h3 className="text-lg font-bold text-[#F9FAFB] mb-2">{feature.title}</h3>
+            <p className="text-sm text-[#9CA3AF]">{feature.desc}</p>
           </div>
         </motion.div>
       ))}
@@ -652,39 +652,39 @@ const AppFlowSteps = () => {
       icon: "📱",
       title: "Download App",
       desc: "Get the Vedant Asset app from App Store or Play Store",
-      color: "from-amber-500 to-rose-500",
+      color: "from-[#F59E0B] to-[#B45309]",
       details: ["Scan QR code", "Instant download", "Free to install"],
-      bg: "from-amber-50 to-rose-50"
+      bg: "from-[#F59E0B]/10 to-[#B45309]/10"
     },
     {
       icon: "📝",
       title: "Quick Registration",
       desc: "Complete KYC in minutes with our simple process",
-      color: "from-emerald-500 to-cyan-500",
+      color: "from-[#10B981] to-[#059669]",
       details: ["PAN verification", "Aadhaar linking", "Bank details"],
-      bg: "from-emerald-50 to-cyan-50"
+      bg: "from-[#10B981]/10 to-[#059669]/10"
     },
     {
       icon: "🎯",
       title: "Set Goals",
       desc: "Define your financial goals and investment preferences",
-      color: "from-violet-500 to-purple-500",
+      color: "from-[#F59E0B] to-[#B45309]",
       details: ["Goal planning", "Risk assessment", "Timeline setup"],
-      bg: "from-violet-50 to-purple-50"
+      bg: "from-[#F59E0B]/10 to-[#B45309]/10"
     },
     {
       icon: "💰",
       title: "Start Investing",
       desc: "Begin your investment journey with as low as ₹500",
-      color: "from-blue-500 to-indigo-500",
+      color: "from-[#F59E0B] to-[#B45309]",
       details: ["SIP setup", "Lumpsum investment", "Portfolio tracking"],
-      bg: "from-blue-50 to-indigo-50"
+      bg: "from-[#F59E0B]/10 to-[#B45309]/10"
     }
   ];
 
   return (
     <div className="relative px-4">
-      <div className="hidden lg:block absolute top-24 left-0 right-0 h-1 bg-gradient-to-r from-amber-200 via-rose-200 to-cyan-200 rounded-full"></div>
+      <div className="hidden lg:block absolute top-24 left-0 right-0 h-1 bg-gradient-to-r from-[#F59E0B]/30 via-[#B45309]/30 to-[#10B981]/30 rounded-full"></div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
         {steps.map((step, index) => (
@@ -696,17 +696,17 @@ const AppFlowSteps = () => {
             transition={{ delay: index * 0.15 }}
             className="relative group"
           >
-            <div className="absolute -top-4 -left-4 w-10 h-10 bg-gradient-to-r from-amber-500 to-rose-500 rounded-full flex items-center justify-center text-white font-bold text-base z-10 shadow-xl border-4 border-white">
+            <div className="absolute -top-4 -left-4 w-10 h-10 bg-gradient-to-r from-[#F59E0B] to-[#B45309] rounded-full flex items-center justify-center text-[#F9FAFB] font-bold text-base z-10 shadow-xl border-4 border-[#111111]">
               {index + 1}
             </div>
 
-            <div className={`bg-gradient-to-br ${step.bg} rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 border border-white/70 group-hover:scale-105`}>
+            <div className={`bg-gradient-to-br ${step.bg} rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 border border-[#2A2A2A] group-hover:scale-105`}>
               <div className={`w-14 h-14 bg-gradient-to-r ${step.color} rounded-xl flex items-center justify-center text-2xl mb-4 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 shadow-lg`}>
                 {step.icon}
               </div>
 
-              <h3 className="text-lg font-bold text-gray-800 mb-2">{step.title}</h3>
-              <p className="text-gray-600 text-xs mb-4">{step.desc}</p>
+              <h3 className="text-lg font-bold text-[#F9FAFB] mb-2">{step.title}</h3>
+              <p className="text-[#9CA3AF] text-xs mb-4">{step.desc}</p>
 
               <div className="space-y-2">
                 {step.details.map((detail, idx) => (
@@ -715,7 +715,7 @@ const AppFlowSteps = () => {
                     initial={{ x: -10, opacity: 0 }}
                     whileInView={{ x: 0, opacity: 1 }}
                     transition={{ delay: 0.3 + idx * 0.1 }}
-                    className="flex items-center gap-2 text-xs text-gray-500"
+                    className="flex items-center gap-2 text-xs text-[#9CA3AF]"
                   >
                     <span className={`w-1.5 h-1.5 rounded-full bg-gradient-to-r ${step.color}`}></span>
                     {detail}
@@ -730,7 +730,7 @@ const AppFlowSteps = () => {
                   animate={{ y: [0, 5, 0] }}
                   transition={{ repeat: Infinity, duration: 1.5 }}
                 >
-                  <svg className="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-6 h-6 text-[#F59E0B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7-7-7m14-6l-7 7-7-7" />
                   </svg>
                 </motion.div>
@@ -745,12 +745,12 @@ const AppFlowSteps = () => {
 
 const DownloadSection = () => {
   return (
-    <div className="bg-gradient-to-r from-amber-500 to-rose-500 rounded-3xl p-8 lg:p-12 relative overflow-hidden">
+    <div className="bg-gradient-to-r from-[#F59E0B] to-[#B45309] rounded-3xl p-8 lg:p-12 relative overflow-hidden">
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(#FFFFFF20_1px,transparent_1px)] [background-size:16px_16px]"></div>
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/20 rounded-full blur-3xl animate-pulse delay-700"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-ping"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(#FFFFFF10_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/10 rounded-full blur-3xl animate-pulse delay-700"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#111111]/5 rounded-full blur-3xl animate-ping"></div>
       </div>
 
       <div className="relative z-10 grid lg:grid-cols-2 gap-12 items-center">
@@ -759,7 +759,7 @@ const DownloadSection = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-3xl lg:text-4xl font-bold text-white mb-4"
+            className="text-3xl lg:text-4xl font-bold text-[#F9FAFB] mb-4"
           >
             Get the Vedant Asset App
           </motion.h2>
@@ -768,7 +768,7 @@ const DownloadSection = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-white/90 text-lg mb-8"
+            className="text-[#F9FAFB]/90 text-lg mb-8"
           >
             Download now and start your investment journey. Available on iOS and Android.
           </motion.p>
@@ -780,7 +780,7 @@ const DownloadSection = () => {
             transition={{ delay: 0.2 }}
             className="flex flex-wrap gap-4"
           >
-            <button className="flex items-center gap-3 bg-black text-white px-6 py-3 rounded-xl hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl">
+            <button className="flex items-center gap-3 bg-[#0A0A0A] text-[#F9FAFB] px-6 py-3 rounded-xl hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl">
               <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
               </svg>
@@ -790,7 +790,7 @@ const DownloadSection = () => {
               </div>
             </button>
 
-            <button className="flex items-center gap-3 bg-black text-white px-6 py-3 rounded-xl hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl">
+            <button className="flex items-center gap-3 bg-[#0A0A0A] text-[#F9FAFB] px-6 py-3 rounded-xl hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl">
               <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M3 20.5v-17c0-.83.94-1.3 1.63-.84l13.52 8.5c.7.44.7 1.54 0 1.98l-13.52 8.5c-.69.46-1.63-.01-1.63-.84z"/>
               </svg>
@@ -808,14 +808,14 @@ const DownloadSection = () => {
             transition={{ delay: 0.3 }}
             className="mt-8 flex items-center gap-4"
           >
-            <div className="bg-white p-3 rounded-xl shadow-2xl">
-              <div className="w-16 h-16 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl flex items-center justify-center text-white text-xs font-bold border-2 border-white/30">
+            <div className="bg-[#111111] p-3 rounded-xl shadow-2xl">
+              <div className="w-16 h-16 bg-gradient-to-br from-[#1F1A1A] to-[#111111] rounded-xl flex items-center justify-center text-[#F9FAFB] text-xs font-bold border-2 border-white/30">
                 SCAN ME
               </div>
             </div>
             <div>
-              <span className="text-white/80 text-xs block">Scan to download</span>
-              <span className="text-white font-bold text-base">4.8 ★</span>
+              <span className="text-[#F9FAFB]/80 text-xs block">Scan to download</span>
+              <span className="text-[#F9FAFB] font-bold text-base">4.8 ★</span>
             </div>
           </motion.div>
         </div>
@@ -840,12 +840,12 @@ const HeroWithApp = () => {
   return (
     <div className="relative min-h-screen flex items-center overflow-hidden pt-20 w-full">
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(#F59E0B15_1px,transparent_1px)] [background-size:32px_32px]"></div>
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-amber-100/50 via-transparent to-rose-100/50"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(#F59E0B05_1px,transparent_1px)] [background-size:32px_32px]"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[#0A0A0A] via-[#111111] to-[#1F1A1A]"></div>
         
-        <div className="absolute top-20 left-10 w-64 h-64 bg-amber-300/20 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-64 h-64 bg-rose-300/20 rounded-full blur-3xl animate-pulse delay-700"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-violet-300/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-20 left-10 w-64 h-64 bg-[#F59E0B]/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-20 right-10 w-64 h-64 bg-[#B45309]/10 rounded-full blur-3xl animate-pulse delay-700"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-[#F59E0B]/5 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
 
       <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center">
@@ -858,27 +858,27 @@ const HeroWithApp = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-sm shadow-lg border border-amber-200 mb-6"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#1F1A1A] backdrop-blur-sm shadow-lg border border-[#F59E0B]/30 mb-6"
           >
-            <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
-            <span className="text-xs font-medium text-amber-700">SEBI Registered · Trusted by 50K+ Investors</span>
+            <span className="w-2 h-2 bg-[#F59E0B] rounded-full animate-pulse"></span>
+            <span className="text-xs font-medium text-[#F59E0B]">SEBI Registered · Trusted by 50K+ Investors</span>
           </motion.div>
 
           <h1 className="heading-font text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
-            <span className="text-gray-800">Grow Your</span>
+            <span className="text-[#F9FAFB]">Grow Your</span>
             <br />
-            <span className="bg-gradient-to-r from-amber-600 to-rose-600 bg-clip-text text-transparent relative">
+            <span className="bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent relative">
               Wealth Journey
               <motion.span
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
                 transition={{ delay: 1, duration: 1 }}
-                className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-amber-500 to-rose-500"
+                className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-[#F59E0B] to-[#B45309]"
               ></motion.span>
             </span>
           </h1>
 
-          <p className="text-base text-gray-600 mt-6 max-w-lg leading-relaxed">
+          <p className="text-base text-[#9CA3AF] mt-6 max-w-lg leading-relaxed">
             Experience smart investing with AI-powered portfolio management, expert guidance, and market-beating returns. Start your journey today.
           </p>
 
@@ -896,7 +896,7 @@ const HeroWithApp = () => {
             </button>
             <button
               onClick={() => document.getElementById('download')?.scrollIntoView({ behavior: 'smooth' })}
-              className="px-8 py-4 rounded-xl font-semibold text-base bg-white/90 backdrop-blur-sm text-gray-700 border-2 border-amber-200 hover:border-amber-400 hover:shadow-lg transition-all"
+              className="px-8 py-4 rounded-xl font-semibold text-base bg-[#1F1A1A] backdrop-blur-sm text-[#F9FAFB] border-2 border-[#2A2A2A] hover:border-[#F59E0B] hover:shadow-lg transition-all"
             >
               Download App
             </button>
@@ -905,24 +905,24 @@ const HeroWithApp = () => {
           <div className="flex gap-8 mt-12">
             <motion.div 
               whileHover={{ scale: 1.05 }}
-              className="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-xl shadow-lg"
+              className="bg-[#1F1A1A] backdrop-blur-sm px-4 py-2 rounded-xl shadow-lg border border-[#2A2A2A]"
             >
-              <p className="text-2xl font-bold text-amber-600">₹300Cr+</p>
-              <p className="text-xs text-gray-500">AUM Managed</p>
+              <p className="text-2xl font-bold text-[#F59E0B]">₹300Cr+</p>
+              <p className="text-xs text-[#9CA3AF]">AUM Managed</p>
             </motion.div>
             <motion.div 
               whileHover={{ scale: 1.05 }}
-              className="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-xl shadow-lg"
+              className="bg-[#1F1A1A] backdrop-blur-sm px-4 py-2 rounded-xl shadow-lg border border-[#2A2A2A]"
             >
-              <p className="text-2xl font-bold text-rose-600">15%</p>
-              <p className="text-xs text-gray-500">Avg. Returns</p>
+              <p className="text-2xl font-bold text-[#10B981]">15%</p>
+              <p className="text-xs text-[#9CA3AF]">Avg. Returns</p>
             </motion.div>
             <motion.div 
               whileHover={{ scale: 1.05 }}
-              className="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-xl shadow-lg"
+              className="bg-[#1F1A1A] backdrop-blur-sm px-4 py-2 rounded-xl shadow-lg border border-[#2A2A2A]"
             >
-              <p className="text-2xl font-bold text-emerald-600">50K+</p>
-              <p className="text-xs text-gray-500">Investors</p>
+              <p className="text-2xl font-bold text-[#F59E0B]">50K+</p>
+              <p className="text-xs text-[#9CA3AF]">Investors</p>
             </motion.div>
           </div>
         </motion.div>
@@ -940,10 +940,10 @@ const HeroWithApp = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1 }}
             whileHover={{ scale: 1.05 }}
-            className="absolute -top-10 -right-10 bg-white rounded-xl shadow-2xl p-4 border border-amber-200 hidden lg:block"
+            className="absolute -top-10 -right-10 bg-[#111111] rounded-xl shadow-2xl p-4 border border-[#2A2A2A] hidden lg:block"
           >
-            <p className="text-xs text-gray-500">App Store Rating</p>
-            <p className="text-xl font-bold text-amber-600">4.8 ★</p>
+            <p className="text-xs text-[#9CA3AF]">App Store Rating</p>
+            <p className="text-xl font-bold text-[#F59E0B]">4.8 ★</p>
           </motion.div>
 
           <motion.div
@@ -951,10 +951,10 @@ const HeroWithApp = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1.2 }}
             whileHover={{ scale: 1.05 }}
-            className="absolute -bottom-10 -left-10 bg-white rounded-xl shadow-2xl p-4 border border-rose-200 hidden lg:block"
+            className="absolute -bottom-10 -left-10 bg-[#111111] rounded-xl shadow-2xl p-4 border border-[#2A2A2A] hidden lg:block"
           >
-            <p className="text-xs text-gray-500">Active Users</p>
-            <p className="text-xl font-bold text-rose-600">50K+</p>
+            <p className="text-xs text-[#9CA3AF]">Active Users</p>
+            <p className="text-xl font-bold text-[#10B981]">50K+</p>
           </motion.div>
         </motion.div>
       </div>
@@ -967,8 +967,8 @@ const ChoosePathCards = () => {
   const router = useRouter();
   const { setUserType } = userStore();
 
-  const handlePathSelect = (type: UserType) => {
-    setUserType(type);
+  const handlePathSelect = (type: string) => {
+    setUserType(type as any);
     router.push(`/register?userType=${type}`);
   };
 
@@ -979,7 +979,7 @@ const ChoosePathCards = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-sm font-semibold text-amber-600 uppercase tracking-wider bg-amber-100 px-4 py-2 rounded-full inline-block"
+          className="text-sm font-semibold text-[#F59E0B] uppercase tracking-wider bg-[#F59E0B]/20 px-4 py-2 rounded-full inline-block"
         >
           CHOOSE YOUR PATH
         </motion.span>
@@ -988,16 +988,16 @@ const ChoosePathCards = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
-          className="heading-font text-3xl lg:text-4xl font-bold text-gray-800 mt-4 mb-3"
+          className="heading-font text-3xl lg:text-4xl font-bold text-[#F9FAFB] mt-4 mb-3"
         >
-          Invest Directly or <span className="bg-gradient-to-r from-amber-600 to-rose-600 bg-clip-text text-transparent">Grow as a Partner</span>
+          Invest Directly or <span className="bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent">Grow as a Partner</span>
         </motion.h2>
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
-          className="text-gray-600 text-base max-w-3xl mx-auto"
+          className="text-[#9CA3AF] text-base max-w-3xl mx-auto"
         >
           Whether you're building personal wealth or helping others invest, we have you covered.
         </motion.p>
@@ -1011,21 +1011,21 @@ const ChoosePathCards = () => {
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
           whileHover={{ y: -5 }}
-          className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-amber-200 hover:shadow-3xl transition-all duration-500 group"
+          className="bg-[#111111] rounded-3xl shadow-2xl overflow-hidden border border-[#2A2A2A] hover:shadow-3xl transition-all duration-500 group"
         >
-          <div className="relative h-40 bg-gradient-to-r from-amber-500 to-rose-500 p-6 flex items-center overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(#FFFFFF20_1px,transparent_1px)] [background-size:16px_16px]"></div>
-            <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500"></div>
-            <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-white/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500 delay-200"></div>
+          <div className="relative h-40 bg-gradient-to-r from-[#F59E0B] to-[#B45309] p-6 flex items-center overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(#FFFFFF10_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500"></div>
+            <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500 delay-200"></div>
             
             <div className="relative z-10">
-              <span className="text-white/90 text-xs font-semibold uppercase tracking-wider bg-white/20 px-3 py-1 rounded-full">FOR INVESTORS</span>
-              <h3 className="heading-font text-2xl font-bold text-white mt-2">Direct Investor</h3>
+              <span className="text-[#F9FAFB]/90 text-xs font-semibold uppercase tracking-wider bg-white/20 px-3 py-1 rounded-full">FOR INVESTORS</span>
+              <h3 className="heading-font text-2xl font-bold text-[#F9FAFB] mt-2">Direct Investor</h3>
             </div>
           </div>
           
           <div className="p-6">
-            <p className="text-gray-600 mb-4 text-sm">
+            <p className="text-[#9CA3AF] mb-4 text-sm">
               Build wealth on your own terms. Start small, stay consistent, and get expert help whenever you need it.
             </p>
             
@@ -1045,7 +1045,7 @@ const ChoosePathCards = () => {
                   className="flex items-center gap-3"
                 >
                   <span className="text-xl">{item.icon}</span>
-                  <span className="text-gray-600 text-sm">{item.text}</span>
+                  <span className="text-[#9CA3AF] text-sm">{item.text}</span>
                 </motion.li>
               ))}
             </ul>
@@ -1057,7 +1057,7 @@ const ChoosePathCards = () => {
               className="w-full gradient-btn py-3 rounded-xl font-semibold text-base text-center block relative overflow-hidden group cursor-pointer"
             >
               <span className="relative z-10">Start Investing →</span>
-              <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500"></div>
+              <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500"></div>
             </motion.button>
           </div>
         </motion.div>
@@ -1069,21 +1069,21 @@ const ChoosePathCards = () => {
           viewport={{ once: true }}
           transition={{ delay: 0.2 }}
           whileHover={{ y: -5 }}
-          className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-emerald-200 hover:shadow-3xl transition-all duration-500 group"
+          className="bg-[#111111] rounded-3xl shadow-2xl overflow-hidden border border-[#2A2A2A] hover:shadow-3xl transition-all duration-500 group"
         >
-          <div className="relative h-40 bg-gradient-to-r from-emerald-500 to-cyan-500 p-6 flex items-center overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(#FFFFFF20_1px,transparent_1px)] [background-size:16px_16px]"></div>
-            <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500"></div>
-            <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-white/20 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500 delay-200"></div>
+          <div className="relative h-40 bg-gradient-to-r from-[#10B981] to-[#059669] p-6 flex items-center overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(#FFFFFF10_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            <div className="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500"></div>
+            <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-500 delay-200"></div>
             
             <div className="relative z-10">
-              <span className="text-white/90 text-xs font-semibold uppercase tracking-wider bg-white/20 px-3 py-1 rounded-full">FOR PROFESSIONALS</span>
-              <h3 className="heading-font text-2xl font-bold text-white mt-2">Financial Partner</h3>
+              <span className="text-[#F9FAFB]/90 text-xs font-semibold uppercase tracking-wider bg-white/20 px-3 py-1 rounded-full">FOR PROFESSIONALS</span>
+              <h3 className="heading-font text-2xl font-bold text-[#F9FAFB] mt-2">Financial Partner</h3>
             </div>
           </div>
           
           <div className="p-6">
-            <p className="text-gray-600 mb-4 text-sm">
+            <p className="text-[#9CA3AF] mb-4 text-sm">
               Scale your advisory practice with our partner network. Earn higher commissions and get the tools to grow.
             </p>
             
@@ -1103,7 +1103,7 @@ const ChoosePathCards = () => {
                   className="flex items-center gap-3"
                 >
                   <span className="text-xl">{item.icon}</span>
-                  <span className="text-gray-600 text-sm">{item.text}</span>
+                  <span className="text-[#9CA3AF] text-sm">{item.text}</span>
                 </motion.li>
               ))}
             </ul>
@@ -1112,10 +1112,10 @@ const ChoosePathCards = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => handlePathSelect("Partner")}
-              className="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 text-white py-3 rounded-xl font-semibold text-base hover:shadow-lg hover:shadow-emerald-500/30 transition-all text-center block relative overflow-hidden group cursor-pointer"
+              className="w-full bg-gradient-to-r from-[#10B981] to-[#059669] text-[#F9FAFB] py-3 rounded-xl font-semibold text-base hover:shadow-lg hover:shadow-[#10B981]/30 transition-all text-center block relative overflow-hidden group cursor-pointer"
             >
               <span className="relative z-10">Join as Partner →</span>
-              <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500"></div>
+              <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500"></div>
             </motion.button>
           </div>
         </motion.div>
@@ -1184,13 +1184,13 @@ function LandingPage() {
     setShowCalculator(true);
     calculatorRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-  const handleRegister = (type: UserType) => {
+  const handleRegister = (type: string) => {
     setRegisterOpen(false);
     router.push(`/register?userType=${type}`);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-rose-50 w-full overflow-x-hidden">
+    <div className="min-h-screen bg-[#0A0A0A] w-full overflow-x-hidden">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Clash+Display:wght@500;600;700&display=swap');
         
@@ -1217,21 +1217,21 @@ function LandingPage() {
         }
         
         .shimmer {
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
           background-size: 1000px 100%;
           animation: shimmer 2s infinite;
         }
         
         .glass-card {
-          background: rgba(255, 255, 255, 0.2);
+          background: rgba(17, 17, 17, 0.8);
           backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.3);
-          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+          border: 1px solid rgba(245, 158, 11, 0.2);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
         
         .nav-link {
           position: relative;
-          color: #4B5563;
+          color: #9CA3AF;
           transition: color 0.3s;
           cursor: pointer;
           font-weight: 500;
@@ -1252,12 +1252,12 @@ function LandingPage() {
           left: 0;
           right: 0;
           height: 2px;
-          background: linear-gradient(90deg, #F59E0B, #F43F5E);
+          background: linear-gradient(90deg, #F59E0B, #B45309);
           border-radius: 2px;
         }
         
         .gradient-btn {
-          background: linear-gradient(135deg, #F59E0B, #F43F5E);
+          background: linear-gradient(135deg, #F59E0B, #B45309);
           color: white;
           transition: all 0.3s;
           position: relative;
@@ -1277,7 +1277,7 @@ function LandingPage() {
           left: -100%;
           width: 100%;
           height: 100%;
-          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+          background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
           transition: left 0.5s;
         }
         
@@ -1312,7 +1312,7 @@ function LandingPage() {
 
       {/* Navigation */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-white/90 backdrop-blur-md shadow-lg py-3" : "bg-transparent py-5"
+        scrolled ? "bg-[#111111]/90 backdrop-blur-md shadow-lg py-3 border-b border-[#2A2A2A]" : "bg-transparent py-5"
       }`}>
         <div className="w-full max-w-[1400px] mx-auto px-6 flex items-center justify-between">
           <motion.div
@@ -1323,7 +1323,7 @@ function LandingPage() {
             <img
               src={`${publicPathName}/logo_light.png`}
               alt="Vedant Asset"
-              className="h-12 w-auto"
+              className="h-16 w-auto"
             />
           </motion.div>
 
@@ -1362,7 +1362,7 @@ function LandingPage() {
           >
             <button
               onClick={handleLogin}
-              className="text-sm font-semibold text-gray-600 hover:text-amber-600 transition-colors hidden sm:block"
+              className="text-sm font-semibold text-[#9CA3AF] hover:text-[#F59E0B] transition-colors hidden sm:block"
             >
               Sign In
             </button>
@@ -1384,25 +1384,25 @@ function LandingPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    className="absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden"
+                    className="absolute right-0 mt-3 w-64 bg-[#111111] rounded-2xl shadow-xl border border-[#2A2A2A] overflow-hidden"
                   >
                     <div className="p-2">
                       {[
-                        { type: "Investor" as UserType, icon: "📈", label: "Investor", desc: "Start your journey", color: "from-amber-500 to-rose-500" },
-                        { type: "Partner" as UserType, icon: "🤝", label: "Partner", desc: "Grow your business", color: "from-emerald-500 to-cyan-500" },
+                        { type: "Investor", icon: "📈", label: "Investor", desc: "Start your journey", color: "from-[#F59E0B] to-[#B45309]" },
+                        { type: "Partner", icon: "🤝", label: "Partner", desc: "Grow your business", color: "from-[#10B981] to-[#059669]" },
                       ].map(item => (
                         <motion.button
                           key={item.type}
                           whileHover={{ x: 5 }}
                           onClick={() => handleRegister(item.type)}
-                          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-50 transition-colors cursor-pointer"
+                          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gradient-to-r hover:from-[#1F1A1A] hover:to-[#1F1A1A] transition-colors cursor-pointer"
                         >
-                          <div className={`w-10 h-10 rounded-xl bg-gradient-to-r ${item.color} flex items-center justify-center text-white text-xl`}>
+                          <div className={`w-10 h-10 rounded-xl bg-gradient-to-r ${item.color} flex items-center justify-center text-[#F9FAFB] text-xl`}>
                             {item.icon}
                           </div>
                           <div className="text-left">
-                            <p className="font-semibold text-sm text-gray-800">{item.label}</p>
-                            <p className="text-xs text-gray-500">{item.desc}</p>
+                            <p className="font-semibold text-sm text-[#F9FAFB]">{item.label}</p>
+                            <p className="text-xs text-[#9CA3AF]">{item.desc}</p>
                           </div>
                         </motion.button>
                       ))}
@@ -1429,10 +1429,10 @@ function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <span className="text-sm font-semibold text-amber-600 tracking-wider bg-amber-100 px-4 py-2 rounded-full inline-block">WHY CHOOSE US</span>
+            <span className="text-sm font-semibold text-[#F59E0B] tracking-wider bg-[#F59E0B]/20 px-4 py-2 rounded-full inline-block">WHY CHOOSE US</span>
             <h2 className="heading-font text-3xl sm:text-4xl lg:text-5xl font-bold mt-4">
-              <span className="text-gray-800">Invest with</span>{' '}
-              <span className="bg-gradient-to-r from-amber-600 to-rose-600 bg-clip-text text-transparent">
+              <span className="text-[#F9FAFB]">Invest with</span>{' '}
+              <span className="bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent">
                 Confidence
               </span>
             </h2>
@@ -1443,7 +1443,7 @@ function LandingPage() {
       </section>
 
       {/* Calculator Section */}
-      <section ref={calculatorRef} className="py-20 px-6 bg-white/50">
+      <section ref={calculatorRef} className="py-20 px-6 bg-[#111111]/50">
         <div className="w-full max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -1451,10 +1451,10 @@ function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-10"
           >
-            <span className="text-sm font-semibold text-amber-600 tracking-wider bg-amber-100 px-4 py-2 rounded-full inline-block">CALCULATE RETURNS</span>
+            <span className="text-sm font-semibold text-[#F59E0B] tracking-wider bg-[#F59E0B]/20 px-4 py-2 rounded-full inline-block">CALCULATE RETURNS</span>
             <h2 className="heading-font text-3xl sm:text-4xl lg:text-5xl font-bold mt-4">
-              <span className="text-gray-800">Plan Your</span>{' '}
-              <span className="bg-gradient-to-r from-amber-600 to-rose-600 bg-clip-text text-transparent">
+              <span className="text-[#F9FAFB]">Plan Your</span>{' '}
+              <span className="bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent">
                 Investment
               </span>
             </h2>
@@ -1473,14 +1473,14 @@ function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <span className="text-sm font-semibold text-amber-600 tracking-wider bg-amber-100 px-4 py-2 rounded-full inline-block">MOBILE APP</span>
+            <span className="text-sm font-semibold text-[#F59E0B] tracking-wider bg-[#F59E0B]/20 px-4 py-2 rounded-full inline-block">MOBILE APP</span>
             <h2 className="heading-font text-3xl sm:text-4xl lg:text-5xl font-bold mt-4">
-              <span className="text-gray-800">Invest on the</span>{' '}
-              <span className="bg-gradient-to-r from-amber-600 to-rose-600 bg-clip-text text-transparent">
+              <span className="text-[#F9FAFB]">Invest on the</span>{' '}
+              <span className="bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent">
                 Go
               </span>
             </h2>
-            <p className="text-gray-600 text-base max-w-2xl mx-auto mt-4">
+            <p className="text-[#9CA3AF] text-base max-w-2xl mx-auto mt-4">
               Experience the power of smart investing right at your fingertips. Download our app and start your wealth journey today.
             </p>
           </motion.div>
@@ -1497,7 +1497,7 @@ function LandingPage() {
       </section>
 
       {/* App Flow Steps */}
-      <section className="py-20 px-6 bg-white/50">
+      <section className="py-20 px-6 bg-[#111111]/50">
         <div className="w-full max-w-[1400px] mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -1505,10 +1505,10 @@ function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <span className="text-sm font-semibold text-amber-600 tracking-wider bg-amber-100 px-4 py-2 rounded-full inline-block">GET STARTED</span>
-            <h2 className="heading-font text-3xl sm:text-4xl lg:text-5xl font-bold text-center text-gray-800 mt-4">
+            <span className="text-sm font-semibold text-[#F59E0B] tracking-wider bg-[#F59E0B]/20 px-4 py-2 rounded-full inline-block">GET STARTED</span>
+            <h2 className="heading-font text-3xl sm:text-4xl lg:text-5xl font-bold text-center text-[#F9FAFB] mt-4">
               Get Started in{' '}
-              <span className="bg-gradient-to-r from-amber-600 to-rose-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent">
                 4 Simple Steps
               </span>
             </h2>
@@ -1525,7 +1525,7 @@ function LandingPage() {
       </section>
 
       {/* Updated CTA Section with Investor/Partner Cards */}
-      <section className="py-20 px-6 bg-white/50">
+      <section className="py-20 px-6 bg-[#111111]/50">
         <div className="w-full max-w-[1400px] mx-auto">
           <ChoosePathCards />
         </div>
@@ -1541,29 +1541,29 @@ function LandingPage() {
             className="grid lg:grid-cols-2 gap-12 items-center"
           >
             <div>
-              <span className="text-sm font-semibold text-amber-600 tracking-wider bg-amber-100 px-4 py-2 rounded-full inline-block">ABOUT US</span>
+              <span className="text-sm font-semibold text-[#F59E0B] tracking-wider bg-[#F59E0B]/20 px-4 py-2 rounded-full inline-block">ABOUT US</span>
               <h2 className="heading-font text-3xl sm:text-4xl lg:text-5xl font-bold mt-4 mb-4">
-                <span className="text-gray-800">India's Most Trusted</span>{' '}
-                <span className="bg-gradient-to-r from-amber-600 to-rose-600 bg-clip-text text-transparent">
+                <span className="text-[#F9FAFB]">India's Most Trusted</span>{' '}
+                <span className="bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent">
                   Investment Partner
                 </span>
               </h2>
               
-              <p className="text-gray-600 text-base leading-relaxed mb-6">
+              <p className="text-[#9CA3AF] text-base leading-relaxed mb-6">
                 Vedant Asset is revolutionizing the way India invests. With over a decade of experience and 300+ Crores in AUM, we've helped thousands of investors achieve their financial goals through smart, technology-driven investment solutions.
               </p>
 
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { number: "15+", label: "Years Experience", color: "from-amber-500 to-rose-500" },
-                  { number: "200+", label: "Partner Network", color: "from-emerald-500 to-cyan-500" },
-                  { number: "1000+", label: "Happy Clients", color: "from-violet-500 to-purple-500" },
-                  { number: "24/7", label: "Support", color: "from-blue-500 to-indigo-500" }
+                  { number: "15+", label: "Years Experience", color: "from-[#F59E0B] to-[#B45309]" },
+                  { number: "200+", label: "Partner Network", color: "from-[#10B981] to-[#059669]" },
+                  { number: "1000+", label: "Happy Clients", color: "from-[#F59E0B] to-[#B45309]" },
+                  { number: "24/7", label: "Support", color: "from-[#F59E0B] to-[#B45309]" }
                 ].map((item, index) => (
                   <motion.div 
                     key={index}
                     whileHover={{ scale: 1.05 }}
-                    className={`bg-gradient-to-r ${item.color} p-5 rounded-2xl shadow-xl text-white`}
+                    className={`bg-gradient-to-r ${item.color} p-5 rounded-2xl shadow-xl text-[#F9FAFB]`}
                   >
                     <p className="text-2xl font-bold">{item.number}</p>
                     <p className="text-xs opacity-90">{item.label}</p>
@@ -1577,29 +1577,29 @@ function LandingPage() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                className="bg-white rounded-3xl p-8 shadow-2xl border border-amber-100 relative z-10"
+                className="bg-[#111111] rounded-3xl p-8 shadow-2xl border border-[#2A2A2A] relative z-10"
               >
-                <h3 className="heading-font text-xl font-bold text-gray-800 mb-3">Our Mission</h3>
-                <p className="text-gray-600 mb-5 text-sm">
+                <h3 className="heading-font text-xl font-bold text-[#F9FAFB] mb-3">Our Mission</h3>
+                <p className="text-[#9CA3AF] mb-5 text-sm">
                   To democratize investing in India by providing cutting-edge technology, expert guidance, and transparent processes that empower everyone to build wealth.
                 </p>
                 
-                <h3 className="heading-font text-xl font-bold text-gray-800 mb-3">Our Vision</h3>
-                <p className="text-gray-600 text-sm">
+                <h3 className="heading-font text-xl font-bold text-[#F9FAFB] mb-3">Our Vision</h3>
+                <p className="text-[#9CA3AF] text-sm">
                   To create a financially inclusive India where every individual has access to professional investment tools and expertise, enabling them to secure their financial future.
                 </p>
               </motion.div>
 
-              <div className="absolute -top-6 -right-6 w-32 h-32 bg-amber-200 rounded-full blur-3xl opacity-60 animate-pulse"></div>
-              <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-rose-200 rounded-full blur-3xl opacity-60 animate-pulse delay-700"></div>
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-violet-200 rounded-full blur-3xl opacity-40 animate-pulse delay-1000"></div>
+              <div className="absolute -top-6 -right-6 w-32 h-32 bg-[#F59E0B]/20 rounded-full blur-3xl opacity-60 animate-pulse"></div>
+              <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-[#B45309]/20 rounded-full blur-3xl opacity-60 animate-pulse delay-700"></div>
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-[#F59E0B]/10 rounded-full blur-3xl opacity-40 animate-pulse delay-1000"></div>
             </div>
           </motion.div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 border-t border-gray-800 py-12 px-6">
+      <footer className="bg-[#0A0A0A] border-t border-[#2A2A2A] py-12 px-6">
         <div className="w-full max-w-[1400px] mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
             <div>
@@ -1608,34 +1608,34 @@ function LandingPage() {
                 alt="Vedant Asset"
                 className="h-12 w-auto mb-4 brightness-0 invert"
               />
-              <p className="text-sm text-gray-400 leading-relaxed">
+              <p className="text-sm text-[#9CA3AF] leading-relaxed">
                 India's most trusted investment platform, making wealth creation accessible to everyone.
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold text-white mb-4 text-base">Quick Links</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li><button onClick={handleAbout} className="hover:text-amber-400 transition-colors">About Us</button></li>
-                <li><button onClick={handleCalculator} className="hover:text-amber-400 transition-colors">Calculator</button></li>
-                <li><button onClick={() => appFeaturesRef.current?.scrollIntoView({ behavior: "smooth" })} className="hover:text-amber-400 transition-colors">Mobile App</button></li>
-                <li><a href="#" className="hover:text-amber-400 transition-colors">Contact</a></li>
+              <h4 className="font-semibold text-[#F9FAFB] mb-4 text-base">Quick Links</h4>
+              <ul className="space-y-2 text-sm text-[#9CA3AF]">
+                <li><button onClick={handleAbout} className="hover:text-[#F59E0B] transition-colors">About Us</button></li>
+                <li><button onClick={handleCalculator} className="hover:text-[#F59E0B] transition-colors">Calculator</button></li>
+                <li><button onClick={() => appFeaturesRef.current?.scrollIntoView({ behavior: "smooth" })} className="hover:text-[#F59E0B] transition-colors">Mobile App</button></li>
+                <li><a href="#" className="hover:text-[#F59E0B] transition-colors">Contact</a></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold text-white mb-4 text-base">Resources</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li><a href="#" className="hover:text-amber-400 transition-colors">Investment Guide</a></li>
-                <li><a href="#" className="hover:text-amber-400 transition-colors">FAQs</a></li>
-                <li><a href="#" className="hover:text-amber-400 transition-colors">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-amber-400 transition-colors">Privacy Policy</a></li>
+              <h4 className="font-semibold text-[#F9FAFB] mb-4 text-base">Resources</h4>
+              <ul className="space-y-2 text-sm text-[#9CA3AF]">
+                <li><a href="#" className="hover:text-[#F59E0B] transition-colors">Investment Guide</a></li>
+                <li><a href="#" className="hover:text-[#F59E0B] transition-colors">FAQs</a></li>
+                <li><a href="#" className="hover:text-[#F59E0B] transition-colors">Terms of Service</a></li>
+                <li><a href="#" className="hover:text-[#F59E0B] transition-colors">Privacy Policy</a></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold text-white mb-4 text-base">Contact</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
+              <h4 className="font-semibold text-[#F9FAFB] mb-4 text-base">Contact</h4>
+              <ul className="space-y-2 text-sm text-[#9CA3AF]">
                 <li className="flex items-center gap-2">📞 9304955509</li>
                 <li className="flex items-center gap-2">✉️ vedantasset@gmail.com</li>
                 <li>
@@ -1643,7 +1643,7 @@ function LandingPage() {
                     href="https://www.vedantasset.com" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="hover:text-amber-400 transition-colors inline-flex items-center gap-1"
+                    className="hover:text-[#F59E0B] transition-colors inline-flex items-center gap-1"
                   >
                     🌐 www.vedantasset.com
                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1656,9 +1656,9 @@ function LandingPage() {
             </div>
           </div>
 
-          <div className="border-t border-gray-800 pt-8 text-center">
-            <p className="text-sm text-gray-400">© 2025 Vedant Asset Technologies Pvt. Ltd. · SEBI Registered Investment Advisor</p>
-            <p className="text-xs text-gray-500 mt-2">Mutual Fund investments are subject to market risks. Read all scheme-related documents carefully.</p>
+          <div className="border-t border-[#2A2A2A] pt-8 text-center">
+            <p className="text-sm text-[#9CA3AF]">© 2025 Vedant Asset Technologies Pvt. Ltd. · SEBI Registered Investment Advisor</p>
+            <p className="text-xs text-[#9CA3AF]/70 mt-2">Mutual Fund investments are subject to market risks. Read all scheme-related documents carefully.</p>
           </div>
         </div>
       </footer>

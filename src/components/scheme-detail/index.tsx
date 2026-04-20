@@ -201,7 +201,7 @@ function SchemeDetail() {
             key={tab}
             role="tab"
             className={`tab h-7 ${activeTab === tab
-              ? "tab-active text-secondary bg-white rounded-t-xl"
+              ? "tab-active text-secondary bg-[#111111] rounded-t-xl"
               : " !text-base-content"
               }`}
             onClick={() => setActiveTab(tab)}

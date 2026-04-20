@@ -192,7 +192,7 @@ export default function OtherAssets() {
               section.assets.map((asset, assetIndex) => (
                 <tr
                   key={`${section.title}-${assetIndex}`}
-                  className="bg-white  border-b border-accent "
+                  className="bg-[#111111]  border-b border-accent "
                 >
                   <td className="py-3 px-2 text-sm text-base-content ">
                     {asset.assetName}

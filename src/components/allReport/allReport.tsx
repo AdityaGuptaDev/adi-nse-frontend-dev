@@ -312,259 +312,240 @@ const AllReports: React.FC<AllReportsProps> = ({ invName, panNo }) => {
     return value.toString();
   };
 
-  // PDF Export Function
-// PDF Export Function - Only export visible data (expanded rows) with all columns
-const exportToPDF = () => {
-  if (!portfolioData.length || !summary) {
-    alert('No portfolio data available to export');
-    return;
-  }
+  const exportToPDF = () => {
+    if (!portfolioData.length || !summary) {
+      alert('No portfolio data available to export');
+      return;
+    }
 
-  const doc = new jsPDF('landscape');
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
-  let yPosition = 15;
+    const doc = new jsPDF('landscape');
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    let yPosition = 15;
 
-  // Colors - use hex strings instead of arrays
-  const primaryColor = '#FFA500'; // Orange
-  const secondaryColor = '#000000'; // Black
-  const headerColor = '#3B82F6'; // Blue
+    const primaryColor = '#F59E0B';
+    const secondaryColor = '#0A0A0A';
+    const headerColor = '#F59E0B';
 
-  // Add header with background
-  doc.setFillColor(primaryColor);
-  doc.rect(0, 0, pageWidth, 40, 'F');
-  
-  // Company title
-  doc.setFontSize(20);
-  doc.setTextColor(255, 255, 255);
-  doc.setFont('helvetica', 'bold');
-  doc.text('VEDANT ASSET', pageWidth / 2, 15, { align: 'center' });
-  
-  doc.setFontSize(16);
-  doc.text('PORTFOLIO REPORT', pageWidth / 2, 25, { align: 'center' });
+    doc.setFillColor(245, 158, 11);
+    doc.rect(0, 0, pageWidth, 40, 'F');
+    
+    doc.setFontSize(20);
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.text('VEDANT ASSET', pageWidth / 2, 15, { align: 'center' });
+    
+    doc.setFontSize(16);
+    doc.text('PORTFOLIO REPORT', pageWidth / 2, 25, { align: 'center' });
 
-  // Report date
   doc.setFontSize(10);
   doc.setTextColor(255, 255, 255);
   doc.text(`Report Date: ${new Date().toLocaleDateString()}`, pageWidth - 15, 35, { align: 'right' });
 
-  yPosition = 50;
+    yPosition = 50;
 
-  // Investor details box - use hex color
-  doc.setFillColor(239, 246, 255); // Light blue using RGB
-  doc.setDrawColor(200, 200, 200); // Gray border
-  doc.roundedRect(15, yPosition, pageWidth - 30, 30, 3, 3, 'FD');
+    doc.setFillColor(31, 26, 26);
+    doc.setDrawColor(42, 42, 42);
+    doc.roundedRect(15, yPosition, pageWidth - 30, 30, 3, 3, 'FD');
 
-  doc.setFontSize(11);
-  doc.setTextColor(0, 0, 0);
-  doc.setFont('helvetica', 'bold');
-  doc.text('INVESTOR DETAILS', 20, yPosition + 8);
-  
-  doc.setFont('helvetica', 'normal');
-  doc.setFontSize(9);
-  doc.text(`Name: ${invName}`, 20, yPosition + 16);
-  doc.text(`PAN: ${panNo}`, 20, yPosition + 22);
-  doc.text(`Email: ${summary.email || 'Not available'}`, pageWidth / 2, yPosition + 16);
-  doc.text(`Mobile: ${summary.mobile || 'Not available'}`, pageWidth / 2, yPosition + 22);
-
-  yPosition += 40;
-
-  // Portfolio Summary - use hex color
-  doc.setFillColor(headerColor);
-  doc.roundedRect(15, yPosition, pageWidth - 30, 12, 2, 2, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFont('helvetica', 'bold');
-  doc.text('PORTFOLIO SUMMARY', 20, yPosition + 8);
-
-  yPosition += 15;
-
-  // Summary boxes
-  const boxWidth = (pageWidth - 50) / 4;
-  const summaries = [
-    { label: 'Total Cost', value: `₹${summary.totalCost}` },
-    { label: 'Current Value', value: `₹${summary.totalCurrentValue}` },
-    { 
-      label: 'Net Gain/Loss', 
-      value: `₹${summary.totalProfitLoss}`,
-      color: parseFloat(summary.totalProfitLoss) >= 0 ? '#22C55E' : '#EF4444' // Green/Red as hex
-    },
-    { label: 'Absolute Return', value: `${summary.totalAbsPercentage}%` }
-  ];
-
-  summaries.forEach((summaryItem, index) => {
-    const x = 15 + (index * (boxWidth + 5));
-    
-    doc.setFillColor(255, 255, 255);
-    doc.setDrawColor(200, 200, 200);
-    doc.roundedRect(x, yPosition, boxWidth, 20, 2, 2, 'FD');
-    
-    doc.setFontSize(8);
-    doc.setTextColor(100, 100, 100);
-    doc.setFont('helvetica', 'normal');
-    doc.text(summaryItem.label, x + 5, yPosition + 7);
-    
-    doc.setFontSize(10);
+    doc.setFontSize(11);
+    doc.setTextColor(249, 250, 251);
     doc.setFont('helvetica', 'bold');
+    doc.text('INVESTOR DETAILS', 20, yPosition + 8);
     
-    // Handle color properly
-    if (summaryItem.color) {
-      doc.setTextColor(summaryItem.color);
-    } else {
-      doc.setTextColor(0, 0, 0);
-    }
-    
-    doc.text(summaryItem.value, x + 5, yPosition + 15);
-  });
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.setTextColor(156, 163, 175);
+    doc.text(`Name: ${invName}`, 20, yPosition + 16);
+    doc.text(`PAN: ${panNo}`, 20, yPosition + 22);
+    doc.text(`Email: ${summary.email || 'Not available'}`, pageWidth / 2, yPosition + 16);
+    doc.text(`Mobile: ${summary.mobile || 'Not available'}`, pageWidth / 2, yPosition + 22);
 
-  yPosition += 35;
+    yPosition += 40;
 
-  // Portfolio Table Header - Include ALL columns from your table
-  doc.setFillColor(headerColor);
-  doc.roundedRect(15, yPosition, pageWidth - 30, 8, 1, 1, 'F');
-  doc.setTextColor(255, 255, 255);
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(7); // Smaller font to fit all columns
-  
-  // Adjusted column widths to fit all columns in landscape
-  const columns = [
-    { header: 'S.No.', width: 12 },
-    { header: 'Folio No.', width: 20 },
-    { header: 'Product Name', width: 35 },
-    { header: 'Trans Type', width: 18 },
-    { header: 'Purchase Date', width: 20 },
-    { header: 'Units', width: 15 },
-    { header: 'Price', width: 15 },
-    { header: 'Cost Value', width: 18 },
-    { header: 'Dividend', width: 15 },
-    { header: 'Div Reinvest', width: 18 },
-    { header: 'Days', width: 12 },
-    { header: 'Current NAV', width: 18 },
-    { header: 'Current Value', width: 18 },
-    { header: 'P/L', width: 15 },
-    { header: 'Abs%', width: 12 },
-    { header: 'CAGR%', width: 12 }
-  ];
+    doc.setFillColor(245, 158, 11);
+    doc.roundedRect(15, yPosition, pageWidth - 30, 12, 2, 2, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.text('PORTFOLIO SUMMARY', 20, yPosition + 8);
 
-  let xPosition = 17;
-  columns.forEach(col => {
-    doc.text(col.header, xPosition, yPosition + 5);
-    xPosition += col.width;
-  });
+    yPosition += 15;
 
-  yPosition += 10;
+    const boxWidth = (pageWidth - 50) / 4;
+    const summaries = [
+      { label: 'Total Cost', value: `₹${summary.totalCost}` },
+      { label: 'Current Value', value: `₹${summary.totalCurrentValue}` },
+      { 
+        label: 'Net Gain/Loss', 
+        value: `₹${summary.totalProfitLoss}`,
+        color: parseFloat(summary.totalProfitLoss) >= 0 ? '#10B981' : '#EF4444'
+      },
+      { label: 'Absolute Return', value: `${summary.totalAbsPercentage}%` }
+    ];
 
-  // Portfolio Data - Only export visible data (expanded rows) with all columns
-  doc.setFontSize(6); // Smaller font for data rows
-  
-  // Helper function to add a row
-  const addRow = (data: string[], isParent: boolean = false, isChild: boolean = false) => {
-    // Check if we need a new page
-    if (yPosition > pageHeight - 20) {
-      doc.addPage();
-      yPosition = 15;
+    summaries.forEach((summaryItem, index) => {
+      const x = 15 + (index * (boxWidth + 5));
       
-      // Add header for new page
-      doc.setFillColor(headerColor);
-      doc.roundedRect(15, yPosition, pageWidth - 30, 8, 1, 1, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFont('helvetica', 'bold');
-      doc.setFontSize(7);
+      doc.setFillColor(17, 17, 17);
+      doc.setDrawColor(42, 42, 42);
+      doc.roundedRect(x, yPosition, boxWidth, 20, 2, 2, 'FD');
       
-      xPosition = 17;
-      columns.forEach(col => {
-        doc.text(col.header, xPosition, yPosition + 5);
-        xPosition += col.width;
-      });
-      yPosition += 10;
-      doc.setFontSize(6);
-    }
-
-    // Set row background color
-    if (isParent) {
-      doc.setFillColor(239, 246, 255); // Light blue for parent
-    } else if (isChild) {
-      doc.setFillColor(255, 255, 255); // White for child
-    } else {
-      // Alternate colors for regular rows
-      if (data[3] === 'SUMMARY') {
-        doc.setFillColor(239, 246, 255); // Light blue for parent rows
-      } else {
-        doc.setFillColor(255, 255, 255); // White for child rows
-      }
-    }
-    
-    doc.rect(15, yPosition, pageWidth - 30, 8, 'F');
-
-    // Row data
-    doc.setTextColor(0, 0, 0);
-    if (isParent || data[3] === 'SUMMARY') {
-      doc.setFont('helvetica', 'bold');
-    } else {
+      doc.setFontSize(8);
+      doc.setTextColor(156, 163, 175);
       doc.setFont('helvetica', 'normal');
-    }
-
-    xPosition = 17;
-    data.forEach((text, colIndex) => {
-      doc.text(text, xPosition, yPosition + 5);
-      xPosition += columns[colIndex].width;
+      doc.text(summaryItem.label, x + 5, yPosition + 7);
+      
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      
+      if (summaryItem.color) {
+        if (summaryItem.color === '#10B981') {
+          doc.setTextColor(16, 185, 129);
+        } else if (summaryItem.color === '#EF4444') {
+          doc.setTextColor(239, 68, 68);
+        } else {
+          doc.setTextColor(249, 250, 251);
+        }
+      } else {
+        doc.setTextColor(249, 250, 251);
+      }
+      
+      doc.text(summaryItem.value, x + 5, yPosition + 15);
     });
 
-    yPosition += 8;
-  };
+    yPosition += 35;
 
-  let serialNumber = 1;
-
-  // Add all portfolio data - only include expanded child transactions
-  portfolioData.forEach((parentItem, parentIndex) => {
-    // Add parent row with ALL columns
-    const parentRowData = [
-      serialNumber.toString(),
-      parentItem.folioNo,
-      parentItem.productName.length > 25 ? parentItem.productName.substring(0, 25) + '...' : parentItem.productName,
-      'SUMMARY',
-      formatDate(parentItem.transactionNo),
-      parseFloat(parentItem.balanceUnits || '0').toFixed(3),
-      parseFloat(parentItem.price || '0').toFixed(2),
-      parseFloat(parentItem.costValue || '0').toFixed(2),
-      parseFloat(parentItem.div || '0').toFixed(2),
-      parseFloat(parentItem.divReinv || '0').toFixed(2),
-      parentItem.days?.toString() || '0',
-      parseFloat(parentItem.currentNav || '0').toFixed(2),
-      parseFloat(parentItem.currentValue || '0').toFixed(2),
-      parseFloat(parentItem.profitLoss || '0').toFixed(2),
-      `${parseFloat(parentItem.absPercentage || '0').toFixed(2)}%`,
-      `${parseFloat(parentItem.cagr || '0').toFixed(2)}%`
+    doc.setFillColor(245, 158, 11);
+    doc.roundedRect(15, yPosition, pageWidth - 30, 8, 1, 1, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7);
+    
+    const columns = [
+      { header: 'S.No.', width: 12 },
+      { header: 'Folio No.', width: 20 },
+      { header: 'Product Name', width: 35 },
+      { header: 'Trans Type', width: 18 },
+      { header: 'Purchase Date', width: 20 },
+      { header: 'Units', width: 15 },
+      { header: 'Price', width: 15 },
+      { header: 'Cost Value', width: 18 },
+      { header: 'Dividend', width: 15 },
+      { header: 'Div Reinvest', width: 18 },
+      { header: 'Days', width: 12 },
+      { header: 'Current NAV', width: 18 },
+      { header: 'Current Value', width: 18 },
+      { header: 'P/L', width: 15 },
+      { header: 'Abs%', width: 12 },
+      { header: 'CAGR%', width: 12 }
     ];
+
+    let xPosition = 17;
+    columns.forEach(col => {
+      doc.text(col.header, xPosition, yPosition + 5);
+      xPosition += col.width;
+    });
+
+    yPosition += 10;
+
+    doc.setFontSize(6);
+    
+    const addRow = (data: string[], isParent: boolean = false, isChild: boolean = false) => {
+      if (yPosition > pageHeight - 20) {
+        doc.addPage();
+        yPosition = 15;
+        
+        doc.setFillColor(245, 158, 11);
+        doc.roundedRect(15, yPosition, pageWidth - 30, 8, 1, 1, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(7);
+        
+        xPosition = 17;
+        columns.forEach(col => {
+          doc.text(col.header, xPosition, yPosition + 5);
+          xPosition += col.width;
+        });
+        yPosition += 10;
+        doc.setFontSize(6);
+      }
+
+      if (isParent) {
+        doc.setFillColor(31, 26, 26);
+      } else if (isChild) {
+        doc.setFillColor(17, 17, 17);
+      } else {
+        doc.setFillColor(17, 17, 17);
+      }
+      
+      doc.rect(15, yPosition, pageWidth - 30, 8, 'F');
+
+      doc.setTextColor(249, 250, 251);
+      if (isParent || data[3] === 'SUMMARY') {
+        doc.setFont('helvetica', 'bold');
+      } else {
+        doc.setFont('helvetica', 'normal');
+      }
+
+      xPosition = 17;
+      data.forEach((text, colIndex) => {
+        doc.text(text, xPosition, yPosition + 5);
+        xPosition += columns[colIndex].width;
+      });
+
+      yPosition += 8;
+    };
+
+    let serialNumber = 1;
+
+    portfolioData.forEach((parentItem, parentIndex) => {
+      const parentRowData = [
+        serialNumber.toString(),
+        parentItem.folioNo,
+        parentItem.productName.length > 25 ? parentItem.productName.substring(0, 25) + '...' : parentItem.productName,
+        'SUMMARY',
+        formatDate(parentItem.transactionNo),
+        parseFloat(parentItem.balanceUnits || '0').toFixed(3),
+        parseFloat(parentItem.price || '0').toFixed(2),
+        parseFloat(parentItem.costValue || '0').toFixed(2),
+        parseFloat(parentItem.div || '0').toFixed(2),
+        parseFloat(parentItem.divReinv || '0').toFixed(2),
+        parentItem.days?.toString() || '0',
+        parseFloat(parentItem.currentNav || '0').toFixed(2),
+        parseFloat(parentItem.currentValue || '0').toFixed(2),
+        parseFloat(parentItem.profitLoss || '0').toFixed(2),
+        `${parseFloat(parentItem.absPercentage || '0').toFixed(2)}%`,
+        `${parseFloat(parentItem.cagr || '0').toFixed(2)}%`
+      ];
 
     addRow(parentRowData, true);
     serialNumber++;
 
-    // Only add child transactions if the parent is expanded
-    if (parentItem.isExpanded) {
-      const childTransactions = getChildTransactions(parentItem.folioNo, parentItem.productName);
-      
-      if (childTransactions.length > 0) {
-        childTransactions.forEach((childItem, childIndex) => {
-          const childRowData = [
-            '', // Empty serial number for child rows
-            childItem.out_folio_no,
-            childItem.out_scheme.length > 25 ? childItem.out_scheme.substring(0, 25) + '...' : childItem.out_scheme,
-            childItem.out_trxntype,
-            formatDate(childItem.out_traddate || ''),
-            parseFloat(childItem.out_units || '0').toFixed(3),
-            parseFloat(childItem.out_purprice || '0').toFixed(2),
-            parseFloat(childItem.out_amount || '0').toFixed(2),
-            parseFloat(childItem.out_div_int || '0').toFixed(2),
-            parseFloat(childItem.out_div_int_reinv || '0').toFixed(2),
-            childItem.out_no_of_days || '0',
-            parseFloat(childItem.out_current_nav || '0').toFixed(2),
-            parseFloat(childItem.out_current_val || '0').toFixed(2),
-            parseFloat(childItem.out_p_n_l || '0').toFixed(2),
-            `${parseFloat(childItem.out_abs_per || '0').toFixed(2)}%`,
-            `${parseFloat(childItem.out_cagr_per || '0').toFixed(2)}%`
-          ];
+      if (parentItem.isExpanded) {
+        const childTransactions = getChildTransactions(parentItem.folioNo, parentItem.productName);
+        
+        if (childTransactions.length > 0) {
+          childTransactions.forEach((childItem, childIndex) => {
+            const childRowData = [
+              '',
+              childItem.out_folio_no,
+              childItem.out_scheme.length > 25 ? childItem.out_scheme.substring(0, 25) + '...' : childItem.out_scheme,
+              childItem.out_trxntype,
+              formatDate(childItem.out_traddate || ''),
+              parseFloat(childItem.out_units || '0').toFixed(3),
+              parseFloat(childItem.out_purprice || '0').toFixed(2),
+              parseFloat(childItem.out_amount || '0').toFixed(2),
+              parseFloat(childItem.out_div_int || '0').toFixed(2),
+              parseFloat(childItem.out_div_int_reinv || '0').toFixed(2),
+              childItem.out_no_of_days || '0',
+              parseFloat(childItem.out_current_nav || '0').toFixed(2),
+              parseFloat(childItem.out_current_val || '0').toFixed(2),
+              parseFloat(childItem.out_p_n_l || '0').toFixed(2),
+              `${parseFloat(childItem.out_abs_per || '0').toFixed(2)}%`,
+              `${parseFloat(childItem.out_cagr_per || '0').toFixed(2)}%`
+            ];
 
-          addRow(childRowData, false, true);
+            addRow(childRowData, false, true);
         });
       }
     }
@@ -592,40 +573,35 @@ const exportToPDF = () => {
     ''
   ];
 
-  // Add total row with different background
-  if (yPosition > pageHeight - 20) {
-    doc.addPage();
-    yPosition = 15;
-  }
-  
-  doc.setFillColor(230, 255, 230); // Light green for total row
-  doc.rect(15, yPosition, pageWidth - 30, 8, 'F');
-  doc.setTextColor(0, 0, 0);
-  doc.setFont('helvetica', 'bold');
-  
-  xPosition = 17;
-  totalRowData.forEach((text, colIndex) => {
-    doc.text(text, xPosition, yPosition + 5);
-    xPosition += columns[colIndex].width;
-  });
+    if (yPosition > pageHeight - 20) {
+      doc.addPage();
+      yPosition = 15;
+    }
+    
+    doc.setFillColor(16, 185, 129);
+    doc.rect(15, yPosition, pageWidth - 30, 8, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    
+    xPosition = 17;
+    totalRowData.forEach((text, colIndex) => {
+      doc.text(text, xPosition, yPosition + 5);
+      xPosition += columns[colIndex].width;
+    });
 
-  yPosition += 15;
+    yPosition += 15;
 
-  // Footer
-  const footerY = pageHeight - 15;
-  doc.setFontSize(8);
-  doc.setTextColor(100, 100, 100);
-  doc.setFont('helvetica', 'italic');
-  doc.text('Generated by Vedant Asset Management Pvt. Ltd. | SEBI Registration No.: INZ000123456', 
-           pageWidth / 2, footerY, { align: 'center' });
+    const footerY = pageHeight - 15;
+    doc.setFontSize(8);
+    doc.setTextColor(156, 163, 175);
+    doc.setFont('helvetica', 'italic');
+    doc.text('Generated by Vedant Asset Management Pvt. Ltd. | SEBI Registration No.: INZ000123456', 
+             pageWidth / 2, footerY, { align: 'center' });
 
-  // Save the PDF
-  doc.save(`${invName}_Portfolio_Report_${new Date().toISOString().split('T')[0]}.pdf`);
-};
+    doc.save(`${invName}_Portfolio_Report_${new Date().toISOString().split('T')[0]}.pdf`);
+  };
 
-  // excel for particular data
   const exportToExcel1 = async () => {
-    // ... (keep your existing exportToExcel1 function unchanged)
     if (!portfolioData.length || !summary) {
       alert('No portfolio data available to export');
       return;
@@ -638,24 +614,24 @@ const exportToPDF = () => {
     worksheet.mergeCells('A1:O2');
     const titleCell = worksheet.getCell('A1');
     titleCell.value = 'VEDANT ASSET - PORTFOLIO REPORT';
-    titleCell.font = { bold: true, size: 16, color: { argb: 'FFEA580C' } };
+    titleCell.font = { bold: true, size: 16, color: { argb: 'FFF59E0B' } };
     titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
     titleCell.fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'FFFEF3C7' }
+      fgColor: { argb: 'FF1F1A1A' }
     };
 
     // Investor details
     worksheet.mergeCells('A3:O3');
     const investorCell = worksheet.getCell('A3');
     investorCell.value = `Investor: ${invName} | PAN: ${panNo} | Date: ${new Date().toLocaleDateString()}`;
-    investorCell.font = { bold: true, size: 11 };
+    investorCell.font = { bold: true, size: 11, color: { argb: 'FFF9FAFB' } };
     investorCell.alignment = { horizontal: 'center' };
     investorCell.fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'FFE5E7EB' }
+      fgColor: { argb: 'FF2A2A2A' }
     };
 
     // Column headers with styling
@@ -683,7 +659,7 @@ const exportToPDF = () => {
     headerRow.fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'FF4B5563' }
+      fgColor: { argb: 'FFF59E0B' }
     };
     headerRow.eachCell((cell) => {
       cell.border = {
@@ -726,9 +702,9 @@ const exportToPDF = () => {
       parentRow.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: 'FFEFF6FF' }
+        fgColor: { argb: 'FF1F1A1A' }
       };
-      parentRow.font = { bold: true, size: 10 };
+      parentRow.font = { bold: true, size: 10, color: { argb: 'FFF9FAFB' } };
       parentRow.eachCell((cell) => {
         cell.border = {
           top: { style: 'thin' },
@@ -764,9 +740,9 @@ const exportToPDF = () => {
           childRow.fill = {
             type: 'pattern',
             pattern: 'solid',
-            fgColor: { argb: 'FFF9FAFB' }
+            fgColor: { argb: 'FF111111' }
           };
-          childRow.font = { size: 9 };
+          childRow.font = { size: 9, color: { argb: 'FFF9FAFB' } };
           childRow.eachCell((cell) => {
             cell.border = {
               top: { style: 'thin' },
@@ -783,12 +759,12 @@ const exportToPDF = () => {
     // Add summary section
     worksheet.mergeCells(`A${rowIndex + 1}:O${rowIndex + 1}`);
     const summaryTitle = worksheet.getCell(`A${rowIndex + 1}`);
-   
+    summaryTitle.value = 'SUMMARY';
     summaryTitle.font = { bold: true, size: 12, color: { argb: 'FFFFFFFF' } };
     summaryTitle.fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'FF059669' }
+      fgColor: { argb: 'FFF59E0B' }
     };
     summaryTitle.alignment = { horizontal: 'center' };
 
@@ -804,12 +780,22 @@ const exportToPDF = () => {
       worksheet.mergeCells(`A${rowIndex + 2 + index}:N${rowIndex + 2 + index}`);
       const labelCell = worksheet.getCell(`A${rowIndex + 2 + index}`);
       labelCell.value = label;
-      labelCell.font = { bold: true };
+      labelCell.font = { bold: true, color: { argb: 'FFF9FAFB' } };
       labelCell.alignment = { horizontal: 'right' };
+      labelCell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF111111' }
+      };
 
       const valueCell = worksheet.getCell(`O${rowIndex + 2 + index}`);
       valueCell.value = value;
-      valueCell.font = { bold: true, color: { argb: label.includes('Gain') ? 'FF16A34A' : 'FF000000' } };
+      valueCell.font = { bold: true, color: { argb: label.includes('Gain') ? 'FF10B981' : 'FFF9FAFB' } };
+      valueCell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF111111' }
+      };
     });
 
     // Add footer
@@ -817,8 +803,13 @@ const exportToPDF = () => {
     worksheet.mergeCells(`A${footerRow}:O${footerRow}`);
     const footer = worksheet.getCell(`A${footerRow}`);
     footer.value = 'Generated by Vedant Asset Management Pvt. Ltd. | SEBI Registration No.: INZ000123456';
-    footer.font = { italic: true, size: 9, color: { argb: 'FF6B7280' } };
+    footer.font = { italic: true, size: 9, color: { argb: 'FF9CA3AF' } };
     footer.alignment = { horizontal: 'center' };
+    footer.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FF111111' }
+    };
 
     // Auto-fit columns
     worksheet.columns.forEach(column => {
@@ -868,12 +859,11 @@ const exportToPDF = () => {
       { header: 'CAGR%', key: 'cagr', width: 12 },
     ];
 
-    // Style for header row
-    worksheet.getRow(1).font = { bold: true, size: 11 };
+    worksheet.getRow(1).font = { bold: true, size: 11, color: { argb: 'FFF9FAFB' } };
     worksheet.getRow(1).fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'FFE0E0E0' }
+      fgColor: { argb: 'FFF59E0B' }
     };
     worksheet.getRow(1).eachCell((cell: any) => {
       cell.border = {
@@ -912,9 +902,9 @@ const exportToPDF = () => {
       parentRow.fill = {
         type: 'pattern',
         pattern: 'solid',
-        fgColor: { argb: 'FFE6F1FF' }
+        fgColor: { argb: 'FF1F1A1A' }
       };
-      parentRow.font = { bold: true };
+      parentRow.font = { bold: true, color: { argb: 'FFF9FAFB' } };
       parentRow.eachCell((cell: any) => {
         cell.border = {
           top: { style: 'thin' },
@@ -951,8 +941,9 @@ const exportToPDF = () => {
         childRow.fill = {
           type: 'pattern',
           pattern: 'solid',
-          fgColor: { argb: 'FFF5F5F5' }
+          fgColor: { argb: 'FF111111' }
         };
+        childRow.font = { color: { argb: 'FFF9FAFB' } };
         childRow.eachCell((cell: any) => {
           cell.border = {
             top: { style: 'thin' },
@@ -997,9 +988,9 @@ const exportToPDF = () => {
     totalRow.fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'FFE8F5E8' }
+      fgColor: { argb: 'FF10B981' }
     };
-    totalRow.font = { bold: true };
+    totalRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
     totalRow.eachCell((cell: any) => {
       cell.border = {
         top: { style: 'thin' },
@@ -1048,25 +1039,27 @@ const exportToPDF = () => {
   };
 
   if (loading) {
-    return <div className="p-4 text-center text-gray-500">Loading report...</div>;
+    return <div className="p-4 text-center text-[#9CA3AF] bg-[#0A0A0A] min-h-screen">Loading report...</div>;
   }
 
   if (error) {
-    return <div className="p-4 text-center text-red-500">{error}</div>;
+    return <div className="p-4 text-center text-red-400 bg-[#0A0A0A] min-h-screen">{error}</div>;
   }
 
   if (!portfolioData.length || !summary) {
-    return <div className="p-4 text-center text-gray-500">No data found for this investor.</div>;
+    return <div className="p-4 text-center text-[#9CA3AF] bg-[#0A0A0A] min-h-screen">No data found for this investor.</div>;
   }
 
   return (
-    <div className="text-[11px] font-sans text-black bg-white p-4" ref={reportRef}>
+    <div className="text-[13px] font-sans bg-[#0A0A0A] min-h-screen p-6" ref={reportRef}>
       {/* Header Section */}
-      <div className="border-b border-black pb-2 mb-2">
-        <div className="flex flex-col md:flex-row justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-orange-500">
-              Vedant<span className="text-black">Asset</span>
+      <div className="border-b border-[#2A2A2A] pb-4 mb-6">
+        <div className="flex flex-col md:flex-row justify-between gap-6">
+          {/* Left Section - Company Info */}
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold mb-4">
+              <span className="text-[#F59E0B]">Vedant</span>
+              <span className="text-[#F9FAFB]">Asset</span>
             </h1>
             <div className="mt-2 text-xs">
               <p><strong>Investor:</strong> {invName}</p>
@@ -1081,86 +1074,133 @@ const exportToPDF = () => {
             {/* Action Icons - Added PDF button */}
             <div className="flex justify-left gap-3 mt-3 flex-wrap action-buttons">
               {[
-                { icon: <FileDown size={18} className="text-red-600" />, label: "PDF", action: exportToPDF },
-                { icon: <FileSpreadsheet size={18} className="text-indigo-600" />, label: "Excel", action: exportToExcel1 },
-                { icon: <FileSpreadsheet size={18} className="text-green-600" />, label: "Excel All data", action: exportToExcel },
-                { icon: <Printer size={18} className="text-gray-600" />, label: "Print", action: handlePrint },
+                { icon: <FileDown size={20} className="text-[#F59E0B]" />, label: "PDF", action: exportToPDF },
+                { icon: <FileSpreadsheet size={20} className="text-[#10B981]" />, label: "Excel", action: exportToExcel1 },
+                { icon: <FileSpreadsheet size={20} className="text-[#3B82F6]" />, label: "Excel All data", action: exportToExcel },
+                { icon: <Printer size={20} className="text-[#9CA3AF]" />, label: "Print", action: handlePrint },
               ].map((item, index) => (
                 <button
                   key={index}
-                  className="flex flex-col items-center group hover:bg-gray-50 rounded p-1"
+                  className="flex flex-col items-center group hover:bg-[#1F1A1A] rounded-lg p-2 transition-all duration-200"
                   onClick={item.action}
                 >
                   <div className="p-1">{item.icon}</div>
-                  <span className="text-xs mt-0.5">{item.label}</span>
+                  <span className="text-xs mt-1 text-[#9CA3AF] group-hover:text-[#F59E0B]">{item.label}</span>
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="text-right text-xs">
-            <p className="font-semibold text-base mb-1">vedant asset</p>
-            <p>3rd Floor, Gayways House, Above Space Furniture, P.P Compound,</p>
-            <p>Main Road Ranchi 834001 Jharkhand</p>
-            <p>Phone: 9304955509, Email: vedantasset@gmail.com</p>
-            <p>Website: <a href="https://www.vedantasset.co.in" className="text-blue-600 hover:underline">www.vedantasset.co.in</a></p>
+          {/* Right Section - Company Address */}
+          <div className="flex-1 text-right">
+            <div className="bg-[#111111] rounded-lg p-4 border border-[#2A2A2A]">
+              <p className="font-semibold text-base mb-2 text-[#F9FAFB]">Vedant Asset</p>
+              <p className="text-xs text-[#9CA3AF] leading-relaxed">3rd Floor, Gayways House, Above Space Furniture, P.P Compound,</p>
+              <p className="text-xs text-[#9CA3AF] leading-relaxed">Main Road Ranchi 834001 Jharkhand</p>
+              <p className="text-xs text-[#9CA3AF] leading-relaxed">Phone: 9304955509, Email: vedantasset@gmail.com</p>
+              <p className="text-xs text-[#9CA3AF]">Website: <a href="https://www.vedantasset.co.in" className="text-[#F59E0B] hover:underline">www.vedantasset.co.in</a></p>
+            </div>
+          </div>
+        </div>
 
-            {/* Filters */}
-            <div className="mt-3">
-              <p className="mb-1">
-                <strong>Statement Date:</strong>
-                <input
-                  type="date"
-                  value={reportDate}
-                  onChange={(e) => setReportDate(e.target.value)}
-                  className="ml-2 border px-2 py-1 rounded text-sm"
-                />
-                <button
-                  onClick={handleSearch}
-                  disabled={searchLoading || loading}
-                  className="ml-2 bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 disabled:bg-blue-300"
-                >
-                  {searchLoading ? 'Loading...' : 'Search'}
-                </button>
-              </p>
+        {/* Investor Details - Improved Card Design */}
+        <div className="mt-6 bg-gradient-to-r from-[#111111] to-[#1A1A1A] rounded-xl border border-[#2A2A2A] p-5 shadow-xl">
+          <h2 className="text-lg font-bold text-[#F59E0B] mb-4 flex items-center gap-2">
+            <div className="w-1 h-6 bg-[#F59E0B] rounded-full"></div>
+            Investor Information
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Left Column */}
+            <div className="space-y-3">
+              <div className="flex items-start gap-3">
+                <span className="text-sm font-semibold text-[#F59E0B] min-w-[100px]">Investor Name:</span>
+                <span className="text-[15px] font-medium text-[#F9FAFB]">{invName}</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-sm font-semibold text-[#F59E0B] min-w-[100px]">PAN Number:</span>
+                <span className="text-[15px] font-mono font-semibold text-[#F9FAFB] tracking-wider">{panNo}</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-sm font-semibold text-[#F59E0B] min-w-[100px]">Email Address:</span>
+                <span className="text-[14px] text-[#9CA3AF] break-all">{summary.email || "Not available"}</span>
+              </div>
+            </div>
+            
+            {/* Right Column */}
+            <div className="space-y-3">
+              <div className="flex items-start gap-3">
+                <span className="text-sm font-semibold text-[#F59E0B] min-w-[100px]">Mobile Number:</span>
+                <span className="text-[15px] font-medium text-[#F9FAFB]">{summary.mobile || "Not available"}</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-sm font-semibold text-[#F59E0B] min-w-[100px]">Address:</span>
+                <span className="text-[14px] text-[#9CA3AF] leading-relaxed">
+                  {`${summary.address1 || ""} ${summary.address2 || ""} ${summary.address3 || ""}`.trim()}<br />
+                  {`${summary.city || ""} - ${summary.pincode || ""}`.trim()}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-              <p className="mb-1">
-                <strong>Asset Class:</strong>
-                <select className="ml-1 border px-1"><option>All Assets</option></select>
-              </p>
-              <p className="mb-1">
-                <strong>Report Type:</strong>
-                <select className="ml-1 border px-1"><option>Current Holding</option></select>
-              </p>
+        {/* Report Controls */}
+        <div className="mt-6 flex justify-between items-center flex-wrap gap-4">
+          <div className="flex items-center gap-3 bg-[#111111] rounded-lg p-3 border border-[#2A2A2A]">
+            <strong className="text-sm text-[#F9FAFB]">Statement Date:</strong>
+            <input
+              type="date"
+              value={reportDate}
+              onChange={(e) => setReportDate(e.target.value)}
+              className="border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] px-3 py-1.5 rounded-md text-sm focus:outline-none focus:border-[#F59E0B] transition-colors"
+            />
+            <button
+              onClick={handleSearch}
+              disabled={searchLoading || loading}
+              className="bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white px-4 py-1.5 rounded-md text-sm font-medium hover:opacity-90 disabled:opacity-50 transition-all duration-200"
+            >
+              {searchLoading ? 'Loading...' : 'Search'}
+            </button>
+          </div>
+          
+          <div className="flex gap-4 bg-[#111111] rounded-lg p-3 border border-[#2A2A2A]">
+            <div className="flex items-center gap-2">
+              <strong className="text-sm text-[#F9FAFB]">Asset Class:</strong>
+              <select className="border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] px-2 py-1.5 rounded-md text-sm">
+                <option>All Assets</option>
+              </select>
+            </div>
+            <div className="flex items-center gap-2">
+              <strong className="text-sm text-[#F9FAFB]">Report Type:</strong>
+              <select className="border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] px-2 py-1.5 rounded-md text-sm">
+                <option>Current Holding</option>
+              </select>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Portfolio Table */}
-      <div className="overflow-auto mt-4 border border-gray-300 text-[10px]">
-        <table className="w-full border-collapse text-[10px]">
-          <thead className="bg-gray-100 border-b border-gray-300">
+      {/* Portfolio Table - Increased Font Sizes */}
+      <div className="overflow-auto mt-6 border border-[#2A2A2A] rounded-lg text-[12px]">
+        <table className="w-full border-collapse text-[12px]">
+          <thead className="bg-[#1F1A1A] border-b border-[#2A2A2A] sticky top-0">
             <tr className="text-left">
-              
-              <th className="p-1 border-r">S.No.</th>
-              <th className="p-1 border-r">Folio No.</th>
-              <th className="p-1 border-r">Product Name</th>
-              <th className="p-1 border-r">Transaction Type</th>
-              <th className="p-1 border-r">Purchase Date</th>
-              <th className="p-1 border-r">Purchase Units</th>
-              {/* <th className="p-1 border-r">Total Units</th> */}
-              <th className="p-1 border-r">Price</th>
-              <th className="p-1 border-r">Cost Value</th>
-              <th className="p-1 border-r">Divident</th>
-              <th className="p-1 border-r">Div Reinvestment</th>
-              <th className="p-1 border-r">No of Days</th>
-              <th className="p-1 border-r">Current NAV</th>
-              <th className="p-1 border-r">Current Value</th>
-              <th className="p-1 border-r">P+L</th>
-              <th className="p-1 border-r">Abs%</th>
-              <th className="p-1">CAGR%</th>
-            </tr>
+              <th className="p-2.5 border-r border-[#2A2A2A] text-[#F59E0B] font-semibold text-[13px]">S.No.</th>
+              <th className="p-2.5 border-r border-[#2A2A2A] text-[#F59E0B] font-semibold text-[13px]">Folio No.</th>
+              <th className="p-2.5 border-r border-[#2A2A2A] text-[#F59E0B] font-semibold text-[13px]">Product Name</th>
+              <th className="p-2.5 border-r border-[#2A2A2A] text-[#F59E0B] font-semibold text-[13px]">Transaction Type</th>
+              <th className="p-2.5 border-r border-[#2A2A2A] text-[#F59E0B] font-semibold text-[13px]">Purchase Date</th>
+              <th className="p-2.5 border-r border-[#2A2A2A] text-[#F59E0B] font-semibold text-[13px]">Purchase Units</th>
+              <th className="p-2.5 border-r border-[#2A2A2A] text-[#F59E0B] font-semibold text-[13px]">Price</th>
+              <th className="p-2.5 border-r border-[#2A2A2A] text-[#F59E0B] font-semibold text-[13px]">Cost Value</th>
+              <th className="p-2.5 border-r border-[#2A2A2A] text-[#F59E0B] font-semibold text-[13px]">Divident</th>
+              <th className="p-2.5 border-r border-[#2A2A2A] text-[#F59E0B] font-semibold text-[13px]">Div Reinvestment</th>
+              <th className="p-2.5 border-r border-[#2A2A2A] text-[#F59E0B] font-semibold text-[13px]">No of Days</th>
+              <th className="p-2.5 border-r border-[#2A2A2A] text-[#F59E0B] font-semibold text-[13px]">Current NAV</th>
+              <th className="p-2.5 border-r border-[#2A2A2A] text-[#F59E0B] font-semibold text-[13px]">Current Value</th>
+              <th className="p-2.5 border-r border-[#2A2A2A] text-[#F59E0B] font-semibold text-[13px]">P+L</th>
+              <th className="p-2.5 border-r border-[#2A2A2A] text-[#F59E0B] font-semibold text-[13px]">Abs%</th>
+              <th className="p-2.5 border-r border-[#2A2A2A] text-[#F59E0B] font-semibold text-[13px]">CAGR%</th>
+             </tr>
           </thead>
           <tbody>
             {portfolioData.map((item, idx) => {
@@ -1170,100 +1210,108 @@ const exportToPDF = () => {
               return (
                 <React.Fragment key={idx}>
                   {/* Parent Row */}
-                  <tr className={idx % 2 === 0 ? "bg-blue-50 font-semibold" : "bg-blue-100 font-semibold"}>
-                   
-                    <td className="p-1 border">{idx + 1}</td>
-                    <td className="p-1 border">{item.folioNo}</td>
-                    <td className="p-1 border">{item.productName}</td>
-                    <td className="p-1 border">
+                  <tr className={`${idx % 2 === 0 ? "bg-[#1F1A1A]" : "bg-[#111111]"} font-semibold hover:bg-[#252020] transition-colors duration-150`}>
+                    <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[12px]">{idx + 1} </td>
+                    <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[12px]">{item.folioNo} </td>
+                    <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[12px] font-medium">{item.productName} </td>
+                    <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[12px]">
                       {hasChildTransactions ? (
                         <span
-                          className="text-blue-600 hover:underline cursor-pointer"
+                          className="text-[#F59E0B] hover:underline cursor-pointer flex items-center gap-1"
                           onClick={() => toggleExpand(idx)}
                         >
                           {isExpanded ? "Hide Transactions" : "View Transactions"}
+                          {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                         </span>
                       ) : (
                         item.transactionType
                       )}
-                    </td>
-                    <td className="p-1 border">{formatDate(item.transactionNo)}</td>
-                    <td className="p-1 border">{item.balanceUnits}</td>
-                    {/* <td className="p-1 border">{item.totalUnit}</td> */}
-                    <td className="p-1 border">{item.price}</td>
-                    <td className="p-1 border">{item.costValue}</td>
-                    <td className="p-1 border">{item.div}</td>
-                    <td className="p-1 border">{item.divReinv}</td>
-                    <td className="p-1 border">{formatParentValue(item.days)}</td>
-                    <td className="p-1 border">{formatParentValue(item.currentNav)}</td>
-                    <td className="p-1 border">{formatParentValue(item.currentValue)}</td>
-                    <td className="p-1 border">{formatParentValue(item.profitLoss)}</td>
-                    <td className="p-1 border">{formatParentValue(item.absPercentage, true)}</td>
-                    <td className="p-1 border">{formatParentValue(item.cagr, true)}</td>
-                  </tr>
+                     </td>
+                    <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[12px]">{formatDate(item.transactionNo)}</td>
+                    <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[12px]">{item.balanceUnits}</td>
+                    <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[12px]">{item.price}</td>
+                    <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[12px]">{item.costValue}</td>
+                    <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[12px]">{item.div}</td>
+                    <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[12px]">{item.divReinv}</td>
+                    <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[12px]">{formatParentValue(item.days)}</td>
+                    <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[12px]">{formatParentValue(item.currentNav)}</td>
+                    <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[12px]">{formatParentValue(item.currentValue)}</td>
+                    <td className={`p-2.5 border border-[#2A2A2A] text-[12px] font-semibold ${parseFloat(item.profitLoss) >= 0 ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>
+                      {formatParentValue(item.profitLoss)}
+                     </td>
+                    <td className={`p-2.5 border border-[#2A2A2A] text-[12px] font-semibold ${parseFloat(item.absPercentage) >= 0 ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>
+                      {formatParentValue(item.absPercentage, true)}
+                     </td>
+                    <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[12px]">{formatParentValue(item.cagr, true)}</td>
+                   </tr>
 
                   {/* Child Rows - shown when expanded */}
                   {isExpanded && getChildTransactions(item.folioNo, item.productName).map((child, childIdx) => (
-                    <tr key={`${idx}-${childIdx}`} className={childIdx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                      
-                      <td className="p-1 border text-center">{childIdx + 1}</td>
-                      <td className="p-1 border">{child.out_folio_no}</td>
-                      <td className="p-1 border">{child.out_scheme}</td>
-                      <td className="p-1 border">{child.out_trxntype}</td>
-                      <td className="p-1 border">{formatDate(child.out_traddate || "")}</td>
-                      <td className="p-1 border">{child.out_units}</td>
-                      {/* <td className="p-1 border">{child.out_sum_units}</td> */}
-                      <td className="p-1 border">{child.out_purprice}</td>
-                      <td className="p-1 border">{child.out_amount}</td>
-                      <td className="p-1 border">{child.out_div_int}</td>
-                      <td className="p-1 border">{child.out_div_int_reinv}</td>
-                      <td className="p-1 border">{child.out_no_of_days}</td>
-                      <td className="p-1 border">{child.out_current_nav}</td>
-                      <td className="p-1 border">{child.out_current_val}</td>
-                      <td className="p-1 border">{child.out_p_n_l}</td>
-                      <td className="p-1 border">{child.out_abs_per}%</td>
-                      <td className="p-1 border">{child.out_cagr_per}%</td>
-                    </tr>
+                    <tr key={`${idx}-${childIdx}`} className={`${childIdx % 2 === 0 ? "bg-[#111111]" : "bg-[#1A1A1A]"} hover:bg-[#151515] transition-colors duration-150`}>
+                      <td className="p-2 border border-[#2A2A2A] text-center text-[#9CA3AF] text-[11px]">{childIdx + 1}</td>
+                      <td className="p-2 border border-[#2A2A2A] text-[#F9FAFB] text-[11px]">{child.out_folio_no}</td>
+                      <td className="p-2 border border-[#2A2A2A] text-[#F9FAFB] text-[11px]">{child.out_scheme}</td>
+                      <td className="p-2 border border-[#2A2A2A] text-[#F9FAFB] text-[11px]">{child.out_trxntype}</td>
+                      <td className="p-2 border border-[#2A2A2A] text-[#F9FAFB] text-[11px]">{formatDate(child.out_traddate || "")}</td>
+                      <td className="p-2 border border-[#2A2A2A] text-[#F9FAFB] text-[11px]">{child.out_units}</td>
+                      <td className="p-2 border border-[#2A2A2A] text-[#F9FAFB] text-[11px]">{child.out_purprice}</td>
+                      <td className="p-2 border border-[#2A2A2A] text-[#F9FAFB] text-[11px]">{child.out_amount}</td>
+                      <td className="p-2 border border-[#2A2A2A] text-[#F9FAFB] text-[11px]">{child.out_div_int}</td>
+                      <td className="p-2 border border-[#2A2A2A] text-[#F9FAFB] text-[11px]">{child.out_div_int_reinv}</td>
+                      <td className="p-2 border border-[#2A2A2A] text-[#F9FAFB] text-[11px]">{child.out_no_of_days}</td>
+                      <td className="p-2 border border-[#2A2A2A] text-[#F9FAFB] text-[11px]">{child.out_current_nav}</td>
+                      <td className="p-2 border border-[#2A2A2A] text-[#F9FAFB] text-[11px]">{child.out_current_val}</td>
+                      <td className={`p-2 border border-[#2A2A2A] text-[11px] font-semibold ${parseFloat(child.out_p_n_l) >= 0 ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>
+                        {child.out_p_n_l}
+                       </td>
+                      <td className={`p-2 border border-[#2A2A2A] text-[11px] font-semibold ${parseFloat(child.out_abs_per) >= 0 ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>
+                        {child.out_abs_per}%
+                       </td>
+                      <td className="p-2 border border-[#2A2A2A] text-[#F9FAFB] text-[11px]">{child.out_cagr_per}%</td>
+                     </tr>
                   ))}
                 </React.Fragment>
               );
             })}
-            <tr className="bg-blue-50 font-semibold">
-              <td className="p-1 border text-center" colSpan={5}>Total</td>
-              <td className="p-1 border">{portfolioData.reduce((sum, item) => sum + parseFloat(item.balanceUnits), 0).toFixed(3)}</td>
-              <td className="p-1 border"></td>
-              <td className="p-1 border">₹{summary.totalCost}</td>
-              <td className="p-1 border"></td>
-              <td className="p-1 border"></td>
-
-              <td className="p-1 border"></td>
-               <td className="p-1 border"></td>
-              <td className="p-1 border">₹{summary.totalCurrentValue}</td>
-              <td className="p-1 border">₹{summary.totalProfitLoss}</td>
-              <td className="p-1 border">{summary.totalAbsPercentage}%</td>
-              <td className="p-1 border"></td>
-            </tr>
+            <tr className="bg-[#1F1A1A] font-bold border-t-2 border-[#F59E0B]">
+              <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-center text-[13px]" colSpan={5}>Total</td>
+              <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[13px]">{portfolioData.reduce((sum, item) => sum + parseFloat(item.balanceUnits), 0).toFixed(3)}</td>
+              <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[13px]">-</td>
+              <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[13px] font-semibold">₹{summary.totalCost}</td>
+              <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[13px]">-</td>
+              <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[13px]">-</td>
+              <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[13px]">-</td>
+              <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[13px]">-</td>
+              <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[13px] font-semibold">₹{summary.totalCurrentValue}</td>
+              <td className={`p-2.5 border border-[#2A2A2A] text-[13px] font-bold ${parseFloat(summary.totalProfitLoss) >= 0 ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>
+                ₹{summary.totalProfitLoss}
+               </td>
+              <td className={`p-2.5 border border-[#2A2A2A] text-[13px] font-bold ${parseFloat(summary.totalAbsPercentage) >= 0 ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>
+                {summary.totalAbsPercentage}%
+               </td>
+              <td className="p-2.5 border border-[#2A2A2A] text-[#F9FAFB] text-[13px]">-</td>
+             </tr>
           </tbody>
-        </table>
+         </table>
       </div>
 
       {/* Portfolio Snapshot */}
-      <div className="mt-6 border border-gray-300 rounded-md p-4 bg-white shadow-sm">
-        <h2 className="text-base font-bold mb-3 text-gray-800 border-b pb-2">Portfolio Snapshot</h2>
-        <div className="space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-medium text-gray-700">Total Cost of Purchase Units:</span>
-            <span className="text-sm font-semibold">₹{summary.totalCost}</span>
+      <div className="mt-8 border border-[#2A2A2A] rounded-xl p-5 bg-gradient-to-br from-[#111111] to-[#1A1A1A] shadow-xl">
+        <h2 className="text-xl font-bold mb-4 text-[#F59E0B] border-l-4 border-[#F59E0B] pl-3">Portfolio Snapshot</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-[#0A0A0A] rounded-lg p-4 border border-[#2A2A2A] hover:border-[#F59E0B] transition-all duration-300">
+            <div className="text-sm text-[#9CA3AF] mb-2">Total Cost of Purchase Units</div>
+            <div className="text-2xl font-bold text-[#F9FAFB]">₹{summary.totalCost}</div>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-medium text-gray-700">Total Current Value:</span>
-            <span className="text-sm font-semibold">₹{summary.totalCurrentValue}</span>
+          <div className="bg-[#0A0A0A] rounded-lg p-4 border border-[#2A2A2A] hover:border-[#F59E0B] transition-all duration-300">
+            <div className="text-sm text-[#9CA3AF] mb-2">Total Current Value</div>
+            <div className="text-2xl font-bold text-[#F9FAFB]">₹{summary.totalCurrentValue}</div>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-medium text-gray-700">Net Gain/Loss:</span>
-            <span className={`text-sm font-semibold ${parseFloat(summary.totalProfitLoss) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          <div className="bg-[#0A0A0A] rounded-lg p-4 border border-[#2A2A2A] hover:border-[#F59E0B] transition-all duration-300">
+            <div className="text-sm text-[#9CA3AF] mb-2">Net Gain/Loss</div>
+            <div className={`text-2xl font-bold ${parseFloat(summary.totalProfitLoss) >= 0 ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>
               ₹{summary.totalProfitLoss}
-            </span>
+            </div>
           </div>
         </div>
       </div>

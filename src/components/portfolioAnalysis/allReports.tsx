@@ -876,13 +876,13 @@ const exportToExcel1 = async () => {
           .border { 
             border: 1px solid #ddd !important; 
           }
-          .bg-gray-50 { 
+          .bg-[#0A0A0A] { 
             background-color: #f9fafb !important; 
           }
-          .bg-blue-50 { 
+          .bg-[#1F1A1A] { 
             background-color: #eff6ff !important; 
           }
-          .bg-white { 
+          .bg-[#111111] { 
             background-color: #ffffff !important; 
           }
           .font-semibold { 
@@ -891,7 +891,7 @@ const exportToExcel1 = async () => {
           .text-green-600 { 
             color: #16a34a !important; 
           }
-          .text-blue-600 { 
+          .text-[#F59E0B] { 
             color: #2563eb !important; 
           }
           .text-orange-500 { 
@@ -1000,13 +1000,13 @@ const exportToExcel1 = async () => {
               .border { 
                 border: 1px solid #ddd !important; 
               }
-              .bg-gray-50 { 
+              .bg-[#0A0A0A] { 
                 background-color: #f9fafb !important; 
               }
-              .bg-blue-50 { 
+              .bg-[#1F1A1A] { 
                 background-color: #eff6ff !important; 
               }
-              .bg-white { 
+              .bg-[#111111] { 
                 background-color: #ffffff !important; 
               }
               .font-semibold { 
@@ -1015,7 +1015,7 @@ const exportToExcel1 = async () => {
               .text-green-600 { 
                 color: #16a34a !important; 
               }
-              .text-blue-600 { 
+              .text-[#F59E0B] { 
                 color: #2563eb !important; 
               }
               .text-orange-500 { 
@@ -1084,20 +1084,20 @@ const exportToExcel1 = async () => {
   // };
 
   if (loading) {
-    return <div className="p-4 text-center text-gray-500">Loading report...</div>;
+    return <div className="p-4 text-center text-[#9CA3AF]">Loading report...</div>;
   }
 
   if (!portfolioData.length || !summary) {
-    return <div className="p-4 text-center text-gray-500">No data found for this investor.</div>;
+    return <div className="p-4 text-center text-[#9CA3AF]">No data found for this investor.</div>;
   }
 
   return (
-    <div className="text-[11px] font-sans text-black bg-white p-4" ref={reportRef}>
+    <div className="text-[11px] font-sans text-black bg-[#111111] p-4" ref={reportRef}>
       {/* Header Section */}
       <div className="border-b border-black pb-2 mb-2">
         <button
           onClick={handleBack}
-          className="flex items-center bg-indigo-500 text-white hover:bg-indigo-400 transition-colors px-4 py-2 rounded"
+          className="flex items-center bg-[#F59E0B] text-[#F9FAFB] hover:bg-[#B45309] transition-colors px-4 py-2 rounded"
         >
           <ArrowLeft size={20} className="mr-2" />
           Back
@@ -1120,17 +1120,17 @@ const exportToExcel1 = async () => {
             {/* Action Icons */}
             <div className="flex justify-left gap-3 mt-3 flex-wrap action-buttons">
               {[
-                 { icon: <FileSpreadsheet size={18} className="text-indigo-600" />, label: "Excel", action: exportToExcel1 },
+                 { icon: <FileSpreadsheet size={18} className="text-[#F59E0B]" />, label: "Excel", action: exportToExcel1 },
                 { icon: <FileSpreadsheet size={18} className="text-green-600" />, label: "Excel All Data", action: exportToExcel },
                 { icon: <FileDown size={18} className="text-red-500" />, label: "PDF", action: generatePDF },
-                // { icon: <Send size={18} className="text-blue-500" />, label: "Email", action: sendEmail },
+                // { icon: <Send size={18} className="text-[#F59E0B]" />, label: "Email", action: sendEmail },
                 // { icon: <MessageCircle size={18} className="text-green-600" />, label: "WhatsApp", action: sendWhatsApp },
-                { icon: <Printer size={18} className="text-gray-600" />, label: "Print", action: handlePrint },
+                { icon: <Printer size={18} className="text-[#9CA3AF]" />, label: "Print", action: handlePrint },
                
               ].map((item, index) => (
                 <button
                   key={index}
-                  className="flex flex-col items-center group hover:bg-gray-50 rounded p-1"
+                  className="flex flex-col items-center group hover:bg-[#0A0A0A] rounded p-1"
                   onClick={item.action}
                 >
                   <div className="p-1">{item.icon}</div>
@@ -1145,7 +1145,7 @@ const exportToExcel1 = async () => {
             <p>3rd Floor, Gayways House, Above Space Furniture, P.P Compound,</p>
             <p>Main Road Ranchi 834001 Jharkhand</p>
             <p>Phone: 9304955509, Email: vedantasset@gmail.com</p>
-            <p>Website: <a href="https://www.vedantasset.co.in" className="text-blue-600 hover:underline">www.vedantasset.co.in</a></p>
+            <p>Website: <a href="https://www.vedantasset.co.in" className="text-[#F59E0B] hover:underline">www.vedantasset.co.in</a></p>
 
             {/* Filters */}
             <div className="mt-3">
@@ -1160,7 +1160,7 @@ const exportToExcel1 = async () => {
                 <button
                   onClick={handleSearch}
                   disabled={searchLoading}
-                  className="ml-2 bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600 disabled:bg-blue-300"
+                  className="ml-2 bg-[#F59E0B] text-[#F9FAFB] px-3 py-1 rounded text-sm hover:bg-[#F59E0B] disabled:bg-blue-300"
                 >
                   {searchLoading ? 'Loading...' : 'Search'}
                 </button>
@@ -1180,9 +1180,9 @@ const exportToExcel1 = async () => {
       </div>
 
       {/* Portfolio Table */}
-     <div className="overflow-auto mt-4 border border-gray-300 text-[10px]">
+     <div className="overflow-auto mt-4 border border-[#2A2A2A] text-[10px]">
         <table className="w-full border-collapse text-[10px]">
-          <thead className="bg-gray-100 border-b border-gray-300">
+          <thead className="bg-[#111111] border-b border-[#2A2A2A]">
             <tr className="text-left">
               <th className="p-1 border-r">S.No.</th>
               <th className="p-1 border-r">Folio No.</th>
@@ -1213,14 +1213,14 @@ const exportToExcel1 = async () => {
                 <React.Fragment key={key}>
                   {/* Parent Row (Scheme Summary) */}
                   {parentRecord && (
-                    <tr className="bg-gray-100 font-semibold">
+                    <tr className="bg-[#111111] font-semibold">
                       <td className="p-1 border text-center">{idx + 1}</td> {/* Serial number */}
                       <td className="p-1 border">{parentRecord.folioNo}</td>
                       <td className="p-1 border">{parentRecord.productName}</td>
                       <td className="p-1 border text-center">
                         {hasTransactions ? (
                           <button
-                            className="text-blue-600 hover:underline text-xs"
+                            className="text-[#F59E0B] hover:underline text-xs"
                             onClick={() => toggleRow(key)}
                           >
                             {isExpanded ? "Hide Transactions" : "View Transactions"}
@@ -1246,7 +1246,7 @@ const exportToExcel1 = async () => {
 
                   {/* Child Rows (Transactions) */}
                   {isExpanded && childRecords.map((tx, tIdx) => (
-                    <tr key={`${key}-${tIdx}`} className="bg-white">
+                    <tr key={`${key}-${tIdx}`} className="bg-[#111111]">
                       <td className="p-1 border text-center">{tIdx + 1}</td> {/* Transaction serial number */}
                       <td className="p-1 border">{tx.folioNo}</td>
                       <td className="p-1 border">{tx.productName}</td>
@@ -1270,7 +1270,7 @@ const exportToExcel1 = async () => {
             })}
 
             {/* Total Row */}
-            <tr className="bg-blue-50 font-semibold">
+            <tr className="bg-[#1F1A1A] font-semibold">
               <td className="p-1 border text-center" colSpan={5}>Total</td>
               <td className="p-1 border">{summary.totalUnits}</td>
               <td className="p-1 border"></td>
@@ -1289,24 +1289,24 @@ const exportToExcel1 = async () => {
       </div>
 
       {/* Portfolio Snapshot */}
-      <div className="mt-6 border border-gray-300 rounded-md p-4 bg-white shadow-sm">
-        <h2 className="text-base font-bold mb-3 text-gray-800 border-b pb-2">Portfolio Snapshot</h2>
+      <div className="mt-6 border border-[#2A2A2A] rounded-md p-4 bg-[#111111] shadow-sm">
+        <h2 className="text-base font-bold mb-3 text-[#F9FAFB] border-b pb-2">Portfolio Snapshot</h2>
         <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <span className="text-sm font-medium text-gray-700">Total Cost of Purchase Units:</span>
+            <span className="text-sm font-medium text-[#F9FAFB]">Total Cost of Purchase Units:</span>
             <span className="text-sm font-semibold">₹{summary.totalCost}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm font-medium text-gray-700">Total Current Value:</span>
+            <span className="text-sm font-medium text-[#F9FAFB]">Total Current Value:</span>
             <span className="text-sm font-semibold">₹{summary.totalCurrentValue}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-sm font-medium text-gray-700">Net Gain/Loss:</span>
+            <span className="text-sm font-medium text-[#F9FAFB]">Net Gain/Loss:</span>
             <span className="text-sm font-semibold text-green-600">₹{summary.totalProfitLoss}</span>
           </div>
           {/* <div className="flex justify-between items-center">
-            <span className="text-sm font-medium text-gray-700">Overall CAGR%:</span>
-            <span className="text-sm font-semibold text-blue-600">{summary.totalCagrPercentage}%</span>
+            <span className="text-sm font-medium text-[#F9FAFB]">Overall CAGR%:</span>
+            <span className="text-sm font-semibold text-[#F59E0B]">{summary.totalCagrPercentage}%</span>
           </div> */}
         </div>
       </div>

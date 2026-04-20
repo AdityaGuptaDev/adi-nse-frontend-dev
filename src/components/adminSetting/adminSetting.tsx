@@ -76,7 +76,7 @@ const mockSettings = [
     icon: FileText,
     title: "Schemes Configurations",
     description: "Add Scheme On the Basis of Need",
-    color: "bg-blue-100 text-blue-600",
+    color: "bg-gradient-to-r from-[#F59E0B]/20 to-[#B45309]/20 text-[#F59E0B]",
     category: "credentials",
     link: "/schemes-master"
   },
@@ -96,17 +96,17 @@ const mockSettings = [
     icon: SquareArrowOutUpRight,
     title: "External Settings",
     description: "Manage external credentials",
-    color: "bg-orange-100 text-orange-600",
+    color: "bg-gradient-to-r from-[#F59E0B]/20 to-[#B45309]/20 text-[#F59E0B]",
     category: "external",
     link: "/external-setting"
   } ,
 
    {
     id: 3,
-     icon: Shield,
+    icon: Shield,
     title: "Recommended Fund",
     description: "Fund Strategies",
-    color: "bg-green-100 text-green-600",
+    color: "bg-gradient-to-r from-[#F59E0B]/20 to-[#B45309]/20 text-[#F59E0B]",
     category: "credentials",
     link: "/recommended-fund-settings"
    }
@@ -220,7 +220,7 @@ const SettingsCard = ({ setting, index }: any) => {
   return (
     <Link href={setting?.link || "/admin-setting"}>
       <div
-        className={`bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg transition-all duration-300 transform hover:scale-105 cursor-pointer animate-fade-in-up`}
+        className={`bg-[#111111] rounded-xl shadow-lg border border-[#2A2A2A] p-6 hover:shadow-2xl transition-all duration-300 transform hover:scale-105 cursor-pointer animate-fade-in-up hover:border-[#F59E0B]/50`}
         style={{ animationDelay: `${index * 100}ms` }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -230,11 +230,11 @@ const SettingsCard = ({ setting, index }: any) => {
             <setting.icon className="w-6 h-6" />
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-gray-900 mb-2">{setting.title}</h3>
-            <p className="text-sm text-gray-600 leading-relaxed">{setting.description}</p>
+            <h3 className="font-semibold text-[#F9FAFB] mb-2">{setting.title}</h3>
+            <p className="text-sm text-[#9CA3AF] leading-relaxed">{setting.description}</p>
           </div>
           <div className={`transition-all duration-300 ${isHovered ? 'translate-x-1' : ''}`}>
-            <ArrowRight className="w-5 h-5 text-gray-400" />
+            <ArrowRight className="w-5 h-5 text-[#9CA3AF]" />
           </div>
         </div>
       </div>
@@ -262,16 +262,18 @@ const FilterSection = () => {
           <button
             key={filter.id}
             onClick={() => setActiveFilter(filter.id)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer ${activeFilter === filter.id
-              ? 'bg-primary/85 text-white shadow-lg font-semibold'
-              : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
-              }`}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer ${
+              activeFilter === filter.id
+                ? 'bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-[#F9FAFB] shadow-lg font-semibold'
+                : 'bg-[#111111] text-[#9CA3AF] hover:bg-[#1F1A1A] border border-[#2A2A2A]'
+            }`}
           >
             {filter.label}
-            <span className={`ml-2 px-2 py-1 rounded-full text-xs ${activeFilter === filter.id
-              ? 'bg-primary text-white font-semibold'
-              : 'bg-gray-100 text-gray-600'
-              }`}>
+            <span className={`ml-2 px-2 py-1 rounded-full text-xs ${
+              activeFilter === filter.id
+                ? 'bg-white/20 text-[#F9FAFB] font-semibold'
+                : 'bg-[#2A2A2A] text-[#9CA3AF]'
+            }`}>
               {filter.count}
             </span>
           </button>
@@ -288,13 +290,13 @@ const SearchComponent = () => {
   return (
     <div className="mb-6">
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] w-5 h-5" />
         <input
           type="text"
           placeholder="Search settings..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
+          className="w-full pl-10 pr-4 py-3 border border-[#2A2A2A] rounded-lg focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent bg-[#111111] text-[#F9FAFB] placeholder:text-[#9CA3AF] shadow-sm"
         />
       </div>
     </div>
@@ -304,10 +306,10 @@ const SearchComponent = () => {
 // Stats Component
 const StatsOverview = () => {
   const stats = [
-    { label: 'Total Settings', value: '14', icon: Settings, color: 'bg-blue-100 text-blue-600' },
-    { label: 'Configured', value: '8', icon: CheckCircle, color: 'bg-green-100 text-green-600' },
-    { label: 'Pending', value: '6', icon: Clock, color: 'bg-yellow-100 text-yellow-600' },
-    { label: 'Alerts', value: '3', icon: AlertCircle, color: 'bg-red-100 text-red-600' }
+    { label: 'Total Settings', value: '14', icon: Settings, color: 'bg-gradient-to-r from-[#F59E0B]/20 to-[#B45309]/20 text-[#F59E0B]' },
+    { label: 'Configured', value: '8', icon: CheckCircle, color: 'bg-gradient-to-r from-[#10B981]/20 to-[#059669]/20 text-[#10B981]' },
+    { label: 'Pending', value: '6', icon: Clock, color: 'bg-gradient-to-r from-[#F59E0B]/20 to-[#B45309]/20 text-[#F59E0B]' },
+    { label: 'Alerts', value: '3', icon: AlertCircle, color: 'bg-gradient-to-r from-[#EF4444]/20 to-[#DC2626]/20 text-[#EF4444]' }
   ];
 
   return (
@@ -315,7 +317,7 @@ const StatsOverview = () => {
       {stats.map((stat, index) => (
         <div
           key={index}
-          className={`bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg transition-all duration-300 animate-fade-in-up`}
+          className={`bg-[#111111] rounded-xl shadow-lg border border-[#2A2A2A] p-6 hover:shadow-2xl transition-all duration-300 animate-fade-in-up hover:border-[#F59E0B]/50`}
           style={{ animationDelay: `${index * 100}ms` }}
         >
           <div className="flex items-center space-x-4">
@@ -323,8 +325,8 @@ const StatsOverview = () => {
               <stat.icon className="w-6 h-6" />
             </div>
             <div>
-              <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
-              <div className="text-sm text-gray-600">{stat.label}</div>
+              <div className="text-2xl font-bold text-[#F9FAFB]">{stat.value}</div>
+              <div className="text-sm text-[#9CA3AF]">{stat.label}</div>
             </div>
           </div>
         </div>
@@ -353,7 +355,7 @@ const AdminDashboard = () => {
   }, [searchTerm]);
 
   return (
-    <div className="min-h-screen w-full bg-mainbackground">
+    <div className="min-h-screen w-full bg-[#0A0A0A]">
       {/* Main Content */}
       <main className="p-6">
         <div className="max-w-7xl mx-auto">
@@ -361,22 +363,24 @@ const AdminDashboard = () => {
           <div className="mb-8">
             <button
               onClick={() => router.push('/admin-dashboard')}
-              className="flex items-center px-4 py-2 btn btn-primary text-white rounded-lg transition-colors mb-6 cursor-pointer"
+              className="flex items-center px-4 py-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-[#F9FAFB] rounded-lg transition-all duration-300 mb-6 cursor-pointer hover:opacity-90 hover:shadow-lg group"
             >
-              <ArrowLeft className="w-5 h-5 mr-2" />
+              <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
               Back
             </button>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">General Settings</h1>
-            <p className="text-gray-600">Manage your system configuration and preferences</p>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent mb-2">
+              General Settings
+            </h1>
+            <p className="text-[#9CA3AF]">Manage your system configuration and preferences</p>
           </div>
 
-          {/* Stats Overview */}
+          {/* Stats Overview (Commented but styled) */}
           {/* <StatsOverview /> */}
 
-          {/* Search */}
+          {/* Search (Commented but styled) */}
           {/* <SearchComponent /> */}
 
-          {/* Filter Section */}
+          {/* Filter Section (Commented but styled) */}
           {/* <FilterSection /> */}
 
           {/* Settings Grid */}
@@ -389,11 +393,11 @@ const AdminDashboard = () => {
           {/* Empty State */}
           {filteredSettings.length === 0 && (
             <div className="text-center py-12">
-              <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Search className="w-12 h-12 text-gray-400" />
+              <div className="w-24 h-24 bg-[#111111] rounded-full flex items-center justify-center mx-auto mb-4 border border-[#2A2A2A]">
+                <Search className="w-12 h-12 text-[#9CA3AF]" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No settings found</h3>
-              <p className="text-gray-600">Try adjusting your search criteria</p>
+              <h3 className="text-lg font-medium text-[#F9FAFB] mb-2">No settings found</h3>
+              <p className="text-[#9CA3AF]">Try adjusting your search criteria</p>
             </div>
           )}
         </div>

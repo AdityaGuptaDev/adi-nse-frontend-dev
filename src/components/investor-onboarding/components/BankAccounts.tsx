@@ -532,17 +532,17 @@ export default function BankAccounts({
         const isVerifyingAccount = isVerifying[index];
 
         return (
-            <div className="bg-white rounded-lg border border-gray-200 mb-6">
-                <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-                    <h3 className="text-lg font-medium text-gray-900">
+            <div className="bg-[#111111] rounded-lg border border-[#2A2A2A] mb-6">
+                <div className="bg-[#1F1A1A] px-4 py-3 border-b border-[#2A2A2A] rounded-t-lg">
+                    <h3 className="text-lg font-medium text-[#F9FAFB]">
                         {title}
                         {account.isVerified && (
-                            <span className="ml-2 text-green-600 text-sm font-normal">
+                            <span className="ml-2 text-[#10B981] text-sm font-normal">
                                 ✓ Verified
                             </span>
                         )}
                         {isVerifyingAccount && (
-                            <span className="ml-2 text-blue-600 text-sm font-normal">
+                            <span className="ml-2 text-[#F59E0B] text-sm font-normal">
                                 Verifying...
                             </span>
                         )}
@@ -552,68 +552,68 @@ export default function BankAccounts({
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {/* IFSC */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                IFSC {isRequired && <span className="text-red-500">*</span>}
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                IFSC {isRequired && <span className="text-[#F59E0B]">*</span>}
                             </label>
                             <input
                                 type="text"
                                 value={account.ifsc}
                                 onChange={(e) => handleAccountChange(index, 'ifsc', e.target.value.toUpperCase())}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase disabled:opacity-50"
                                 maxLength={11}
                                 disabled={isVerifyingAccount}
                             />
                             {getError('ifsc') && (
-                                <p className="text-red-500 text-xs mt-1">{getError('ifsc')}</p>
+                                <p className="text-red-400 text-xs mt-1">{getError('ifsc')}</p>
                             )}
                         </div>
                         
                         {/* Account Number */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Bank A/c No {isRequired && <span className="text-red-500">*</span>}
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Bank A/c No {isRequired && <span className="text-[#F59E0B]">*</span>}
                             </label>
                             <input
                                 type="password"
                                 value={account.accountNumber}
                                 onChange={(e) => handleAccountChange(index, 'accountNumber', e.target.value.toUpperCase())}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase disabled:opacity-50"
                                 maxLength={20}
                                 disabled={isVerifyingAccount}
                             />
                             {getError('accountNumber') && (
-                                <p className="text-red-500 text-xs mt-1">{getError('accountNumber')}</p>
+                                <p className="text-red-400 text-xs mt-1">{getError('accountNumber')}</p>
                             )}
                         </div>
 
                         {/* Re-enter Account Number */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Re-Enter Bank A/c No {isRequired && <span className="text-red-500">*</span>}
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Re-Enter Bank A/c No {isRequired && <span className="text-[#F59E0B]">*</span>}
                             </label>
                             <input
                                 type="text"
                                 value={account.reEnterAccountNumber}
                                 onChange={(e) => handleAccountChange(index, 'reEnterAccountNumber', e.target.value.toUpperCase())}
                                 onBlur={() => handleReEnterBlur(index)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase disabled:opacity-50"
                                 maxLength={20}
                                 disabled={isVerifyingAccount}
                             />
                             {getError('reEnterAccountNumber') && (
-                                <p className="text-red-500 text-xs mt-1">{getError('reEnterAccountNumber')}</p>
+                                <p className="text-red-400 text-xs mt-1">{getError('reEnterAccountNumber')}</p>
                             )}
                         </div>
 
                         {/* Account Type */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Account Type {isRequired && <span className="text-red-500">*</span>}
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Account Type {isRequired && <span className="text-[#F59E0B]">*</span>}
                             </label>
                             <select
                                 value={account.accountType}
                                 onChange={(e) => handleAccountChange(index, 'accountType', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-50"
                                 disabled={isVerifyingAccount}
                             >
                                 {accountTypeOptions.map(option => (
@@ -623,14 +623,14 @@ export default function BankAccounts({
                                 ))}
                             </select>
                             {getError('accountType') && (
-                                <p className="text-red-500 text-xs mt-1">{getError('accountType')}</p>
+                                <p className="text-red-400 text-xs mt-1">{getError('accountType')}</p>
                             )}
                         </div>
 
                         {/* Bank Name */}
                         <div className="relative w-full">
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Bank {isRequired && <span className="text-red-500">*</span>}
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Bank {isRequired && <span className="text-[#F59E0B]">*</span>}
                             </label>
                             <div className="relative w-full">
                                 <Select
@@ -653,48 +653,100 @@ export default function BankAccounts({
                                     isClearable
                                     placeholder="Select Bank"
                                     name={`bank-select-${index}`}
-                                    className="w-full border border-gray-300 rounded-lg"
+                                    className="w-full rounded-lg"
                                     isDisabled={isVerifyingAccount}
                                     styles={{
                                         menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                                        control: (base) => ({ ...base, fontSize: "0.75rem" }),
-                                        singleValue: (base) => ({ ...base, fontSize: "0.75rem" }),
+                                        control: (base) => ({ 
+                                            ...base, 
+                                            fontSize: "0.75rem",
+                                            backgroundColor: '#1F1A1A',
+                                            borderColor: '#2A2A2A',
+                                            '&:hover': {
+                                                borderColor: '#F59E0B',
+                                            },
+                                        }),
+                                        singleValue: (base) => ({ 
+                                            ...base, 
+                                            fontSize: "0.75rem",
+                                            color: '#F9FAFB',
+                                        }),
+                                        menu: (base) => ({
+                                            ...base,
+                                            backgroundColor: '#1F1A1A',
+                                            border: '1px solid #2A2A2A',
+                                        }),
+                                        option: (base, state) => ({
+                                            ...base,
+                                            backgroundColor: state.isFocused ? '#2A2A2A' : '#1F1A1A',
+                                            color: state.isFocused ? '#F59E0B' : '#F9FAFB',
+                                            '&:active': {
+                                                backgroundColor: '#F59E0B',
+                                                color: 'white',
+                                            },
+                                        }),
+                                        input: (base) => ({
+                                            ...base,
+                                            color: '#F9FAFB',
+                                        }),
+                                        placeholder: (base) => ({
+                                            ...base,
+                                            color: '#9CA3AF',
+                                        }),
+                                        dropdownIndicator: (base) => ({
+                                            ...base,
+                                            color: '#9CA3AF',
+                                            '&:hover': {
+                                                color: '#F59E0B',
+                                            },
+                                        }),
+                                        clearIndicator: (base) => ({
+                                            ...base,
+                                            color: '#9CA3AF',
+                                            '&:hover': {
+                                                color: '#F59E0B',
+                                            },
+                                        }),
+                                        indicatorSeparator: (base) => ({
+                                            ...base,
+                                            backgroundColor: '#2A2A2A',
+                                        }),
                                     }}
                                     menuPortalTarget={typeof window !== "undefined" ? document.body : null}
                                 />
                                 {getError("bankName") && (
-                                    <p className="text-red-500 text-xs mt-1">{getError("bankName")}</p>
+                                    <p className="text-red-400 text-xs mt-1">{getError("bankName")}</p>
                                 )}
                             </div>
                         </div>
 
                         {/* MICR */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                MICR {isRequired && <span className="text-red-500">*</span>}
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                MICR {isRequired && <span className="text-[#F59E0B]">*</span>}
                             </label>
                             <input
                                 type="text"
                                 value={account.micr}
                                 onChange={(e) => handleAccountChange(index, 'micr', e.target.value.replace(/\D/g, ''))}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-50"
                                 maxLength={9}
                                 disabled={isVerifyingAccount}
                             />
                             {getError('micr') && (
-                                <p className="text-red-500 text-xs mt-1">{getError('micr')}</p>
+                                <p className="text-red-400 text-xs mt-1">{getError('micr')}</p>
                             )}
                         </div>
 
                         {/* Bank Proof */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Bank Proof {isRequired && <span className="text-red-500">*</span>}
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Bank Proof {isRequired && <span className="text-[#F59E0B]">*</span>}
                             </label>
                             <select
                                 value={account.bankProof}
                                 onChange={(e) => handleAccountChange(index, 'bankProof', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-50"
                                 disabled={isVerifyingAccount}
                             >
                                 {bankProofOptions.map(option => (
@@ -704,7 +756,7 @@ export default function BankAccounts({
                                 ))}
                             </select>
                             {getError('bankProof') && (
-                                <p className="text-red-500 text-xs mt-1">{getError('bankProof')}</p>
+                                <p className="text-red-400 text-xs mt-1">{getError('bankProof')}</p>
                             )}
                         </div>
                     </div>
@@ -714,8 +766,8 @@ export default function BankAccounts({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">Bank Account Details</h2>
+        <form onSubmit={handleSubmit} className="p-6 bg-[#111111] rounded-xl border border-[#2A2A2A] shadow-xl">
+            <h2 className="text-xl font-semibold bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent mb-6">Bank Account Details</h2>
 
             {renderBankAccountSection(0, "Default Bank Account", true)}
 
@@ -733,7 +785,7 @@ export default function BankAccounts({
                             onClick={() => {
                                 setVisibleAccounts(visibleAccounts + 1);
                             }}
-                            className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                            className="px-4 py-2 bg-gradient-to-r from-[#10B981] to-[#059669] text-white rounded-lg hover:opacity-90 transition-all"
                         >
                             + Add More
                         </button>
@@ -745,24 +797,24 @@ export default function BankAccounts({
                         <button
                             type="button"
                             onClick={() => setVisibleAccounts(visibleAccounts - 1)}
-                            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                            className="px-4 py-2 bg-gradient-to-r from-[#EF4444] to-[#DC2626] text-white rounded-lg hover:opacity-90 transition-all"
                         >
-                            <Trash />
+                            <Trash className="w-4 h-4" />
                         </button>
                     </div>
                 )}
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+            <div className="flex justify-between items-center pt-6 border-t border-[#2A2A2A]">
                 <button
                     type="button"
                     onClick={onPrevious}
                     disabled={isFirstStep}
-                    className={`px-6 py-2 rounded-md transition-colors ${
+                    className={`px-6 py-2 rounded-lg transition-all font-medium ${
                         isFirstStep
-                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                            : 'bg-gray-600 text-white hover:bg-gray-700'
+                            ? 'bg-[#2A2A2A] text-[#9CA3AF] cursor-not-allowed'
+                            : 'bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] hover:bg-[#2A2A2A] hover:border-[#F59E0B] transition-all'
                     }`}
                 >
                     Previous
@@ -771,10 +823,10 @@ export default function BankAccounts({
                 <button
                     type="submit"
                     disabled={!isFormValid}
-                    className={`px-6 py-2 rounded-md transition-colors ${
+                    className={`px-6 py-2 rounded-lg transition-all font-medium ${
                         isFormValid
-                            ? 'bg-blue-600 text-white hover:bg-blue-700'
-                            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            ? 'bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white hover:opacity-90 shadow-lg'
+                            : 'bg-[#2A2A2A] text-[#9CA3AF] cursor-not-allowed'
                     }`}
                 >
                     {isLastStep ? 'Submit' : 'Next'}

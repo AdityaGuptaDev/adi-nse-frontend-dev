@@ -172,7 +172,7 @@ const MutualFundClasses = ({ data }: any) => {
           name: "Corporate Bond Fund",
           returns: { threeYear: 7.2 },
           icon: "🏢",
-          color: "text-gray-600",
+          color: "text-[#9CA3AF]",
           scheme: [
             {
               id: 1,
@@ -335,13 +335,13 @@ const MutualFundClasses = ({ data }: any) => {
         isVisible={viewAllLoader}
         message="Processing..."
       />
-      <div className="bg-white">
+      <div className="bg-[#111111]">
         <div className="flex items-center justify-between mb-4">
-          <CustomText className="text-lg font-montserrat font-semibold text-gray-900">
+          <CustomText className="text-lg font-montserrat font-semibold text-[#F9FAFB]">
             Mutual Fund Classes
           </CustomText>
           <CustomButton
-            className="p-0 h-auto min-h-0 !text-secondary-content !bg-white"
+            className="p-0 h-auto min-h-0 !text-secondary-content !bg-[#111111]"
             onClick={() => onChangeViewAll()}
           >
             View All <span><FaAngleRight /></span>
@@ -349,7 +349,7 @@ const MutualFundClasses = ({ data }: any) => {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-0 mb-4 border-b border-gray-200">
+        <div className="flex gap-0 mb-4 border-b border-[#2A2A2A]">
           <div role="tablist" className="tabs tabs-border">
             {fundClasses.map((fundClass: any, index: number) => (
               // <button
@@ -358,7 +358,7 @@ const MutualFundClasses = ({ data }: any) => {
               //   className={`px-4 py-2 text-sm font-medium transition-all border-b-2 ${
               //     activeTab === fundClass.name
               //       ? "text-blue-600 border-blue-600"
-              //       : "text-gray-600 hover:text-gray-800 border-transparent"
+              //       : "text-[#9CA3AF] hover:text-[#F9FAFB] border-transparent"
               //   }`}
               // >
               //   {fundClass.name}
@@ -366,7 +366,7 @@ const MutualFundClasses = ({ data }: any) => {
               <a role="tab" key={index}
                 className={`tab transition-all ${activeTab === fundClass.categoryName
                   ? " tab-active font-bold text-primary border-primary"
-                  : "text-gray-600 hover:text-gray-800 border-transparent"
+                  : "text-[#9CA3AF] hover:text-[#F9FAFB] border-transparent"
                   }`} onClick={() => setActiveTab(fundClass.categoryName)}>{fundClass.categoryName}</a>
             ))}
           </div>
@@ -374,7 +374,7 @@ const MutualFundClasses = ({ data }: any) => {
 
         {/* Active Tab Content */}
         <div>
-          <CustomText className="text-base font-medium text-gray-900 mb-4">
+          <CustomText className="text-base font-medium text-[#F9FAFB] mb-4">
             Top Categories and Fund in {activeTab} (3 Years)
           </CustomText>
 
@@ -384,7 +384,7 @@ const MutualFundClasses = ({ data }: any) => {
                 activeClass?.subCategory?.map((mfData: any, index: number) => (
                   <div
                     key={index}
-                    className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-200"
+                    className="bg-[#111111] border border-[#2A2A2A] rounded-lg p-4 hover:shadow-md transition-all duration-200"
                   >
                     <div className="flex items-center justify-between">
                       {/* Left side - Category info */}
@@ -398,7 +398,7 @@ const MutualFundClasses = ({ data }: any) => {
 
                       {/* Right side - Returns */}
                       <div className="flex justify-between gap-2 items-center">
-                        {/* <CustomText className="text-xs text-gray-500 mb-1">
+                        {/* <CustomText className="text-xs text-[#9CA3AF] mb-1">
                       p.a
                     </CustomText> */}
                         <div className="flex items-center gap-2">
@@ -420,7 +420,7 @@ const MutualFundClasses = ({ data }: any) => {
                             </div>
                             <div className="flex-1">
                               <Link href={`/scheme-detail`}>
-                                <CustomText className="font-medium text-gray-900 text-sm  cursor-pointer">
+                                <CustomText className="font-medium text-[#F9FAFB] text-sm  cursor-pointer">
                                   {item?.SchemeMaster?.ms_fullname}
                                 </CustomText>
                               </Link>
@@ -429,7 +429,7 @@ const MutualFundClasses = ({ data }: any) => {
 
                           {/* Right side - Returns */}
                           <div className="flex justify-between gap-2 items-center">
-                            {/* <CustomText className="text-xs text-gray-500 mb-1">
+                            {/* <CustomText className="text-xs text-[#9CA3AF] mb-1">
                           p.a
                         </CustomText> */}
                             <div className="flex items-center gap-2">
@@ -440,13 +440,13 @@ const MutualFundClasses = ({ data }: any) => {
                             </div>
                           </div>
                         </div>
-                        <div className="border border-b border-gray-100 my-4"></div>
+                        <div className="border border-b border-[#2A2A2A] my-4"></div>
                       </Fragment>
                     ))}
                   </div>
                 ))) : (
                 <div className="col-span-3">
-                  <CustomText className="text-center text-gray-500">
+                  <CustomText className="text-center text-[#9CA3AF]">
                     No Data Found
                   </CustomText>
                 </div>

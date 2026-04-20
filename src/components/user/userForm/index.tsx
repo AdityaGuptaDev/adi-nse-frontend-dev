@@ -39,17 +39,15 @@ const schema = yup.object().shape({
     is: (val: any) => {
       console.log(val, "val");
       return val == USER_TYPE.RM
-    }, // RM user type ID
+    },
     then: (schema) => schema.required("ARN is required for RM users"),
     otherwise: (schema) => schema.notRequired(),
   }),
   EUIN: yup.string().nullable().when("userTypeId", {
-    is: (val: any) => val == USER_TYPE.RM, // RM user type ID
+    is: (val: any) => val == USER_TYPE.RM,
     then: (schema) => schema.required("EUIN is required for RM users"),
     otherwise: (schema) => schema.notRequired(),
   }),
-
-  // pincode: yup.string().matches(/^[0-9]+$/, "Must be only digits").required("Pincode is required").typeError("Pincode is required"),
 });
 
 const EditSchema = yup.object().shape({
@@ -69,17 +67,15 @@ const EditSchema = yup.object().shape({
     is: (val: any) => {
       console.log(val, "val");
       return val == USER_TYPE.RM
-    }, // RM user type ID
+    },
     then: (schema) => schema.required("ARN is required for RM users"),
     otherwise: (schema) => schema.optional(),
   }),
   EUIN: yup.string().when("userTypeId", {
-    is: (val: any) => val == USER_TYPE.RM, // RM user type ID
+    is: (val: any) => val == USER_TYPE.RM,
     then: (schema) => schema.required("EUIN is required for RM users"),
     otherwise: (schema) => schema.optional(),
   }),
-
-  // pincode: yup.string().matches(/^[0-9]+$/, "Must be only digits").required("Pincode is required").typeError("Pincode is required"),
 });
 
 type UserFormProps = {
@@ -118,7 +114,7 @@ function UserForm({
   } = useForm({
     //@ts-ignore
     resolver: yupResolver(isEdit ? EditSchema : schema),
-    mode: "onSubmit", // Only validate on submit, not on change
+    mode: "onSubmit",
     defaultValues: useMemo(() => {
       console.log(data, "data");
       return {
@@ -130,11 +126,8 @@ function UserForm({
         mobile: data?.mobile ? parseInt(data?.mobile) : null,
         ARN: data?.['UserMappings.RMRegistration.ARN'] ? data['UserMappings.RMRegistration.ARN'] : null,
         EUIN: data?.['UserMappings.RMRegistration.EUIN'] ? data['UserMappings.RMRegistration.EUIN'] : null,
-        // address: data?.address,
-        // pincode: data?.pincode ? parseInt(data?.pincode) : null,
         isActive: data?.isActive,
       };
-
     }, [data]),
   });
   console.log(errors, "errors");
@@ -150,23 +143,18 @@ function UserForm({
         mobile: null,
         ARN: null,
         EUIN: null,
-        // address: null,
-        // pincode: null,
         isActive: true,
       });
       setSelectedUserType(null);
     } else {
-      // Set selected user type when data is loaded
       setSelectedUserType(data?.userTypeId ? parseInt(data?.userTypeId) : null);
     }
   }, [data, reset]);
 
-
-
   const onSubmit = async (values: any) => {
     console.log(values, "values");
     try {
-      // setLoading(true);
+      setLoading(true);
       let obj: any = {
         mobile: values?.mobile ? Number(values?.mobile) : null,
         roleId: values?.roleId ? Number(values?.roleId) : null,
@@ -175,8 +163,6 @@ function UserForm({
         email: values?.email,
         ARN: values?.ARN || null,
         EUIN: values?.EUIN || null,
-        // pincode: values?.pincode ? Number(values?.pincode) : null,
-        // address: values?.address,
         isActive: values?.isActive,
       };
       if (data?.id) {
@@ -215,31 +201,23 @@ function UserForm({
     setValue("userTypeId", userType, { shouldValidate: false });
     setSelectedUserType(userType);
 
-    // Clear role selection when user type changes
     setValue("roleId", null, { shouldValidate: false });
 
-    // Clear RM specific fields when user type changes
-    if (userType !== 3) { // If not RM user type (3 is RM user type ID)
+    if (userType !== 3) {
       setValue("ARN", null, { shouldValidate: false });
       setValue("EUIN", null, { shouldValidate: false });
     }
   };
 
-
-  // Filter roles based on selected user type
   const filteredRoleList = useMemo(() => {
     if (!selectedUserType) {
-      return []; // Return empty array if no user type is selected
+      return [];
     }
 
     return roleList.filter((role: any) => {
-      // Filter by userTypeId matching selected user type
       const matchesUserType = role?.userTypeId == selectedUserType;
-
-      // Also filter to show only Super Admin, RM, 
       const roleName = role?.roleName?.toLowerCase();
       const isNotAllowedRole = roleName === 'Investor' || roleName === 'Partner';
-
       return matchesUserType && !isNotAllowedRole;
     });
   }, [roleList, selectedUserType]);
@@ -263,22 +241,30 @@ function UserForm({
       mobile: null,
       ARN: null,
       EUIN: null,
-      // address: null,
-      // pincode: null,
       isActive: true,
     });
   };
 
+  // Helper function to get error message as string
+  const getErrorMessage = (error: any): string | undefined => {
+    if (!error) return undefined;
+    if (typeof error === 'string') return error;
+    if (error.message) return error.message;
+    return undefined;
+  };
+
   return (
     <>
-      <div className="w-full p-6 bg-white border-t border-gray-200">
+      <div className="w-full p-6 bg-[#111111] border-t border-[#2A2A2A] rounded-xl">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid lg:grid-cols-4 xl:grid-cols-4 gap-5">
             <div>
+              <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                User Type <span className="text-[#F59E0B]">*</span>
+              </label>
               <CustomReactSelect
                 items={filteredUserTypeList}
                 required
-                label="User Type"
                 placeholder="Select User Type"
                 bindName="userType"
                 bindValue="id"
@@ -287,13 +273,19 @@ function UserForm({
                 onChange={handleUserTypeChange}
                 error={errors?.userTypeId?.message}
                 disabled={isView ? true : false}
+                className="z-50"
               />
+              {errors?.userTypeId && (
+                <p className="mt-1 text-xs text-red-400">{getErrorMessage(errors.userTypeId)}</p>
+              )}
             </div>
             <div>
+              <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                Role <span className="text-[#F59E0B]">*</span>
+              </label>
               <CustomReactSelect
                 items={filteredRoleList}
                 required
-                label="Role"
                 placeholder="Select Role"
                 bindName="roleName"
                 bindValue="id"
@@ -302,111 +294,120 @@ function UserForm({
                 onChange={handleRoleChange}
                 error={errors?.roleId?.message}
                 disabled={isView ? true : false}
+                className="z-50"
               />
+              {errors?.roleId && (
+                <p className="mt-1 text-xs text-red-400">{getErrorMessage(errors.roleId)}</p>
+              )}
             </div>
 
             <div>
-              <CustomInput
-                label="Name"
+              <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                Name <span className="text-[#F59E0B]">*</span>
+              </label>
+              <input
+                type="text"
                 {...register("name")}
-                required
                 placeholder="Enter Name"
                 disabled={isView ? true : false}
-                error={errors.name?.message}
+                className="w-full px-4 py-2.5 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
               />
+              {errors.name && (
+                <p className="mt-1 text-xs text-red-400">{getErrorMessage(errors.name)}</p>
+              )}
             </div>
             <div>
-              <CustomInput
-                label="Email"
+              <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                Email <span className="text-[#F59E0B]">*</span>
+              </label>
+              <input
+                type="email"
                 {...register("email")}
                 placeholder="Enter Email"
-                required
                 disabled={isView ? true : false}
-                error={errors.email?.message}
+                className="w-full px-4 py-2.5 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
               />
+              {errors.email && (
+                <p className="mt-1 text-xs text-red-400">{getErrorMessage(errors.email)}</p>
+              )}
             </div>
             <div>
-              <CustomInput
-                label="Mobile No"
+              <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                Mobile No <span className="text-[#F59E0B]">*</span>
+              </label>
+              <input
+                type="tel"
                 {...register("mobile")}
                 placeholder="Enter Mobile No"
-                required
                 disabled={isView ? true : false}
-                error={errors.mobile?.message}
+                className="w-full px-4 py-2.5 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
               />
+              {errors.mobile && (
+                <p className="mt-1 text-xs text-red-400">{getErrorMessage(errors.mobile)}</p>
+              )}
             </div>
 
-            {/* RM specific fields */}
             {selectedUserType == USER_TYPE.RM && (
               <>
                 <div>
-                  <CustomInput
-                    label="ARN"
+                  <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                    ARN <span className="text-[#F59E0B]">*</span>
+                  </label>
+                  <input
+                    type="text"
                     {...register("ARN")}
                     placeholder="Enter ARN"
-                    required
                     disabled={isView ? true : false}
-                    error={errors.ARN?.message}
+                    className="w-full px-4 py-2.5 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                   />
+                  {errors.ARN && (
+                    <p className="mt-1 text-xs text-red-400">{getErrorMessage(errors.ARN)}</p>
+                  )}
                 </div>
                 <div>
-                  <CustomInput
-                    label="EUIN"
+                  <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                    EUIN <span className="text-[#F59E0B]">*</span>
+                  </label>
+                  <input
+                    type="text"
                     {...register("EUIN")}
                     placeholder="Enter EUIN"
-                    required
                     disabled={isView ? true : false}
-                    error={errors.EUIN?.message}
+                    className="w-full px-4 py-2.5 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
                   />
+                  {errors.EUIN && (
+                    <p className="mt-1 text-xs text-red-400">{getErrorMessage(errors.EUIN)}</p>
+                  )}
                 </div>
-
               </>
             )}
 
             {!isEdit && !isView ? (
               <div>
-                <CustomInput
-                  type={passwordType}
-                  label="Password"
-                  required
-                  placeholder="Password"
-                  {...register("password")}
-                  error={errors.password?.message}
-                  icon={
-                    passwordType === "password" ? (
-                      <FaEyeSlash
-                        className="w-4 h-4"
-                        onClick={() => setpasswordType("text")}
-                      />
-                    ) : (
-                      <FaEye
-                        className="w-4 h-4"
-                        onClick={() => setpasswordType("password")}
-                      />
-                    )
-                  }
-                />
+                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                  Password <span className="text-[#F59E0B]">*</span>
+                </label>
+                <div className="relative">
+                  <input
+                    type={passwordType}
+                    {...register("password")}
+                    placeholder="Enter Password"
+                    className="w-full px-4 py-2.5 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setpasswordType(passwordType === "password" ? "text" : "password")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] hover:text-[#F59E0B] transition-colors"
+                  >
+                    {passwordType === "password" ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="mt-1 text-xs text-red-400">{getErrorMessage(errors.password)}</p>
+                )}
               </div>
             ) : null}
 
-            {/* <div>
-              <CustomInput
-                type="number"
-                required
-                label="Pincode"
-                {...register("pincode")}
-                placeholder="Enter Pincode"
-                error={errors.pincode?.message}
-                disabled={isView ? true : false}
-              />
-            </div> */}
-            {/* <div>
-              <CustomTextarea
-                label="Address"
-                {...register("address")}
-                disabled={isView ? true : false}
-              />
-            </div> */}
             {isEdit || isView ? (
               <div className="flex flex-col space-x-2 py-2">
                 <Controller
@@ -419,7 +420,7 @@ function UserForm({
                         id="isActive"
                         {...field}
                         checked={field.value}
-                        className="checked:bg-green"
+                        className="checked:bg-[#10B981]"
                         onChange={() => field.onChange(!field.value)}
                         color="green"
                         disabled={isView ? true : false}
@@ -430,22 +431,23 @@ function UserForm({
               </div>
             ) : null}
           </div>
-          <div className="flex justify-end text-end gap-4 mt-4">
+          <div className="flex justify-end text-end gap-4 mt-6">
             {!isView ? (
-              <CustomButton
+              <button
                 type="submit"
-                className="flex normal-case"
-                loading={loading}
+                disabled={loading}
+                className="px-6 py-2.5 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white font-semibold rounded-lg hover:opacity-90 transition-all disabled:opacity-50"
               >
-                {data ? "Update" : "Submit"}
-              </CustomButton>
+                {loading ? "Processing..." : (data ? "Update" : "Submit")}
+              </button>
             ) : null}
-            <CustomButton
-              className="flex text-proses-secondary normal-case"
+            <button
+              type="button"
               onClick={() => goToList()}
+              className="px-6 py-2.5 bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] rounded-lg hover:bg-[#2A2A2A] transition-colors"
             >
               Cancel
-            </CustomButton>
+            </button>
           </div>
         </form>
       </div>

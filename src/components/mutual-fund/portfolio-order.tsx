@@ -1,5 +1,7 @@
+"use client";
+
 import { use, useEffect, useRef, useState, useContext, useMemo } from "react";
-import { ArrowLeft, Pencil, ChevronDown, Plus, List, CheckCircleIcon } from "lucide-react";
+import { ArrowLeft, Pencil, ChevronDown, Plus, List, CheckCircleIcon, X } from "lucide-react";
 import CustomSelect from "@/commonUI/Select";
 import { viewCanDetails, generateReference, ApiFinTechNormalTxnService, searchByAmcId, searchByISIN, searchByCanIdmfuBankDetails, ApiFinTechSystematicTxnService, submitMfuTransaction, fetchClientIp, getMandates, getInvestorPortfolio, getBankByFolio, getSchemeByName } from "@/api/transaction";
 import CustomReactSelect from "@/commonUI/ReactSelect";
@@ -26,12 +28,9 @@ import { useRouter } from "next/navigation";
 import { useFundStore } from "@/store/useFundStore";
 
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+
 import { generateUniqueId } from "@/utils/mfu/generateUtrn";
 import { getPayOutSec, getPaySec, getSchList, getSubSeqSec, getSysSchList } from "./transaction";
-import { constructFromSymbol } from "date-fns/constants";
-import { set } from "date-fns";
-
 
 //const bankList: any = [];
 interface InvestorPopupProps {
@@ -77,7 +76,24 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
     const [selectedCan, setSelectedCan] = useState<any>(investorList[0]?.InvestorAccountHolding[0]?.CAN_Id);
     const [selectedHolder, setSelectedHolder] = useState<any>(investorList[0]?.name);
-    const [selectedFolio, setSelectedFolio] = useState<any>(schemeData?.out_folio_no ?? null);
+    // Two folio shapes are needed:
+    //   • `selectedFolio`    — base digits only (e.g. "41007859"); this is
+    //                           what MFU's order payload must carry.
+    //   • `selectedFolioRaw` — the full display form including the advisor
+    //                           slash suffix (e.g. "41007859/68"); this is
+    //                           what our `search_by_folio` DB lookup keys on.
+    const [selectedFolio, setSelectedFolio] = useState<any>(
+        (() => {
+            const raw = schemeData?.out_folio_no ?? null;
+            if (raw === null || raw === undefined) return null;
+            const v = String(raw).trim();
+            if (!v) return null;
+            return v.split("/")[0].trim() || null;
+        })()
+    );
+    const [selectedFolioRaw, setSelectedFolioRaw] = useState<any>(
+        schemeData?.out_folio_no ?? null
+    );
     const [showCanList, setShowCanList] = useState(false);
     const [showFolioDropdown, setShowFolioDropdown] = useState(false);
     const [folioSelectionMode, setFolioSelectionMode] = useState<'existing' | 'new'>('existing');
@@ -164,7 +180,11 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
         message: ""
     })
 
-    const [bankByFolio, setBankByFolio] = useState<any>({})
+    // Array shape matches how the rest of the file reads it (`bankByFolio[0]`).
+    // Starting as `{}` meant the first render threw `Cannot read properties of
+    // undefined (reading 'micr')` when Redeem/Switch/SWP/STP tried to submit
+    // before the fetch resolved.
+    const [bankByFolio, setBankByFolio] = useState<any[]>([])
 
 
 
@@ -188,10 +208,30 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
             setSipData(response?.data?.data?.data || []);
         }
         const fetchBankByFolio = async (folio: string) => {
-            const response = await getBankByFolio(folio);
-
-            console.log("Bank details fetched by folio:", response?.data?.data?.data || {});
-            setBankByFolio(response?.data?.data?.data || {});
+            if (!folio) return;
+            // The DB function `search_by_folio` may be keyed on the full
+            // advisor-suffixed folio ("41007859/68") OR on the base digits
+            // ("41007859") depending on the AMC. Try both and take whichever
+            // returns rows so Redeem / Switch / SWP / STP always have a bank.
+            const attempts = Array.from(
+                new Set([String(folio).trim(), String(folio).split("/")[0].trim()])
+            ).filter(Boolean);
+            for (const attempt of attempts) {
+                try {
+                    const response = await getBankByFolio(attempt);
+                    const rows = response?.data?.data?.data;
+                    const arr = Array.isArray(rows) ? rows : rows ? [rows] : [];
+                    if (arr.length > 0) {
+                        console.log("Bank details fetched by folio:", attempt, arr);
+                        setBankByFolio(arr);
+                        return;
+                    }
+                } catch (e) {
+                    console.warn("getBankByFolio attempt failed for", attempt, e);
+                }
+            }
+            console.warn("getBankByFolio returned empty for all forms of", folio);
+            setBankByFolio([]);
         }
 
         fetchByISIN(schemeData?.schemeISIN);
@@ -239,6 +279,34 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
             router.push('/portfolio');
         }
     }, [])
+
+    // Re-fetch the bank mapped to the folio whenever the user changes folio
+    // (switching between folios inside the dropdown), so Redeem / Switch /
+    // SWP / STP build their payOutDtl against the correct bank account.
+    // Tries the raw "41007859/68" form first, falls back to base digits.
+    useEffect(() => {
+        const source = selectedFolioRaw || selectedFolio;
+        if (!source) return;
+        (async () => {
+            const attempts = Array.from(
+                new Set([String(source).trim(), String(source).split("/")[0].trim()])
+            ).filter(Boolean);
+            for (const attempt of attempts) {
+                try {
+                    const response = await getBankByFolio(attempt);
+                    const rows = response?.data?.data?.data;
+                    const arr = Array.isArray(rows) ? rows : rows ? [rows] : [];
+                    if (arr.length > 0) {
+                        setBankByFolio(arr);
+                        return;
+                    }
+                } catch (e) {
+                    console.warn("Refresh bankByFolio attempt failed for", attempt, e);
+                }
+            }
+            setBankByFolio([]);
+        })();
+    }, [selectedFolio, selectedFolioRaw]);
     const addToCart = async () => {
 
         try {
@@ -317,12 +385,24 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
         }
     };
 
+    // MFU accepts only the base folio number (digits before the `/XX`
+    // advisor/check-digit suffix). Sending "41007859/68" directly returns
+    // `secErrorCode 100427: Invalid folio`, so strip everything at the first
+    // slash before the value leaves this component.
+    const normalizeFolio = (raw: any): string | null => {
+        if (raw === null || raw === undefined) return null;
+        const v = String(raw).trim();
+        if (!v) return null;
+        return v.split("/")[0].trim() || null;
+    };
+
     const handleFolioSelection = (folio: any) => {
         setAccType(folio?.ac_type)
         setAccNo(folio?.ac_no)
         setIfsc(folio?.ifsc)
         setMicr(folio?.micr)
-        setSelectedFolio(folio.folio_number);
+        setSelectedFolio(normalizeFolio(folio.folio_number));
+        setSelectedFolioRaw(folio.folio_number ?? null);
         setShowFolioDropdown(false);
         setFolioSelectionMode('existing');
     };
@@ -504,6 +584,17 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
             setIsLoading(false)
             return
         }
+
+        // Redeem / Switch / SWP / STP need the investor's bank mapped to the
+        // folio so MFU knows where to credit proceeds. Fail fast with a clear
+        // message instead of crashing on `folioBank?.micr`.
+        const needsFolioBank = ["R", "O", "J", "Y"].includes(transactionType);
+        const folioBank: any = Array.isArray(bankByFolio) && bankByFolio.length > 0 ? bankByFolio[0] : null;
+        if (needsFolioBank && !folioBank) {
+            toast.error("Bank details for this folio are not available yet. Please wait a moment and try again, or re-select the folio.");
+            setIsLoading(false);
+            return;
+        }
         if (!hasError) {
 
             const clientIp = await fetchClientIp();
@@ -545,11 +636,22 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
             else if (transactionType == "V") {
                 //SIP
 
+                // `bankList` is populated after the user picks a payment mode
+                // and `accNo` is set by selecting a mandate. If either is
+                // missing, `selectedBank.account_no` threw
+                // `Cannot read properties of undefined (reading 'account_no')`
+                // and the Transact button just died silently.
+                if (!accNo) {
+                    toast.error("Please select a bank account / mandate first.");
+                    setIsLoading(false);
+                    return;
+                }
                 const selectedBank = bankList.find(
                     bank => bank.account_no === accNo
                 );
+                const mandateBankAcc = selectedBank?.account_no ?? accNo;
                 const relatedMandates = mandateList.filter(
-                    mandate => mandate.acc_no === selectedBank.account_no
+                    mandate => mandate.acc_no === mandateBankAcc
                 );
 
                 if (relatedMandates.length === 0) {
@@ -600,7 +702,7 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                 schList = getSchList(transactionType, generateUniqueId(), rtaAmcCode, rtaSchCode, outRtaSchCode, folioSelectionMode, selectedFolio, option, _amount, payOutFlag, payOutDtl, txnType?.txnVolTyp ?? "")
 
                 payFlag = ""
-                paySec = getPaySec(transactionType, paymentMode, bankByFolio[0].micr, bankByFolio[0].ifsc, bankByFolio[0].account_type, bankByFolio[0].account_no, _amount?.toString(), beneVan, "")
+                paySec = getPaySec(transactionType, paymentMode, folioBank?.micr, folioBank?.ifsc, folioBank?.account_type, folioBank?.account_no, _amount?.toString(), beneVan, "")
                 //Testing Done
                 if (redType === "All Units") {
                     setAmount(availableUnits?.toString() || "")
@@ -609,45 +711,39 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
             }
             else if (transactionType == "Y") {
-                //STP
-
-                const selectedBank = bankList.find(
-                    bank => bank.account_no === accNo
-                );
+                //STP — scheme-to-scheme, no bank debit. Mandate is only
+                // consulted to derive an end date; if no mandate matches the
+                // folio's bank we still proceed with a default horizon so the
+                // tab is not completely blocked.
                 const relatedMandates = mandateList.filter(
-                    mandate => mandate.acc_no === bankByFolio[0].account_no
+                    mandate => mandate.acc_no === folioBank?.account_no
                 );
 
-
-
-                if (relatedMandates.length === 0) {
-                    toast.error("No mandate found for the selected bank account.");
-                    setIsLoading(false);
-                    return;
+                if (relatedMandates.length > 0) {
+                    const pickIdx =
+                        relatedMandates.length > 1 &&
+                            Number(amount) > Number(relatedMandates[0].max_amt)
+                            ? 1
+                            : 0;
+                    const picked = relatedMandates[pickIdx];
+                    setSelectedMandate(picked.prn);
+                    mandateRefNo = picked.prn;
+                    const parts = (picked.end_date || "").split("-");
+                    end_month = parts[1] || "";
+                    end_year = parts[0]
+                        ? (parseInt(parts[0], 10) - 1).toString()
+                        : "";
                 }
 
-                if (relatedMandates.length > 1) {
-                    if (amount > relatedMandates[0].max_amt) {
-                        setSelectedMandate(relatedMandates[1].prn)
-                        mandateRefNo = relatedMandates[1].prn
-                        end_month = relatedMandates[1].end_date.split("-")[1]
-                        end_year = (relatedMandates[1].end_date.split("-")[0] - 1).toString()
-
-                    } else {
-                        setSelectedMandate(relatedMandates[0].prn)
-                        console.log("Selected Mandate :- ", relatedMandates[0].prn)
-                        mandateRefNo = relatedMandates[0].prn
-                        end_month = relatedMandates[0].end_date.split("-")[1]
-                        end_year = (relatedMandates[0].end_date.split("-")[0] - 1).toString()
-
-                    }
-
-                } else {
-                    setSelectedMandate(relatedMandates[0].prn)
-                    mandateRefNo = relatedMandates[0].prn
-                    end_month = relatedMandates[0].end_date.split("-")[1]
-                    end_year = (relatedMandates[0].end_date.split("-")[0] - 1).toString()
-
+                if (!end_month || !end_year) {
+                    // Fallback: 10-year horizon from the SIP start year.
+                    const baseYear = parseInt(sipYear, 10);
+                    end_month = sipMonth
+                        ? sipMonth.padStart(2, "0")
+                        : (new Date().getMonth() + 1).toString().padStart(2, "0");
+                    end_year = isNaN(baseYear)
+                        ? (new Date().getFullYear() + 10).toString()
+                        : (baseYear + 10).toString();
                 }
                 payOutDtl = getPayOutSec("E", "", "", accType, "")
 
@@ -664,45 +760,39 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
             }
             else if (transactionType == "J") {
-                //SWP
-                const selectedBank = bankList.find(
-                    bank => bank.account_no === accNo
-                );
+                //SWP — periodic payout from scheme to folio bank. No debit
+                // mandate is needed; only used opportunistically for end date.
                 const relatedMandates = mandateList.filter(
-                    mandate => mandate.acc_no === bankByFolio[0].account_no
+                    mandate => mandate.acc_no === folioBank?.account_no
                 );
 
-                if (relatedMandates.length === 0) {
-                    toast.error("No mandate found for the selected bank account.");
-                    setIsLoading(false);
-                    return;
+                if (relatedMandates.length > 0) {
+                    const pickIdx =
+                        relatedMandates.length > 1 &&
+                            Number(amount) > Number(relatedMandates[0].max_amt)
+                            ? 1
+                            : 0;
+                    const picked = relatedMandates[pickIdx];
+                    setSelectedMandate(picked.prn);
+                    mandateRefNo = picked.prn;
+                    const parts = (picked.end_date || "").split("-");
+                    end_month = parts[1] || "";
+                    end_year = parts[0]
+                        ? (parseInt(parts[0], 10) - 1).toString()
+                        : "";
                 }
 
-                if (relatedMandates.length > 1) {
-                    if (amount > relatedMandates[0].max_amt) {
-                        setSelectedMandate(relatedMandates[1].prn)
-                        mandateRefNo = relatedMandates[1].prn
-                        end_month = relatedMandates[1].end_date.split("-")[1]
-                        end_year = (relatedMandates[1].end_date.split("-")[0] - 1).toString()
-
-                    } else {
-                        setSelectedMandate(relatedMandates[0].prn)
-                        console.log("Selected Mandate :- ", relatedMandates[0].prn)
-                        mandateRefNo = relatedMandates[0].prn
-                        end_month = relatedMandates[0].end_date.split("-")[1]
-                        end_year = (relatedMandates[0].end_date.split("-")[0] - 1).toString()
-
-                    }
-
-                } else {
-                    setSelectedMandate(relatedMandates[0].prn)
-                    mandateRefNo = relatedMandates[0].prn
-                    end_month = relatedMandates[0].end_date.split("-")[1]
-                    end_year = (relatedMandates[0].end_date.split("-")[0] - 1).toString()
-
+                if (!end_month || !end_year) {
+                    const baseYear = parseInt(sipYear, 10);
+                    end_month = sipMonth
+                        ? sipMonth.padStart(2, "0")
+                        : (new Date().getMonth() + 1).toString().padStart(2, "0");
+                    end_year = isNaN(baseYear)
+                        ? (new Date().getFullYear() + 10).toString()
+                        : (baseYear + 10).toString();
                 }
                 payOutFlag = "Y"
-                payOutDtl = getPayOutSec(transactionType, bankByFolio[0].micr, bankByFolio[0].ifsc, bankByFolio[0].account_type, bankByFolio[0].account_no)
+                payOutDtl = getPayOutSec(transactionType, folioBank?.micr, folioBank?.ifsc, folioBank?.account_type, folioBank?.account_no)
 
                 sysSchList = getSysSchList(generateUniqueId(), rtaAmcCode, rtaSchCode, outRtaSchCode, folioSelectionMode, selectedFolio, option, _amount, selectedFrequency, sipDate, sipMonth, sipYear, end_month, end_year, payOutDtl, "J")
                 payFlag = ""
@@ -718,7 +808,7 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
 
                 //Redeem
-                let txnVolType = redType === "Amount" ? "A" : redType === "All Units" ? "E" : "A"
+                let txnVolType = redType === "Amount" ? "A" : redType === "Unit" ? "U" : "A"
                 let amount: any = "";
 
                 if (redType === "Amount") {
@@ -748,7 +838,7 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
                 payOutFlag = "Y"
                 // payOutDtl = getPayOutSec(transactionType, micr, ifsc, accType, accNo)
-                payOutDtl = getPayOutSec(transactionType, bankByFolio[0].micr, bankByFolio[0].ifsc, bankByFolio[0].account_type, bankByFolio[0].account_no)
+                payOutDtl = getPayOutSec(transactionType, folioBank?.micr, folioBank?.ifsc, folioBank?.account_type, folioBank?.account_no)
                 schList = getSchList(transactionType, generateUniqueId(), rtaAmcCode, rtaSchCode, outRtaSchCode, folioSelectionMode, selectedFolio, option, _amount, payOutFlag, payOutDtl, txnVolType)
                 console.log("SchList :- ", schList)
                 payFlag = ""
@@ -787,18 +877,27 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                 console.log("Transaction response:", response);
 
                 const result = JSON.parse(response?.data?.data);
-                const appLink = result?.respBody?.ordDtl?.appLinkPri;
+                console.log("[portfolio-order] MFU response:", result);
 
-
+                const respBody: any = result?.respBody ?? result ?? {};
+                const respHeader: any = result?.respHeader ?? respBody?.respHeader ?? {};
+                const appLink = respBody?.ordDtl?.appLinkPri;
 
                 if (appLink) {
                     clearData();
-                    //window.location.href = appLink;
                     window.open(appLink, '_blank');
                 } else {
-                    toast.error(JSON.stringify(result?.respBody))
-                    setTransactionError(JSON.stringify(result?.respBody))
-                    alert("Transaction submitted, but no payment link returned.");
+                    const errList: any[] = respBody?.secWisErrorList ?? [];
+                    const schemeErrors = errList
+                        .map((err: any) => (err?.secErrorMsg || err?.secErrorCode || "").toString().trim())
+                        .filter((m: string) => m);
+                    const headerMsg = (respHeader?.errorMsg || respHeader?.errorDesc || "").toString().trim();
+                    const headerCode = (respHeader?.errorCode || "").toString().trim();
+                    const msg =
+                        [schemeErrors.join(", "), headerMsg || headerCode].filter(Boolean).join(" — ") ||
+                        "MFU rejected this order but did not return a specific reason. Please verify the CAN, folio, bank and try again.";
+                    toast.error(msg);
+                    setTransactionError(msg);
                 }
 
             } catch (err: any) {
@@ -1075,291 +1174,252 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
         return true;
     }
 
+    // Theme colors
+    const theme = {
+        primary: "#F59E0B",
+        secondary: "#FBBF24",
+        accent: "#1F1A1A",
+        success: "#10B981",
+        danger: "#EF4444",
+        background: "#0A0A0A",
+        cardBg: "#111111",
+        textPrimary: "#F9FAFB",
+        textSecondary: "#9CA3AF",
+        border: "#2A2A2A",
+        gradient: "linear-gradient(135deg, #F59E0B 0%, #B45309 100%)"
+    };
+
     return (
         <>
-            {/*<dialog ref={modalRef} className="modal" id={modalId}>*/}
-            <div className="p-6">
-                <div className="w-full rounded-xl">
-                    {/* Sticky header */}
-                    <div className="sticky top-0 z-30 bg-white border-b border-gray-100">
-                        <div className="flex items-center justify-between px-4 py-3">
+            <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+                <div className="bg-[#111111] rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto border border-[#2A2A2A]">
+                    <div className="sticky top-0 z-30 bg-[#111111] border-b border-[#2A2A2A]">
+                        <div className="flex items-center justify-between px-6 py-4">
                             <div className="flex items-center gap-3">
                                 <ArrowLeft
-                                    className="w-5 h-5 cursor-pointer text-gray-600 hover:text-gray-800"
+                                    className="w-5 h-5 cursor-pointer text-[#9CA3AF] hover:text-[#F59E0B] transition-colors"
                                     onClick={handleBackClick}
                                 />
                                 <div>
-                                    <h3 className="text-lg font-semibold text-gray-900">
+                                    <h3 className="text-lg font-semibold text-[#F9FAFB]">
                                         Order Application Form
                                     </h3>
-                                    <p className="text-xs text-gray-500">Complete your purchase</p>
+                                    <p className="text-xs text-[#9CA3AF]">Complete your purchase</p>
                                 </div>
                             </div>
-
-                            <div className="flex items-center gap-3">
-                                {/* quick scheme snapshot if available */}
-                                <div className="hidden sm:flex items-center gap-3">
-                                    {/*<img src="/axis-logo.png" alt="AMC" className="h-8 w-auto" />*/}
-                                    <div className="text-right">
-                                        <div className="text-sm font-medium text-gray-800">
-                                            {schemeData?.name}
-                                        </div>
-                                        <div className="text-xs text-gray-500">Large Cap · Equity</div>
-                                    </div>
-                                </div>
-                            </div>
+                            <button
+                                onClick={onClose}
+                                className="text-[#9CA3AF] hover:text-[#F59E0B] transition-colors"
+                            >
+                                <X size={20} />
+                            </button>
                         </div>
                     </div>
 
-                    {/*<div className="flex justify-between items-start gap-8">*/}
-                    {/* <div className="grid grid-cols-2 gap-4 overflow-auto mt-6">*/}
-                    {/* Content area */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 overflow-y-auto max-h-[70vh]">
-                        {/* Info Block */}
-
-                        {/* -------- LEFT: Scheme, CAN, Folio, Bank -------- */}
-
-                        <div className="ml-5 ">
-                            <div className="grid grid-cols-2 gap-4 text-sm">
-                                <div className="text-gray-600 font-medium space-y-6">
-
-                                    <p>Scheme</p>
-                                    <p>CAN</p>
-                                    <p>Folio</p>
-                                    <p>First Holder</p>
-                                    <p>KYC Status</p>
-                                </div>
-                                <div className="text-gray-800 space-y-4 ">
-                                    <p className="font-medium">{schemeData?.ms_fullname}</p>
-
-                                    {/* Enhanced CAN Selection */}
-                                    <div className="flex items-center relative">
-                                        <span className="text-sm font-mono">{selectedCan}</span>
-                                        <button
-                                            className="ml-2 p-1 rounded hover:bg-gray-100 transition-colors"
-                                            onClick={() => {
-                                                setShowCanList(!showCanList)
-
-                                            }}
-                                        >
-                                            <Pencil className="w-3 h-3 text-gray-500" />
-                                        </button>
-                                        {showCanList && (
-                                            <div className="absolute  top-8 left-0 z-50 min-w-[600px] bg-white border border-gray-200 rounded-lg shadow-lg ">
-                                                <div className="p-3 border-b border-gray-100">
-                                                    <h4 className="font-medium text-gray-900 text-sm">Select CAN</h4>
-                                                </div>
-                                                <div className="max-h-60 overflow-auto">
-                                                    <table className="w-full text-xs ">
-                                                        <thead className="bg-gray-50">
-                                                            <tr className="border-b border-gray-200">
-                                                                <th className="py-2 px-3 text-left">Select</th>
-                                                                <th className="py-2 px-3 text-left">CAN</th>
-                                                                <th className="py-2 px-3 text-left">Primary Holder</th>
-                                                                <th className="py-2 px-3 text-left">Tax Status</th>
-                                                                <th className="py-2 px-3 text-left">Joint 1</th>
-                                                                <th className="py-2 px-3 text-left">Joint 2</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {investorList?.map((inv: any) => (
-                                                                <tr key={inv?.id} className="hover:bg-gray-50 border-b border-gray-100">
-                                                                    <td className="py-2 px-3">
-                                                                        <input
-                                                                            type="radio"
-                                                                            name="can"
-                                                                            className="w-4 h-4 text-blue-600"
-                                                                            onChange={() => {
-                                                                                setSelectedCan(inv?.InvestorAccountHolding[0]?.CAN_Id);
-                                                                                setSelectedHolder(inv?.name)
-                                                                                setShowCanList(false);
-                                                                            }}
-                                                                        />
-                                                                    </td>
-                                                                    <td className="py-2 px-3 font-mono text-xs">{inv?.InvestorAccountHolding[0]?.CAN_Id}</td>
-                                                                    <td className="py-2 px-3">{inv.name}</td>
-                                                                    <td className="py-2 px-3">{TAX_STATUS.find((opt: any) => Number(opt.code) == Number(inv.tax_status))?.label || inv.tax_status}</td>
-                                                                    <td className="py-2 px-3">{inv.joint1 || "-"}</td>
-                                                                    <td className="py-2 px-3">{inv.joint2 || "-"}</td>
-                                                                </tr>
-                                                            ))}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        )}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 overflow-y-auto">
+                        {/* LEFT COLUMN - Scheme, CAN, Folio, Bank */}
+                        <div className="space-y-4">
+                            <div className="bg-[#1F1A1A] rounded-lg p-4 border border-[#2A2A2A]">
+                                <div className="grid grid-cols-2 gap-4 text-sm">
+                                    <div className="text-[#9CA3AF] font-medium space-y-4">
+                                        <p>Scheme</p>
+                                        <p>CAN</p>
+                                        <p>Folio</p>
+                                        <p>First Holder</p>
+                                        <p>KYC Status</p>
                                     </div>
+                                    <div className="text-[#F9FAFB] space-y-4">
+                                        <p className="font-medium">{schemeData?.ms_fullname || schemeData?.name}</p>
 
-                                    {/* Enhanced Professional Folio Selection */}
-                                    <div className="relative">
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center flex-1">
-                                                {folioSelectionMode === 'new' ? (
-                                                    <>
-                                                        <label className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors">NEW</label>
-                                                    </>
-                                                ) : (
-
-                                                    <span className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors">{getCurrentFolioDisplay()}</span>
-                                                )}
-                                            </div>
+                                        {/* CAN Selection */}
+                                        <div className="flex items-center relative">
+                                            <span className="text-sm font-mono">{selectedCan}</span>
                                             <button
-                                                className="ml-2 p-1 rounded hover:bg-gray-100 transition-colors"
-                                                onClick={() => setShowFolioDropdown(!showFolioDropdown)}
+                                                className="ml-2 p-1 rounded hover:bg-[#2A2A2A] transition-colors"
+                                                onClick={() => setShowCanList(!showCanList)}
                                             >
-                                                <ChevronDown className="w-4 h-4 text-gray-500" />
+                                                <Pencil className="w-3 h-3 text-[#F59E0B]" />
                                             </button>
-                                        </div>
-
-                                        {showFolioDropdown && (
-                                            <div className="absolute top-8 left-0 z-50 w-[500px] bg-white border border-gray-200 rounded-lg shadow-lg">
-                                                <div className="p-3 border-b border-gray-100">
-                                                    <h4 className="font-medium text-gray-900 text-sm">Folio Selection</h4>
-                                                </div>
-
-                                                {/* Action Buttons */}
-                                                <div className="p-3 border-b border-gray-100 flex gap-2">
-                                                    <button
-                                                        onClick={() => handleFolio("New")}
-                                                        className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors"
-                                                    >
-                                                        <Plus className="w-4 h-4" />
-                                                        New Folio
-                                                    </button>
-                                                    <button
-                                                        onClick={() => handleFolio("Existing")}
-                                                        className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-50 text-gray-700 rounded-md hover:bg-gray-100 transition-colors"
-                                                    >
-                                                        <List className="w-4 h-4" />
-                                                        Select from List
-                                                    </button>
-                                                </div>
-
-                                                {/* Existing Folios List */}
-                                                {folioSelectionMode === 'existing' && (
-                                                    <div className="max-h-60 overflow-y-auto">
+                                            {showCanList && (
+                                                <div className="absolute top-8 left-0 z-50 min-w-[600px] bg-[#111111] border border-[#2A2A2A] rounded-lg shadow-xl">
+                                                    <div className="p-3 border-b border-[#2A2A2A]">
+                                                        <h4 className="font-medium text-[#F9FAFB] text-sm">Select CAN</h4>
+                                                    </div>
+                                                    <div className="max-h-60 overflow-auto">
                                                         <table className="w-full text-xs">
-                                                            <thead className="bg-gray-50 sticky top-0">
-                                                                <tr className="border-b border-gray-200">
-                                                                    <th className="py-2 px-3 text-left">Select</th>
-                                                                    <th className="py-2 px-3 text-left">Folio Number</th>
-                                                                    {/*} <th className="py-2 px-3 text-left">Primary Holder</th>
-                                                                    <th className="py-2 px-3 text-left">Tax Status</th>*/}
+                                                            <thead className="bg-[#1F1A1A] sticky top-0">
+                                                                <tr className="border-b border-[#2A2A2A]">
+                                                                    <th className="py-2 px-3 text-left text-[#F59E0B]">Select</th>
+                                                                    <th className="py-2 px-3 text-left text-[#F59E0B]">CAN</th>
+                                                                    <th className="py-2 px-3 text-left text-[#F59E0B]">Primary Holder</th>
+                                                                    <th className="py-2 px-3 text-left text-[#F59E0B]">Tax Status</th>
+                                                                    <th className="py-2 px-3 text-left text-[#F59E0B]">Joint 1</th>
+                                                                    <th className="py-2 px-3 text-left text-[#F59E0B]">Joint 2</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-
-                                                                {investorPortfolio.map((opt: any) => (
-                                                                    <tr key={opt.folio_no} className="hover:bg-gray-50 border-b border-gray-100">
+                                                                {investorList?.map((inv: any) => (
+                                                                    <tr key={inv?.id} className="hover:bg-[#1F1A1A] border-b border-[#2A2A2A]">
                                                                         <td className="py-2 px-3">
                                                                             <input
                                                                                 type="radio"
-                                                                                name="folio"
-                                                                                className="w-4 h-4 text-blue-600"
-                                                                                onChange={() => handleFolioSelection(opt)}
+                                                                                name="can"
+                                                                                className="w-4 h-4 accent-[#F59E0B]"
+                                                                                onChange={() => {
+                                                                                    setSelectedCan(inv?.InvestorAccountHolding[0]?.CAN_Id);
+                                                                                    setSelectedHolder(inv?.name)
+                                                                                    setShowCanList(false);
+                                                                                }}
                                                                             />
                                                                         </td>
-                                                                        <td className="py-2 px-3 font-mono text-xs">{opt.folio_number}</td>
-                                                                        {/*<td className="py-2 px-3">{opt.first_applicant}</td>
-                                                                        <td className="py-2 px-3">
-                                                                            <span className={`px-2 py-1 rounded-full text-xs ${opt.investory_category === 'Individual'
-                                                                                ? 'bg-green-100 text-green-800'
-                                                                                : 'bg-orange-100 text-orange-800'
-                                                                                }`}>
-                                                                                {opt.investory_category}
-                                                                            </span>
-                                                                        </td>*/}
+                                                                        <td className="py-2 px-3 font-mono text-xs text-[#F9FAFB]">{inv?.InvestorAccountHolding[0]?.CAN_Id}</td>
+                                                                        <td className="py-2 px-3 text-[#F9FAFB]">{inv.name}</td>
+                                                                        <td className="py-2 px-3 text-[#F9FAFB]">{TAX_STATUS.find((opt: any) => Number(opt.code) == Number(inv.tax_status))?.label || inv.tax_status}</td>
+                                                                        <td className="py-2 px-3 text-[#9CA3AF]">{inv.joint1 || "-"}</td>
+                                                                        <td className="py-2 px-3 text-[#9CA3AF]">{inv.joint2 || "-"}</td>
                                                                     </tr>
                                                                 ))}
                                                             </tbody>
                                                         </table>
                                                     </div>
-                                                )}
+                                                </div>
+                                            )}
+                                        </div>
 
-
+                                        {/* Folio Selection */}
+                                        <div className="relative">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center flex-1">
+                                                    {folioSelectionMode === 'new' ? (
+                                                        <span className="flex items-center gap-2 px-3 py-2 text-sm bg-[#1F1A1A] text-[#F59E0B] rounded-md">NEW</span>
+                                                    ) : (
+                                                        <span className="flex items-center gap-2 px-3 py-2 text-sm bg-[#1F1A1A] text-[#F9FAFB] rounded-md">{getCurrentFolioDisplay()}</span>
+                                                    )}
+                                                </div>
+                                                <button
+                                                    className="ml-2 p-1 rounded hover:bg-[#2A2A2A] transition-colors"
+                                                    onClick={() => setShowFolioDropdown(!showFolioDropdown)}
+                                                >
+                                                    <ChevronDown className="w-4 h-4 text-[#9CA3AF]" />
+                                                </button>
                                             </div>
-                                        )}
-                                    </div>
 
-                                    <p className="text-sm">{selectedHolder}</p>
-                                    <p className="text-sm">
-                                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-green-100 text-green-800">
-                                            ✓ KYC Validated
-                                        </span>
-                                    </p>
+                                            {showFolioDropdown && (
+                                                <div className="absolute top-8 left-0 z-50 w-[500px] bg-[#111111] border border-[#2A2A2A] rounded-lg shadow-xl">
+                                                    <div className="p-3 border-b border-[#2A2A2A]">
+                                                        <h4 className="font-medium text-[#F9FAFB] text-sm">Folio Selection</h4>
+                                                    </div>
+                                                    <div className="p-3 border-b border-[#2A2A2A] flex gap-2">
+                                                        <button
+                                                            onClick={() => handleFolio("New")}
+                                                            className="flex items-center gap-2 px-3 py-2 text-sm bg-[#1F1A1A] text-[#F59E0B] rounded-md hover:bg-[#2A2A2A] transition-colors"
+                                                        >
+                                                            <Plus className="w-4 h-4" />
+                                                            New Folio
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleFolio("Existing")}
+                                                            className="flex items-center gap-2 px-3 py-2 text-sm bg-[#1F1A1A] text-[#9CA3AF] rounded-md hover:bg-[#2A2A2A] transition-colors"
+                                                        >
+                                                            <List className="w-4 h-4" />
+                                                            Select from List
+                                                        </button>
+                                                    </div>
+
+                                                    {folioSelectionMode === 'existing' && (
+                                                        <div className="max-h-60 overflow-y-auto">
+                                                            <table className="w-full text-xs">
+                                                                <thead className="bg-[#1F1A1A] sticky top-0">
+                                                                    <tr className="border-b border-[#2A2A2A]">
+                                                                        <th className="py-2 px-3 text-left text-[#F59E0B]">Select</th>
+                                                                        <th className="py-2 px-3 text-left text-[#F59E0B]">Folio Number</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {investorPortfolio.map((opt: any) => (
+                                                                        <tr key={opt.folio_no} className="hover:bg-[#1F1A1A] border-b border-[#2A2A2A]">
+                                                                            <td className="py-2 px-3">
+                                                                                <input
+                                                                                    type="radio"
+                                                                                    name="folio"
+                                                                                    className="w-4 h-4 accent-[#F59E0B]"
+                                                                                    onChange={() => handleFolioSelection(opt)}
+                                                                                />
+                                                                            </td>
+                                                                            <td className="py-2 px-3 font-mono text-xs text-[#F9FAFB]">{opt.folio_number}</td>
+                                                                        </tr>
+                                                                    ))}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <p className="text-sm">{selectedHolder}</p>
+                                        <p className="text-sm">
+                                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-[#10B981]/20 text-[#10B981]">
+                                                ✓ KYC Validated
+                                            </span>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
-
-
-                            {paymentMode && mandateList &&
-                                <div className="overflow-y-auto mt-5">
-                                    <h2>Mandate Lists</h2>
-                                    <table className="w-full text-xs ">
-                                        <thead className="bg-gray-50 sticky top-0">
-                                            <tr className="border-b border-gray-200">
-                                                <td></td>
-                                                <th className="py-2 px-3 text-left">Bank</th>
-                                                <th className="py-2 px-3 text-left">Account No</th>
-                                                <th className="py-2 px-3 text-left">IFSC</th>
-                                                <th className="py-2 px-3 text-left">Account Type</th>
-                                                <th className="py-2 px-3 text-left">Limit</th>
-
-                                                <th className="py-2 px-3 text-left">MICR</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-
-                                            {mandateList.map((opt: any) => (
-                                                <tr key={opt?.id} className="hover:bg-gray-50 border-b border-gray-100">
-                                                    <td className="py-2 px-3">
-                                                        <input
-                                                            type="radio"
-                                                            name="folio"
-                                                            //checked={selectedAccount === opt?.account_no}
-
-                                                            className="w-4 h-4 text-blue-600"
-                                                            onChange={() => {
-
-                                                                setAccType(opt?.acc_type)
-                                                                setAccNo(opt?.acc_no)
-                                                                setIfsc(opt?.ifsc)
-                                                                setMicr(opt?.micr)
-                                                                setSelectedMandate(opt?.prn)
-
-                                                                setEndMonth(opt?.end_date.split("-")[1])
-                                                                setEndYear((parseInt(opt?.end_date.split("-")[0]) - 1).toString())
-                                                                if (transactionType === "V") {
-                                                                    const flteredMandate = mandateList.filter((x: any) => x.acc_no == opt?.acc_no)
-                                                                    // setSelectedMandate(flteredMandate[2]);
-                                                                }
-
-                                                            }}
-                                                        />
-                                                    </td>
-                                                    <td className="py-2 px-3 font-mono text-xs">{opt?.prn}</td>
-
-                                                    <td className="py-2 px-3">{opt.acc_no}</td>
-                                                    <td className="py-2 px-3">{opt.ifsc}</td>
-                                                    <td className="py-2 px-3">{opt.acc_type}</td>
-                                                    <td className="py-2 px-3">{opt.max_amt}</td>
-
-                                                    <td className="py-2 px-3">{opt.micr}</td>
-
-
+                            {paymentMode && mandateList && mandateList.length > 0 && (
+                                <div className="bg-[#1F1A1A] rounded-lg p-4 border border-[#2A2A2A]">
+                                    <h2 className="text-[#F59E0B] font-semibold mb-3">Mandate Lists</h2>
+                                    <div className="overflow-x-auto">
+                                        <table className="w-full text-xs">
+                                            <thead className="bg-[#1F1A1A] sticky top-0">
+                                                <tr className="border-b border-[#2A2A2A]">
+                                                    <th className="py-2 px-2 text-left text-[#F59E0B]">Select</th>
+                                                    <th className="py-2 px-2 text-left text-[#F59E0B]">Bank</th>
+                                                    <th className="py-2 px-2 text-left text-[#F59E0B]">Account No</th>
+                                                    <th className="py-2 px-2 text-left text-[#F59E0B]">IFSC</th>
+                                                    <th className="py-2 px-2 text-left text-[#F59E0B]">Account Type</th>
+                                                    <th className="py-2 px-2 text-left text-[#F59E0B]">Limit</th>
+                                                    <th className="py-2 px-2 text-left text-[#F59E0B]">MICR</th>
                                                 </tr>
-                                            ))}
-
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            <tbody>
+                                                {mandateList.map((opt: any) => (
+                                                    <tr key={opt?.id} className="hover:bg-[#2A2A2A] border-b border-[#2A2A2A]">
+                                                        <td className="py-2 px-2">
+                                                            <input
+                                                                type="radio"
+                                                                name="mandate"
+                                                                className="w-4 h-4 accent-[#F59E0B]"
+                                                                onChange={() => {
+                                                                    setAccType(opt?.acc_type)
+                                                                    setAccNo(opt?.acc_no)
+                                                                    setIfsc(opt?.ifsc)
+                                                                    setMicr(opt?.micr)
+                                                                    setSelectedMandate(opt?.prn)
+                                                                    setEndMonth(opt?.end_date.split("-")[1])
+                                                                    setEndYear((parseInt(opt?.end_date.split("-")[0]) - 1).toString())
+                                                                }}
+                                                            />
+                                                        </td>
+                                                        <td className="py-2 px-2 font-mono text-xs text-[#F9FAFB]">{opt?.prn}</td>
+                                                        <td className="py-2 px-2 text-[#F9FAFB]">{opt.acc_no}</td>
+                                                        <td className="py-2 px-2 text-[#F9FAFB]">{opt.ifsc}</td>
+                                                        <td className="py-2 px-2 text-[#F9FAFB]">{opt.acc_type}</td>
+                                                        <td className="py-2 px-2 text-[#F9FAFB]">{opt.max_amt}</td>
+                                                        <td className="py-2 px-2 text-[#F9FAFB]">{opt.micr}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                            }
+                            )}
                         </div>
 
-
-                        {/* Transaction Details */}
+                        {/* RIGHT COLUMN - Transaction Details */}
                         <div className="space-y-4">
-                            <div className="mt-2">
+                            <div className="bg-[#1F1A1A] rounded-lg p-4 border border-[#2A2A2A]">
                                 <CustomSelect
                                     items={orderOptions}
                                     bindValue="value"
@@ -1368,30 +1428,15 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                     className="w-full"
                                     value={transactionType}
                                     onChange={(selectedOption: any) => {
-
                                         const selectedValue = selectedOption?.target?.value;
                                         setTransactionType(selectedValue);
                                         handleTransactionType({ target: { value: selectedValue } });
-                                        //handleReset(selectedValue)
                                     }}
                                 />
-
                             </div>
-                            {/*<div className="flex items-center gap-2">
-
-                                <div className="flex items-center gap-2">
-                                    <input type="radio" name="schemeOption" value="new" onChange={handleSchemeOptionChange} className="w-4 h-4 text-blue-600" />
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">New Scheme</label>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <input type="radio" name="schemeOption" value="existing" onChange={handleSchemeOptionChange} className="w-4 h-4 text-blue-600" />
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Existing Scheme</label>
-                                </div>
-
-                            </div>*/}
 
                             {["Y", "O"].includes(transactionType) && (
-                                <div className="mt-2 relative  w-full">
+                                <div className="bg-[#1F1A1A] rounded-lg p-4 border border-[#2A2A2A]">
                                     <CustomReactSelect
                                         items={targetScheme}
                                         bindValue="schemeISIN"
@@ -1402,59 +1447,49 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                         onChange={(selectedOption: any) => {
                                             setSelectedTargetScheme(selectedOption?.schemeISIN || "");
                                             handleSelectedTargetScheme(selectedOption?.schemeISIN);
-
                                         }}
                                         isClearable
                                         placeholder="Select or type scheme"
-
                                     />
                                 </div>
                             )}
 
-                            {['B', 'V'].includes(transactionType) &&
-
-                                <div>
-
-                                    <label className="block text-xs font-semibold text-gray-700 mb-2 ">Scheme Type:</label>
-                                    <div className="flex items-center gap-2">
+                            {['B', 'V'].includes(transactionType) && (
+                                <div className="bg-[#1F1A1A] rounded-lg p-4 border border-[#2A2A2A]">
+                                    <label className="block text-xs font-semibold text-[#F9FAFB] mb-2">Scheme Type:</label>
+                                    <div className="flex items-center gap-4">
                                         {['Growth', 'IDCW-P', 'IDCW-R'].map(type => (
                                             <label key={type} className="flex items-center gap-2">
                                                 <input
                                                     type="radio"
                                                     name="schemeType"
                                                     value={type}
-                                                    //disabled={commonError.length > 0 ? true : false}
-
                                                     checked={selectedSchemeType === type}
                                                     onChange={(e: any) => handleSchemeType(e.target.value)}
-                                                    className="w-4 h-4 text-blue-600 items-center"
+                                                    className="w-4 h-4 accent-[#F59E0B]"
                                                 />
-                                                <span className="text-sm">{type}</span>
+                                                <span className="text-sm text-[#F9FAFB]">{type}</span>
                                             </label>
                                         ))}
                                     </div>
-
-                                    {commonError.length > 0 &&
-                                        <div className="text-sm text-red-500 mt-6">
+                                    {commonError.length > 0 && (
+                                        <div className="text-sm text-[#EF4444] mt-4">
                                             No mandate found —{" "}
                                             <Link
                                                 href="/account-holding"
-                                                style={{ color: "#007bff", textDecoration: "none" }}
+                                                className="text-[#F59E0B] hover:underline"
                                             >
                                                 click here to create SIP mandate
                                             </Link>
-                                            .
                                         </div>
-                                    }
+                                    )}
                                 </div>
+                            )}
 
-                            }
-
-
-                            {['R', 'O'].includes(transactionType) &&
-                                <div>
-                                    <label className="flex  block text-xs font-semibold font-medium text-gray-700 mb-2">{transactionType === 'R' ? 'Redeem' : 'Switch'} Type:</label>
-                                    <div className="flex items-center gap-2">
+                            {['R', 'O'].includes(transactionType) && (
+                                <div className="bg-[#1F1A1A] rounded-lg p-4 border border-[#2A2A2A]">
+                                    <label className="block text-xs font-semibold text-[#F9FAFB] mb-2">{transactionType === 'R' ? 'Redeem' : 'Switch'} Type:</label>
+                                    <div className="flex items-center gap-4">
                                         {['Amount', 'Unit', 'All Units'].map(type => (
                                             <div key={type} className="flex items-center gap-2">
                                                 <input
@@ -1462,40 +1497,29 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                                     name="switchType"
                                                     value={type}
                                                     onChange={handleRadio}
-                                                    className="w-4 h-4"
+                                                    className="w-4 h-4 accent-[#F59E0B]"
                                                 />
-                                                <span className="text-sm">{type}</span>
+                                                <span className="text-sm text-[#F9FAFB]">{type}</span>
                                             </div>
-
                                         ))}
-
-                                        <div className="mt-4 ml-6 p-2 border border-gray-200 rounded-lg bg-white shadow-sm w-fit">
-                                            <div className="grid grid-cols-2 gap-x-8 gap-y-3 text-xs">
-
-                                                <div className="text-gray-600 font-semibold">Available Units:</div>
-                                                <div className="font-mono text-gray-900">{availableUnits}</div>
-
-                                                <div className="text-gray-600 font-semibold">Available Amount:</div>
-                                                <div className="font-mono text-gray-900">{availableAmount}</div>
-
-                                            </div>
-                                        </div>
-
                                     </div>
-
-
+                                    <div className="mt-4 p-3 border border-[#2A2A2A] rounded-lg bg-[#111111]">
+                                        <div className="grid grid-cols-2 gap-4 text-sm">
+                                            <div className="text-[#9CA3AF] font-semibold">Available Units:</div>
+                                            <div className="font-mono text-[#F9FAFB]">{availableUnits}</div>
+                                            <div className="text-[#9CA3AF] font-semibold">Available Amount:</div>
+                                            <div className="font-mono text-[#F9FAFB]">{availableAmount}</div>
+                                        </div>
+                                    </div>
                                 </div>
-
-
-                            }
-
+                            )}
 
                             {isSelected && (
-                                <div className="space-y-4">
+                                <div className="bg-[#1F1A1A] rounded-lg p-4 border border-[#2A2A2A] space-y-4">
                                     {isDividend && (
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">Dividend Frequency:</label>
-                                            <select className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">Dividend Frequency:</label>
+                                            <select className="w-full p-2 border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent">
                                                 <option value="">Select Frequency</option>
                                                 {dividendFrequency.map(freq => (
                                                     <option key={freq.value} value={freq.value}>{freq.label}</option>
@@ -1504,280 +1528,255 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                         </div>
                                     )}
 
-                                    {["V", "Y", "J"].includes(transactionType) &&
-                                        <div >
-                                            <div className="flex items-center gap-2">
-                                                {/* <label className="block text-sm font-medium text-gray-700 mb-2">Select Frequency:</label>*/}
+                                    {["V", "Y", "J"].includes(transactionType) && (
+                                        <div>
+                                            <CustomSelect
+                                                items={frequencies}
+                                                bindValue="value"
+                                                bindName="label"
+                                                label="SIP Frequency"
+                                                className="mt-2"
+                                                value={selectedFrequency}
+                                                onChange={(event) => {
+                                                    const selectedValue = event.target.value;
+                                                    const selectedFreqObj = frequencies.find(
+                                                        (f: any) => f.value === selectedValue
+                                                    );
+                                                    setSelectedFrequency(selectedValue);
 
-                                                <CustomSelect
-                                                    items={frequencies}
-                                                    bindValue="value"
-                                                    bindName="label"
-                                                    label="SIP Frequency"
-                                                    className="mt-2"
-                                                    value={selectedFrequency}
-                                                    onChange={(event) => {
-                                                        const selectedValue = event.target.value;
-                                                        const selectedFreqObj = frequencies.find(
-                                                            (f: any) => f.value === selectedValue
-                                                        );
+                                                    const rawDates = data
+                                                        .filter(
+                                                            (item) =>
+                                                                item.txn_type === transactionType &&
+                                                                item.sys_freq === selectedValue &&
+                                                                item.sys_date != null &&
+                                                                item.sys_date.trim() !== ""
+                                                        )
+                                                        .map((item) => item.sys_date!.trim());
 
+                                                    let dateList: string[] = [];
 
+                                                    if (selectedFreqObj?.freqOpt === "A") {
+                                                        dateList = Array.from({ length: 28 }, (_, i) => (i + 1).toString());
+                                                    } else if (rawDates.length > 0) {
+                                                        dateList = rawDates
+                                                            .flatMap((dateStr) => {
+                                                                if (dateStr.includes(";")) {
+                                                                    return dateStr.split(";").flatMap((pair: any) => pair.split(","));
+                                                                } else if (dateStr.includes("/")) {
+                                                                    return dateStr.split("/");
+                                                                } else if (dateStr.includes(",")) {
+                                                                    return dateStr.split(",");
+                                                                } else {
+                                                                    return [dateStr];
+                                                                }
+                                                            })
+                                                            .map((d) => d.trim())
+                                                            .filter((d, i, arr) => d !== "" && arr.indexOf(d) === i);
+                                                    }
 
-                                                        setSelectedFrequency(selectedValue);
+                                                    if (selectedValue === "F" && dateList.length === 0) {
+                                                        const pairs: string[] = ["1,14", "8,21", "15,28", "22,28"];
+                                                        dateList = pairs;
+                                                    }
 
-                                                        const rawDates = data
-                                                            .filter(
-                                                                (item) =>
-                                                                    item.txn_type === transactionType &&
-                                                                    item.sys_freq === selectedValue &&
-                                                                    item.sys_date != null &&
-                                                                    item.sys_date.trim() !== ""
-                                                            )
-                                                            .map((item) => item.sys_date!.trim());
+                                                    const formattedDates = selectedValue === "F"
+                                                        ? [
+                                                            { label: "Select", value: "" },
+                                                            ...dateList.map((pair) => {
+                                                                const [first, second] = pair.split(",").map((d) => d.trim());
+                                                                return {
+                                                                    label: `${pair} — SIP on ${first}${getOrdinal(first)} & ${second}${getOrdinal(second)} every month`,
+                                                                    value: pair,
+                                                                };
+                                                            }),
+                                                        ]
+                                                        : [
+                                                            { label: "Select", value: "" },
+                                                            ...dateList.map((date) => ({
+                                                                label: `${date}`,
+                                                                value: date,
+                                                            })),
+                                                        ];
 
-                                                        let dateList: string[] = [];
+                                                    const allowedDays = dateList
+                                                        .map((d) => Number(d))
+                                                        .filter((n) => !isNaN(n));
 
-                                                        //  CASE 1: "Any Date" → 1–28 days
-                                                        if (selectedFreqObj?.freqOpt === "A") {
-                                                            dateList = Array.from({ length: 28 }, (_, i) => (i + 1).toString());
-                                                        }
+                                                    setAvailableDates(formattedDates);
 
-                                                        //  CASE 2: Extract dates from sys_date if available
-                                                        else if (rawDates.length > 0) {
-                                                            dateList = rawDates
-                                                                .flatMap((dateStr) => {
-                                                                    if (dateStr.includes(";")) {
-                                                                        // Fortnightly → e.g. "1,16;5,20"
-                                                                        return dateStr.split(";").flatMap((pair: any) => pair.split(","));
-                                                                    } else if (dateStr.includes("/")) {
-                                                                        // Monthly, Quarterly → e.g. "2/8/15/24"
-                                                                        return dateStr.split("/");
-                                                                    } else if (dateStr.includes(",")) {
-                                                                        // Comma-separated → e.g. "1,5,10,15"
-                                                                        return dateStr.split(",");
-                                                                    } else {
-                                                                        // Single date
-                                                                        return [dateStr];
-                                                                    }
-                                                                })
-                                                                .map((d) => d.trim())
-                                                                .filter((d, i, arr) => d !== "" && arr.indexOf(d) === i);
-                                                        }
+                                                    if (selectedFrequency == "M" && allowedDays.length == 0) {
+                                                        const defaultDays = [1, 5, 10, 15, 20, 25];
+                                                        setAllowedSipDays(defaultDays);
+                                                    } else {
+                                                        setAllowedSipDays(allowedDays);
+                                                    }
+                                                }}
+                                            />
 
-                                                        //  CASE 3: Fortnightly fallback → generate pairs like "1,14", "8,21", "15,28"
-                                                        if (selectedValue === "F" && dateList.length === 0) {
-                                                            const pairs: string[] = ["1,14", "8,21", "15,28", "22,28"];
-                                                            dateList = pairs;
-                                                        }
-
-                                                        const formattedDates =
-                                                            selectedValue === "F"
-                                                                ? [
-                                                                    { label: "Select", value: "" },
-                                                                    ...dateList.map((pair) => {
-                                                                        const [first, second] = pair.split(",").map((d) => d.trim());
-                                                                        return {
-                                                                            label: `${pair} — SIP on ${first}${getOrdinal(
-                                                                                first
-                                                                            )} & ${second}${getOrdinal(second)} every month`,
-                                                                            value: pair,
-                                                                        };
-                                                                    }),
-                                                                ]
-                                                                : [
-                                                                    { label: "Select", value: "" },
-                                                                    ...dateList.map((date) => ({
-                                                                        label: `${date}`,
-                                                                        value: date,
-                                                                    })),
-                                                                ];
-
-                                                        const allowedDays = dateList
-                                                            .map((d) => Number(d))
-                                                            .filter((n) => !isNaN(n));
-
-                                                        setAvailableDates(formattedDates);
-
-
-                                                        //  Default allowed SIP days if Monthly selected but no dates provided
-                                                        if (selectedFrequency == "M" && allowedDays.length == 0) {
-                                                            const defaultDays = [1, 5, 10, 15, 20, 25];
-                                                            setAllowedSipDays(defaultDays);
-                                                        } else {
-                                                            setAllowedSipDays(allowedDays);
-                                                        }
-                                                    }}
+                                            <div className="mt-3">
+                                                <label className="text-xs font-bold text-[#F9FAFB]">SIP Start Date</label>
+                                                <DatePicker
+                                                    selected={sipStartDate}
+                                                    onChange={handleDateChange}
+                                                    filterDate={isDateAvailable}
+                                                    placeholderText="Select SIP Start Date"
+                                                    className="w-full p-2 border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                                                    dateFormat="dd/MM/yyyy"
                                                 />
-
-
-                                                <div>
-                                                    <label className="text-xs font-bold ">SIP Start Date</label>
-                                                    <DatePicker
-                                                        selected={sipStartDate}
-                                                        onChange={handleDateChange}
-                                                        filterDate={isDateAvailable}
-                                                        placeholderText="Select SIP Start Date"
-                                                        className="border rounded border-gray-300 p-1.5 w-60 focus:border-gray-500 focus:outline-none"
-                                                        dateFormat="dd/MM/yyyy"
-                                                    />
-                                                </div>
-
-
                                             </div>
-
-
                                         </div>
-
-                                    }
-
+                                    )}
 
                                     <div>
-                                        <CustomInput
-                                            label="Amount :"
-                                            value={redType === 'All Unit' ? availableUnits : amount}
+                                        <label className="block text-sm font-medium text-[#F9FAFB] mb-2">Amount:</label>
+                                        <input
                                             type="number"
+                                            value={redType === 'All Units' ? availableUnits : amount}
                                             placeholder={placeHolder}
-                                            disabled={redType === 'All Unit'}
+                                            disabled={redType === 'All Units'}
                                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                 const val = e.target.value;
-                                                if (redType == "All Unit") {
+                                                if (redType == "All Units") {
                                                     setAmount(availableUnits);
-                                                }
-                                                else {
+                                                } else {
                                                     setAmount(val);
                                                 }
-                                            }} />
-
+                                            }}
+                                            className="w-full p-2 border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent placeholder:text-[#9CA3AF]"
+                                        />
 
                                         {amount !== "" && !isNaN(parseInt(amount, 10)) && (
-                                            <label className="block text-xs font-medium text-gray-700 mt-2">
+                                            <label className="block text-xs font-medium text-[#9CA3AF] mt-2">
                                                 {numberToWords(parseInt(amount, 10))}
                                             </label>
                                         )}
 
-                                        <div className="flex items-center justify-between">
+                                        {errors.amount && (
+                                            <span className="text-red-400 text-xs">{errors.amount}</span>
+                                        )}
 
-                                            {errors.amount && (
-                                                <span className="text-red-500 text-xs">{errors.amount}</span>
-                                            )}
-                                        </div>
-
-                                        <p className="text-sm">Min. Amount <span className="text-red-500">{minAmount}</span></p>
-
+                                        <p className="text-sm text-[#9CA3AF] mt-2">Min. Amount <span className="text-[#F59E0B]">{minAmount}</span></p>
                                     </div>
-                                    {isTransact ?
+
+                                    {isTransact ? (
                                         <>
-                                            {["B", "V"].includes(transactionType) &&
-                                                < div className="mt-2">
+                                            {["B", "V"].includes(transactionType) && (
+                                                <div className="mt-2">
                                                     <CustomSelect
                                                         items={payMode}
                                                         bindValue="value"
                                                         bindName="label"
                                                         label="Payment Modes:"
                                                         value={paymentMode}
-
                                                         onChange={(selectedOption: any) => {
                                                             const selectedValue = selectedOption?.target?.value;
                                                             setPaymentMode(selectedValue);
-
                                                             if (selectedValue === "NE" || selectedValue === "RT") {
                                                                 setBeneVan("MFKK" + selectedCan);
-                                                            }
-                                                            else if (selectedValue === "IU") {
+                                                            } else if (selectedValue === "IU") {
                                                                 setBeneVan("MFSYES" + selectedCan + "@@yesbankltd");
-                                                            }
-                                                            else {
+                                                            } else {
                                                                 setBeneVan("");
                                                             }
-
                                                             const fetchBank = async () => {
                                                                 const response = await getBankAccount(investorList[0].id);
                                                                 const data = response?.data?.data?.data
                                                                 setBankList(data)
                                                             }
-
-
                                                             fetchBank()
-                                                            //handleTransactionType({ target: { value: selectedValue } }); // simulate event
                                                         }}
                                                     />
-
                                                 </div>
-                                            }
-                                            {exeptions.value &&
-                                                <div className="text-red-500">{exeptions.message}</div>
-                                            }
-
-                                            {transactionError &&
-                                                <div className="text-red-500">{transactionError}</div>
-                                            }
-
-
+                                            )}
+                                            {exeptions.value && (
+                                                <div className="text-red-400 text-sm">{exeptions.message}</div>
+                                            )}
+                                            {transactionError && (
+                                                <div className="text-red-400 text-sm">{transactionError}</div>
+                                            )}
                                             <div className="flex gap-3 pt-4">
-                                                <CustomButton onClick={handleTransact}>{isLoading ? <><Loader size="w-4 h-4" color="text-white" thickness="border-2" borderColor='border-gray-300' />  wait...</> : 'Order Now'}
-                                                </CustomButton>
-                                                <CustomButton className="bg-gray-300 hover:bg-gray-400 text-black" onClick={() => setIsTransact(false)}>Cancel</CustomButton>
-
+                                                <button
+                                                    onClick={handleTransact}
+                                                    disabled={isLoading}
+                                                    className="px-6 py-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white font-semibold rounded-lg hover:opacity-90 transition-all disabled:opacity-50"
+                                                >
+                                                    {isLoading ? <><Loader size="w-4 h-4" color="text-white" thickness="border-2" borderColor='border-[#3A3A3A]' /> wait...</> : 'Order Now'}
+                                                </button>
+                                                <button
+                                                    className="px-6 py-2 bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] rounded-lg hover:bg-[#2A2A2A] transition-all"
+                                                    onClick={() => setIsTransact(false)}
+                                                >
+                                                    Cancel
+                                                </button>
                                             </div>
                                         </>
-                                        :
+                                    ) : (
                                         <>
-                                            {isCartAdded &&
+                                            {isCartAdded && (
                                                 <>
-                                                    <div className="text-green-500 text-sm flex items-center">
-                                                        <CheckCircleIcon className="w-4 h-4 text-green-500" /> <span className="ml-3">{orderOptions.find(opt => opt.value === transactionType)?.label} added to cart sucessfully</span>
+                                                    <div className="text-[#10B981] text-sm flex items-center">
+                                                        <CheckCircleIcon className="w-4 h-4 text-[#10B981]" />
+                                                        <span className="ml-3">{orderOptions.find(opt => opt.value === transactionType)?.label} added to cart successfully</span>
                                                     </div>
                                                     <div className="flex items-center gap-2">
-                                                        <CustomButton className="bg-gray-500 hover:bg-gray-600 " onClick={() => setIsTransact(false)}>Cancel</CustomButton>
-
-                                                        <CustomButton onClick={(e) => {
-                                                            window.location.href = 'my-cart'
-                                                        }}>Go to cart</CustomButton>
+                                                        <button
+                                                            className="px-6 py-2 bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] rounded-lg hover:bg-[#2A2A2A] transition-all"
+                                                            onClick={() => setIsTransact(false)}
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                        <button
+                                                            onClick={() => window.location.href = 'my-cart'}
+                                                            className="px-6 py-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white font-semibold rounded-lg hover:opacity-90 transition-all"
+                                                        >
+                                                            Go to cart
+                                                        </button>
                                                     </div>
                                                 </>
-
-
-                                            }
-                                            {!isCartAdded &&
+                                            )}
+                                            {!isCartAdded && (
                                                 <div className="flex gap-3 pt-4">
-                                                    <CustomButton className="bg-gray-300 hover:bg-gray-400 text-[#000000]" onClick={addToCart}> Add to Cart</CustomButton>
-                                                    <CustomButton onClick={(e) => {
-                                                        if (transactionType === 'R' || transactionType === 'O') {
-                                                            if (redType === 'Amount') {
-                                                                parseFloat(amount) >= parseFloat(availableAmount) ? toast.error('Redeem amount cannot be greater than available amount' + amount + '---' + availableAmount) :
+                                                    <button
+                                                        className="px-6 py-2 bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] rounded-lg hover:bg-[#2A2A2A] transition-all"
+                                                        onClick={addToCart}
+                                                    >
+                                                        Add to Cart
+                                                    </button>
+                                                    <button
+                                                        onClick={() => {
+                                                            if (transactionType === 'R' || transactionType === 'O') {
+                                                                if (redType === 'Amount') {
+                                                                    parseFloat(amount) >= parseFloat(availableAmount)
+                                                                        ? toast.error('Redeem amount cannot be greater than available amount')
+                                                                        : setIsTransact(true)
+                                                                } else if (redType === 'Unit') {
+                                                                    parseFloat(amount) >= parseFloat(availableUnits)
+                                                                        ? toast.error('Redeem units cannot be greater than available units')
+                                                                        : setIsTransact(true)
+                                                                } else if (redType === 'All Units') {
+                                                                    setAmount(availableUnits?.toString() || "")
                                                                     setIsTransact(true)
-                                                            } else if (redType === 'Unit') {
-                                                                parseFloat(amount) >= parseFloat(availableUnits) ? toast.error('Redeem units cannot be greater than available units') :
-                                                                    setIsTransact(true)
-                                                            } else if (redType === 'All Units') {
-                                                                setAmount(availableUnits?.toString() || "")
+                                                                }
+                                                            } else {
+                                                                console.log("Transact for non-redeem order")
                                                                 setIsTransact(true)
-
                                                             }
-                                                        } else {
-                                                            console.log("Transact for non-redeem order")
-                                                            setIsTransact(true)
-
-                                                        }
-                                                    }}>Transact Now</CustomButton>
-
+                                                        }}
+                                                        className="px-6 py-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white font-semibold rounded-lg hover:opacity-90 transition-all"
+                                                    >
+                                                        Transact Now
+                                                    </button>
                                                 </div>
-                                            }
+                                            )}
                                         </>
-
-                                    }
-
-
-
+                                    )}
                                 </div>
                             )}
                         </div>
                     </div>
-                </div >
+                </div>
             </div>
-            {/* </dialog >*/}
-
         </>
     );
 };

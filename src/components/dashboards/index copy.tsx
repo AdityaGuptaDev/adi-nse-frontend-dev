@@ -338,57 +338,21 @@ const MutualFundDashboard = () => {
     loadApiPortfolioData();
   }, [investorName, panNumber, selectedDate, hasClientData]);
 
-  //added by rakesh sinha - updated to check CAN and UCC status
+  //added by rakesh sinha 
   useEffect(() => {
-    const checkOnboardingStatus = async () => {
-      const userData = getLS(USER_DATA);
-      console.log("User Data=", userData?.InvestorRegistration);
+    const userData = getLS(USER_DATA);
+    console.log("User Data=", userData?.InvestorRegistration)
 
-      const investor = userData?.InvestorRegistration;
-
-      // If investor data exists and KYC is complete, no popup needed
-      if (investor?.is_kyc_complete === true) {
-        console.log("KYC complete - no onboarding popup");
-        setOnBoardingModal(false);
-        return;
-      }
-
-      // If CAN is registered, skip onboarding popup
-      if (investor?.is_CAN_registered === true) {
-        console.log("CAN registered - no onboarding popup");
-        setOnBoardingModal(false);
-        return;
-      }
-
-      // Check if UCC is created via NSE API (by mobile number)
-      if (investor?.reg_mobile) {
-        try {
-          const res = await api.get(`/nse/ucc/search-by-mobile/${investor.reg_mobile}`);
-          const payload = res?.data?.data ?? res?.data ?? {};
-          if (payload?.status === "S" && payload?.data) {
-            const uccData = payload.data;
-            // If UCC record exists and uccCreated flag is true, skip onboarding
-            if (uccData.uccCreated === 1 || uccData.uccCreated === true) {
-              console.log("UCC created - no onboarding popup");
-              setOnBoardingModal(false);
-              return;
-            }
-          }
-        } catch (err) {
-          // UCC check failed - continue with normal check
-          console.log("UCC check failed, continuing with normal onboarding check");
-        }
-      }
-
-      // If none of the above conditions met, show onboarding popup
-      if (!investor || investor.is_kyc_complete === false || investor.is_kyc_complete === null) {
-        setOnBoardingModal(true);
-      } else {
-        setOnBoardingModal(false);
-      }
-    };
-
-    checkOnboardingStatus();
+    if (
+      (!userData?.InvestorRegistration) ||
+      (userData?.InvestorRegistration?.is_kyc_complete === false) ||
+      userData?.InvestorRegistration?.is_kyc_complete === null
+    ) {
+      setOnBoardingModal(true);
+    } else {
+      console.log("fdsfds")
+      setOnBoardingModal(false);
+    }
   }, []);
 
   // Original portfolio data loading for other sections
@@ -925,7 +889,7 @@ const MutualFundDashboard = () => {
                   className="px-3 sm:px-4 py-2 bg-[#F59E0B] text-white rounded-lg hover:bg-[#D97706] transition-colors flex items-center gap-2 text-sm whitespace-nowrap"
                 >
                   <FileText className="w-4 h-4" />
-                  Print
+                  Print11111111111111
                 </button>
               </div>
             </div>
@@ -1349,7 +1313,7 @@ const MutualFundDashboard = () => {
                           } else if (currentHour >= 17 && currentHour < 21) {
                             return <Moon className="w-4 h-4 text-blue-300" />;
                           } else {
-                            return <Moon className="w-4 h-4 text-[#F59E0B]" />;
+                            return <Moon className="w-4 h-4 text-indigo-300" />;
                           }
                         })()}
                       </div>

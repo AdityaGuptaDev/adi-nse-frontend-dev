@@ -137,8 +137,8 @@ export default function NseOrderTracking() {
   if (!order) {
     return (
       <div className="p-6 max-w-[900px] mx-auto text-center">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4">Order Tracking</h1>
-        <p className="text-gray-500 mb-6">
+        <h1 className="text-2xl font-bold text-[#F9FAFB] mb-4">Order Tracking</h1>
+        <p className="text-[#9CA3AF] mb-6">
           {orderId ? "Order not found." : "No order ID provided."}
         </p>
         <button
@@ -157,10 +157,10 @@ export default function NseOrderTracking() {
       {/* ── Header ── */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800">Order Tracking</h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <h1 className="text-2xl font-bold text-[#F9FAFB]">Order Tracking</h1>
+          <p className="text-[#9CA3AF] text-sm mt-1">
             {order.investor_name}{" "}
-            <span className="text-gray-400">({order.pan})</span> &middot; Order ID:{" "}
+            <span className="text-[#6B7280]">({order.pan})</span> &middot; Order ID:{" "}
             <span className="font-semibold" style={{ color: "#F59E0B" }}>
               {order.order_id}
             </span>
@@ -176,7 +176,7 @@ export default function NseOrderTracking() {
       </div>
 
       {/* ── Info Bar ── */}
-      <div className="bg-white rounded-xl shadow-sm border p-4 mb-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="bg-[#111111] rounded-xl shadow-sm border p-4 mb-8 grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { label: "Order Type", value: order.order_type === "P" ? "Purchase" : order.order_type === "R" ? "Redemption" : order.order_type },
           { label: "Scheme", value: order.scheme_name },
@@ -184,8 +184,8 @@ export default function NseOrderTracking() {
           { label: "Amount", value: order.amount },
         ].map((item) => (
           <div key={item.label}>
-            <p className="text-xs text-gray-400 mb-0.5">{item.label}</p>
-            <p className="text-sm font-semibold text-gray-800 truncate" title={item.value}>
+            <p className="text-xs text-[#6B7280] mb-0.5">{item.label}</p>
+            <p className="text-sm font-semibold text-[#F9FAFB] truncate" title={item.value}>
               {item.value}
             </p>
           </div>
@@ -193,8 +193,8 @@ export default function NseOrderTracking() {
       </div>
 
       {/* ── Timeline ── */}
-      <div className="bg-white rounded-xl shadow-sm border p-6">
-        <h2 className="text-lg font-semibold text-gray-800 mb-6">Order Progress</h2>
+      <div className="bg-[#111111] rounded-xl shadow-sm border p-6">
+        <h2 className="text-lg font-semibold text-[#F9FAFB] mb-6">Order Progress</h2>
         <div className="relative pl-8">
           {steps.map((s, idx) => {
             const isDone = currentStep >= s.step;
@@ -239,12 +239,12 @@ export default function NseOrderTracking() {
                 <div>
                   <p
                     className={`font-semibold text-sm ${
-                      isDone ? "text-gray-800" : "text-gray-400"
+                      isDone ? "text-[#F9FAFB]" : "text-[#6B7280]"
                     }`}
                   >
                     {s.label}
                   </p>
-                  <p className="text-xs text-gray-400 mt-0.5">{s.desc}</p>
+                  <p className="text-xs text-[#6B7280] mt-0.5">{s.desc}</p>
 
                   {isAuthPending && (
                     <button

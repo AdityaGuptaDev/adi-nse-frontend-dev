@@ -13,6 +13,7 @@ import { TbSitemap } from "react-icons/tb";
 import DataGrid from '../commonGrid/DataGrid';
 import { RxDashboard } from 'react-icons/rx';
 import { RiUserUnfollowFill } from 'react-icons/ri';
+import { AlertCircle, X } from 'lucide-react';
 
 const partnerHeader = [
   {
@@ -70,7 +71,7 @@ function RmList(props: any) {
   const [deactivateModal, setDeActivateModal] = useState(false);
   const [deleteLoader, setDeleteLoader] = useState(false);
 
-  const endPoint = `/partner/getRmListDtl`; // Correct endpoint
+  const endPoint = `/partner/getRmListDtl`;
 
   const {
     control,
@@ -90,14 +91,14 @@ function RmList(props: any) {
       title: "DeActive",
       tooltip: "DeActive",
       show: true,
-      className: "p-2 bg-primary text-white rounded-lg",
+      className: "p-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg hover:opacity-90 transition-all",
     },
     {
       icon: <RxDashboard />,
       title: "Dashboard",
       tooltip: "Dashboard",
       show: true,
-      className: "p-2 bg-primary text-white rounded-lg",
+      className: "p-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg hover:opacity-90 transition-all",
     },
   ];
 
@@ -128,10 +129,8 @@ function RmList(props: any) {
           return toastAlert("error", "Unable to login as RM");
         }
 
-        // store login data temporarily
         localStorage.setItem("RM_LOGIN_DATA", JSON.stringify(loginData));
 
-        // open RM dashboard
         window.open("/as-partner", "_blank");
 
       } catch (error) {
@@ -192,7 +191,7 @@ function RmList(props: any) {
   return (
     <>
       {pageType === "list" && (
-        <div>
+        <div className="bg-[#0A0A0A] min-h-screen">
           <DataGrid
             refreshKey={refreshKey}
             headerList={partnerHeader}
@@ -203,39 +202,153 @@ function RmList(props: any) {
             toggleForm={setpageType}
             pageName={"RM"}
             backButton={true}
-          //enableFilter={true}   
-          //clearFilter={true}    
           />
         </div>
       )}
 
       {/* Deactivate Modal */}
       {deactivateModal && (
-        <div id="my_modal_2" className="modal modal-open" ref={deleteModalRef}>
-          <div className="modal-box text-center">
-            <div className="flex justify-center my-2">
-              <MdError className="text-red-600 w-14 h-14" />
-            </div>
-            <h3 className="text-xl font-bold">Deactivate Partner</h3>
-            <p className="py-4">Are you sure you want to deactivate this Partner?</p>
-            <div className="modal-action flex gap-5 justify-center">
-              <CustomButton
-                className="bg-white !text-black !border !border-gray-300 w-28"
-                onClick={() => setDeActivateModal(false)}
-              >
-                Cancel
-              </CustomButton>
-              <CustomButton
-                className="w-28"
-                loading={deleteLoader}
-                onClick={handleDelete}
-              >
-                Yes
-              </CustomButton>
+        <div id="my_modal_2" className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" ref={deleteModalRef}>
+          <div className="bg-[#111111] rounded-xl shadow-2xl max-w-md w-full border border-[#2A2A2A]">
+            <div className="p-6 text-center">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center">
+                  <AlertCircle className="w-8 h-8 text-red-400" />
+                </div>
+              </div>
+              <h3 className="text-xl font-bold text-[#F9FAFB] mb-3">Deactivate Partner</h3>
+              <p className="text-[#9CA3AF] mb-6">
+                Are you sure you want to deactivate this Partner?
+              </p>
+              <div className="flex gap-4 justify-center">
+                <button
+                  onClick={() => setDeActivateModal(false)}
+                  className="px-6 py-2 bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] rounded-lg hover:bg-[#2A2A2A] transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDelete}
+                  disabled={deleteLoader}
+                  className="px-6 py-2 bg-gradient-to-r from-[#EF4444] to-[#DC2626] text-white font-semibold rounded-lg hover:opacity-90 transition-all disabled:opacity-50"
+                >
+                  {deleteLoader ? "Processing..." : "Yes, Deactivate"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
+
+      <style jsx>{`
+        :global(.activeClass) {
+          color: #10B981;
+          background-color: rgba(16, 185, 129, 0.1);
+          padding: 4px 12px;
+          border-radius: 20px;
+          font-weight: 500;
+          display: inline-block;
+        }
+        
+        :global(.inActiveClass) {
+          color: #EF4444;
+          background-color: rgba(239, 68, 68, 0.1);
+          padding: 4px 12px;
+          border-radius: 20px;
+          font-weight: 500;
+          display: inline-block;
+        }
+        
+        :global(.data-grid-container) {
+          background-color: #0A0A0A;
+        }
+        
+        :global(.data-grid-table) {
+          background-color: #111111;
+          border-color: #2A2A2A;
+        }
+        
+        :global(.data-grid-table th) {
+          background-color: #1F1A1A;
+          color: #F59E0B;
+          border-bottom-color: #2A2A2A;
+        }
+        
+        :global(.data-grid-table td) {
+          color: #F9FAFB;
+          border-bottom-color: #2A2A2A;
+        }
+        
+        :global(.data-grid-table tr:hover) {
+          background-color: #1F1A1A;
+        }
+        
+        :global(.data-grid-pagination button) {
+          background-color: #111111;
+          border-color: #2A2A2A;
+          color: #F9FAFB;
+        }
+        
+        :global(.data-grid-pagination button:hover:not(:disabled)) {
+          background-color: #1F1A1A;
+          border-color: #F59E0B;
+          color: #F59E0B;
+        }
+        
+        :global(.data-grid-pagination button.active) {
+          background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
+          color: white;
+          border-color: transparent;
+        }
+        
+        :global(.data-grid-search input) {
+          background-color: #111111;
+          border-color: #2A2A2A;
+          color: #F9FAFB;
+        }
+        
+        :global(.data-grid-search input::placeholder) {
+          color: #9CA3AF;
+        }
+        
+        :global(.data-grid-search input:focus) {
+          border-color: #F59E0B;
+          ring-color: #F59E0B;
+        }
+        
+        :global(.data-grid-filter select) {
+          background-color: #111111;
+          border-color: #2A2A2A;
+          color: #F9FAFB;
+        }
+        
+        :global(.data-grid-filter select:focus) {
+          border-color: #F59E0B;
+          ring-color: #F59E0B;
+        }
+        
+        :global(.data-grid-filter select option) {
+          background-color: #111111;
+          color: #F9FAFB;
+        }
+        
+        :global(.data-grid-header) {
+          background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
+        }
+        
+        :global(.data-grid-header h2) {
+          color: white;
+        }
+        
+        :global(.data-grid-header button) {
+          background-color: rgba(255, 255, 255, 0.2);
+          color: white;
+        }
+        
+        :global(.data-grid-header button:hover) {
+          background-color: rgba(255, 255, 255, 0.3);
+        }
+      `}</style>
     </>
   );
 }

@@ -21,6 +21,7 @@ import CustomRadio from "@/commonUI/Radio";
 import CustomInput from "@/commonUI/Input";
 import CustomBackButton from "@/commonUI/CustomBackButton";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import { ChevronRight, ChevronDown, Shield, TrendingUp, Target, BarChart3 } from "lucide-react";
 
 function RiskProfile() {
   const [questions, setQuestions] = useState<any>([]);
@@ -109,14 +110,14 @@ function RiskProfile() {
           formatter: function (value: number) {
             return Math.round(value * 100) + "";
           },
-          color: "#000",
+          color: "#F59E0B",
         },
         data: [
           {
             value: Number(totalPoints) / 100,
             name: "Your Score",
             detail: {
-              color: "rgba(0, 0, 0, 1)",
+              color: "#F59E0B",
             },
           },
         ],
@@ -326,149 +327,154 @@ function RiskProfile() {
   };
 
   return (
-    <div className="">
-      <form>
-        
-        {showFirstScreen && (<>
-          <div className=" pl-2 pt-5">
-                  <CustomBackButton onClick={() => window.history.back()}>
-                <IoMdArrowRoundBack className="h-6 w-6 mr-1" />
-              </CustomBackButton>
+    <div className="min-h-screen bg-[#0A0A0A] w-full">
+      <div className="w-full px-0">
+        <form>
+          {showFirstScreen && (
+            <>
+              <div className="pl-2 pt-5">
+                <CustomBackButton onClick={() => window.history.back()}>
+                  <IoMdArrowRoundBack className="h-6 w-6 mr-1 text-[#F59E0B]" />
+                </CustomBackButton>
               </div>
-          <div className="h-[calc(100vh-150px)] flex items-center justify-center">
-             
-            <div className="stack">
-             
-              <div className="text-center flex flex-col gap-5 bg-background/0 p-5 rounded-2xl">
-                <CustomText className="font-title relative z-2 mx-auto [transform:translate3d(0,0,0)] text-[clamp(2rem,6vw,4.5rem)] leading-none font-black will-change-auto motion-reduce:tracking-normal! max-[1279px]:tracking-normal!">
-                  To Make better decisions.
-                  <br />
-                  <span className="[transform:translate3d(0,0,0)] bg-[linear-gradient(90deg,var(--color-secondary)_4%,color-mix(in_oklch,var(--color-secondary),var(--color-error))_22%,var(--color-primary)_45%,color-mix(in_oklch,var(--color-primary),var(--color-accent))_67%,var(--color-accent)_100.2%)] bg-clip-text will-change-auto [-webkit-text-fill-color:transparent] motion-reduce:tracking-normal! max-[1279px]:tracking-normal!">
-                    you need to understand yourself.
-                  </span>
-                </CustomText>
-                <CustomText className="text-base-content/70 font-title py-4 font-light md:text-2xl">
-                  Introducing Vedant Investor Personality, a tool to help you
-                  understand your investing behaviour.
-                </CustomText>
-                <div className="py-3 py-md-5"></div>
+              <div className="h-[calc(100vh-150px)] flex items-center justify-center">
+                <div className="stack">
+                  <div className="text-center flex flex-col gap-5 p-5 rounded-2xl max-w-4xl mx-auto">
+                    <div className="flex justify-center mb-6">
+                      <div className="p-4 bg-gradient-to-r from-[#F59E0B] to-[#B45309] rounded-2xl">
+                        <Shield className="w-16 h-16 text-white" />
+                      </div>
+                    </div>
+                    <CustomText className="font-title relative z-2 mx-auto [transform:translate3d(0,0,0)] text-[clamp(2rem,6vw,4.5rem)] leading-none font-black will-change-auto motion-reduce:tracking-normal! max-[1279px]:tracking-normal! text-[#F9FAFB]">
+                      To Make better decisions.
+                      <br />
+                      <span className="[transform:translate3d(0,0,0)] bg-gradient-to-r from-[#F59E0B] via-[#FBBF24] to-[#B45309] bg-clip-text will-change-auto [-webkit-text-fill-color:transparent] motion-reduce:tracking-normal! max-[1279px]:tracking-normal!">
+                        you need to understand yourself.
+                      </span>
+                    </CustomText>
+                    <CustomText className="text-[#9CA3AF] font-title py-4 font-light md:text-2xl">
+                      Introducing Vedant Investor Personality, a tool to help you
+                      understand your investing behaviour.
+                    </CustomText>
+                    <div className="py-3 py-md-5"></div>
 
-                <CustomText className="mb-3 font-bold text-2xl">
-                  Introducing Vedant Investor Personality.
-                </CustomText>
-                <div>
-                  <CustomButton
-                    onClick={() => {
-                      setShowFirstScreen(false);
-                      setShowSecondScreen(true);
-                    }}
-                  >
-                    Know your Personality
-                    <FaArrowRightLong />
-                  </CustomButton>
+                    <CustomText className="mb-3 font-bold text-2xl text-[#F9FAFB]">
+                      Introducing Vedant Investor Personality.
+                    </CustomText>
+                    <div>
+                      <CustomButton
+                        onClick={() => {
+                          setShowFirstScreen(false);
+                          setShowSecondScreen(true);
+                        }}
+                        className="bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white hover:opacity-90 transition-all"
+                      >
+                        Know your Personality
+                        <FaArrowRightLong className="ml-2" />
+                      </CustomButton>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-          </>
-        )}
+            </>
+          )}
 
-        {showSecondScreen && !showThirdScreen && (
-          <div className="mt-0">
-            <div className="pageTitle">
-              <CustomText className="font-medium text-2xl ">
-                Risk Profile Questionaire
-              </CustomText>
-            </div>
-            <div className="px-4 pb-4 flex flex-col justify-center">
-              <div className="join join-vertical max-w-4xl ml-auto mr-auto">
-                {questions.map((question: any, questionIndex: number) => {
-                  const isEnabled = enabledQuestions.includes(questionIndex);
-                  const isAnswered = isQuestionAnswered(question.id);
-                  const selectedAnswer = selectedOptions[question.id];
-                  const min = getmin(question.RiskProfileAnswers);
-                  const max = getmax(question.RiskProfileAnswers);
-                  const isExpanded = expandedIndex === questionIndex;
+          {showSecondScreen && !showThirdScreen && (
+            <div className="mt-0">
+              {/* Header */}
+              <div className="w-full bg-[#111111] border-b border-[#2A2A2A] shadow-sm">
+                <div className="flex items-center justify-between p-4 sm:p-6">
+                  <div className="flex items-center gap-3">
+                    <CustomBackButton onClick={() => window.history.back()}>
+                      <IoMdArrowRoundBack className="h-6 w-6 text-[#F59E0B]" />
+                    </CustomBackButton>
+                    <div>
+                      <h1 className="text-xl font-bold bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent">
+                        Risk Profile Questionnaire
+                      </h1>
+                      <p className="text-xs text-[#9CA3AF] mt-0.5">
+                        Answer all questions to determine your risk profile
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-                  return (
-                    <div
-                      key={question.id}
-                      className={`collapse collapse-arrow collapse-primary join-item border-b border-gray-200 ${
-                        !isEnabled ? "opacity-50 pointer-events-none" : ""
-                      } ${isAnswered ? "" : ""}`}
-                    >
-                      <input
-                        type="radio"
-                        name="risk-accordion"
-                        disabled={!isEnabled}
-                        checked={isExpanded}
-                        onChange={() =>
-                          setExpandedIndex(isExpanded ? null : questionIndex)
-                        }
-                        className="border-none"
-                      />
+              <div className="px-4 pb-4 flex flex-col justify-center mt-6">
+                <div className="join join-vertical max-w-4xl ml-auto mr-auto w-full">
+                  {questions.map((question: any, questionIndex: number) => {
+                    const isEnabled = enabledQuestions.includes(questionIndex);
+                    const isAnswered = isQuestionAnswered(question.id);
+                    const selectedAnswer = selectedOptions[question.id];
+                    const min = getmin(question.RiskProfileAnswers);
+                    const max = getmax(question.RiskProfileAnswers);
+                    const isExpanded = expandedIndex === questionIndex;
 
-                      <div className="collapse-title font-medium relative flex flex-col">
-                        <span
-                          className={
-                            isAnswered && selectedAnswer && !isExpanded
-                              ? "text-sm text-placeholder"
-                              : "text-xl text-black "
-                          }
+                    return (
+                      <div
+                        key={question.id}
+                        className={`bg-[#111111] rounded-xl mb-4 border border-[#2A2A2A] overflow-hidden transition-all duration-200 ${
+                          !isEnabled ? "opacity-50" : ""
+                        } ${isExpanded ? "shadow-lg shadow-[#F59E0B]/10" : ""}`}
+                      >
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (isEnabled) {
+                              setExpandedIndex(isExpanded ? null : questionIndex);
+                            }
+                          }}
+                          disabled={!isEnabled}
+                          className="w-full p-5 text-left flex items-start gap-4 hover:bg-[#1F1A1A] transition-colors"
                         >
-                          <div className="flex items-center gap-3">
-                            <div>
-                              <div
-                                className={`p-2 rounded-full bg-background w-12 h-12 flex justify-center items-center text-xl ${
-                                  selectedAnswer ? `text-black` : ``
-                                }`}
-                              >
-                                0{questionIndex + 1}
-                              </div>
-                            </div>
-                            <div className="flex flex-col">
-                              {question.question}
-                              {isAnswered && selectedAnswer && !isExpanded && (
-                                <span className="text-xl font-normal text-black">
-                                  {selectedAnswer}
-                                </span>
-                              )}
-                            </div>
+                          <div
+                            className={`p-2 rounded-full w-12 h-12 flex justify-center items-center text-xl font-bold flex-shrink-0 ${
+                              isAnswered
+                                ? "bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white"
+                                : "bg-[#1F1A1A] text-[#9CA3AF] border border-[#2A2A2A]"
+                            }`}
+                          >
+                            {questionIndex + 1}
                           </div>
-                        </span>
-                      </div>
+                          <div className="flex-1">
+                            <div className="text-[#F9FAFB] font-medium text-base">
+                              {question.question}
+                            </div>
+                            {isAnswered && selectedAnswer && !isExpanded && (
+                              <div className="text-[#F59E0B] text-sm mt-2">
+                                Selected: {selectedAnswer}
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-shrink-0">
+                            {isExpanded ? (
+                              <ChevronDown className="w-5 h-5 text-[#F59E0B]" />
+                            ) : (
+                              <ChevronRight className="w-5 h-5 text-[#9CA3AF]" />
+                            )}
+                          </div>
+                        </button>
 
-                      <div className="collapse-content mb-4">
-                        <div className="pt-4">
-                          {/* Question Type 1 - Radio Options */}
-                          {question.question_type === 1 && (
-                            <div className="flex flex-col gap-3 ps-10">
-                              {question.RiskProfileAnswers.map(
-                                (item: any, index: any) => (
-                                  <label
-                                    key={index}
-                                    className={`btn flex justify-between items-center border-none bg-white shadow-none text-black text-base font-normal`}
-                                  >
-                                    <span className="flex justify-start items-center text-left gap-5 w-full">
-                                      {selectedOptions[question.id] ===
-                                      item.answer ? (
-                                        <FaCircleCheck
-                                          size={20}
-                                          className="text-green-600 w-5 h-5 min-w-5 min-h-5"
-                                        />
-                                      ) : (
-                                        <FaCircleCheck
-                                          size={20}
-                                          className="text-gray-300 w-5 h-5 min-w-5 min-h-5"
-                                        />
-                                      )}
-
+                        {isExpanded && (
+                          <div className="px-5 pb-5 pt-2 border-t border-[#2A2A2A]">
+                            {/* Question Type 1 - Radio Options */}
+                            {question.question_type === 1 && (
+                              <div className="flex flex-col gap-3">
+                                {question.RiskProfileAnswers.map(
+                                  (item: any, index: any) => (
+                                    <label
+                                      key={index}
+                                      className={`flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 ${
+                                        selectedOptions[question.id] === item.answer
+                                          ? "bg-[#F59E0B]/10 border border-[#F59E0B]"
+                                          : "bg-[#1F1A1A] border border-[#2A2A2A] hover:border-[#F59E0B]/50"
+                                      }`}
+                                    >
                                       <input
                                         type="radio"
                                         value={item.answer}
                                         checked={
-                                          selectedOptions[question.id] ===
-                                          item.answer
+                                          selectedOptions[question.id] === item.answer
                                         }
                                         onChange={(e) =>
                                           handleOptionChange(
@@ -477,119 +483,153 @@ function RiskProfile() {
                                             questionIndex
                                           )
                                         }
-                                        className="absolute opacity-0 w-0 h-0"
+                                        className="w-4 h-4 text-[#F59E0B] focus:ring-[#F59E0B]"
                                       />
-
-                                      {item.answer}
-                                    </span>
-                                  </label>
-                                )
-                              )}
-                            </div>
-                          )}
-                        </div>
+                                      <span className="text-[#F9FAFB] text-base">
+                                        {item.answer}
+                                      </span>
+                                    </label>
+                                  )
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-8 text-center">
+                  <CustomButton
+                    type="submit"
+                    loading={loading}
+                    disabled={!allQuestionsAnswered()}
+                    onClick={handleSubmit}
+                    className={`px-8 py-3 rounded-lg font-semibold transition-all ${
+                      allQuestionsAnswered()
+                        ? "bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white hover:opacity-90"
+                        : "bg-[#2A2A2A] text-[#9CA3AF] cursor-not-allowed"
+                    }`}
+                  >
+                    Submit Assessment
+                  </CustomButton>
+                  {!allQuestionsAnswered() && (
+                    <p className="text-[#9CA3AF] text-sm mt-3">
+                      Please answer all questions to submit
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showThirdScreen && !showSecondScreen && (
+            <div className="mt-0">
+              {/* Header */}
+              <div className="w-full bg-[#111111] border-b border-[#2A2A2A] shadow-sm">
+                <div className="flex items-center justify-between p-4 sm:p-6">
+                  <div className="flex items-center gap-3">
+                    <CustomBackButton onClick={() => window.history.back()}>
+                      <IoMdArrowRoundBack className="h-6 w-6 text-[#F59E0B]" />
+                    </CustomBackButton>
+                    <div>
+                      <h1 className="text-xl font-bold bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent">
+                        Risk Profile - Our Assessment
+                      </h1>
+                      <p className="text-xs text-[#9CA3AF] mt-0.5">
+                        Based on your responses, here's your investment profile
+                      </p>
                     </div>
-                  );
-                })}
-              </div>
-
-              <div className="mt-8 text-center">
-                <CustomButton
-                  type="submit"
-                  loading={loading}
-                  disabled={!allQuestionsAnswered()}
-                  onClick={handleSubmit}
-                  className="btn-lg"
-                >
-                  Submit
-                </CustomButton>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {showThirdScreen && !showSecondScreen && (
-          <div className="mt-4 text-center">
-            <div className="flex gap-1 items-center pl-2">
-              <CustomBackButton onClick={() => window.history.back()}>
-                <IoMdArrowRoundBack className="h-6 w-6 mr-1" />
-              </CustomBackButton>
-               <div className="pageTitle text-left">
-              <CustomText className="font-medium text-2xl ">
-                Risk Profile - Our Assessment
-              </CustomText>
-            </div>
-            </div>
-           
-            <div className="mt-5 flex justify-center items-center gap-3">
-              <CustomText className="text-xl font-bold">
-                Your Risk Profile is
-              </CustomText>
-              <div
-                className={`badge text-xl py-2 min-h-8 text-white 
-              ${
-                riskProfile === "Low"
-                  ? `bg-[#387E47]`
-                  : riskProfile === "Moderately Low"
-                  ? `bg-[#C7CD55]`
-                  : riskProfile === "Moderate"
-                  ? `bg-[#F3E05D]`
-                  : riskProfile === "Moderately High"
-                  ? `bg-[#EB984B]`
-                  : riskProfile === "High"
-                  ? `bg-[#C3263B]`
-                  : `badge-primary`
-              }`}
-              >
-                {riskProfile}
-              </div>
-            </div>
-            <div>
-              <ReactECharts
-                option={AssetAllocationMF}
-                className={`riskchart`}
-                opts={{ renderer: "svg" }}
-              />
-            </div>
-
-            <div className="flex justify-center">
-              <div className="flex justify-center gap-3 mt-8 flex-wrap bg-background p-2 rounded-md">
-                <div className="flex gap-2 items-center">
-                  <div className={` h-5 w-5 rounded-md bg-[#387E47]`}></div>
-                  <div>Low</div>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <div className={`h-5 w-5 rounded-md bg-[#C7CD55]`}></div>
-                  <div>Moderately Low</div>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <div className={`h-5 w-5 rounded-md bg-[#F3E05D]`}></div>
-                  <div>Moderate</div>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <div className={`h-5 w-5 rounded-md bg-[#EB984B]`}></div>
-                  <div>Moderately High</div>
-                </div>
-                <div className="flex gap-2 items-center">
-                  <div className={`h-5 w-5 rounded-md bg-[#C3263B]`}></div>
-                  <div>High</div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="px-4 md:px-44 mt-10">
-              <div className="text-lg font-normal">Your Investment Style</div>
-              <div className="mt-9">{riskDescProfile}</div>
-            </div>
 
-            <div className="mt-8">
-              <CustomButton type="button" onClick={handleRetake}>
-                Retake Assessment
-              </CustomButton>
+              <div className="mt-6 text-center px-4">
+                <div className="flex justify-center items-center gap-3 mb-6">
+                  <CustomText className="text-xl font-bold text-[#F9FAFB]">
+                    Your Risk Profile is
+                  </CustomText>
+                  <div
+                    className={`badge text-xl py-3 px-6 min-h-8 text-white font-semibold rounded-full shadow-lg
+                    ${
+                      riskProfile === "Low"
+                        ? "bg-[#387E47]"
+                        : riskProfile === "Moderately Low"
+                        ? "bg-[#C7CD55]"
+                        : riskProfile === "Moderate"
+                        ? "bg-[#F3E05D] text-black"
+                        : riskProfile === "Moderately High"
+                        ? "bg-[#EB984B]"
+                        : riskProfile === "High"
+                        ? "bg-[#C3263B]"
+                        : "bg-gradient-to-r from-[#F59E0B] to-[#B45309]"
+                    }`}
+                  >
+                    {riskProfile}
+                  </div>
+                </div>
+
+                <div className="bg-[#111111] rounded-xl p-6 border border-[#2A2A2A] max-w-3xl mx-auto">
+                  <ReactECharts
+                    option={AssetAllocationMF}
+                    className={`riskchart w-full`}
+                    opts={{ renderer: "svg" }}
+                    style={{ height: "300px" }}
+                  />
+                </div>
+
+                <div className="flex justify-center mt-8">
+                  <div className="flex flex-wrap justify-center gap-3 p-4 bg-[#111111] rounded-xl border border-[#2A2A2A]">
+                    <div className="flex gap-2 items-center px-3 py-1.5 rounded-lg bg-[#1F1A1A]">
+                      <div className={`h-3 w-3 rounded-full bg-[#387E47]`}></div>
+                      <div className="text-[#9CA3AF] text-sm">Low</div>
+                    </div>
+                    <div className="flex gap-2 items-center px-3 py-1.5 rounded-lg bg-[#1F1A1A]">
+                      <div className={`h-3 w-3 rounded-full bg-[#C7CD55]`}></div>
+                      <div className="text-[#9CA3AF] text-sm">Moderately Low</div>
+                    </div>
+                    <div className="flex gap-2 items-center px-3 py-1.5 rounded-lg bg-[#1F1A1A]">
+                      <div className={`h-3 w-3 rounded-full bg-[#F3E05D]`}></div>
+                      <div className="text-[#9CA3AF] text-sm">Moderate</div>
+                    </div>
+                    <div className="flex gap-2 items-center px-3 py-1.5 rounded-lg bg-[#1F1A1A]">
+                      <div className={`h-3 w-3 rounded-full bg-[#EB984B]`}></div>
+                      <div className="text-[#9CA3AF] text-sm">Moderately High</div>
+                    </div>
+                    <div className="flex gap-2 items-center px-3 py-1.5 rounded-lg bg-[#1F1A1A]">
+                      <div className={`h-3 w-3 rounded-full bg-[#C3263B]`}></div>
+                      <div className="text-[#9CA3AF] text-sm">High</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="px-4 md:px-44 mt-10">
+                  <div className="bg-[#111111] rounded-xl p-6 border border-[#2A2A2A]">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="p-2 bg-[#F59E0B]/20 rounded-lg">
+                        <TrendingUp className="w-5 h-5 text-[#F59E0B]" />
+                      </div>
+                      <div className="text-lg font-semibold text-[#F9FAFB]">Your Investment Style</div>
+                    </div>
+                    <div className="text-[#9CA3AF] leading-relaxed">{riskDescProfile}</div>
+                  </div>
+                </div>
+
+                <div className="mt-10 pb-10">
+                  <CustomButton
+                    type="button"
+                    onClick={handleRetake}
+                    className="bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white hover:opacity-90 transition-all px-8 py-3 rounded-lg font-semibold"
+                  >
+                    Retake Assessment
+                  </CustomButton>
+                </div>
+              </div>
             </div>
-          </div>
-        )}
-      </form>
+          )}
+        </form>
+      </div>
     </div>
   );
 }

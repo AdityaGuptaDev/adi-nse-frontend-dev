@@ -150,13 +150,13 @@ const InvestorPicker: React.FC<InvestorPopupProps> = ({
             <dialog ref={modalRef} className="modal" id={modalId}>
                 <div className="modal-box max-w-7xl w-full rounded-xl shadow-lg">
                     {/* Header */}
-                    <div className="flex items-center justify-between border-b border-gray-200 pb-3 mb-4">
+                    <div className="flex items-center justify-between border-b border-[#2A2A2A] pb-3 mb-4">
                         <div className="flex items-center gap-2">
                             <ArrowLeft
-                                className="w-5 h-5 cursor-pointer text-gray-600"
+                                className="w-5 h-5 cursor-pointer text-[#9CA3AF]"
                                 onClick={onClose}
                             />
-                            <h3 className="font-semibold text-lg text-gray-900">
+                            <h3 className="font-semibold text-lg text-[#F9FAFB]">
                                 Select an Investor
                             </h3>
                         </div>
@@ -176,14 +176,14 @@ const InvestorPicker: React.FC<InvestorPopupProps> = ({
                                     setPage(1);
                                 }}
                             />
-                            <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                            <Search className="w-4 h-4 absolute left-3 top-3 text-[#6B7280]" />
                         </div>
                     </div>
 
                     {/* Table */}
                     <div className="overflow-auto max-h-[400px] border rounded-lg">
                         <table className="table-auto w-full text-sm">
-                            <thead className="bg-gray-100 text-gray-700">
+                            <thead className="bg-[#1F1A1A] text-[#E5E7EB]">
                                 <tr>
                                     <th className="px-3 py-2 text-left">Select</th>
                                     <th className="px-3 py-2">ID</th>
@@ -202,7 +202,7 @@ const InvestorPicker: React.FC<InvestorPopupProps> = ({
                             <tbody>
                                 {filteredInvestors.length === 0 ? (
                                     <tr>
-                                        <td colSpan={12} className="text-center py-6 text-gray-500">
+                                        <td colSpan={12} className="text-center py-6 text-[#9CA3AF]">
                                             No investors found
                                         </td>
                                     </tr>

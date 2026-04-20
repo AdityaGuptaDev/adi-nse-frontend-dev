@@ -112,7 +112,7 @@ const HOLDING_MAP: Record<string, string> = { SI: "Single", JO: "Joint", AS: "An
 const ACCOUNT_TYPE_MAP: Record<string, string> = { SB: "Savings", CB: "Current", NE: "NRE", NO: "NRO" };
 
 function StatusBadge({ status }: { status: string }) {
-  if (!status || status.trim() === "") return <span className="text-xs text-gray-400">--</span>;
+  if (!status || status.trim() === "") return <span className="text-xs text-[#6B7280]">--</span>;
   const s = status.toUpperCase();
   const isSuccess = s === "SUCCESS" || s === "AUTHORIZE" || s === "ACTIVE" || s === "Y";
   const isPending = s === "PENDING" || s === "UNDER PROCESS" || s === "REVIEW";
@@ -142,8 +142,8 @@ function YesNoBadge({ value, label }: { value: string; label: string }) {
 function InfoRow({ label, value, mono }: { label: string; value: string | undefined; mono?: boolean }) {
   return (
     <div className="flex justify-between py-1.5 border-b border-gray-50 last:border-0">
-      <span className="text-gray-500 text-xs">{label}</span>
-      <span className={`text-sm font-medium text-gray-800 text-right ${mono ? "font-mono" : ""}`}>{value || "--"}</span>
+      <span className="text-[#9CA3AF] text-xs">{label}</span>
+      <span className={`text-sm font-medium text-[#F9FAFB] text-right ${mono ? "font-mono" : ""}`}>{value || "--"}</span>
     </div>
   );
 }
@@ -176,21 +176,21 @@ function RecordCard({ record, index }: { record: AuthRecord; index: number }) {
   ].filter(Boolean);
 
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden mb-4">
+    <div className="border border-[#2A2A2A] rounded-xl overflow-hidden mb-4">
       {/* Summary Row */}
       <div
-        className="flex items-center justify-between px-5 py-4 bg-white hover:bg-gray-50/50 cursor-pointer transition-colors"
+        className="flex items-center justify-between px-5 py-4 bg-[#111111] hover:bg-[#1F1A1A]/50 cursor-pointer transition-colors"
         onClick={() => setExpanded((v) => !v)}
       >
         <div className="flex items-center gap-4 flex-1 min-w-0">
-          <span className="text-xs text-gray-400 font-mono w-6">{index + 1}</span>
+          <span className="text-xs text-[#6B7280] font-mono w-6">{index + 1}</span>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-semibold text-gray-800">{record.primary_holder_name || "--"}</span>
-              <span className="font-mono text-xs text-gray-500">{record.client_code || "--"}</span>
+              <span className="font-semibold text-[#F9FAFB]">{record.primary_holder_name || "--"}</span>
+              <span className="font-mono text-xs text-[#9CA3AF]">{record.client_code || "--"}</span>
             </div>
-            <div className="flex items-center gap-3 mt-1 text-xs text-gray-500">
-              <span>PAN: <strong className="text-gray-700">{record.primary_holder_pan || "--"}</strong></span>
+            <div className="flex items-center gap-3 mt-1 text-xs text-[#9CA3AF]">
+              <span>PAN: <strong className="text-[#E5E7EB]">{record.primary_holder_pan || "--"}</strong></span>
               <span>{TAX_STATUS_MAP[record.tax_status] || record.tax_status || "--"}</span>
               <span>{HOLDING_MAP[record.holding_nature] || record.holding_nature || "--"}</span>
             </div>
@@ -198,19 +198,19 @@ function RecordCard({ record, index }: { record: AuthRecord; index: number }) {
         </div>
         <div className="flex items-center gap-3">
           <StatusBadge status={record.auth_status} />
-          {expanded ? <FiChevronUp className="w-4 h-4 text-gray-400" /> : <FiChevronDown className="w-4 h-4 text-gray-400" />}
+          {expanded ? <FiChevronUp className="w-4 h-4 text-[#6B7280]" /> : <FiChevronDown className="w-4 h-4 text-[#6B7280]" />}
         </div>
       </div>
 
       {/* Expanded Detail */}
       {expanded && (
-        <div className="border-t border-gray-100 bg-gray-50/30 px-5 py-5 space-y-5">
+        <div className="border-t border-[#2A2A2A] bg-[#1F1A1A]/30 px-5 py-5 space-y-5">
           {/* Overview */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-white rounded-lg p-4 border border-gray-100">
+            <div className="bg-[#111111] rounded-lg p-4 border border-[#2A2A2A]">
               <div className="flex items-center gap-2 mb-3">
                 <FiUser className="w-4 h-4 text-[#F59E0B]" />
-                <h4 className="text-sm font-semibold text-gray-700">Investor Details</h4>
+                <h4 className="text-sm font-semibold text-[#E5E7EB]">Investor Details</h4>
               </div>
               <InfoRow label="Name" value={record.primary_holder_name} />
               <InfoRow label="PAN" value={record.primary_holder_pan} mono />
@@ -225,17 +225,17 @@ function RecordCard({ record, index }: { record: AuthRecord; index: number }) {
               {record.guardian_name && <InfoRow label="Guardian" value={`${record.guardian_name} (${record.guardian_pan || ""})`} />}
             </div>
 
-            <div className="bg-white rounded-lg p-4 border border-gray-100">
+            <div className="bg-[#111111] rounded-lg p-4 border border-[#2A2A2A]">
               <div className="flex items-center gap-2 mb-3">
                 <FiShield className="w-4 h-4 text-[#F59E0B]" />
-                <h4 className="text-sm font-semibold text-gray-700">Authorization & KYC</h4>
+                <h4 className="text-sm font-semibold text-[#E5E7EB]">Authorization & KYC</h4>
               </div>
               <InfoRow label="Auth Email Sent" value={record.auth_email_sent} />
               <InfoRow label="Overall Auth Status" value={record.auth_status} />
-              <div className="my-2 border-t border-gray-100" />
+              <div className="my-2 border-t border-[#2A2A2A]" />
               {holders.map((h: any, i) => (
                 <div key={i} className="mb-3">
-                  <p className="text-[10px] text-gray-400 uppercase font-semibold mb-1">{i === 0 ? "Primary" : i === 1 ? "Second" : "Third"} Holder</p>
+                  <p className="text-[10px] text-[#6B7280] uppercase font-semibold mb-1">{i === 0 ? "Primary" : i === 1 ? "Second" : "Third"} Holder</p>
                   <InfoRow label="Auth Status" value={(record as any)[`${h.prefix}_auth_status`]} />
                   <InfoRow label="Auth DateTime" value={(record as any)[`${h.prefix}_auth_datetime`]} />
                   {(record as any)[`${h.prefix}_auth_remarks`] && <InfoRow label="Auth Remarks" value={(record as any)[`${h.prefix}_auth_remarks`]} />}
@@ -245,14 +245,14 @@ function RecordCard({ record, index }: { record: AuthRecord; index: number }) {
               ))}
             </div>
 
-            <div className="bg-white rounded-lg p-4 border border-gray-100">
+            <div className="bg-[#111111] rounded-lg p-4 border border-[#2A2A2A]">
               <div className="flex items-center gap-2 mb-3">
                 <FiCreditCard className="w-4 h-4 text-[#F59E0B]" />
-                <h4 className="text-sm font-semibold text-gray-700">Documents & Demat</h4>
+                <h4 className="text-sm font-semibold text-[#E5E7EB]">Documents & Demat</h4>
               </div>
               {holders.map((h: any, i) => (
                 <div key={i} className="mb-3">
-                  <p className="text-[10px] text-gray-400 uppercase font-semibold mb-1">{i === 0 ? "Primary" : i === 1 ? "Second" : "Third"} Holder</p>
+                  <p className="text-[10px] text-[#6B7280] uppercase font-semibold mb-1">{i === 0 ? "Primary" : i === 1 ? "Second" : "Third"} Holder</p>
                   <div className="flex flex-wrap gap-2 mb-1">
                     <YesNoBadge value={(record as any)[`${h.prefix}_fatca_exists`]} label="FATCA" />
                     <YesNoBadge value={(record as any)[`${h.prefix}_aof_exists`]} label="AOF" />
@@ -264,8 +264,8 @@ function RecordCard({ record, index }: { record: AuthRecord; index: number }) {
                   <InfoRow label="Mobile" value={(record as any)[`${h.prefix}_mobile_no`]} />
                 </div>
               ))}
-              <div className="mt-2 border-t border-gray-100 pt-2">
-                <p className="text-[10px] text-gray-400 uppercase font-semibold mb-1">Demat Account</p>
+              <div className="mt-2 border-t border-[#2A2A2A] pt-2">
+                <p className="text-[10px] text-[#6B7280] uppercase font-semibold mb-1">Demat Account</p>
                 <InfoRow label="Status" value={record.demat_status} />
                 {record.dp_remarks && <InfoRow label="DP Remarks" value={record.dp_remarks} />}
                 <InfoRow label="Default DP" value={record.default_dp} />
@@ -280,15 +280,15 @@ function RecordCard({ record, index }: { record: AuthRecord; index: number }) {
 
           {/* Bank Details Table */}
           {banks.length > 0 && (
-            <div className="bg-white rounded-lg p-4 border border-gray-100">
+            <div className="bg-[#111111] rounded-lg p-4 border border-[#2A2A2A]">
               <div className="flex items-center gap-2 mb-3">
                 <BsBank2 className="w-4 h-4 text-[#F59E0B]" />
-                <h4 className="text-sm font-semibold text-gray-700">Bank Accounts</h4>
+                <h4 className="text-sm font-semibold text-[#E5E7EB]">Bank Accounts</h4>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="text-xs text-gray-400 uppercase border-b border-gray-100">
+                    <tr className="text-xs text-[#6B7280] uppercase border-b border-[#2A2A2A]">
                       <th className="text-left py-2 px-2">#</th>
                       <th className="text-left py-2 px-2">Bank Name</th>
                       <th className="text-left py-2 px-2">Account No</th>
@@ -301,13 +301,13 @@ function RecordCard({ record, index }: { record: AuthRecord; index: number }) {
                   <tbody>
                     {banks.map((bank: any, i: number) => (
                       <tr key={i} className="border-b border-gray-50 last:border-0">
-                        <td className="py-2 px-2 text-gray-400 text-xs">{i + 1}</td>
-                        <td className="py-2 px-2 text-gray-700">{bank.name || "--"}</td>
-                        <td className="py-2 px-2 font-mono text-xs text-gray-700">{bank.account_no}</td>
+                        <td className="py-2 px-2 text-[#6B7280] text-xs">{i + 1}</td>
+                        <td className="py-2 px-2 text-[#E5E7EB]">{bank.name || "--"}</td>
+                        <td className="py-2 px-2 font-mono text-xs text-[#E5E7EB]">{bank.account_no}</td>
                         <td className="py-2 px-2 text-xs">{ACCOUNT_TYPE_MAP[bank.account_type] || bank.account_type}</td>
                         <td className="py-2 px-2 font-mono text-xs">{bank.ifsc || "--"}</td>
                         <td className="py-2 px-2"><StatusBadge status={bank.status} /></td>
-                        <td className="py-2 px-2 text-xs text-gray-500 max-w-[150px] truncate">{bank.rejection_remarks || "--"}</td>
+                        <td className="py-2 px-2 text-xs text-[#9CA3AF] max-w-[150px] truncate">{bank.rejection_remarks || "--"}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -391,48 +391,48 @@ export default function NseClientAuth() {
     <div className="nse-module p-4 md:p-6">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-xl font-bold text-gray-800">Client Authorization Report</h1>
-        <p className="text-sm text-gray-500 mt-1">Check NSE client authorization, KYC, FATCA, AOF, eLog and bank verification status</p>
+        <h1 className="text-xl font-bold text-[#F9FAFB]">Client Authorization Report</h1>
+        <p className="text-sm text-[#9CA3AF] mt-1">Check NSE client authorization, KYC, FATCA, AOF, eLog and bank verification status</p>
       </div>
 
       {/* Filters */}
-      <div className="bg-white border border-gray-200 rounded-xl p-5 mb-6">
+      <div className="bg-[#111111] border border-[#2A2A2A] rounded-xl p-5 mb-6">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           <div>
-            <label className="text-xs text-gray-500 font-medium mb-1.5 block">From Date *</label>
+            <label className="text-xs text-[#9CA3AF] font-medium mb-1.5 block">From Date *</label>
             <input
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+              className="w-full border border-[#2A2A2A] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
             />
           </div>
           <div>
-            <label className="text-xs text-gray-500 font-medium mb-1.5 block">To Date *</label>
+            <label className="text-xs text-[#9CA3AF] font-medium mb-1.5 block">To Date *</label>
             <input
               type="date"
               value={toDate}
               max={formatForInput(today)}
               onChange={(e) => setToDate(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+              className="w-full border border-[#2A2A2A] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
             />
           </div>
           <div>
-            <label className="text-xs text-gray-500 font-medium mb-1.5 block">Client Code</label>
+            <label className="text-xs text-[#9CA3AF] font-medium mb-1.5 block">Client Code</label>
             <input
               type="text"
               value={clientCode}
               onChange={(e) => setClientCode(e.target.value.toUpperCase())}
               placeholder="e.g. K123"
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+              className="w-full border border-[#2A2A2A] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
             />
           </div>
           <div>
-            <label className="text-xs text-gray-500 font-medium mb-1.5 block">Auth Status</label>
+            <label className="text-xs text-[#9CA3AF] font-medium mb-1.5 block">Auth Status</label>
             <select
               value={authStatus}
               onChange={(e) => setAuthStatus(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
+              className="w-full border border-[#2A2A2A] rounded-lg px-3 py-2 text-sm bg-[#111111] focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
             >
               <option value="">All</option>
               <option value="PENDING">Pending</option>
@@ -441,11 +441,11 @@ export default function NseClientAuth() {
             </select>
           </div>
           <div>
-            <label className="text-xs text-gray-500 font-medium mb-1.5 block">Date Type</label>
+            <label className="text-xs text-[#9CA3AF] font-medium mb-1.5 block">Date Type</label>
             <select
               value={dateType}
               onChange={(e) => setDateType(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
+              className="w-full border border-[#2A2A2A] rounded-lg px-3 py-2 text-sm bg-[#111111] focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
             >
               <option value="AUTH_SENT_DATE">Auth Sent Date</option>
               <option value="AUTH_DONE_DATE">Auth Done Date</option>
@@ -462,7 +462,7 @@ export default function NseClientAuth() {
             {loading ? "Searching..." : "Search"}
           </button>
           {records.length > 0 && (
-            <span className="text-xs text-gray-500">Found <strong className="text-gray-800">{totalRecords}</strong> record(s)</span>
+            <span className="text-xs text-[#9CA3AF]">Found <strong className="text-[#F9FAFB]">{totalRecords}</strong> record(s)</span>
           )}
         </div>
       </div>
@@ -493,7 +493,7 @@ export default function NseClientAuth() {
 
       {/* Loading */}
       {loading && (
-        <div className="text-center py-16 text-gray-400">
+        <div className="text-center py-16 text-[#6B7280]">
           <div className="flex flex-col items-center gap-2">
             <svg className="animate-spin h-6 w-6 text-[#F59E0B]" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
@@ -507,7 +507,7 @@ export default function NseClientAuth() {
       {/* Records */}
       {!loading && records.length > 0 && (
         <div>
-          <p className="text-xs text-gray-500 mb-3">Click on a record to expand full details including holder info, documents, demat and bank accounts.</p>
+          <p className="text-xs text-[#9CA3AF] mb-3">Click on a record to expand full details including holder info, documents, demat and bank accounts.</p>
           {records.map((record, idx) => (
             <RecordCard key={`${record.client_code}-${idx}`} record={record} index={idx} />
           ))}
@@ -516,7 +516,7 @@ export default function NseClientAuth() {
 
       {/* Empty State */}
       {!loading && records.length === 0 && !errorRemark && (
-        <div className="text-center py-16 text-gray-400">
+        <div className="text-center py-16 text-[#6B7280]">
           <FiShield className="w-12 h-12 mx-auto mb-3 text-gray-300" />
           <p className="text-sm">Select date range and click Search to view client authorization status</p>
         </div>

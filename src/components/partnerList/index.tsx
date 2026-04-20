@@ -121,9 +121,9 @@ const PartnerList = () => {
 
   const getStatusBadge = (status: 'Active' | 'Inactive' | 'Pending') => {
     const styles = {
-      'Active': 'bg-gradient-to-r from-emerald-400 to-emerald-600 text-white shadow-lg shadow-emerald-500/25',
-      'Inactive': 'bg-gradient-to-r from-red-400 to-red-600 text-white shadow-lg shadow-red-500/25',
-      'Pending': 'bg-gradient-to-r from-amber-400 to-amber-600 text-white shadow-lg shadow-amber-500/25'
+      'Active': 'bg-gradient-to-r from-emerald-400 to-emerald-600 text-[#F9FAFB] shadow-lg shadow-emerald-500/25',
+      'Inactive': 'bg-gradient-to-r from-red-400 to-red-600 text-[#F9FAFB] shadow-lg shadow-red-500/25',
+      'Pending': 'bg-gradient-to-r from-amber-400 to-amber-600 text-[#F9FAFB] shadow-lg shadow-amber-500/25'
     };
 
     return (
@@ -202,33 +202,33 @@ const PartnerList = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: index * 0.1 }}
-          className="group bg-white rounded-2xl shadow-sm border border-gray-200 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1 overflow-hidden"
+          className="group bg-[#111111] rounded-2xl shadow-sm border border-[#2A2A2A] hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300 hover:-translate-y-1 overflow-hidden"
         >
           <div className="relative p-6">
             <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-full blur-2xl"></div>
             
             <div className="flex items-center mb-4">
-              <div className="flex-shrink-0 h-12 w-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-medium text-lg">
+              <div className="flex-shrink-0 h-12 w-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-[#F9FAFB] font-medium text-lg">
                 {getInitials(partner.name)}
               </div>
               <div className="ml-3 flex-1">
-                <h3 className="font-semibold text-gray-900 truncate">{partner.name}</h3>
-                <p className="text-sm text-gray-500 truncate">{partner.pan}</p>
+                <h3 className="font-semibold text-[#F9FAFB] truncate">{partner.name}</h3>
+                <p className="text-sm text-[#9CA3AF] truncate">{partner.pan}</p>
               </div>
               {getStatusBadge(partner.status)}
             </div>
             
             <div className="space-y-3">
-              <div className="flex items-center text-sm text-gray-600">
+              <div className="flex items-center text-sm text-[#9CA3AF]">
                 <Mail className="w-4 h-4 mr-2" />
                 <span className="truncate">{partner.email}</span>
               </div>
-              <div className="flex items-center text-sm text-gray-600">
+              <div className="flex items-center text-sm text-[#9CA3AF]">
                 <Phone className="w-4 h-4 mr-2" />
                 <span>{partner.mobile}</span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <div className="text-gray-600">
+                <div className="text-[#9CA3AF]">
                   ID: {partner.id}
                 </div>
               </div>
@@ -237,11 +237,11 @@ const PartnerList = () => {
             <div className="mt-6 flex gap-2">
               <button 
                 onClick={() => handleLoginAsPartner(partner.id)}
-                className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:from-blue-600 hover:to-blue-700 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25"
+                className="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-[#F9FAFB] px-4 py-2 rounded-lg text-sm font-medium hover:from-blue-600 hover:to-blue-700 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25"
               >
                 Login As
               </button>
-              <button className="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+              <button className="px-3 py-2 border border-[#2A2A2A] rounded-lg hover:bg-[#0A0A0A] transition-colors">
                 <Eye className="w-4 h-4" />
               </button>
             </div>
@@ -256,16 +256,16 @@ const PartnerList = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.3 }}
-      className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden"
+      className="bg-[#111111] rounded-2xl shadow-sm border border-[#2A2A2A] overflow-hidden"
     >
       <div className="overflow-x-auto">
         <table className="w-full">
-          <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-gray-200">
+          <thead className="bg-gradient-to-r from-gray-50 to-gray-100 border-b border-[#2A2A2A]">
             <tr>
               <th className="px-6 py-4 text-left">
                 <button
                   onClick={() => handleSort('name')}
-                  className="flex items-center gap-2 font-semibold text-gray-900 hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-2 font-semibold text-[#F9FAFB] hover:text-[#F59E0B] transition-colors"
                 >
                   Partner
                   {getSortIcon('name')}
@@ -276,7 +276,7 @@ const PartnerList = () => {
               <th className="px-6 py-4 text-left">
                 <button
                   onClick={() => handleSort('status')}
-                  className="flex items-center gap-2 font-semibold text-gray-900 hover:text-blue-600 transition-colors"
+                  className="flex items-center gap-2 font-semibold text-[#F9FAFB] hover:text-[#F59E0B] transition-colors"
                 >
                   Status
                   {getSortIcon('status')}
@@ -285,7 +285,7 @@ const PartnerList = () => {
               <th className="px-6 py-4 text-left">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
+          <tbody className="divide-y divide-[#2A2A2A]">
             <AnimatePresence>
               {paginatedPartners.length > 0 ? (
                 paginatedPartners.map((partner, index) => (
@@ -299,24 +299,24 @@ const PartnerList = () => {
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-medium">
+                        <div className="flex-shrink-0 h-10 w-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-[#F9FAFB] font-medium">
                           {getInitials(partner.name)}
                         </div>
                         <div className="ml-4">
-                          <div className="font-semibold text-gray-900">{partner.name}</div>
-                          <div className="text-sm text-gray-500">ID: {partner.id}</div>
+                          <div className="font-semibold text-[#F9FAFB]">{partner.name}</div>
+                          <div className="text-sm text-[#9CA3AF]">ID: {partner.id}</div>
                         </div>
                       </div>
                     </td>
                 
                     <td className="px-6 py-4">
                       <div className="space-y-1">
-                        <div className="flex items-center text-sm text-gray-900">
-                          <Mail className="w-4 h-4 mr-2 text-gray-400" />
+                        <div className="flex items-center text-sm text-[#F9FAFB]">
+                          <Mail className="w-4 h-4 mr-2 text-[#9CA3AF]" />
                           {partner.email}
                         </div>
-                        <div className="flex items-center text-sm text-gray-500">
-                          <Phone className="w-4 h-4 mr-2 text-gray-400" />
+                        <div className="flex items-center text-sm text-[#9CA3AF]">
+                          <Phone className="w-4 h-4 mr-2 text-[#9CA3AF]" />
                           {partner.mobile}
                         </div>
                       </div>
@@ -330,7 +330,7 @@ const PartnerList = () => {
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
                           onClick={() => handleLoginAsPartner(partner.id)}
-                          className="p-2 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors"
+                          className="p-2 bg-[#1F1A1A] text-[#F59E0B] rounded-lg hover:bg-blue-200 transition-colors"
                           title="Login As Partner"
                         >
                           <LogIn className="w-4 h-4" />
@@ -346,7 +346,7 @@ const PartnerList = () => {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-500">
+                  <td colSpan={5} className="px-6 py-4 text-center text-sm text-[#9CA3AF]">
                     No partners found matching your criteria
                   </td>
                 </motion.tr>
@@ -369,13 +369,13 @@ const PartnerList = () => {
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-            className="rounded-full h-12 w-12 border-4 border-blue-500 border-t-transparent mx-auto"
+            className="rounded-full h-12 w-12 border-4 border-[#F59E0B] border-t-transparent mx-auto"
           ></motion.div>
           <motion.p 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="mt-4 text-gray-600"
+            className="mt-4 text-[#9CA3AF]"
           >
             Loading partners...
           </motion.p>
@@ -390,20 +390,20 @@ const PartnerList = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="text-center max-w-md p-6 bg-white rounded-2xl shadow-sm border border-gray-200"
+          className="text-center max-w-md p-6 bg-[#111111] rounded-2xl shadow-sm border border-[#2A2A2A]"
         >
           <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Error loading partners</h3>
-          <p className="text-gray-600 mb-6">{error}</p>
+          <h3 className="text-lg font-medium text-[#F9FAFB] mb-2">Error loading partners</h3>
+          <p className="text-[#9CA3AF] mb-6">{error}</p>
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => window.location.reload()}
-            className="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25"
+            className="px-6 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-[#F9FAFB] rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25"
           >
             Try Again
           </motion.button>
@@ -424,7 +424,7 @@ const PartnerList = () => {
  {/* Stats Cards */}
  <button 
      onClick={() => window.history.back()}
-     className="flex items-center text-blue-600 hover:text-blue-800 mb-6 transition-colors"
+     className="flex items-center text-[#F59E0B] hover:text-[#F59E0B] mb-6 transition-colors"
    >
      <ChevronLeft className="w-5 h-5 mr-2" />
      Back 
@@ -436,19 +436,19 @@ const PartnerList = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      className="relative bg-white rounded-xl shadow-sm border border-gray-200 p-4 overflow-hidden group hover:shadow-md transition-all duration-300"
+      className="relative bg-[#111111] rounded-xl shadow-sm border border-[#2A2A2A] p-4 overflow-hidden group hover:shadow-md transition-all duration-300"
     >
       <div
         className={`absolute inset-0 bg-gradient-to-br ${stat.bg} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
       ></div>
 
       <div className="relative flex items-center space-x-3">
-        <div className={`p-2 rounded-lg bg-gradient-to-r ${stat.color} text-white shadow-md`}>
+        <div className={`p-2 rounded-lg bg-gradient-to-r ${stat.color} text-[#F9FAFB] shadow-md`}>
           <stat.icon className="w-5 h-5" />
         </div>
         <div>
-          <h3 className="text-lg font-bold text-gray-900">{stat.value}</h3>
-          <p className="text-gray-600 text-xs">{stat.title}</p>
+          <h3 className="text-lg font-bold text-[#F9FAFB]">{stat.value}</h3>
+          <p className="text-[#9CA3AF] text-xs">{stat.title}</p>
         </div>
       </div>
     </motion.div>
@@ -457,19 +457,19 @@ const PartnerList = () => {
 
 
       {/* Controls */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
+      <div className="bg-[#111111] rounded-2xl shadow-sm border border-[#2A2A2A] p-6 mb-6">
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
           
           {/* Search and Filter */}
           <div className="flex flex-1 gap-4 w-full lg:w-auto">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] w-5 h-5" />
               <input
                 type="text"
                 placeholder="Search partners..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                className="w-full pl-10 pr-4 py-3 bg-[#0A0A0A] border border-[#2A2A2A] rounded-xl focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent transition-all duration-300"
               />
             </div>
             
@@ -477,26 +477,26 @@ const PartnerList = () => {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as 'all' | 'Active' | 'Inactive' | 'Pending')}
-                className="appearance-none bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 pr-10 text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                className="appearance-none bg-[#0A0A0A] border border-[#2A2A2A] rounded-xl px-4 py-3 pr-10 text-[#F9FAFB] focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent transition-all duration-300"
               >
                 <option value="all">All Status</option>
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
                 <option value="Pending">Pending</option>
               </select>
-              <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
+              <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] w-5 h-5 pointer-events-none" />
             </div>
           </div>
 
           {/* View Toggle and Export */}
           <div className="flex items-center gap-3">
-            <div className="flex bg-gray-100 rounded-lg p-1">
+            <div className="flex bg-[#111111] rounded-lg p-1">
               <button
                 onClick={() => setViewMode('grid')}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
                   viewMode === 'grid'
-                    ? 'bg-white text-blue-600 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-[#111111] text-[#F59E0B] shadow-sm'
+                    : 'text-[#9CA3AF] hover:text-[#F9FAFB]'
                 }`}
               >
                 <Grid className="w-4 h-4" />
@@ -505,8 +505,8 @@ const PartnerList = () => {
                 onClick={() => setViewMode('table')}
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
                   viewMode === 'table'
-                    ? 'bg-white text-blue-600 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-[#111111] text-[#F59E0B] shadow-sm'
+                    : 'text-[#9CA3AF] hover:text-[#F9FAFB]'
                 }`}
               >
                 <List className="w-4 h-4" />
@@ -518,7 +518,7 @@ const PartnerList = () => {
               whileTap={{ scale: 0.98 }}
               onClick={exportToExcel}
               disabled={exportLoading}
-              className="px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 flex items-center gap-2"
+              className="px-4 py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-[#F9FAFB] rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/25 flex items-center gap-2"
             >
               {exportLoading ? (
                 <>
@@ -545,7 +545,7 @@ const PartnerList = () => {
           <button
             onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
             disabled={currentPage === 1}
-            className="px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+            className="px-4 py-2 bg-[#111111] border border-[#2A2A2A] rounded-lg hover:bg-[#0A0A0A] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
           >
             Previous
           </button>
@@ -558,8 +558,8 @@ const PartnerList = () => {
                 onClick={() => setCurrentPage(pageNum)}
                 className={`px-4 py-2 rounded-lg transition-all duration-300 ${
                   currentPage === pageNum
-                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg shadow-blue-500/25'
-                    : 'bg-white border border-gray-200 hover:bg-gray-50'
+                    ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-[#F9FAFB] shadow-lg shadow-blue-500/25'
+                    : 'bg-[#111111] border border-[#2A2A2A] hover:bg-[#0A0A0A]'
                 }`}
               >
                 {pageNum}
@@ -570,7 +570,7 @@ const PartnerList = () => {
           <button
             onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
             disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
+            className="px-4 py-2 bg-[#111111] border border-[#2A2A2A] rounded-lg hover:bg-[#0A0A0A] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
           >
             Next
           </button>

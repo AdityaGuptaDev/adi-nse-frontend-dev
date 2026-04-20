@@ -1,28 +1,20 @@
-import { use, useEffect, useRef, useState, useContext, useMemo } from "react";
-import { ArrowLeft, Pencil, ChevronDown, Plus, List, CheckCircleIcon } from "lucide-react";
+import { useEffect, useRef, useState, useContext } from "react";
+import { ArrowLeft, ChevronDown, Plus, List, CheckCircleIcon } from "lucide-react";
 import CustomSelect from "@/commonUI/Select";
-import { viewCanDetails, generateReference, ApiFinTechNormalTxnService, searchByAmcId, searchByISIN, searchByCanIdmfuBankDetails, ApiFinTechSystematicTxnService, submitMfuTransaction, fetchClientIp, getMandates, getInvestorPortfolio, getSchemeByName } from "@/api/transaction";
-import { transactionPayloadTemplate } from '@/utils/mfu/mfuTransactionTemplate'
-import { cookieStorageKeys } from "@/services/cookieStorageService";
+import { generateReference, searchByAmcId, searchByISIN, fetchClientIp, getMandates, getInvestorPortfolio, getSchemeByName, getFolioBySchemeName } from "@/api/transaction";
 import CustomReactSelect from "@/commonUI/ReactSelect";
-import { TransactionManager, Schemes } from "@/utils/mfu/mfuTransactionManager";
 import { numberToWords } from "@/utils/helpers"
 import { toast } from "react-toastify";
-import { months, orderTypes, dividendFrequency, payMode, dividendOptions, arrTransactionType, freqMap, transactionTypeList, TAX_STATUS, accountTypeList } from "@/utils/constants";
+import { months, orderTypes, dividendFrequency, payMode, dividendOptions, arrTransactionType, transactionTypeList, TAX_STATUS, accountTypeList } from "@/utils/constants";
 import CustomButton from "@/commonUI/Button";
 import CustomInput from "@/commonUI/Input";
 import { generateTransactionByType } from "@/utils/mfu/generateTransaction";
-import {
-    NODE_API_URL,
-    USER_DATA,
-    publicPathName,
-    toFixedData,
-} from "@/utils/constants";
+import { USER_DATA } from "@/utils/constants";
 import { getLS, handleServerError, toastAlert } from "@/utils/helpers";
 import AccountContext from "@/context/AccountContext/Account.context";
 import api from "@/utils/api";
 import { getBankAccount } from "@/api/holder";
-import { executeMfuTransaction, TransactionData, TransactionPayload } from "@/services/mfuTransactionService";
+import { executeMfuTransaction, TransactionData } from "@/services/mfuTransactionService";
 import Loader from "@/commonUI/Loader";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -31,12 +23,9 @@ import { useFundStore } from "@/store/useFundStore";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { generateUniqueId } from "@/utils/mfu/generateUtrn";
-import { set } from "date-fns";
 import { getPayOutSec, getPaySec, getSchList, getSubSeqSec, getSysSchList } from "./transaction";
-import { get } from "http";
 
 
-//const bankList: any = [];
 interface InvestorPopupProps {
     modalId?: string;
     showTriggerButton?: boolean;
@@ -70,7 +59,15 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 }) => {
     const modalRef = useRef<HTMLDialogElement>(null);
     const router = useRouter();
-    const { schemeData, investorList, dataSource, clearData } = useFundStore();
+    const { schemeData: storeSchemeData, investorList: storeInvestorList, clearData } = useFundStore();
+
+    // Use localStorage as fallback for data persistence across refreshes
+    const [localSchemeData, setLocalSchemeData] = useState<any>(null);
+    const [localInvestorList, setLocalInvestorList] = useState<any[]>([]);
+
+    // Prefer Zustand store, fallback to localStorage
+    const schemeData = storeSchemeData || localSchemeData;
+    const investorList = storeInvestorList?.length > 0 ? storeInvestorList : localInvestorList;
 
     const [sipData, setSipData] = useState<any[]>([]);
     const [transactionType, setTransactionType] = useState("");
@@ -78,12 +75,12 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
     const [isDividend, setIsDividend] = useState(false);
 
 
-    const [selectedCan, setSelectedCan] = useState<any>(investorList[0]?.InvestorAccountHolding[0]?.CAN_Id);
-    const [selectedHolder, setSelectedHolder] = useState<any>(investorList[0]?.name);
-    const [selectedFolio, setSelectedFolio] = useState<any>(schemeData?.out_folio_no ?? null);
+    const [selectedCan, setSelectedCan] = useState<any>("");
+    const [selectedHolder, setSelectedHolder] = useState<any>("");
+    const [selectedFolio, setSelectedFolio] = useState<any>(null);
     const [showCanList, setShowCanList] = useState(false);
     const [showFolioDropdown, setShowFolioDropdown] = useState(false);
-    const [folioSelectionMode, setFolioSelectionMode] = useState<'existing' | 'new'>('existing');
+    const [folioSelectionMode, setFolioSelectionMode] = useState<'new' | 'existing'>('new');
     const [newFolioNumber, setNewFolioNumber] = useState('');
 
     const [data, setData] = useState<any[]>([]);
@@ -163,6 +160,10 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
         message: ""
     })
 
+    const [folioList, setFolioList] = useState<any[]>([])
+    const [isLoadingFolios, setIsLoadingFolios] = useState(false)
+
+
     const currentYear = new Date().getFullYear();
 
     const years = [
@@ -176,22 +177,65 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
     const { setCartCounter, cartCounter } = useContext<any>(AccountContext);
 
     useEffect(() => {
-        const fetch = async (targetScheme: any) => {
-            const response = await getInvestorPortfolio(targetScheme);
-            console.log("Investor Portfolio Response :- ", response)
-            setInvestorPortfolio(response?.data?.data?.data || []);
+        // Load data from localStorage if Zustand store is empty (for refresh persistence)
+        if (typeof window !== 'undefined') {
+            const storedScheme = localStorage.getItem('newOrder_schemeData');
+            const storedInvestors = localStorage.getItem('newOrder_investorList');
+
+            if (storedScheme) {
+                try {
+                    setLocalSchemeData(JSON.parse(storedScheme));
+                } catch (e) {
+                    console.error('Error parsing schemeData from localStorage:', e);
+                }
+            }
+
+            if (storedInvestors) {
+                try {
+                    const parsedInvestors = JSON.parse(storedInvestors);
+                    setLocalInvestorList(parsedInvestors);
+                    // Also set CAN and Holder from localStorage data immediately
+                    if (parsedInvestors?.length > 0) {
+                        setSelectedCan(parsedInvestors[0]?.InvestorAccountHolding?.[0]?.CAN_Id || "");
+                        setSelectedHolder(parsedInvestors[0]?.name || "");
+                    }
+                } catch (e) {
+                    console.error('Error parsing investorList from localStorage:', e);
+                }
+            }
         }
-        fetch(investorList[0]?.id);
+    }, []);
 
-        const fetchSchemeByName = async (schemeName: any) => {
-            const response = await getSchemeByName(schemeName);
-            console.log("Scheme By Name Response :- ", response)
-            setFinalScheme(response?.data?.data?.data || []);
-
+    // Set CAN and Holder from Zustand store when navigating directly (not refresh)
+    useEffect(() => {
+        if (storeInvestorList?.length > 0) {
+            setSelectedCan(storeInvestorList[0]?.InvestorAccountHolding?.[0]?.CAN_Id || "");
+            setSelectedHolder(storeInvestorList[0]?.name || "");
         }
-        fetchSchemeByName(schemeData?.name)
+    }, [storeInvestorList]);
 
-    }, [])
+    useEffect(() => {
+        // Fetch portfolio once we have investor data (from either source)
+        const effectiveInvestorList = storeInvestorList?.length > 0 ? storeInvestorList : localInvestorList;
+        if (effectiveInvestorList?.length > 0 && effectiveInvestorList[0]?.id) {
+            const fetch = async (targetScheme: any) => {
+                const response = await getInvestorPortfolio(targetScheme);
+                setInvestorPortfolio(response?.data?.data?.data || []);
+            }
+            fetch(effectiveInvestorList[0].id);
+        }
+
+        // Fetch scheme by name once we have scheme data (from either source)
+        const effectiveSchemeData = storeSchemeData || localSchemeData;
+        if (effectiveSchemeData?.name) {
+            const fetchSchemeByName = async (schemeName: any) => {
+                const response = await getSchemeByName(schemeName);
+                setFinalScheme(response?.data?.data?.data || []);
+            }
+            fetchSchemeByName(effectiveSchemeData.name)
+        }
+
+    }, [localSchemeData, localInvestorList])
 
 
     useEffect(() => {
@@ -214,72 +258,73 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
     }, [open]);
 
     useEffect(() => {
-        // console.log("Investor List in Order Popup:", investorList);
-        if (investorList.length === 0) {
+        // Only run when we have valid data (either from Zustand or localStorage)
+        const effectiveInvestorList = storeInvestorList?.length > 0 ? storeInvestorList : localInvestorList;
+        const effectiveSchemeData = storeSchemeData || localSchemeData;
+
+        if (effectiveInvestorList.length === 0 && !localStorage.getItem('newOrder_investorList')) {
             router.push('/fund-explore');
+            return;
         }
-    }, [])
 
-    // ════════════════════════════════════════════════════════════════════════
-    // NSE / UCC redirect guard
-    //
-    // This page is the MFU (CAN) order form. If the store says the user is
-    // in the NSE flow, OR if the investor in hand has no CAN on file but
-    // does have a UCC, route them to the NSE-specific /nse-order-form so the
-    // UCC selector and NSE transaction payload are used instead of CAN.
-    //
-    // We do this in an effect (not render) so the existing MFU render path
-    // stays untouched for CAN investors.
-    // ════════════════════════════════════════════════════════════════════════
-    useEffect(() => {
-        if (!investorList || investorList.length === 0) return;
+        const fetchData = async () => {
+            setIsLoadingFolios(true);
+            try {
+                let schemeToFetch = effectiveSchemeData?.name?.split(" ")[0].trim() || "" // Extract scheme name without growth/dividend
+                const investorPan = effectiveInvestorList[0]?.pan_no;
+                if (!investorPan) {
+                    setIsLoadingFolios(false);
+                    return;
+                }
 
-        const first = investorList[0] as any;
-        const hasCan = !!first?.InvestorAccountHolding?.[0]?.CAN_Id;
-        const hasUcc =
-            !!first?.UCCRegistration?.clientCode ||
-            !!first?.ucc_client_code ||
-            first?.uccCreated === 1 ||
-            first?.uccCreated === true ||
-            first?.ucc_created === true;
+                const response = await getFolioBySchemeName(investorPan, schemeToFetch);
+                const folios = response?.data?.data?.data || [];
 
-        const forceNse = dataSource === "NSE" || (!hasCan && hasUcc);
-        if (!forceNse) return;
+                // If folios exist, default select the first one and set mode to existing
+                if (folios.length > 0) {
+                    setFolioSelectionMode('existing');
+                    setSelectedFolio(folios[0]);
+                } else {
+                    // No folios available, set to new folio mode
+                    setFolioSelectionMode('new');
+                    setSelectedFolio(null);
+                }
 
-        // Build query params from whatever scheme data is already in the
-        // store. Both flows expect scheme_code / scheme_name / isin / amc_code
-        // / min_amount. Morningstar schemeData has schemeISIN but not an NSE
-        // scheme_code — the /nse-order-form ISIN guard will resolve it.
-        const sd: any = schemeData || {};
-        const params = new URLSearchParams({
-            scheme_code: sd.nse_scheme_code || sd.scheme_code || sd.schemeISIN || "",
-            scheme_name: sd.name || sd.ms_fullname || "",
-            amc_code: sd.nse_amc_code || sd.amc_code || "",
-            isin: sd.schemeISIN || sd.isin || "",
-            min_amount: sd.nse_min_purchase_amount || sd.min_purchase_amount || "100",
-        });
-        // Clearing the MFU store prevents "back" returning to a half-filled
-        // MFU form under an NSE investor.
-        clearData();
-        router.replace(`/nse-order-form?${params.toString()}`);
-    }, [dataSource, investorList, schemeData, router, clearData])
+                setFolioList(folios);
+            } catch (error) {
+                console.error("Error fetching folio:", error);
+            } finally {
+                setIsLoadingFolios(false);
+            }
+        }
+
+        if (effectiveInvestorList?.length > 0 && effectiveSchemeData) {
+            fetchData();
+        }
+
+
+
+        // Run when either Zustand store or localStorage data becomes available
+    }, [storeInvestorList, storeSchemeData, localInvestorList, localSchemeData])
 
 
     const addToCart = async () => {
 
         try {
+            const isSIP = ["V", "Y", "J"].includes(transactionType);
             const newErrors = {
-                date: transactionType === "S" ? (sipDate ? "" : "Required") : "",
-                month: transactionType === "S" ? (sipMonth ? "" : "Required") : "",
-                year: transactionType === "S" ? (sipYear ? "" : "Required") : "",
+                date: isSIP ? (sipDate ? "" : "Required") : "",
+                month: isSIP ? (sipMonth ? "" : "Required") : "",
+                year: isSIP ? (sipYear ? "" : "Required") : "",
+                frequency: isSIP ? (selectedFrequency ? "" : "Required") : "",
                 amount: amount ? "" : "Required",
             };
             setErrors(newErrors);
             const hasError = Object.values(newErrors).some((msg) => msg !== "");
             if (!hasError) {
-                console.log("Submitting:", { sipDate, sipMonth, sipYear, amount });
-
                 const userData: any = getLS(USER_DATA);
+                const option = dividendOptions.find(opt => opt.description === divOpt);
+                const txnType = arrTransactionType.find(t => t.value === transactionType)
 
                 let CartObj = {
                     user_id: Number(userData?.id),
@@ -289,26 +334,28 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                     cart_type: 1,
                     scheme_id: schemeData?.id,
                     trans_type: transactionTypeList.find(opt => opt.name === transactionType)?.id,
+                    folio_no: selectedFolio ? selectedFolio.folio_no : "NEW",
                     trans_amount: amount,
                     frequency: selectedFrequency,
                     day: sipDate.length > 1 ? sipDate : "0" + sipDate,
                     start_month: sipMonth.length > 1 ? sipMonth : "0" + sipMonth,
                     start_year: sipYear,
-                    end_month: "10",
-                    end_year: "2026",
+                    end_month: endMonth.length > 1 ? endMonth : "0" + endMonth,
+                    end_year: endYear.length > 1 ? endYear : "0" + endYear,
                     rta_amc_code: rtaAmcCode,
                     rta_sch_code: rtaSchCode,
                     out_rta_sch_code: outRtaSchCode,
-                    tx_vol_type: txnVolType,
-                    vol: vol,
+                    tx_vol_type: txnType?.txnVolTyp ?? "",
+                    vol: amount,
+                    div_opt: option?.description ?? "",
+                    goal_id: null
                 };
-                console.log("Cart Object :- ", CartObj)
-                setIsCartAdded(true);
 
                 let addCartData = await api.post(`/cart/addfundExploreCardData`, CartObj);
                 if (addCartData.data.data) {
                     toastAlert("success", "Added To Cart");
                     setCartCounter(cartCounter + 1);
+                    setIsCartAdded(true);
                 } else {
                     toastAlert("info", "Unable to add in cart, please try again later!");
                 }
@@ -319,10 +366,10 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
     };
 
     const handleFolioSelection = (folio: any) => {
-        setAccType(folio?.ac_type.trim())
+        /*setAccType(folio?.ac_type.trim())
         setAccNo(folio?.ac_no)
         setIfsc(folio?.ifsc)
-        setMicr(folio?.micr)
+        setMicr(folio?.micr)*/
         setSelectedFolio(folio);
         setShowFolioDropdown(false);
         setFolioSelectionMode('existing');
@@ -333,33 +380,21 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
             setFolioSelectionMode('new');
             setShowFolioDropdown(false);
             setSelectedFolio(null);
-            const response = await searchByCanIdmfuBankDetails(selectedCan?.value);
-            //console.log("Response :-", response)
-            const result = response?.data?.data?.data;
-
-            console.log(result);
-            setBankList(result);
         } else {
-
             setFolioSelectionMode('existing');
         }
     };
 
-    const getCurrentFolioDisplay = () => {
-
+    const getCurrentFolioDisplay = (folioType: string) => {
         if (folioSelectionMode === 'new') {
-            return newFolioNumber || 'Enter new folio number';
+            return 'NEW';
         }
-        return selectedFolio?.folio_no || "NEW";
-
+        return selectedFolio?.folio || 'NEW';
     };
-
 
     const getSelectedScheme = async (selectedValue: any) => {
         setIsSelected(true)
         const txnData = sipData.filter((item: any) => item.txn_type === selectedValue);
-        console.log("Filtered Transaction Data:", txnData);
-
         const firstTxn = txnData[0] || {};
 
         // Update dependent state values
@@ -372,10 +407,12 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
         setCommonError("")
         // Frequency list based on SIP,STP and SWP
         if (selectedValue === 'Y' || selectedValue === 'V' || selectedValue === 'J') {
-
-            console.log(investorList, "Investor Id for mandate")
-
-            const response = await getMandates(investorList[0]?.id);
+            const investorId = investorList[0]?.id;
+            if (!investorId) {
+                setCommonError("No investor selected");
+                return;
+            }
+            const response = await getMandates(investorId);
 
             //setErrors()
             if (response.data?.data?.data.length <= 0) {
@@ -386,37 +423,36 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                 setMandateList(mandateList)
             }
 
-            const freqList = txnData
-                .filter(
-                    (item: any) =>
-                        item.txn_type === selectedValue && item.sys_freq
-                )
-                .map((item: any) => ({
-                    freq: item.sys_freq,
-                    freqOpt: item.sys_freq_opt,
-                }))
-                // remove duplicates based on combination of freq + freqOpt
-                .filter(
-                    (value, index, self) =>
-                        index ===
-                        self.findIndex(
-                            (v) => v.freq === value.freq && v.freqOpt === value.freqOpt
-                        )
-                )
-                .map((item) => ({
-                    label: `${freqMap[item.freq] || item.freq} (${optMap[item.freqOpt] || item.freqOpt || "N/A"})`,
-                    value: item.freq,
-                    freqOpt: item.freqOpt,
-                }));
-
-            console.log("FREQ LIST", freqList);
-            setFrequencies(freqList);
-
+            const filteredTxnData = txnData.filter((item: any) => item.txn_type === selectedValue && item.sys_freq);
+            const mappedFreqData = filteredTxnData.map((item: any) => ({ freq: item.sys_freq, freqOpt: item.sys_freq_opt }));
+            const uniqueFreqData = mappedFreqData.filter((value: any, index: number, self: any[]) =>
+                index === self.findIndex((v: any) => v.freq === value.freq && v.freqOpt === value.freqOpt)
+            );
+            const freqList: any[] = [];
+            const freqMapping: any = { M: "Monthly", Q: "Quarterly", W: "Weekly", F: "Fortnightly", D: "Daily", A: "Any Date" };
+            const optMapping: any = { E: "End of Period", B: "Beginning of Period", X: "As and When Presented", A: "Any" };
+            for (let i = 0; i < uniqueFreqData.length; i++) {
+                const item = uniqueFreqData[i];
+                const freqName = item.freq;
+                const freqOptVal = item.freqOpt;
+                const freqLabel = freqMapping[freqName] || freqName;
+                const optLabel = optMapping[freqOptVal] || freqOptVal || "N/A";
+                freqList.push({
+                    label: freqLabel + " (" + optLabel + ")",
+                    value: freqName,
+                    freqOpt: freqOptVal,
+                });
+            }
 
             setFrequencies(freqList);
 
         } else {
-            const response = await getMandates(investorList[0]?.id);
+            const investorId = investorList[0]?.id;
+            if (!investorId) {
+                setCommonError("No investor selected");
+                return;
+            }
+            const response = await getMandates(investorId);
 
             //setErrors()
             if (response.data?.data?.data.length <= 0) {
@@ -435,9 +471,8 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                 const response = await searchByAmcId(schemeData?.amc_id);
                 const records = response?.data?.data?.data || [];
                 setTargetScheme(records);
-
             } catch (error) {
-                console.log('Error fetching STP data:', error);
+                console.error('Error fetching STP data:', error);
             }
         } else {
             setTargetScheme([]); // Reset if not STP
@@ -454,12 +489,16 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
 
 
+
+
     const handleTransact = async () => {
         setIsLoading(true)
+        const isSIP = ["V", "Y", "J"].includes(transactionType);
         const newErrors = {
-            date: "",
-            month: "",
-            year: "",
+            date: isSIP ? (sipDate ? "" : "Required") : "",
+            month: isSIP ? (sipMonth ? "" : "Required") : "",
+            year: isSIP ? (sipYear ? "" : "Required") : "",
+            frequency: isSIP ? (selectedFrequency ? "" : "Required") : "",
             amount: amount ? "" : "Required",
         };
         setErrors(newErrors);
@@ -477,8 +516,6 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
             let payFlag = "Y"
             let payOutFlag = ""
 
-            console.log("Investor Data :- ", investorData)
-            console.log(transactionType)
             const option = dividendOptions.find(opt => opt.description === divOpt);
             const txnType = arrTransactionType.find(t => t.value === transactionType)
             setTxnVolType(txnType?.txnVolTyp ?? "");
@@ -495,11 +532,9 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
             if (transactionType == "B") {
                 subSeqPayFlag = "";
-                console.log("rtaSchCode=", rtaSchCode)
-
                 payOutFlag = ""
                 payOutDtl = getPayOutSec(transactionType, "", "", accType, "")
-                schList = getSchList(transactionType, generateUniqueId(), rtaAmcCode, rtaSchCode, outRtaSchCode, folioSelectionMode, selectedFolio, option, _amount, payOutFlag, payOutDtl, txnType?.txnVolTyp ?? "")
+                schList = getSchList(transactionType, generateUniqueId(), rtaAmcCode, rtaSchCode, outRtaSchCode, folioSelectionMode, selectedFolio?.folio, option, _amount, payOutFlag, payOutDtl, txnType?.txnVolTyp ?? "")
 
                 payFlag = "Y"
                 paySec = getPaySec(transactionType, paymentMode, micr, ifsc, accType, accNo, _amount?.toString(), beneVan, selectedMandate)
@@ -530,7 +565,6 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
                     } else {
                         setSelectedMandate(relatedMandates[0].prn)
-                        console.log("Selected Mandate :- ", relatedMandates[0].prn)
                         mandateRefNo = relatedMandates[0].prn
                         end_month = relatedMandates[0].end_date.split("-")[1]
                         end_year = (relatedMandates[0].end_date.split("-")[0] - 1).toString()
@@ -546,7 +580,16 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                 }
                 payOutDtl = getPayOutSec(transactionType, "", "", accType, "")
 
-                sysSchList = getSysSchList(generateUniqueId(), rtaAmcCode, rtaSchCode, outRtaSchCode, folioSelectionMode, selectedFolio, option, _amount, selectedFrequency, sipDate, sipMonth, sipYear, endMonth, endYear, payOutDtl, txnType)
+                // "Max Period" radio shows the mandate's end date but doesn't
+                // call setEndMonth/setEndYear, so endMonth/endYear state stays
+                // empty. Fall back to the mandate-derived end_month/end_year
+                // (computed just above) so MFU always receives a valid value —
+                // otherwise MFU rejects with `secErrorCode 100625: endMonth is
+                // required`.
+                const finalEndMonth = endMonth || end_month;
+                const finalEndYear = endYear || end_year;
+
+                sysSchList = getSysSchList(generateUniqueId(), rtaAmcCode, rtaSchCode, outRtaSchCode, folioSelectionMode, selectedFolio, option, _amount, selectedFrequency, sipDate, sipMonth, sipYear, finalEndMonth, finalEndYear, payOutDtl, txnType)
 
                 paySec = getPaySec(transactionType, paymentMode, micr, ifsc, accType, accNo, _amount?.toString(), beneVan, selectedMandate)
 
@@ -573,37 +616,44 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
             };
 
             try {
-                console.log("Transaction Payload :- ", transaction)
-
-
                 const response = await executeMfuTransaction(transaction, 2, schemeData?.schemeISIN);
-                console.log("Response :- ", response)
-
-
                 const result = JSON.parse(response?.data?.data);
-                console.log(result)
-                const appLink = result?.respBody?.ordDtl?.appLinkPri;
+                console.log("[new-order] MFU response:", result);
+
+                const respBody: any = result?.respBody ?? result ?? {};
+                const respHeader: any = result?.respHeader ?? respBody?.respHeader ?? {};
+                const ordDtl: any = respBody?.ordDtl ?? {};
+                const appLink = ordDtl?.appLinkPri;
 
                 if (appLink) {
                     clearData();
-                    //window.location.href = appLink;
+                    if (typeof window !== 'undefined') {
+                        localStorage.removeItem('newOrder_schemeData');
+                        localStorage.removeItem('newOrder_investorList');
+                    }
                     window.open(appLink, '_blank');
                 } else {
-                    toast.error(JSON.stringify(result?.respBody))
-                    setTransactionError(JSON.stringify(result?.respBody))
-                    alert("Transaction submitted, but no payment link returned.");
+                    // Collect any real error text MFU returned (scheme-level or
+                    // header-level) instead of dumping raw JSON on the screen.
+                    const errList: any[] = respBody?.secWisErrorList ?? [];
+                    const schemeErrors = errList
+                        .map((err: any) =>
+                            (err?.secErrorMsg || err?.secErrorCode || "").toString().trim()
+                        )
+                        .filter((m: string) => m);
+                    const headerMsg = (respHeader?.errorMsg || respHeader?.errorDesc || "").toString().trim();
+                    const headerCode = (respHeader?.errorCode || "").toString().trim();
+                    const msg =
+                        [schemeErrors.join(", "), headerMsg || headerCode]
+                            .filter(Boolean)
+                            .join(" — ") ||
+                        "MFU rejected this order but did not return a specific reason. Please verify the CAN, bank, mandate and try again.";
+                    toast.error(msg);
+                    setTransactionError(msg);
                 }
-
-                console.log("Transaction result:", result);
             } catch (err: any) {
                 setIsLoading(false)
-                console.log("My error", err)
                 setExceptions({ value: true, message: err?.msg })
-                if (err?.err) {
-                    console.log("Handled transaction error:", err.err);
-                } else {
-                    console.log("Unhandled error during transaction:", err);
-                }
             } finally {
                 setIsLoading(false)
             }
@@ -615,8 +665,6 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
     const handleSelectedTargetScheme = async (targetScheme: any) => {
         const response = await searchByISIN(targetScheme);
-        // const records = JSON.parse(response?.data?.data?.data);
-        console.log("mfuSchemeCode ", response?.data?.data?.data[0])
         setOutRtaSchCode(response?.data?.data?.data[0]?.scheme_code)
     }
 
@@ -684,7 +732,6 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
         const month = date.getMonth() + 1;
         const year = date.getFullYear();
 
-        console.log({ day, month, year });
         if (dateType === "Start") {
             setSipStartDate(date);
 
@@ -720,9 +767,6 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
     }, [finalScheme]);
 
     const handleSchemeType = (value: any) => {
-        //const value = e?.target?.value;
-
-        console.log(value)
         setSelectedScheme("")
 
 
@@ -731,8 +775,6 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
             const schemeName = finalScheme.find((sch: any) =>
                 sch.ms_fullname?.toUpperCase().includes("GR")
             );
-            console.log("ISIN for Growth Scheme :- ", schemeName)
-
             setSelectedScheme(schemeName?.name);
 
             fetchByISIN(schemeName?.schemeISIN);
@@ -740,16 +782,12 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
             const schemeName = finalScheme.find((sch: any) =>
                 sch.ms_fullname?.toUpperCase().includes("IDCW-P")
             );
-            console.log("ISIN for IDCW-P Scheme :- ", schemeName)
-
             setSelectedScheme(schemeName?.name);
             fetchByISIN(schemeName?.schemeISIN);
         } else if (value == "IDCW-R") {
             const schemeName = finalScheme.find((sch: any) =>
                 sch.ms_fullname?.toUpperCase().includes("IDCW-R")
             );
-            console.log("ISIN for IDCW-R Scheme :- ", schemeName)
-
             setSelectedScheme(schemeName?.name);
             fetchByISIN(schemeName?.schemeISIN);
         }
@@ -772,18 +810,18 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
             <div className="p-6 ">
                 <div className="w-full rounded-xl">
                     {/* Sticky header */}
-                    <div className="sticky top-0 z-30 bg-white border-b border-gray-100">
+                    <div className="sticky top-0 z-30 bg-[#111111] border-b border-[#2A2A2A]">
                         <div className="flex items-center justify-between px-4 py-3">
                             <div className="flex items-center gap-3">
                                 <ArrowLeft
-                                    className="w-5 h-5 cursor-pointer text-gray-600 hover:text-gray-800"
+                                    className="w-5 h-5 cursor-pointer text-[#9CA3AF] hover:text-[#F9FAFB]"
                                     onClick={handleBackClick}
                                 />
                                 <div>
-                                    <h3 className="text-lg font-semibold text-gray-900">
+                                    <h3 className="text-lg font-semibold text-[#F9FAFB]">
                                         Order Application Form
                                     </h3>
-                                    <p className="text-xs text-gray-500">Complete your purchase</p>
+                                    <p className="text-xs text-[#9CA3AF]">Complete your purchase</p>
                                 </div>
                             </div>
 
@@ -792,10 +830,10 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                 <div className="hidden sm:flex items-center gap-3">
                                     {/*<img src="/axis-logo.png" alt="AMC" className="h-8 w-auto" />*/}
                                     <div className="text-right">
-                                        <div className="text-sm font-medium text-gray-800">
+                                        <div className="text-sm font-medium text-[#F9FAFB]">
                                             {schemeData?.name}
                                         </div>
-                                        {/* <div className="text-xs text-gray-500">Large Cap · Equity</div>*/}
+                                        {/* <div className="text-xs text-[#9CA3AF]">Large Cap · Equity</div>*/}
                                     </div>
                                 </div>
                             </div>
@@ -812,44 +850,40 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
                         <div className="ml-5 h-max">
                             <div className="grid grid-cols-2 gap-4 text-sm">
-                                <div className="text-gray-600 font-medium space-y-6">
+                                <div className="text-[#9CA3AF] font-medium space-y-6">
 
                                     <p>Scheme</p>
-                                    <p>{dataSource === "NSE" ? "UCC" : "CAN"}</p>
+                                    <p>CAN</p>
                                     <p>Folio</p>
                                     <p>First Holder</p>
                                     <p>KYC Status</p>
                                 </div>
-                                <div className="text-gray-800 space-y-4 ">
+                                <div className="text-[#F9FAFB] space-y-4 ">
                                     <p className="font-medium">{schemeData?.name}</p>
 
                                     {/* Enhanced CAN Selection */}
-                                    <div className="flex items-center relative border border-gray-300 rounded-md px-2 py-1">
+                                    <div className="flex items-center relative border border-[#3A3A3A] rounded-md px-2 py-1">
                                         <span className="text-sm font-mono">{selectedCan}</span>
                                         <button
-                                            className="ml-2 p-1 rounded hover:bg-gray-100 transition-colors"
+                                            className="ml-2 p-1 rounded hover:bg-[#1F1A1A] transition-colors"
                                             onClick={() => {
                                                 setShowCanList(!showCanList)
 
                                             }}
                                         >
-                                            <ChevronDown className="w-6 h-6 text-gray-500" />
+                                            <ChevronDown className="w-6 h-6 text-[#9CA3AF]" />
                                         </button>
                                         {showCanList && (
-                                            <div className="absolute  top-8 left-0 z-50 min-w-[600px] bg-white border border-gray-200 rounded-lg shadow-lg ">
-                                                <div className="p-3 border-b border-gray-100">
-                                                    <h4 className="font-medium text-gray-900 text-sm">
-                                                        Select {dataSource === "NSE" ? "UCC" : "CAN"}
-                                                    </h4>
+                                            <div className="absolute  top-8 left-0 z-50 min-w-[600px] bg-[#111111] border border-[#2A2A2A] rounded-lg shadow-lg ">
+                                                <div className="p-3 border-b border-[#2A2A2A]">
+                                                    <h4 className="font-medium text-[#F9FAFB] text-sm">Select CAN</h4>
                                                 </div>
                                                 <div className="max-h-60 overflow-auto">
                                                     <table className="w-full text-xs ">
-                                                        <thead className="bg-gray-50">
-                                                            <tr className="border-b border-gray-200">
+                                                        <thead className="bg-[#1F1A1A]">
+                                                            <tr className="border-b border-[#2A2A2A]">
                                                                 <th className="py-2 px-3 text-left">Select</th>
-                                                                <th className="py-2 px-3 text-left">
-                                                                    {dataSource === "NSE" ? "UCC" : "CAN"}
-                                                                </th>
+                                                                <th className="py-2 px-3 text-left">CAN</th>
                                                                 <th className="py-2 px-3 text-left">Primary Holder</th>
                                                                 <th className="py-2 px-3 text-left">Tax Status</th>
                                                                 <th className="py-2 px-3 text-left">Joint 1</th>
@@ -858,7 +892,7 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                                         </thead>
                                                         <tbody>
                                                             {investorList?.map((inv: any) => (
-                                                                <tr key={inv?.id} className="hover:bg-gray-50 border-b border-gray-100">
+                                                                <tr key={inv?.id} className="hover:bg-[#1F1A1A] border-b border-[#2A2A2A]">
                                                                     <td className="py-2 px-3">
                                                                         <input
                                                                             type="radio"
@@ -886,34 +920,33 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                     </div>
 
                                     {/* Enhanced Professional Folio Selection */}
-                                    <div className="relative ">
-                                        <div className="flex items-center justify-between border border-gray-300 rounded-md">
+                                    <div className="relative">
+                                        <div className="flex items-center justify-between border border-[#3A3A3A] rounded-md bg-[#111111]">
                                             <div className="flex items-center flex-1">
-                                                {folioSelectionMode === 'new' ? (
-                                                    <>
-                                                        <label className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors">NEW</label>
-                                                    </>
+                                                {isLoadingFolios ? (
+                                                    <span className="flex items-center gap-2 px-3 py-2 text-sm text-[#9CA3AF]">Loading folios...</span>
+                                                ) : folioSelectionMode === 'new' ? (
+                                                    <span className="flex items-center gap-2 px-3 py-2 text-sm text-blue-700">{getCurrentFolioDisplay("new")}</span>
                                                 ) : (
-
-                                                    <span className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors">{getCurrentFolioDisplay()}</span>
+                                                    <span className="flex items-center gap-2 px-3 py-2 text-sm text-[#F9FAFB]">{selectedFolio?.folio || "Select Folio"}</span>
                                                 )}
                                             </div>
                                             <button
-                                                className="ml-2 p-1 rounded hover:bg-gray-100 transition-colors"
+                                                className="p-2 rounded hover:bg-[#1F1A1A] transition-colors"
                                                 onClick={() => setShowFolioDropdown(!showFolioDropdown)}
                                             >
-                                                <ChevronDown className="w-6 h-6 text-gray-500" />
+                                                <ChevronDown className="w-5 h-5 text-[#9CA3AF]" />
                                             </button>
                                         </div>
 
                                         {showFolioDropdown && (
-                                            <div className="dialog absolute top-8 left-0 z-50 w-[500px] bg-white border border-gray-200 rounded-lg shadow-lg">
-                                                <div className="p-3 border-b border-gray-100">
-                                                    <h4 className="font-medium text-gray-900 text-sm">Folio Selection</h4>
+                                            <div className="dialog absolute top-8 left-0 z-50 w-[500px] bg-[#111111] border border-[#2A2A2A] rounded-lg shadow-lg">
+                                                <div className="p-3 border-b border-[#2A2A2A]">
+                                                    <h4 className="font-medium text-[#F9FAFB] text-sm">Folio Selection</h4>
                                                 </div>
 
 
-                                                <div className="p-3 border-b bg-gray-100 border-gray-100 flex gap-2">
+                                                <div className="p-3 border-b bg-[#1F1A1A] border-[#2A2A2A] flex gap-2">
                                                     <button
                                                         onClick={() => handleFolio("New")}
                                                         className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors"
@@ -923,7 +956,7 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                                     </button>
                                                     <button
                                                         onClick={() => handleFolio("Existing")}
-                                                        className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-50 text-gray-700 rounded-md hover:bg-gray-100 transition-colors"
+                                                        className="flex items-center gap-2 px-3 py-2 text-sm bg-[#1F1A1A] text-[#E5E7EB] rounded-md hover:bg-[#1F1A1A] transition-colors"
                                                     >
                                                         <List className="w-4 h-4" />
                                                         Select from List
@@ -932,20 +965,20 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
                                                 {/* Existing Folios List */}
                                                 {folioSelectionMode === 'existing' && (
-                                                    <div className="max-h-60 overflow-y-auto bg-red-50">
+                                                    <div className="max-h-60 overflow-y-auto bg-[#111111]">
                                                         <table className="w-full text-xs">
-                                                            <thead className="bg-gray-50 sticky top-0">
-                                                                <tr className="border-b border-gray-200">
+                                                            <thead className="bg-[#1F1A1A] sticky top-0">
+                                                                <tr className="border-b border-[#2A2A2A]">
                                                                     <th className="py-2 px-3 text-left">Select</th>
                                                                     <th className="py-2 px-3 text-left">Folio Number</th>
                                                                     <th className="py-2 px-3 text-left">Primary Holder</th>
-                                                                    <th className="py-2 px-3 text-left">Tax Status</th>
+                                                                    {/*<th className="py-2 px-3 text-left">Tax Status</th>*/}
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
 
-                                                                {investorPortfolio.map((opt: any) => (
-                                                                    <tr key={opt.folio_no} className="hover:bg-gray-50 border-b border-gray-100">
+                                                                {folioList.map((opt: any) => (
+                                                                    <tr key={opt.folio} className="hover:bg-[#1F1A1A] border-b border-[#2A2A2A]">
                                                                         <td className="py-2 px-3">
                                                                             <input
                                                                                 type="radio"
@@ -954,7 +987,8 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                                                                 onChange={() => handleFolioSelection(opt)}
                                                                             />
                                                                         </td>
-                                                                        <td className="py-2 px-3 font-mono text-xs">{opt.folio_number}</td>
+                                                                        <td className="py-2 px-3 font-mono text-xs">{opt.folio}</td>
+                                                                        <td className="py-2 px-3">{opt.name}</td>
 
                                                                     </tr>
                                                                 ))}
@@ -985,8 +1019,8 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                         <h2 className="m-3">Bank Lists</h2>
 
                                         <table className="w-full text-xs ">
-                                            <thead className="bg-gray-50 sticky top-0">
-                                                <tr className="border-b border-gray-200">
+                                            <thead className="bg-[#1F1A1A] sticky top-0">
+                                                <tr className="border-b border-[#2A2A2A]">
                                                     <td></td>
                                                     <th className="py-2 px-3 text-left">Bank</th>
                                                     <th className="py-2 px-3 text-left">Account Type</th>
@@ -998,7 +1032,7 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                             <tbody>
 
                                                 {bankList.map((opt: any) => (
-                                                    <tr key={opt?.account_no} className="hover:bg-gray-50 border-b border-gray-100">
+                                                    <tr key={opt?.account_no} className="hover:bg-[#1F1A1A] border-b border-[#2A2A2A]">
                                                         <td className="py-2 px-3">
                                                             <input
                                                                 type="radio"
@@ -1015,12 +1049,11 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                                                     setIfsc(opt?.ifsc)
                                                                     setMicr(opt?.micr)
                                                                     if (transactionType === "V") {
-                                                                        console.log("Mandate Lists=====:", mandateList)
                                                                         const flteredMandate = mandateList.filter((x: any) => x.acc_no == opt?.account_no)
-                                                                        //setSelectedMandate(flteredMandate[2]);
                                                                     }
 
                                                                 }}
+
                                                             />
                                                         </td>
                                                         <td className="py-2 px-3 font-mono text-xs">{opt?.BankMaster?.bank_name}</td>
@@ -1042,8 +1075,8 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                         < div className="overflow-y-auto mt-5">
                                             <h2 className="m-3">Mandate Lists</h2>
                                             <table className="w-full text-xs ">
-                                                <thead className="bg-gray-50 sticky top-0">
-                                                    <tr className="border-b border-gray-200">
+                                                <thead className="bg-[#1F1A1A] sticky top-0">
+                                                    <tr className="border-b border-[#2A2A2A]">
                                                         <td></td>
                                                         <th className="py-2 px-3 text-left">Account No</th>
                                                         <th className="py-2 px-3 text-left">IFSC</th>
@@ -1057,32 +1090,20 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                                 <tbody>
 
                                                     {mandateList.map((opt: any) => (
-                                                        <tr key={opt?.id} className="hover:bg-gray-50 border-b border-gray-100">
+                                                        <tr key={opt?.id} className="hover:bg-[#1F1A1A] border-b border-[#2A2A2A]">
                                                             <td className="py-2 px-3">
                                                                 <input
                                                                     type="radio"
                                                                     name="folio"
                                                                     className="w-4 h-4 text-blue-600"
                                                                     onChange={() => {
-                                                                        // setAccType(accountTypeList.find((x: any) => x.id == opt?.acc_type)?.value)
-                                                                        //console.log("Account Type Selected::::", accountTypeList.find((x: any) => x.id == opt?.acc_type)?.value)
-                                                                        console.log(mandateList)
                                                                         setAccType(opt?.acc_type)
                                                                         setAccNo(opt?.acc_no)
                                                                         setIfsc(opt?.ifsc)
                                                                         setMicr(opt?.micr)
                                                                         setSelectedMandate(opt?.prn)
-                                                                        console.log(opt?.prn)
-                                                                        //setEndMonth(opt?.mandate_end_month)
-                                                                        //setEndYear(opt?.mandate_end_year)
-                                                                        console.log("Mandate Selected::::", opt?.end_date.split("-")[1], opt?.end_date.split("-")[0])
-                                                                        // setEndMonth(opt?.end_date.split("-")[1])
-                                                                        //setEndYear((opt?.end_date.split("-")[0]-1))
-                                                                        // setEndYear((parseInt(opt?.end_date.split("-")[0]) - 1).toString())
                                                                         if (transactionType === "V") {
-                                                                            console.log("Mandate Lists=====:", mandateList)
                                                                             const flteredMandate = mandateList.filter((x: any) => x.acc_no == opt?.acc_no)
-                                                                            //setSelectedMandate(flteredMandate[2]);
                                                                         }
 
                                                                     }}
@@ -1118,8 +1139,8 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
 
                         {/* Transaction Details */}
-                        <div className="space-y-4 ">
-                            <div className="mt-2">
+                        <div className="space-y-4">
+                            <div>
                                 <CustomSelect
                                     items={orderOptions}
                                     bindValue="value"
@@ -1128,18 +1149,15 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                     className="w-full"
                                     value={transactionType}
                                     onChange={(selectedOption: any) => {
-
                                         const selectedValue = selectedOption?.target?.value;
                                         setTransactionType(selectedValue);
                                         handleTransactionType({ target: { value: selectedValue } });
-                                        //handleReset(selectedValue)
                                     }}
                                 />
-
                             </div>
 
                             {["Y", "O"].includes(transactionType) && (
-                                <div className="mt-2 relative  w-full">
+                                <div className="relative w-full">
                                     <CustomReactSelect
                                         items={targetScheme}
                                         bindValue="schemeISIN"
@@ -1148,7 +1166,6 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                         value={selectedTargetScheme}
                                         className="w-full"
                                         onChange={(selectedOption: any) => {
-                                            console.log("Target Scheme", selectedOption?.schemeISIN)
                                             setSelectedTargetScheme(selectedOption?.schemeISIN || "");
                                             handleSelectedTargetScheme(selectedOption?.schemeISIN);
 
@@ -1162,75 +1179,55 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
 
                             {['B', 'V'].includes(transactionType) &&
-
-                                <div>
-
-                                    <label className="block text-xs font-semibold text-gray-700 mb-2 ">Scheme Type:</label>
-                                    <div className="flex items-center gap-2">
+                                <div className="mt-4">
+                                    <label className="block text-sm font-medium text-[#E5E7EB] mb-2">Scheme Type:</label>
+                                    <div className="flex items-center gap-4">
                                         {['Growth', 'IDCW-P', 'IDCW-R'].map(type => (
-                                            <label key={type} className="flex items-center gap-2">
+                                            <label key={type} className="flex items-center gap-2 cursor-pointer">
                                                 <input
                                                     type="radio"
                                                     name="schemeType"
                                                     value={type}
-                                                    //disabled={commonError.length > 0 ? true : false}
-
                                                     checked={selectedSchemeType === type}
                                                     onChange={(e: any) => handleSchemeType(e.target.value)}
-                                                    className="w-4 h-4 text-blue-600 items-center"
+                                                    className="w-4 h-4 text-blue-600"
                                                 />
-                                                <span className="text-sm">{type}</span>
+                                                <span className="text-sm text-[#E5E7EB]">{type}</span>
                                             </label>
                                         ))}
                                     </div>
-
-                                    {commonError.length > 0 &&
-                                        <div className="text-sm text-red-500 mt-6">
-                                            No mandate found —{" "}
-                                            <Link
-                                                href="/account-holding"
-                                                style={{ color: "#007bff", textDecoration: "none" }}
-                                            >
-                                                click here to create SIP mandate
-                                            </Link>
-                                            .
-                                        </div>
-                                    }
                                 </div>
 
                             }
 
-                            {/*['R', 'O'].includes(transactionType) &&
-                                <div>
-                                    <label className="block text-xs font-semibold font-medium text-gray-700 mb-2">{transactionType === 'R' ? 'Redeem' : 'Switch'} Type:</label>
-                                    <div className="flex items-center gap-2">
+                            {/*['R', 'O'].includes(transactionType) && (
+                                <div className="mt-4">
+                                    <label className="block text-sm font-medium text-[#E5E7EB] mb-2">
+                                        {transactionType === 'R' ? 'Redeem' : 'Switch'} Type:
+                                    </label>
+                                    <div className="flex items-center gap-4">
                                         {['Amount', 'Unit', 'All Unit'].map(type => (
-                                            <div key={type} className="flex items-center gap-2">
+                                            <label key={type} className="flex items-center gap-2 cursor-pointer">
                                                 <input
                                                     type="radio"
                                                     name="switchType"
                                                     value={type}
                                                     onChange={handleRadio}
-                                                    className="w-4 h-4"
+                                                    className="w-4 h-4 text-blue-600"
                                                 />
-                                                <span className="text-sm">{type}</span>
-                                            </div>
-
+                                                <span className="text-sm text-[#E5E7EB]">{type}</span>
+                                            </label>
                                         ))}
                                     </div>
-
                                 </div>
-
-
-                            */}
-
+                            )*/}
 
                             {isSelected && (
                                 <div className="space-y-4">
                                     {isDividend && (
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">Dividend Frequency:</label>
-                                            <select className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <label className="block text-sm font-medium text-[#E5E7EB] mb-2">Dividend Frequency:</label>
+                                            <select className="w-full p-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                                 <option value="">Select Frequency</option>
                                                 {dividendFrequency.map(freq => (
                                                     <option key={freq.value} value={freq.value}>{freq.label}</option>
@@ -1239,17 +1236,44 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                         </div>
                                     )}
 
-                                    {["V", "Y", "J"].includes(transactionType) &&
-                                        <div >
-                                            <div className="flex items-center gap-2">
-                                                {/* <label className="block text-sm font-medium text-gray-700 mb-2">Select Frequency:</label>*/}
+                                    {/* Amount field for both Lumpsum and SIP */}
+                                    <div className="mt-4">
+                                        <div className="flex items-center justify-between mb-1">
+                                            <label className="text-sm font-medium text-[#E5E7EB]">
+                                                {["V", "Y", "J"].includes(transactionType) ? "Installment Amount" : "Amount"}:
+                                            </label>
+                                            <span className="text-xs italic text-[#9CA3AF]">Min: ₹ {minAmount}</span>
+                                        </div>
+                                        <CustomInput
+                                            value={amount}
+                                            placeholder={placeHolder}
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                const val = e.target.value;
+                                                if (/^\d*$/.test(val)) {
+                                                    setAmount(val);
+                                                }
+                                            }} />
 
+                                        {amount !== "" && !isNaN(parseInt(amount, 10)) && (
+                                            <p className="text-xs text-[#9CA3AF] mt-1 italic">
+                                                {numberToWords(parseInt(amount, 10))}
+                                            </p>
+                                        )}
+
+                                        {errors.amount && (
+                                            <p className="text-red-500 text-xs mt-1">{errors.amount}</p>
+                                        )}
+                                    </div>
+
+                                    {["V", "Y", "J"].includes(transactionType) &&
+                                        <div className="space-y-4">
+
+                                            <div>
+                                                <label className="block text-sm font-medium text-[#E5E7EB] mb-2">SIP Frequency:</label>
                                                 <CustomSelect
                                                     items={frequencies}
                                                     bindValue="value"
                                                     bindName="label"
-                                                    label="SIP Frequency"
-                                                    className="mt-2"
                                                     value={selectedFrequency}
                                                     onChange={(event) => {
                                                         const selectedValue = event.target.value;
@@ -1257,12 +1281,6 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                                             (f: any) => f.value === selectedValue
                                                         );
 
-                                                        console.log(
-                                                            "Selected Frequency:",
-                                                            selectedValue,
-                                                            "Option:",
-                                                            selectedFreqObj?.freqOpt
-                                                        );
 
                                                         setSelectedFrequency(selectedValue);
 
@@ -1311,17 +1329,6 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                                             dateList = pairs;
                                                         }
 
-                                                        /*if (selectedValue === "W") {
-                                                            const days: number[] = [];
-                                                            for (let weekStart = 1; weekStart <= 28; weekStart += 7) {
-                                                                for (let i = 0; i < 5; i++) {
-                                                                    const day = weekStart + i;
-                                                                    if (day <= 31) days.push(day);
-                                                                }
-                                                            }
-                                                            dateList = days.map((d) => d.toString());
-                                                        }*/
-
                                                         //  CASE 4: Build dropdown-friendly labels
                                                         const formattedDates =
                                                             selectedValue === "F"
@@ -1349,10 +1356,7 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                                             .map((d) => Number(d))
                                                             .filter((n) => !isNaN(n));
 
-                                                        console.log("Formatted Dates:", formattedDates);
                                                         setAvailableDates(formattedDates);
-
-                                                        console.log("====================", selectedFrequency, allowedDays);
 
                                                         //  Default allowed SIP days if Monthly selected but no dates provided
                                                         if (selectedFrequency == "M" && allowedDays.length == 0) {
@@ -1364,29 +1368,149 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                                     }}
                                                 />
 
+                                                {/* SIP Dates Allowed Display */}
+                                                {allowedSipDays && allowedSipDays.length > 0 && (
+                                                    <div className="text-xs text-[#9CA3AF] mt-2 font-normal">
+                                                        SIP Dates Allowed : [{allowedSipDays.join(', ')}]
+                                                    </div>
+                                                )}
 
-                                                <div>
-                                                    <label className="text-xs font-bold ">SIP Start Date</label>
+                                                <div className="mt-2">
+                                                    <label className="text-sm font-medium text-[#E5E7EB]">Start Date :</label>
                                                     <DatePicker
                                                         selected={sipStartDate}
                                                         onChange={(e) => handleDateChange(e, 'Start')}
                                                         filterDate={isDateAvailable}
                                                         minDate={getMinSipDate()}
                                                         placeholderText="Select SIP Start Date"
-                                                        className="border rounded border-gray-300 p-1.5 w-60 focus:border-gray-500 focus:outline-none"
-                                                        dateFormat="dd/MM/yyyy"
+                                                        className="border rounded border-[#3A3A3A] p-2 w-full focus:border-blue-500 focus:outline-none mt-1"
+                                                        dateFormat="dd-MM-yyyy"
                                                     />
                                                 </div>
-                                                <div>
-                                                    <label className="text-xs font-bold ">SIP End Date</label>
-                                                    <DatePicker
-                                                        selected={sipEndDate}
-                                                        onChange={(e) => handleDateChange(e, 'End')}
-                                                        maxDate={mandateEndDate || undefined}
-                                                        placeholderText="Select SIP End Date"
-                                                        className="border rounded border-gray-300 p-1.5 w-60 focus:border-gray-500 focus:outline-none"
-                                                        dateFormat="dd/MM/yyyy"
-                                                    />
+
+                                                {/* SIP Duration */}
+                                                <div className="mt-4">
+                                                    <label className="text-sm font-medium text-[#E5E7EB] mb-2 block">SIP Duration :</label>
+                                                    <div className="flex items-center gap-6">
+                                                        <label className="flex items-center gap-2 cursor-pointer">
+                                                            <input
+                                                                type="radio"
+                                                                name="sipDuration"
+                                                                value="installments"
+                                                                checked={selectedDuration === 'installments'}
+                                                                onChange={() => setSelectedDuration('installments')}
+                                                                className="w-4 h-4 text-blue-600"
+                                                            />
+                                                            <span className="text-sm text-[#E5E7EB]">Enter Instalments</span>
+                                                        </label>
+                                                        <label className="flex items-center gap-2 cursor-pointer">
+                                                            <input
+                                                                type="radio"
+                                                                name="sipDuration"
+                                                                value="endDate"
+                                                                checked={selectedDuration === 'endDate'}
+                                                                onChange={() => setSelectedDuration('endDate')}
+                                                                className="w-4 h-4 text-blue-600"
+                                                            />
+                                                            <span className="text-sm text-[#E5E7EB]">Enter End Date</span>
+                                                        </label>
+                                                        <label className="flex items-center gap-2 cursor-pointer">
+                                                            <input
+                                                                type="radio"
+                                                                name="sipDuration"
+                                                                value="maxPeriod"
+                                                                checked={selectedDuration === 'maxPeriod' || !selectedDuration}
+                                                                onChange={() => setSelectedDuration('maxPeriod')}
+                                                                className="w-4 h-4 text-blue-600"
+                                                            />
+                                                            <span className="text-sm text-[#E5E7EB]">Max Period</span>
+                                                        </label>
+                                                    </div>
+
+                                                    {/* Conditional Display Based on Duration Selection */}
+                                                    {selectedDuration === 'installments' && (
+                                                        <div className="mt-3">
+                                                            <label className="text-sm font-medium text-[#E5E7EB] block mb-1">Number of Instalments :</label>
+                                                            <CustomInput
+                                                                value={sipInstallment}
+                                                                placeholder="Enter number of installments"
+                                                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                                                    const val = e.target.value;
+                                                                    if (/^\d*$/.test(val)) {
+                                                                        setSipInstallment(val);
+                                                                        // Calculate end date based on installments
+                                                                        if (val && sipStartDate && selectedFrequency) {
+                                                                            const installments = parseInt(val);
+                                                                            const startDate = new Date(sipStartDate);
+                                                                            let endDate = new Date(startDate);
+
+                                                                            // Calculate end date based on frequency
+                                                                            switch (selectedFrequency) {
+                                                                                case 'M': // Monthly
+                                                                                    endDate.setMonth(endDate.getMonth() + installments - 1);
+                                                                                    break;
+                                                                                case 'Q': // Quarterly
+                                                                                    endDate.setMonth(endDate.getMonth() + (installments - 1) * 3);
+                                                                                    break;
+                                                                                case 'W': // Weekly
+                                                                                    endDate.setDate(endDate.getDate() + (installments - 1) * 7);
+                                                                                    break;
+                                                                                case 'F': // Fortnightly
+                                                                                    endDate.setDate(endDate.getDate() + (installments - 1) * 14);
+                                                                                    break;
+                                                                                case 'D': // Daily
+                                                                                    endDate.setDate(endDate.getDate() + installments - 1);
+                                                                                    break;
+                                                                                default:
+                                                                                    endDate.setMonth(endDate.getMonth() + installments - 1);
+                                                                            }
+                                                                            setSipEndDate(endDate);
+                                                                            setEndMonth((endDate.getMonth() + 1).toString().padStart(2, '0'));
+                                                                            setEndYear(endDate.getFullYear().toString());
+                                                                        }
+                                                                    }
+                                                                }} />
+                                                            {sipEndDate && (
+                                                                <p className="text-xs text-[#9CA3AF] mt-1">
+                                                                    Calculated End Date: {sipEndDate.toLocaleDateString('en-GB')}
+                                                                </p>
+                                                            )}
+                                                        </div>
+                                                    )}
+
+                                                    {selectedDuration === 'endDate' && (
+                                                        <div className="mt-3">
+                                                            <label className="text-sm font-medium text-[#E5E7EB] block mb-1">Select End Date :</label>
+                                                            <DatePicker
+                                                                selected={sipEndDate}
+                                                                onChange={(date) => {
+                                                                    if (date) {
+                                                                        setSipEndDate(date);
+                                                                        setEndMonth((date.getMonth() + 1).toString().padStart(2, '0'));
+                                                                        setEndYear(date.getFullYear().toString());
+                                                                    }
+                                                                }}
+                                                                minDate={sipStartDate || new Date()}
+                                                                maxDate={mandateEndDate || undefined}
+                                                                placeholderText="Select end date"
+                                                                className="border rounded border-[#3A3A3A] p-2 w-full focus:border-blue-500 focus:outline-none"
+                                                                dateFormat="dd-MM-yyyy"
+                                                            />
+                                                        </div>
+                                                    )}
+
+                                                    {selectedDuration === 'maxPeriod' && (
+                                                        <div className="mt-3">
+                                                            <label className="text-sm font-medium text-[#E5E7EB] block mb-1">Max Period (Mandate End Date) :</label>
+                                                            {mandateEndDate ? (
+                                                                <p className="text-sm text-[#9CA3AF] bg-[#1F1A1A] p-2 rounded border">
+                                                                    {mandateEndDate.toLocaleDateString('en-GB')}
+                                                                </p>
+                                                            ) : (
+                                                                <p className="text-sm text-[#9CA3AF] italic">No mandate end date available</p>
+                                                            )}
+                                                        </div>
+                                                    )}
                                                 </div>
 
                                             </div>
@@ -1394,40 +1518,9 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
                                     }
 
-
-                                    <div>
-                                        <CustomInput
-                                            label="Amount :"
-                                            value={amount}
-                                            placeholder={placeHolder}
-                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                                const val = e.target.value;
-                                                if (/^\d*$/.test(val)) {
-                                                    setAmount(val);
-                                                }
-                                            }} />
-
-
-                                        {amount !== "" && !isNaN(parseInt(amount, 10)) && (
-                                            <label className="block text-xs font-medium text-gray-700 mt-2">
-                                                {numberToWords(parseInt(amount, 10))}
-                                            </label>
-                                        )}
-
-                                        <div className="flex items-center justify-between">
-
-                                            {errors.amount && (
-                                                <span className="text-red-500 text-xs">{errors.amount}</span>
-                                            )}
-                                        </div>
-
-                                        <p className="text-sm">Min. Amount <span className="text-red-500">{minAmount}</span></p>
-
-                                    </div>
                                     {isTransact ?
                                         <>
-                                            {/*transactionType !== 'R' &&*/}
-                                            < div className="mt-2">
+                                            <div className="mt-4">
                                                 <CustomSelect
                                                     items={payMode}
                                                     bindValue="value"
@@ -1448,11 +1541,16 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                                             setBeneVan("");
                                                         }
 
+                                                        const investorId = investorList[0]?.id;
+                                                        if (!investorId) {
+                                                            console.error("No investor ID available for bank fetch");
+                                                            setBankList([]);
+                                                            return;
+                                                        }
 
                                                         const fetchBank = async () => {
-                                                            const response = await getBankAccount(investorList[0].id);
+                                                            const response = await getBankAccount(investorId);
                                                             const data = response?.data?.data?.data
-                                                            console.log("bankList :- ", response?.data?.data?.data);
                                                             setBankList(data)
                                                         }
 
@@ -1474,9 +1572,9 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
 
                                             <div className="flex gap-3 pt-4">
-                                                <CustomButton onClick={handleTransact}>{isLoading ? <><Loader size="w-4 h-4" color="text-white" thickness="border-2" borderColor='border-gray-300' />  wait...</> : 'Order Now'}
+                                                <CustomButton onClick={handleTransact}>{isLoading ? <><Loader size="w-4 h-4" color="text-white" thickness="border-2" borderColor='border-[#3A3A3A]' />  wait...</> : 'Order Now'}
                                                 </CustomButton>
-                                                <CustomButton className="bg-gray-300 hover:bg-gray-400 text-black" onClick={() => setIsTransact(false)}>Cancel</CustomButton>
+                                                <CustomButton className="bg-[#2A2A2A] hover:bg-[#3A3A3A] text-[#F9FAFB]" onClick={() => setIsTransact(false)}>Cancel</CustomButton>
 
                                             </div>
                                         </>
@@ -1488,10 +1586,10 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                                         <CheckCircleIcon className="w-4 h-4 text-green-500" /> <span className="ml-3">{orderOptions.find(opt => opt.value === transactionType)?.label} added to cart sucessfully</span>
                                                     </div>
                                                     <div className="flex items-center gap-2">
-                                                        <CustomButton className="bg-gray-500 hover:bg-gray-600 " onClick={() => setIsTransact(false)}>Cancel</CustomButton>
+                                                        <CustomButton className="bg-[#3A3A3A] hover:bg-[#4A4A4A] " onClick={() => setIsTransact(false)}>Cancel</CustomButton>
 
                                                         <CustomButton onClick={(e) => {
-                                                            window.location.href = 'my-cart'
+                                                            window.location.href = '/my-cart'
                                                         }}>Go to cart</CustomButton>
                                                     </div>
                                                 </>
@@ -1500,7 +1598,7 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                             }
                                             {!isCartAdded &&
                                                 <div className="flex gap-3 pt-4">
-                                                    <CustomButton className="bg-gray-300 hover:bg-gray-400 text-[#000000]" onClick={addToCart}> Add to Cart</CustomButton>
+                                                    <CustomButton className="bg-[#2A2A2A] hover:bg-[#3A3A3A] text-[#000000]" onClick={addToCart}> Add to Cart</CustomButton>
                                                     <CustomButton onClick={(e) => {
                                                         setIsTransact(true)
                                                     }}>Transact Now</CustomButton>

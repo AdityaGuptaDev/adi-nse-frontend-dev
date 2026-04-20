@@ -98,8 +98,8 @@ export default function SummaryFinalization({
 
     if (!summary) {
         return (
-            <div className="h-screen flex items-center justify-center">
-                <div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-300 border-t-blue-600" />
+            <div className="h-screen flex items-center justify-center bg-[#0A0A0A]">
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#2A2A2A] border-t-[#F59E0B]" />
             </div>
         );
     }
@@ -107,8 +107,8 @@ export default function SummaryFinalization({
     /* ================= UI ================= */
 
     return (
-        <div className="max-w-7xl mx-auto p-8 bg-gray-50 min-h-screen">
-            <h1 className="text-2xl font-bold mb-8 text-gray-900">
+        <div className="max-w-7xl mx-auto p-8 bg-[#0A0A0A] min-h-screen">
+            <h1 className="text-2xl font-bold mb-8 bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent">
                 Review & Finalize Details
             </h1>
 
@@ -195,7 +195,7 @@ export default function SummaryFinalization({
             </SummarySection>
 
             {/* ================= FOOTER ================= */}
-            <div className="flex justify-between mt-12 border-t pt-6">
+            <div className="flex justify-between mt-12 border-t border-[#2A2A2A] pt-6">
                 <Button variant="secondary" onClick={onPrevious}>
                     Previous
                 </Button>
@@ -213,7 +213,7 @@ export default function SummaryFinalization({
 function SummarySection({ title, children }: any) {
     return (
         <section className="mb-10">
-            <h2 className="text-lg font-semibold mb-4">{title}</h2>
+            <h2 className="text-lg font-semibold mb-4 text-[#F9FAFB]">{title}</h2>
             <div className="space-y-4">{children}</div>
         </section>
     );
@@ -221,8 +221,8 @@ function SummarySection({ title, children }: any) {
 
 function Card({ title, children }: any) {
     return (
-        <div className="bg-white rounded-xl border shadow-sm p-6">
-            {title && <p className="font-semibold mb-4">{title}</p>}
+        <div className="bg-[#111111] rounded-xl border border-[#2A2A2A] shadow-lg p-6">
+            {title && <p className="font-semibold mb-4 text-[#F59E0B]">{title}</p>}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">{children}</div>
         </div>
     );
@@ -231,23 +231,30 @@ function Card({ title, children }: any) {
 function GridField({ label, value }: any) {
     return (
         <div>
-            <p className="text-xs text-gray-500 mb-1">{label}</p>
-            <p className="font-medium text-gray-900">{value || "-"}</p>
+            <p className="text-xs text-[#9CA3AF] mb-1">{label}</p>
+            <p className="font-medium text-[#F9FAFB]">{value || "-"}</p>
         </div>
     );
 }
 
 function Button({ children, loading, variant = "primary", ...props }: any) {
     const base =
-        "px-6 py-2 rounded-md font-medium transition flex items-center justify-center";
+        "px-6 py-2 rounded-lg font-medium transition flex items-center justify-center shadow-sm";
     const styles =
         variant === "secondary"
-            ? "bg-gray-600 text-white hover:bg-gray-700"
-            : "bg-blue-600 text-white hover:bg-blue-700";
+            ? "bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] hover:bg-[#2A2A2A] hover:border-[#F59E0B] transition-all"
+            : "bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white hover:opacity-90";
 
     return (
         <button {...props} disabled={loading} className={`${base} ${styles}`}>
-            {loading ? "Please wait..." : children}
+            {loading ? (
+                <span className="flex items-center gap-2">
+                    <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>
+                    Please wait...
+                </span>
+            ) : (
+                children
+            )}
         </button>
     );
 }

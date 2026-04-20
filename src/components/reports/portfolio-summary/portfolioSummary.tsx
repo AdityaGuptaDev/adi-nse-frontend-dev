@@ -392,7 +392,7 @@ const PortfolioSummary = () => {
                 aria-label="close sidebar"
                 className="drawer-overlay"
               ></label>
-              <ul className="menu rounded-l-2xl bg-white text-base-content min-h-full w-96 ">
+              <ul className="menu rounded-l-2xl bg-[#111111] text-base-content min-h-full w-96 ">
                 <PortfolioSummaryFilter
                   isOpen={isDrawerOpen}
                   handleClose={() => setIsDrawerOpen(false)}
@@ -533,7 +533,7 @@ const PortfolioSummary = () => {
                       <tr>
                         <td
                           colSpan={12}
-                          className="p-2  py-2 text-sm text-gray-700 font-semibold"
+                          className="p-2  py-2 text-sm text-[#E5E7EB] font-semibold"
                         >
                           {category.categoryName}
                         </td>
@@ -594,7 +594,7 @@ const PortfolioSummary = () => {
                       ))}
 
                       {/* Sub Total - Category */}
-                      <tr className=" hover:bg-gray-50 font-medium text-md border-b-2">
+                      <tr className=" hover:bg-[#0A0A0A] font-medium text-md border-b-2">
                         <td
                           colSpan={2}
                           className="px-2 py-4 text-right text-md  font-semibold"
@@ -630,7 +630,7 @@ const PortfolioSummary = () => {
                   ))}
 
                   {/* Sub Total - Investor */}
-                  <tr className="hover:bg-gray-50 bg-white font-medium border-b-2">
+                  <tr className="hover:bg-[#0A0A0A] bg-[#111111] font-medium border-b-2">
                     <td className="py-4 text-md text-start font-semibold">
                       Sub Total - {investor.investorName} :
                     </td>
@@ -666,7 +666,7 @@ const PortfolioSummary = () => {
             ))}
 
             {/* Grand Total */}
-            <tr className="hover:bg-gray-50 font-bold text-base-content text-sm border-b-2 border-accent-content">
+            <tr className="hover:bg-[#0A0A0A] font-bold text-base-content text-sm border-b-2 border-accent-content">
               <td colSpan={2} className="px-2 py-4  text-sm text-right">
                 Grand Total :
               </td>

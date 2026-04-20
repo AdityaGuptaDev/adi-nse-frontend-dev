@@ -60,7 +60,7 @@ const PurchaseDetailPopup: React.FC<PurchaseDetailPopupProps> = ({
               Purchase Detail
             </h3>
             <button onClick={closeModal} className="btn btn-circle border-none">
-              <RxCross2 className="text-gray-500 text-2xl" />
+              <RxCross2 className="text-[#9CA3AF] text-2xl" />
             </button>
           </div>
 

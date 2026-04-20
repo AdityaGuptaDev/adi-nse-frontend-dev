@@ -72,13 +72,13 @@ export default function NpsPage({ onBack }: NpsProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <div className="max-w-6xl mx-auto bg-white shadow-sm">
+    <div className="min-h-screen bg-[#1F1A1A] p-4">
+      <div className="max-w-6xl mx-auto bg-[#111111] shadow-sm">
         {/* Header */}
         <div className="bg-blue-600 text-white p-3 flex justify-between items-center">
           <button
             onClick={handleBack}
-            className="flex items-center bg-indigo-300 text-white hover:bg-indigo-400 transition-colors px-4 py-2 rounded"
+            className="flex items-center bg-[#F59E0B] text-white hover:bg-[#B45309] transition-colors px-4 py-2 rounded"
           >
             <ArrowLeft size={20} className="mr-2" />
             Back
@@ -96,47 +96,47 @@ export default function NpsPage({ onBack }: NpsProps) {
           <div className="border-b">
             <table className="w-full">
               <tbody>
-                <tr className="bg-gray-200">
-                  <td className="px-4 py-2 font-medium text-sm border-r border-gray-300 w-48">Select Investor:</td>
-                  <td className="px-4 py-2 border-r border-gray-300">
+                <tr className="bg-[#2A2A2A]">
+                  <td className="px-4 py-2 font-medium text-sm border-r border-[#3A3A3A] w-48">Select Investor:</td>
+                  <td className="px-4 py-2 border-r border-[#3A3A3A]">
                     <select
                       value={formData.investor}
                       onChange={(e) => handleChange("investor", e.target.value)}
-                      className="w-full border border-gray-300 px-2 py-1 text-sm"
+                      className="w-full border border-[#3A3A3A] px-2 py-1 text-sm"
                     >
                       {investors.map((investor, i) => (
                         <option key={i} value={investor}>{investor}</option>
                       ))}
                     </select>
                   </td>
-                  <td className="px-4 py-2 font-medium text-sm border-r border-gray-300 w-48">Distributor:</td>
+                  <td className="px-4 py-2 font-medium text-sm border-r border-[#3A3A3A] w-48">Distributor:</td>
                   <td className="px-4 py-2">
-                    <div className="px-2 py-1 bg-gray-100 text-sm">
+                    <div className="px-2 py-1 bg-[#1F1A1A] text-sm">
                       {formData.investor}
                     </div>
                   </td>
                 </tr>
-                <tr className="bg-gray-200">
-                  <td className="px-4 py-2 font-medium text-sm border-r border-gray-300">Select AMC/Stock Exchange:</td>
-                  <td className="px-4 py-2 border-r border-gray-300">
+                <tr className="bg-[#2A2A2A]">
+                  <td className="px-4 py-2 font-medium text-sm border-r border-[#3A3A3A]">Select AMC/Stock Exchange:</td>
+                  <td className="px-4 py-2 border-r border-[#3A3A3A]">
                     <select
                       value={formData.amc}
                       onChange={(e) => handleChange("amc", e.target.value)}
-                      className="w-full border border-gray-300 px-2 py-1 text-sm"
+                      className="w-full border border-[#3A3A3A] px-2 py-1 text-sm"
                     >
                       {amcs.map((amc, i) => (
                         <option key={i} value={amc}>{amc}</option>
                       ))}
                     </select>
                   </td>
-                  <td className="px-4 py-2 font-medium text-sm border-r border-gray-300">
+                  <td className="px-4 py-2 font-medium text-sm border-r border-[#3A3A3A]">
                     MF Scheme/Stock/NPS: <span className="text-blue-600 underline cursor-pointer">[ Help ]</span>
                   </td>
                   <td className="px-4 py-2">
                     <select
                       value={formData.scheme}
                       onChange={(e) => handleChange("scheme", e.target.value)}
-                      className="w-full border border-gray-300 px-2 py-1 text-sm"
+                      className="w-full border border-[#3A3A3A] px-2 py-1 text-sm"
                     >
                       <option value="">Select scheme...</option>
                       {schemes.map((scheme, i) => (
@@ -153,28 +153,28 @@ export default function NpsPage({ onBack }: NpsProps) {
           {showProductDetails && (
             <>
               <div className="border-b">
-                <div className="bg-white px-4 py-2 border-b border-gray-300">
+                <div className="bg-[#111111] px-4 py-2 border-b border-[#3A3A3A]">
                   <h2 className="text-sm font-bold">Product Details:</h2>
                 </div>
 
                 <table className="w-full">
                   <tbody>
                     <tr>
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50 w-48">Purchase Date:</td>
-                      <td className="px-4 py-3 border-r border-gray-300">
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#3A3A3A] bg-[#1F1A1A] w-48">Purchase Date:</td>
+                      <td className="px-4 py-3 border-r border-[#3A3A3A]">
                         <div className="flex space-x-1">
                           <input
                             type="text"
                             value={formData.purchaseDate.day}
                             onChange={(e) => handleChange("purchaseDate", { ...formData.purchaseDate, day: e.target.value })}
-                            className="w-12 border border-gray-300 px-2 py-1 text-sm"
+                            className="w-12 border border-[#3A3A3A] px-2 py-1 text-sm"
                             placeholder="DD"
                             maxLength={2}
                           />
                           <select
                             value={formData.purchaseDate.month}
                             onChange={(e) => handleChange("purchaseDate", { ...formData.purchaseDate, month: e.target.value })}
-                            className="border border-gray-300 px-2 py-1 text-sm"
+                            className="border border-[#3A3A3A] px-2 py-1 text-sm"
                           >
                             {months.map(month => (
                               <option key={month} value={month}>{month}</option>
@@ -184,13 +184,13 @@ export default function NpsPage({ onBack }: NpsProps) {
                             type="text"
                             value={formData.purchaseDate.year}
                             onChange={(e) => handleChange("purchaseDate", { ...formData.purchaseDate, year: e.target.value })}
-                            className="w-16 border border-gray-300 px-2 py-1 text-sm"
+                            className="w-16 border border-[#3A3A3A] px-2 py-1 text-sm"
                             placeholder="YYYY"
                             maxLength={4}
                           />
                         </div>
                       </td>
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50 w-48">Add product under:</td>
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#3A3A3A] bg-[#1F1A1A] w-48">Add product under:</td>
                       <td className="px-4 py-3">
                         <div className="space-y-2">
                           <div className="flex items-center">
@@ -211,7 +211,7 @@ export default function NpsPage({ onBack }: NpsProps) {
                               type="text"
                               value={formData.existingDemat}
                               onChange={(e) => handleChange("existingDemat", e.target.value)}
-                              className="w-full border border-gray-300 px-2 py-1 text-sm"
+                              className="w-full border border-[#3A3A3A] px-2 py-1 text-sm"
                             />
                           )}
                           <div className="flex items-center">
@@ -231,7 +231,7 @@ export default function NpsPage({ onBack }: NpsProps) {
                             <input
                               type="text"
                               placeholder="Leave Blank for Auto Generation"
-                              className="w-full border border-gray-300 px-2 py-1 text-sm text-gray-500 italic"
+                              className="w-full border border-[#3A3A3A] px-2 py-1 text-sm text-[#9CA3AF] italic"
                             />
                           )}
                         </div>
@@ -243,44 +243,44 @@ export default function NpsPage({ onBack }: NpsProps) {
 
               {/* Investment Section */}
               <div className="border-b">
-                <div className="bg-white px-4 py-2 border-b border-gray-300">
-                  <h2 className="text-sm font-bold">Investment: <span className="text-xs text-gray-600">(Enter any two fields)</span></h2>
+                <div className="bg-[#111111] px-4 py-2 border-b border-[#3A3A3A]">
+                  <h2 className="text-sm font-bold">Investment: <span className="text-xs text-[#9CA3AF]">(Enter any two fields)</span></h2>
                 </div>
 
                 <table className="w-full">
                   <tbody>
                     <tr>
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50 w-48">
-                        Total Investment: <span className="text-xs text-gray-600">(Rupees)</span>
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#3A3A3A] bg-[#1F1A1A] w-48">
+                        Total Investment: <span className="text-xs text-[#9CA3AF]">(Rupees)</span>
                       </td>
-                      <td className="px-4 py-3 border-r border-gray-300">
+                      <td className="px-4 py-3 border-r border-[#3A3A3A]">
                         <input
                           type="text"
                           value={formData.investment.total}
                           onChange={(e) => handleChange("investment", { ...formData.investment, total: e.target.value })}
-                          className="w-full border border-gray-300 px-2 py-1 text-sm"
+                          className="w-full border border-[#3A3A3A] px-2 py-1 text-sm"
                         />
                       </td>
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50 w-48">
-                        Price per Unit/Share: <span className="text-xs text-gray-600">(Rupees)</span>
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#3A3A3A] bg-[#1F1A1A] w-48">
+                        Price per Unit/Share: <span className="text-xs text-[#9CA3AF]">(Rupees)</span>
                       </td>
                       <td className="px-4 py-3">
                         <input
                           type="text"
                           value={formData.investment.price}
                           onChange={(e) => handleChange("investment", { ...formData.investment, price: e.target.value })}
-                          className="w-full border border-gray-300 px-2 py-1 text-sm"
+                          className="w-full border border-[#3A3A3A] px-2 py-1 text-sm"
                         />
                       </td>
                     </tr>
                     <tr className="border-t">
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50">Total Units/Shares:</td>
-                      <td className="px-4 py-3 border-r border-gray-300">
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#3A3A3A] bg-[#1F1A1A]">Total Units/Shares:</td>
+                      <td className="px-4 py-3 border-r border-[#3A3A3A]">
                         <input
                           type="text"
                           value={formData.investment.units}
                           onChange={(e) => handleChange("investment", { ...formData.investment, units: e.target.value })}
-                          className="w-full border border-gray-300 px-2 py-1 text-sm"
+                          className="w-full border border-[#3A3A3A] px-2 py-1 text-sm"
                         />
                       </td>
                       <td className="px-4 py-3" colSpan={2}></td>
@@ -290,8 +290,8 @@ export default function NpsPage({ onBack }: NpsProps) {
               </div>
 
               {/* Submit Button */}
-              <div className="p-4 bg-gray-100 text-center">
-                <button className="bg-gray-200 border border-gray-300 px-6 py-2 text-sm font-medium hover:bg-gray-300 mr-2">
+              <div className="p-4 bg-[#1F1A1A] text-center">
+                <button className="bg-[#2A2A2A] border border-[#3A3A3A] px-6 py-2 text-sm font-medium hover:bg-gray-300 mr-2">
                   Clear Form
                 </button>
                 <button className="bg-blue-600 text-white px-6 py-2 text-sm font-medium hover:bg-blue-700">
@@ -303,11 +303,11 @@ export default function NpsPage({ onBack }: NpsProps) {
 
           {/* Initial Continue Button */}
           {!showProductDetails && (
-            <div className="p-4 bg-gray-100 text-center">
+            <div className="p-4 bg-[#1F1A1A] text-center">
               <button
                 className={`px-6 py-2 text-sm font-medium ${formData.scheme
                     ? "bg-blue-600 text-white hover:bg-blue-700"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    : "bg-gray-300 text-[#9CA3AF] cursor-not-allowed"
                   }`}
                 disabled={!formData.scheme}
               >

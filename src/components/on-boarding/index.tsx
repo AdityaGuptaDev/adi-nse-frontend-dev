@@ -1,139 +1,133 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
-import { FaFileInvoiceDollar } from "react-icons/fa";
-import { FiX } from "react-icons/fi";
+import React from "react";
+import { Building2, Landmark, X, ChevronRight } from "lucide-react";
 
-interface OnBoardingProps {
-  onBoardingModal: boolean;
+type OnBoardingProps = {
+  onBoardingModal?: boolean;
   onClose?: () => void;
+  /**
+   * If set, the NSE lane opens /create-ucc?mobile=<value> so the form prefills
+   * for this investor. Useful when a partner has just registered a new
+   * investor and we already have their mobile in hand.
+   */
+  mobile?: string;
+  /**
+   * When true, the dismiss (×) button is hidden — the user must pick a lane.
+   * Used right after partner-add-investor OTP verification.
+   */
   mandatory?: boolean;
-}
+};
 
-function OnBoarding({ onBoardingModal, onClose, mandatory = false }: OnBoardingProps) {
+function OnBoarding({ onClose, mobile, mandatory }: OnBoardingProps) {
   const router = useRouter();
-  // Local visibility mirror — lets the component hide itself immediately on
-  // Remind Later without waiting for the parent's state update cycle.
-  const [visible, setVisible] = useState(onBoardingModal);
-
-  useEffect(() => {
-    setVisible(onBoardingModal);
-  }, [onBoardingModal]);
-
-  if (!visible) return null;
-
-  const close = () => {
-    setVisible(false);
-    onClose?.();
-  };
 
   const goMfu = () => {
-    close();
     router.push("/initial-KYC");
   };
 
   const goNse = () => {
-    close();
-    router.push("/create-ucc");
-  };
-
-  const handleLater = () => {
-    close();
+    if (mobile) {
+      router.push(`/create-ucc?mobile=${encodeURIComponent(mobile)}`);
+    } else {
+      router.push("/create-ucc");
+    }
   };
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 px-4"
-      role="dialog"
-      aria-modal="true"
+      id="onboarding_lane_picker"
+      className="modal modal-open"
+      onClick={!mandatory ? onClose : undefined}
     >
-      <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
+      <div
+        className="modal-box relative max-w-lg bg-gradient-to-br from-[#0a0c10] to-[#121418] border-2 border-[#F59E0B]/30 rounded-2xl shadow-2xl shadow-[#F59E0B]/10 p-0 overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Corner brackets */}
+        <div className="absolute top-3 left-3 w-10 h-10 border-t-2 border-l-2 border-[#F59E0B]/40"></div>
+        <div className="absolute top-3 right-3 w-10 h-10 border-t-2 border-r-2 border-[#F59E0B]/40"></div>
+        <div className="absolute bottom-3 left-3 w-10 h-10 border-b-2 border-l-2 border-[#F59E0B]/40"></div>
+        <div className="absolute bottom-3 right-3 w-10 h-10 border-b-2 border-r-2 border-[#F59E0B]/40"></div>
+
+        {/* Close button (hidden when mandatory) */}
+        {!mandatory && onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute top-4 right-4 text-[#9CA3AF] hover:text-[#F59E0B] transition-colors z-10"
+            aria-label="Close"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
+
         {/* Header */}
-        <div className="bg-gradient-to-r from-[#F59E0B] to-[#D97706] px-6 py-5 relative">
-          {!mandatory && (
-            <button
-              onClick={handleLater}
-              className="absolute top-3 right-3 text-white/80 hover:text-white"
-              aria-label="Close"
-            >
-              <FiX className="w-5 h-5" />
-            </button>
-          )}
-          <div className="flex items-center gap-3">
-            <div className="w-11 h-11 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white">
-              <FaFileInvoiceDollar className="w-5 h-5" />
-            </div>
-            <div>
-              <h2 className="text-white text-lg font-semibold">
-                Complete Your Onboarding
-              </h2>
-              <p className="text-white/80 text-xs">Only takes a few minutes</p>
-            </div>
-          </div>
+        <div className="px-8 pt-8 pb-4 text-center">
+          <h3 className="text-2xl font-bold bg-gradient-to-r from-[#F59E0B] via-[#FBBF24] to-[#F59E0B] bg-clip-text text-transparent">
+            Choose Your Onboarding Path
+          </h3>
+          <p className="text-sm text-[#9CA3AF] mt-2">
+            Pick the execution lane you want to transact through.
+            You can invest in Mutual Funds via either option.
+          </p>
         </div>
 
-        {/* Body */}
-        <div className="px-6 py-6 space-y-5">
-          <p className="text-sm text-gray-600 leading-relaxed">
-            {mandatory
-              ? "Please choose a platform to proceed with investor onboarding. This step is required."
-              : "Your investor onboarding is pending. Pick the platform you'd like to transact on — you can always add the other one later."}
-          </p>
-
-          <div className="space-y-3">
-            <button
-              onClick={goMfu}
-              className="w-full rounded-xl border-2 border-[#F59E0B] bg-white px-4 py-3 text-left hover:bg-[#F59E0B]/5 transition-colors group"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="text-sm font-semibold text-gray-800">
-                    Go with MFU
-                  </div>
-                  <div className="text-[11px] text-gray-500 mt-0.5">
-                    CAN-based, Morningstar catalogue, SIP & Lumpsum
-                  </div>
-                </div>
-                <span className="text-[11px] font-semibold text-[#D97706] group-hover:translate-x-0.5 transition-transform flex-shrink-0">
-                  Start KYC →
-                </span>
+        {/* Options */}
+        <div className="px-6 pb-6 space-y-3">
+          {/* MFU lane */}
+          <button
+            type="button"
+            onClick={goMfu}
+            className="group w-full text-left bg-[#1F1A1A] border border-[#2A2A2A] hover:border-[#F59E0B] hover:bg-[#1F1A1A]/80 rounded-xl p-5 transition-all duration-200"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#F59E0B]/20 to-[#B45309]/20 border border-[#F59E0B]/30 flex items-center justify-center flex-shrink-0">
+                <Landmark className="w-6 h-6 text-[#F59E0B]" />
               </div>
-            </button>
-
-            <button
-              onClick={goNse}
-              className="w-full rounded-xl border-2 border-[#F59E0B] bg-white px-4 py-3 text-left hover:bg-[#F59E0B]/5 transition-colors group"
-            >
-              <div className="flex items-center justify-between gap-3">
-                <div className="min-w-0">
-                  <div className="text-sm font-semibold text-gray-800">
-                    Go with NSE
-                  </div>
-                  <div className="text-[11px] text-gray-500 mt-0.5">
-                    UCC-based, NSE MF Desk, live execution
-                  </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-base font-semibold text-[#F9FAFB]">Go with MFU</span>
+                  <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#F59E0B]/10 text-[#F59E0B] border border-[#F59E0B]/30">CAN</span>
                 </div>
-                <span className="text-[11px] font-semibold text-[#D97706] group-hover:translate-x-0.5 transition-transform flex-shrink-0">
-                  Create UCC →
-                </span>
+                <p className="text-xs text-[#9CA3AF] mt-1">
+                  Complete Initial KYC and register a MFU CAN — supports joint holdings and family linking.
+                </p>
               </div>
-            </button>
-          </div>
-
-          {!mandatory && (
-            <div className="pt-1">
-              <button
-                onClick={handleLater}
-                className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-800 transition-colors"
-              >
-                Remind Me Later
-              </button>
-              <p className="text-[10px] text-gray-400 text-center mt-1.5">
-                We&apos;ll hide this reminder for the rest of this session
-              </p>
+              <ChevronRight className="w-5 h-5 text-[#9CA3AF] group-hover:text-[#F59E0B] group-hover:translate-x-1 transition-all" />
             </div>
-          )}
+          </button>
+
+          {/* NSE lane */}
+          <button
+            type="button"
+            onClick={goNse}
+            className="group w-full text-left bg-[#1F1A1A] border border-[#2A2A2A] hover:border-[#F59E0B] hover:bg-[#1F1A1A]/80 rounded-xl p-5 transition-all duration-200"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-[#F59E0B]/20 to-[#B45309]/20 border border-[#F59E0B]/30 flex items-center justify-center flex-shrink-0">
+                <Building2 className="w-6 h-6 text-[#F59E0B]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-base font-semibold text-[#F9FAFB]">Go with NSE</span>
+                  <span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#F59E0B]/10 text-[#F59E0B] border border-[#F59E0B]/30">UCC</span>
+                </div>
+                <p className="text-xs text-[#9CA3AF] mt-1">
+                  Create an NSE UCC in a single 4-step form — fastest path to place your first order.
+                </p>
+              </div>
+              <ChevronRight className="w-5 h-5 text-[#9CA3AF] group-hover:text-[#F59E0B] group-hover:translate-x-1 transition-all" />
+            </div>
+          </button>
+        </div>
+
+        {/* Footer note */}
+        <div className="px-8 pb-6 text-center">
+          <p className="text-[11px] text-[#6B7280]">
+            You can add the other lane later from your profile.
+          </p>
         </div>
       </div>
     </div>

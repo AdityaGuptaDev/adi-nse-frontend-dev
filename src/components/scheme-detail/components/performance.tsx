@@ -258,7 +258,7 @@ const Performance = ({ schemeData }: any) => {
         <p className="text-sm mt-1">{dateFormateValue(schemeData?.SchemePerformances[0]?.NavDate)}</p>
       </div>
 
-      <div className="bg-white rounded-lg   ">
+      <div className="bg-[#111111] rounded-lg   ">
         {performanceData.map((row, index) => {
 
           let catAVG: any = row.id === TIMEPERIODS.OneDay ? toFixedDataForReturn(performanceSchemeData[0]?.Return1d_AVG) :

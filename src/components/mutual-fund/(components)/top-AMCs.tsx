@@ -10,33 +10,51 @@ import { convertNumberIndian, convertOnlyDate } from "@/utils/helpers";
 import { convertToCrores, schemeColors } from "@/utils/constants";
 import { motion } from "framer-motion";
 
+// Golden Black Theme Constants
+const theme = {
+  primary: "#F59E0B",
+  secondary: "#FBBF24",
+  accent: "#1F1A1A",
+  success: "#10B981",
+  warning: "#F59E0B",
+  danger: "#EF4444",
+  background: "#0A0A0A",
+  cardBg: "#111111",
+  textWhite: "#FFFFFF",
+  textGray: "#9CA3AF",
+  textDark: "#1F2937",
+  border: "#2A2A2A",
+  gradient: "linear-gradient(135deg, #F59E0B 0%, #B45309 100%)",
+  hoverBg: "#1F1A1A",
+};
+
 const TopAMCs = ({ data }: any) => {
   const router = useRouter();
   const amcsData = data?.length > 0 ? data : [];
 
   const getAUMColor = (aum: number) => {
-    if (aum >= 100000) return "text-green-600";
-    if (aum >= 50000) return "text-green-500";
-    if (aum >= 10000) return "text-blue-600";
-    if (aum >= 5000) return "text-blue-500";
-    return "text-gray-600";
+    if (aum >= 100000) return "#10B981";
+    if (aum >= 50000) return "#22C55E";
+    if (aum >= 10000) return "#F59E0B";
+    if (aum >= 5000) return "#FBBF24";
+    return "#9CA3AF";
   };
 
   return (
-    <div className="bg-white">
+    <div style={{ background: theme.cardBg }}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg shadow-sm">
+          <div className="p-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-lg shadow-sm">
             <FaBuilding className="h-5 w-5 text-white" />
           </div>
           <div>
-            <CustomText className="text-lg font-bold text-gray-900">
+            <div className="text-lg font-bold" style={{ color: theme.textWhite }}>
               Top Asset Management Companies
-            </CustomText>
-            <CustomText className="text-xs text-gray-500">
+            </div>
+            <div className="text-xs" style={{ color: theme.textGray }}>
               Leading fund houses by AUM
-            </CustomText>
+            </div>
           </div>
         </div>
         
@@ -45,7 +63,20 @@ const TopAMCs = ({ data }: any) => {
           whileTap={{ scale: 0.98 }}
         >
           <CustomButton
-            className="px-4 py-2 text-sm bg-white border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-colors"
+            className="px-4 py-2 text-sm rounded-lg transition-colors"
+            style={{
+              background: "transparent",
+              border: `1px solid ${theme.primary}`,
+              color: theme.primary,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = theme.gradient;
+              e.currentTarget.style.color = "white";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.color = theme.primary;
+            }}
             onClick={() => router.push(`/top-amc-list`)}
           >
             <span className="flex items-center gap-1.5">
@@ -68,11 +99,17 @@ const TopAMCs = ({ data }: any) => {
               whileHover={{ y: -4 }}
             >
               <Link href={`/amc-scheme-detail?id=${amc.id}`}>
-                <div className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-primary/30 transition-all duration-200 cursor-pointer h-full">
+                <div 
+                  className="rounded-xl p-4 hover:shadow-md transition-all duration-200 cursor-pointer h-full"
+                  style={{
+                    background: theme.hoverBg,
+                    border: `1px solid ${theme.border}`,
+                  }}
+                >
                   {/* AMC Header */}
                   <div className="flex items-center gap-3 mb-4">
-                    <div className={`relative p-2.5 rounded-xl ${schemeColors[index % schemeColors.length]?.bg || 'bg-blue-500'} shadow-sm`}>
-                      <span className={`text-white font-bold text-base`}>
+                    <div className={`relative p-2.5 rounded-xl shadow-sm`} style={{ background: schemeColors[index % schemeColors.length]?.bg || theme.primary }}>
+                      <span className="text-white font-bold text-base">
                         {amc?.Name?.charAt(0)}
                       </span>
                       {index < 3 && (
@@ -83,12 +120,12 @@ const TopAMCs = ({ data }: any) => {
                     </div>
                     
                     <div className="flex-1 min-w-0">
-                      <CustomText className="font-bold text-gray-900 text-sm leading-tight line-clamp-2">
+                      <div className="font-bold text-sm leading-tight line-clamp-2" style={{ color: theme.textWhite }}>
                         {amc?.Name}
-                      </CustomText>
-                      <CustomText className="text-xs text-gray-500 mt-0.5">
+                      </div>
+                      <div className="text-xs mt-0.5" style={{ color: theme.textGray }}>
                         {amc?.total_schemes || 0} Schemes
-                      </CustomText>
+                      </div>
                     </div>
                   </div>
 
@@ -96,41 +133,46 @@ const TopAMCs = ({ data }: any) => {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <div>
-                        <CustomText className="text-xs text-gray-500 mb-0.5">
+                        <div className="text-xs mb-0.5" style={{ color: theme.textGray }}>
                           Total AUM
-                        </CustomText>
+                        </div>
                         <div className="flex items-baseline gap-1.5">
-                          <FaChartLine className="h-3.5 w-3.5 text-blue-500" />
-                          <CustomText className={`text-lg font-bold ${getAUMColor(amc?.total_AUM || 0)}`}>
+                          <FaChartLine className="h-3.5 w-3.5" style={{ color: theme.primary }} />
+                          <div className="text-lg font-bold" style={{ color: getAUMColor(amc?.total_AUM || 0) }}>
                             {convertToCrores(amc?.total_AUM)} Cr
-                          </CustomText>
+                          </div>
                         </div>
                       </div>
                       
                       <div className="text-right">
-                        <CustomText className="text-xs text-gray-500 mb-0.5">
+                        <div className="text-xs mb-0.5" style={{ color: theme.textGray }}>
                           Rank
-                        </CustomText>
+                        </div>
                         <div className={`px-2.5 py-1 rounded-lg text-sm font-bold ${
-                          index === 0 ? 'bg-amber-50 text-amber-700' :
-                          index === 1 ? 'bg-gray-100 text-gray-700' :
-                          index === 2 ? 'bg-orange-50 text-orange-700' :
-                          'bg-blue-50 text-blue-700'
-                        }`}>
+                          index === 0 ? 'text-amber-700' :
+                          index === 1 ? 'text-[#E5E7EB]' :
+                          index === 2 ? 'text-orange-700' :
+                          'text-blue-700'
+                        }`} style={{
+                          background: index === 0 ? '#F59E0B20' :
+                                     index === 1 ? '#9CA3AF20' :
+                                     index === 2 ? '#F9731620' :
+                                     '#3B82F620'
+                        }}>
                           #{index + 1}
                         </div>
                       </div>
                     </div>
 
                     {/* AUM Date */}
-                    <div className="pt-3 border-t border-gray-100">
+                    <div className="pt-3" style={{ borderTop: `1px solid ${theme.border}` }}>
                       <div className="flex items-center justify-between">
-                        <CustomText className="text-xs text-gray-500">
+                        <div className="text-xs" style={{ color: theme.textGray }}>
                           Updated on
-                        </CustomText>
-                        <CustomText className="text-xs font-medium text-gray-700">
+                        </div>
+                        <div className="text-xs font-medium" style={{ color: theme.textWhite }}>
                           {convertOnlyDate(amc?.AUMDate)}
-                        </CustomText>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -141,20 +183,19 @@ const TopAMCs = ({ data }: any) => {
         ) : (
           <div className="col-span-full">
             <div className="text-center py-12">
-              <div className="inline-block p-4 bg-gray-100 rounded-full mb-4">
-                <FaBuilding className="h-8 w-8 text-gray-400" />
+              <div className="inline-block p-4 rounded-full mb-4" style={{ background: theme.hoverBg }}>
+                <FaBuilding className="h-8 w-8" style={{ color: theme.textGray }} />
               </div>
-              <CustomText className="text-base text-gray-600 mb-2">
+              <div className="text-base mb-2" style={{ color: theme.textWhite }}>
                 No AMC data available
-              </CustomText>
-              <CustomText className="text-sm text-gray-500">
+              </div>
+              <div className="text-sm" style={{ color: theme.textGray }}>
                 Check back later for AMC information
-              </CustomText>
+              </div>
             </div>
           </div>
         )}
       </div>
-
     </div>
   );
 };

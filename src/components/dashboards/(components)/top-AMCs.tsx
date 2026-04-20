@@ -17,13 +17,13 @@ const TopAMCs = ({ data }: any) => {
   const amcsData = data.length > 0 ? data : [];
 
   return (
-    <div className="bg-white">
+    <div className="bg-[#111111]">
       <div className="flex items-center justify-between mb-4">
-        <CustomText className="text-lg font-montserrat font-semibold text-gray-900">
+        <CustomText className="text-lg font-montserrat font-semibold text-[#F9FAFB]">
           Top AMCs
         </CustomText>
         <CustomButton
-          className="p-0 h-auto min-h-0 !text-secondary-content !bg-white"
+          className="p-0 h-auto min-h-0 !text-secondary-content !bg-[#111111]"
           onClick={() => router.push(`/top-amc-list`)}
         >
           View All <span><FaAngleRight /></span>
@@ -36,7 +36,7 @@ const TopAMCs = ({ data }: any) => {
           <Link href={`/amc-scheme-detail?id=${amc.id}`} key={index}>
             <div
               key={index}
-              className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all duration-200 cursor-pointer"
+              className="bg-[#111111] border border-[#2A2A2A] rounded-xl p-4 hover:shadow-lg transition-all duration-200 cursor-pointer"
             >
               {/* AMC Icon/Logo */}
               <div className="flex items-center  mb-3">
@@ -58,7 +58,7 @@ const TopAMCs = ({ data }: any) => {
 
               {/* AMC Name */}
               <div className=" mb-3">
-                <CustomText className="font-semibold text-gray-900 text-sm leading-tight">
+                <CustomText className="font-semibold text-[#F9FAFB] text-sm leading-tight">
                   {amc?.Name}
                 </CustomText>
               </div>
@@ -66,20 +66,20 @@ const TopAMCs = ({ data }: any) => {
               {/* AUM */}
               <div className="flex justify-between items-center">
                 <div className=" mb-2">
-                  <CustomText className="text-xs text-gray-500">
+                  <CustomText className="text-xs text-[#9CA3AF]">
                     AUM
                   </CustomText>
-                  <CustomText className="text-sm font-bold text-gray-900">
+                  <CustomText className="text-sm font-bold text-[#F9FAFB]">
                     {convertToCrores(amc?.total_AUM)} Cr.
                   </CustomText>
                 </div>
 
                 {/* Schemes Count */}
                 <div className=" mb-3">
-                  <CustomText className="text-xs text-gray-500 ">
+                  <CustomText className="text-xs text-[#9CA3AF] ">
                     Schemes
                   </CustomText>
-                  <CustomText className="text-base font-bold text-gray-900">
+                  <CustomText className="text-base font-bold text-[#F9FAFB]">
                     {amc?.total_schemes}
                   </CustomText>
                 </div>
@@ -87,7 +87,7 @@ const TopAMCs = ({ data }: any) => {
 
               {/* As of Date */}
               <div>
-                <CustomText className="text-xs text-gray-400">
+                <CustomText className="text-xs text-[#6B7280]">
                   (as on {convertOnlyDate(amc?.AUMDate)})
                 </CustomText>
               </div>
@@ -95,7 +95,7 @@ const TopAMCs = ({ data }: any) => {
           </Link>
         ))) : (
           <div className="col-span-5">
-            <CustomText className="text-center text-gray-500">
+            <CustomText className="text-center text-[#9CA3AF]">
               No Data Found
             </CustomText>
           </div>

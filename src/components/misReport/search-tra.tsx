@@ -40,7 +40,7 @@ const VedantAssetInterface = () => {
   };
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-[#111111]">
       {/* Header */}
       <div className="px-4 py-2 flex justify-between items-center" style={{ backgroundColor: '#3166AE' }}>
         <div className="flex items-center">
@@ -54,12 +54,12 @@ const VedantAssetInterface = () => {
       </div>
 
       {/* Navigation Icons */}
-      <div className="bg-gray-100 px-4 py-1 flex justify-end space-x-2">
+      <div className="bg-[#1F1A1A] px-4 py-1 flex justify-end space-x-2">
         <FileText className="w-5 h-5 text-red-600 cursor-pointer" />
         <div className="w-5 h-5 bg-teal-500 rounded cursor-pointer"></div>
         <Phone className="w-5 h-5 text-green-600 cursor-pointer" />
         <div className="w-5 h-5 bg-gray-400 rounded cursor-pointer"></div>
-        <Printer className="w-5 h-5 text-gray-600 cursor-pointer" />
+        <Printer className="w-5 h-5 text-[#9CA3AF] cursor-pointer" />
       </div>
 
       {/* Main Content */}
@@ -69,70 +69,70 @@ const VedantAssetInterface = () => {
           <table className="w-full">
             <tbody>
               {/* ARN No */}
-              <tr className="border-b border-gray-300">
+              <tr className="border-b border-[#3A3A3A]">
                 <td className="py-2 pr-4 text-sm font-medium w-32">ARN No:</td>
                 <td className="py-2">
-                  <select className="w-full p-1 border border-gray-300 text-sm bg-white">
+                  <select className="w-full p-1 border border-[#3A3A3A] text-sm bg-[#111111]">
                     <option>- All ARNs -</option>
                   </select>
                 </td>
               </tr>
 
               {/* Distributor */}
-              <tr className="border-b border-gray-300">
+              <tr className="border-b border-[#3A3A3A]">
                 <td className="py-2 pr-4 text-sm font-medium">Distributor:</td>
                 <td className="py-2">
-                  <select className="w-full p-1 border border-gray-300 text-sm bg-white">
+                  <select className="w-full p-1 border border-[#3A3A3A] text-sm bg-[#111111]">
                     <option>- All Distributors including HO</option>
                   </select>
                 </td>
               </tr>
 
               {/* Asset Type */}
-              <tr className="border-b border-gray-300">
+              <tr className="border-b border-[#3A3A3A]">
                 <td className="py-2 pr-4 text-sm font-medium">Asset Type:</td>
                 <td className="py-2">
-                  <select className="w-full p-1 border border-gray-300 text-sm bg-white">
+                  <select className="w-full p-1 border border-[#3A3A3A] text-sm bg-[#111111]">
                     <option>- All Asset Types-</option>
                   </select>
                 </td>
               </tr>
 
               {/* Investor */}
-              <tr className="border-b border-gray-300">
+              <tr className="border-b border-[#3A3A3A]">
                 <td className="py-2 pr-4 text-sm font-medium">Investor:</td>
                 <td className="py-2">
-                  <select className="w-full p-1 border border-gray-300 text-sm bg-white">
+                  <select className="w-full p-1 border border-[#3A3A3A] text-sm bg-[#111111]">
                     <option>LAKSHMI SINHA</option>
                   </select>
                 </td>
               </tr>
 
               {/* Registrar */}
-              <tr className="border-b border-gray-300">
+              <tr className="border-b border-[#3A3A3A]">
                 <td className="py-2 pr-4 text-sm font-medium">Registrar</td>
                 <td className="py-2">
-                  <select className="w-full p-1 border border-gray-300 text-sm bg-white">
+                  <select className="w-full p-1 border border-[#3A3A3A] text-sm bg-[#111111]">
                     <option>- All -</option>
                   </select>
                 </td>
               </tr>
 
               {/* Sub-Asset Type */}
-              <tr className="border-b border-gray-300">
+              <tr className="border-b border-[#3A3A3A]">
                 <td className="py-2 pr-4 text-sm font-medium">Sub-Asset Type:</td>
                 <td className="py-2">
-                  <select className="w-full p-1 border border-gray-300 text-sm bg-white">
+                  <select className="w-full p-1 border border-[#3A3A3A] text-sm bg-[#111111]">
                     <option>- All Sub-Asset Types-</option>
                   </select>
                 </td>
               </tr>
 
               {/* AMC/Stock Ex */}
-              <tr className="border-b border-gray-300">
+              <tr className="border-b border-[#3A3A3A]">
                 <td className="py-2 pr-4 text-sm font-medium">AMC/Stock Ex:</td>
                 <td className="py-2">
-                  <select className="w-full p-1 border border-gray-300 text-sm bg-white">
+                  <select className="w-full p-1 border border-[#3A3A3A] text-sm bg-[#111111]">
                     <option>- All AMCs -</option>
                   </select>
                 </td>
@@ -150,7 +150,7 @@ const VedantAssetInterface = () => {
           selected={fromDate}
           onChange={(date: Date | null) => setFromDate(date)}
           dateFormat="dd/MM/yyyy"
-          className="p-1 border border-gray-300 rounded bg-white text-sm"
+          className="p-1 border border-[#3A3A3A] rounded bg-[#111111] text-sm"
           placeholderText="Select start date"
         />
       </div>
@@ -162,7 +162,7 @@ const VedantAssetInterface = () => {
           selected={tillDate}
           onChange={(date: Date | null) => setTillDate(date)}
           dateFormat="dd/MM/yyyy"
-          className="p-1 border border-gray-300 rounded bg-white text-sm"
+          className="p-1 border border-[#3A3A3A] rounded bg-[#111111] text-sm"
           placeholderText="Select end date"
         />
       </div>
@@ -174,15 +174,15 @@ const VedantAssetInterface = () => {
         </div>
 
         {/* Right Panel - Transaction Types */}
-        <div className="w-1/3 p-4 border-l border-gray-300">
+        <div className="w-1/3 p-4 border-l border-[#3A3A3A]">
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2">Transaction Types:</label>
-            <div className="border border-gray-300 bg-white min-h-48 max-h-48 overflow-y-auto">
+            <div className="border border-[#3A3A3A] bg-[#111111] min-h-48 max-h-48 overflow-y-auto">
               {transactionTypes.map((type, index) => (
                 <div 
                   key={type}
                   className={`px-2 py-1 text-xs cursor-pointer hover:bg-blue-100 ${
-                    selectedTransactions.includes(type) ? 'bg-blue-200' : 'hover:bg-gray-100'
+                    selectedTransactions.includes(type) ? 'bg-blue-200' : 'hover:bg-[#1F1A1A]'
                   }`}
                   onClick={() => toggleTransaction(type)}
                 >
@@ -190,7 +190,7 @@ const VedantAssetInterface = () => {
                 </div>
               ))}
             </div>
-            <div className="text-xs text-gray-600 mt-1">* Press &lt;ctrl&gt; key for multiple selection</div>
+            <div className="text-xs text-[#9CA3AF] mt-1">* Press &lt;ctrl&gt; key for multiple selection</div>
           </div>
 
           {/* Search Button */}

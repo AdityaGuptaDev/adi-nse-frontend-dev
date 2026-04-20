@@ -182,103 +182,110 @@ const Header = ({
 
   return (
     <>
-      <div className="navbar p-0 md:px-5 sticky top-0 z-20 bg-[#F4F6F8] flex justify-between gap-4">
+      <div className="navbar p-0 md:px-5 sticky top-0 z-20 bg-[#111111] border-b border-[#2A2A2A] flex justify-between gap-4 shadow-lg">
         <div className="flex items-center gap-4">
           <div
             onClick={toggleSidebar}
-            className="lg:hidden cursor-pointer w-12 h-12 flex justify-center items-center"
+            className="lg:hidden cursor-pointer w-12 h-12 flex justify-center items-center hover:bg-[#1F1A1A] transition-colors rounded-lg"
           >
-            <HiOutlineBars3CenterLeft className="cursor-pointer w-8 h-8" />
+            <HiOutlineBars3CenterLeft className="cursor-pointer w-6 h-6 text-[#F9FAFB]" />
           </div>
           <div className="hidden lg:block">
             <Link href="/">
               <Logo link={`${publicPathName}/logo_light.png`} />
             </Link>
           </div>
-          <div className="hidden lg:block w-12 h-px bg-base-content mx-1 mt-1"></div>
-          <HeaderArea title={title} />
+          <div className="hidden lg:block w-12 h-px bg-gradient-to-r from-[#F59E0B] to-transparent mx-1 mt-1"></div>
+          <div className="text-white">
+            <HeaderArea title={title} />
+          </div>
         </div>
         <div className="flex items-center gap-1 lg:gap-3">
           <div
             data-tip="Notification"
-            className="tooltip tooltip-bottom relative cursor-pointer p-2 rounded-lg border border-secondary/10 shadow-[3px_3px_5px_rgba(0,0,0,0.1),-3px_-3px_5px_rgba(255,255,255,0.7)]"
+            className="tooltip tooltip-bottom relative cursor-pointer p-2 rounded-lg bg-[#1F1A1A] border border-[#2A2A2A] hover:border-[#F59E0B]/50 transition-all duration-200"
           >
-            <div className="absolute right-2 top-1 inline-grid *:[grid-area:1/1]">
-              <div className="status status-error animate-ping"></div>
-              <div className="status status-error"></div>
+            <div className="absolute right-1 top-0 inline-grid *:[grid-area:1/1]">
+              <div className="status status-error animate-ping w-2 h-2 bg-red-500 rounded-full"></div>
+              <div className="status status-error w-2 h-2 bg-red-500 rounded-full"></div>
             </div>
-            <GoBell className="w-4 h-4 md:w-6 md:h-6" />
+            <GoBell className="w-4 h-4 md:w-5 md:h-5 text-[#F9FAFB]" />
           </div>
           <div
             data-tip="Cart"
-            className="tooltip tooltip-bottom relative cursor-pointer p-2 rounded-lg border border-secondary/10 shadow-[3px_3px_5px_rgba(0,0,0,0.1),-3px_-3px_5px_rgba(255,255,255,0.7)]"
+            className="tooltip tooltip-bottom relative cursor-pointer p-2 rounded-lg bg-[#1F1A1A] border border-[#2A2A2A] hover:border-[#F59E0B]/50 transition-all duration-200"
             onClick={() => router.push("/my-cart")}
           >
             <div className="absolute right-[-5px] top-[-5px] sm:right-0 sm:top-0 inline-grid *:[grid-area:1/1]">
-              <div className="badge badge-xs badge-primary">
+              <div className="badge badge-xs bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white border-none px-1.5 py-0.5 rounded-full text-xs font-bold">
                 {cartCounter ? cartCounter : 0}
               </div>
-              <div className="badge badge-xs badge-primary scale-70 animate-ping">
+              <div className="badge badge-xs bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white scale-70 animate-ping px-1.5 py-0.5 rounded-full text-xs font-bold opacity-50">
                 {cartCounter ? cartCounter : 0}
               </div>
             </div>
-            <IoCartOutline className="w-4 h-4 md:w-6 md:h-6" />
+            <IoCartOutline className="w-4 h-4 md:w-5 md:h-5 text-[#F9FAFB]" />
           </div>
-          
+
           <div className="relative" ref={dropdownRef}>
             <div
               role="button"
               onClick={() => setOpen((prev) => !prev)}
-              className="btn h-[34px] sm:h-auto cursor-pointer p-2 rounded-lg border border-secondary/10 shadow-[3px_3px_5px_rgba(0,0,0,0.1),-3px_-3px_5px_rgba(255,255,255,0.7)]"
+              className="btn h-[34px] sm:h-auto cursor-pointer p-2 rounded-lg bg-[#1F1A1A] border border-[#2A2A2A] hover:border-[#F59E0B]/50 transition-all duration-200"
             >
-              <FaRegUser className="w-4 h-4 md:w-6 md:h-6" />
+              <FaRegUser className="w-4 h-4 md:w-5 md:h-5 text-[#F9FAFB]" />
             </div>
 
             {open && (
-              <div className="dropdown-content absolute top-full right-0 z-[100] mt-2 w-60 bg-white shadow-lg rounded-md overflow-hidden border border-gray-200">
-                {/* User Name Section with better styling */}
+              <div className="dropdown-content absolute top-full right-0 z-[100] mt-2 w-64 bg-[#111111] shadow-2xl rounded-xl overflow-hidden border border-[#2A2A2A]">
+                {/* User Name Section */}
                 {userName && (
-                  <div className="px-4 py-3 bg-gray-50 border-b border-gray-200">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <FaUser className="w-4 h-4 text-blue-600" />
+                  <div className="px-4 py-3 bg-gradient-to-r from-[#F59E0B]/10 to-[#B45309]/10 border-b border-[#2A2A2A]">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-gradient-to-r from-[#F59E0B] to-[#B45309] rounded-full flex items-center justify-center">
+                        <FaUser className="w-5 h-5 text-white" />
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-gray-800">{userName}</p>
+                        <p className="text-sm font-semibold text-[#F9FAFB]">{userName}</p>
+                        {email && (
+                          <p className="text-xs text-[#9CA3AF] mt-0.5 truncate max-w-[160px]">{email}</p>
+                        )}
                       </div>
                     </div>
                   </div>
                 )}
-                
+
                 {/* Menu Items */}
                 <div className="py-2">
                   <Link
                     href={targetLink}
-                    className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 text-gray-700 hover:text-gray-900 transition-colors"
+                    className="flex items-center justify-between px-4 py-3 hover:bg-[#1F1A1A] text-[#F9FAFB] hover:text-[#F59E0B] transition-colors group"
                     onClick={() => setOpen(false)}
                   >
                     <span className="text-sm font-medium">Profile</span>
-                    <ImProfile className="w-4 h-4 text-gray-500" />
+                    <ImProfile className="w-4 h-4 text-[#9CA3AF] group-hover:text-[#F59E0B] transition-colors" />
                   </Link>
-                  
+
                   <Link
                     href="/change-password"
-                    className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 text-gray-700 hover:text-gray-900 transition-colors"
+                    className="flex items-center justify-between px-4 py-3 hover:bg-[#1F1A1A] text-[#F9FAFB] hover:text-[#F59E0B] transition-colors group"
                     onClick={() => setOpen(false)}
                   >
                     <span className="text-sm font-medium">Change Password</span>
-                    <FaUnlockAlt className="w-4 h-4 text-gray-500" />
+                    <FaUnlockAlt className="w-4 h-4 text-[#9CA3AF] group-hover:text-[#F59E0B] transition-colors" />
                   </Link>
-                  
+
+                  <div className="h-px bg-[#2A2A2A] my-1"></div>
+
                   <button
                     onClick={() => {
                       setOpen(false);
                       handleLogout();
                     }}
-                    className="flex items-center justify-between w-full px-4 py-3 hover:bg-gray-50 text-red-600 hover:text-red-700 transition-colors"
+                    className="flex items-center justify-between w-full px-4 py-3 hover:bg-[#1F1A1A] text-red-400 hover:text-red-300 transition-colors group"
                   >
                     <span className="text-sm font-medium">Logout</span>
-                    <FaPowerOff className="w-4 h-4" />
+                    <FaPowerOff className="w-4 h-4 group-hover:scale-105 transition-transform" />
                   </button>
                 </div>
               </div>

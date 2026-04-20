@@ -17,7 +17,7 @@ import { decrypt } from '@/utils/aesmfu';
 import { useSearchParams } from 'next/navigation';
 import Loader from '@/commonUI/Loader';
 import { MfuPayload } from '@/utils/mfu/generatePayload';
-
+import { ArrowLeft, CreditCard, Calendar, Banknote, User, Shield, AlertCircle } from 'lucide-react';
 
 function Mandate() {
 
@@ -194,122 +194,428 @@ function Mandate() {
 
     }
 
+    // Custom styles for date picker calendar
+    const datePickerStyles = `
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+            opacity: 0.7;
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator:hover {
+            opacity: 1;
+        }
+        input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+            color: #F9FAFB;
+        }
+        input[type="date"]::-webkit-datetime-edit-text {
+            color: #9CA3AF;
+        }
+        input[type="date"]::-webkit-datetime-edit-month-field {
+            color: #F9FAFB;
+        }
+        input[type="date"]::-webkit-datetime-edit-day-field {
+            color: #F9FAFB;
+        }
+        input[type="date"]::-webkit-datetime-edit-year-field {
+            color: #F9FAFB;
+        }
+        input[type="date"]:focus::-webkit-datetime-edit-fields-wrapper {
+            color: #F59E0B;
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            filter: invert(1);
+            opacity: 0.7;
+            cursor: pointer;
+        }
+        input[type="number"]::-webkit-inner-spin-button:hover,
+        input[type="number"]::-webkit-outer-spin-button:hover {
+            opacity: 1;
+        }
+    `;
+
     return (
-        <div>
-            <div className='md:flex justify-between pageTitle'>
-                <div>
-                    <CustomText className="font-semibold font-montserrat text-xl ">
-                        Create Mandates
-                    </CustomText>
-                </div>
-                <div>
-                    <CustomButton onClick={() => router.push(`/account-holding`)}>
-                        Back To Account Holding
-                    </CustomButton>
-                </div>
-            </div>
-            <div className='p-4'>
-                <div className='grid grid-cols-3 md:grid-cols-3 gap-4'>
-                    <div>
-                        <CustomReactSelect label='Select Investor' items={investorList} bindName='label' bindValue='value' placeholder='select investor' value={investorId} onChange={(e: any) => handleInvestor(e.value)} />
-                    </div>
-                    {error &&
-                        <p className='text-error text-xs text-center'>{error}</p>
-                    }
-                </div>
-                <div className='grid grid-cols-3 md:grid-cols-3 gap-4 mt-4'>
-                    <div>
-                        <CustomReactSelect
-                            label='Bank Account'
-                            items={bankList}
-                            bindName='account_no'
-                            bindValue='account_no'
-                            value={accountNumber}
-                            onChange={(e: any) => handleAccount(e.account_no)}
-                        />
-                    </div>
-                    <div>
-                        <CustomInput
-                            label='Bank Name'
-                            disabled
-                            value={bankName}
-                            onChange={(e: any) => setBankName(e.bankName)}
-                        />
-                    </div>
-                    <div>
-                        <CustomInput
-                            label='IFSC Code'
-                            disabled
-                            value={ifscCode}
-                            onChange={(e: any) => setIfscCode(e.ifsc)}
-                        />
-                    </div>
-                </div>
-                <div className='grid grid-cols-3 md:grid-cols-3 gap-4 mt-4'>
-                    <div>
-                        <CustomInput
-                            label='MICR Code'
-                            disabled
-                            value={micrCode}
-                            onChange={(e: any) => setMicrCode(e.micr)}
-                        />
-                    </div>
-
-                    <div>
-                        <CustomReactSelect label='Registration Mode' items={regMode} bindName='name' bindValue='id' placeholder='--select--' onChange={(e: any) => {
-                            setRegistrationMode(e.id);
-                        }} value={registrationMode} />
-                    </div>
-
-
-                    <div>
-                        <CustomReactSelect label='Account Type' items={accountTypeList} bindName='name' bindValue='value' placeholder='--select--' value={accountType || ""} onChange={(e: any) => setAccountType(e.value)} />
-                    </div>
-                </div>
-
-                <div className='grid grid-cols-1 md:grid-cols-4 gap-4 mt-4'>
-
-                    <div>
-                        <CustomInput label='Start Date' type='date' value={startDate} max={formatDate(
-                            new Date())} onChange={(e) => setStartDate(e.target.value)} />
-                    </div>
-                    <div>
-                        <CustomInput label='End Date' type='date' value={endDate} min={formatDate(
-                            new Date())} onChange={(e) => setEndDate(e.target.value)}
-                        />
-                    </div>
-
-                    <div>
-                        <CustomReactSelect label={manType === "E-Mandate"
-                            ? "Limit"
-                            : "SI Amount"} items={perDay} bindName='name' bindValue='id' placeholder='--select--' onChange={(e: any) => {
-                                setCustomAmt(e.id);
-                            }} value={CustomAmt} />
-                    </div>
-                    {CustomAmt === "other" ? (
-                        <div>
-                            <CustomInput label='Custom Amount' />
+        <div className="min-h-screen bg-[#0A0A0A]">
+            <style>{datePickerStyles}</style>
+            <div className="w-full px-4 sm:px-6 py-6">
+                {/* Header Section */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-[#F59E0B]/20 rounded-lg">
+                            <CreditCard className="w-6 h-6 text-[#F59E0B]" />
                         </div>
-                    ) : null}
+                        <div>
+                            <CustomText className="font-semibold font-montserrat text-xl text-[#F9FAFB]">
+                                Create Mandates
+                            </CustomText>
+                            <CustomText className="text-sm text-[#9CA3AF] mt-1">
+                                Set up automated payment mandates for your investments
+                            </CustomText>
+                        </div>
+                    </div>
+                    <div>
+                        <CustomButton 
+                            onClick={() => router.push(`/account-holding`)}
+                            className="flex items-center gap-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white hover:opacity-90 transition-all"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            Back To Account Holding
+                        </CustomButton>
+                    </div>
+                </div>
 
+                {/* Main Form Card */}
+                <div className="bg-[#111111] rounded-xl shadow-lg border border-[#2A2A2A] overflow-hidden">
+                    <div className="p-6">
+                        {/* Error Message */}
+                        {error && (
+                            <div className="mb-6 p-4 bg-[#EF4444]/10 border border-[#EF4444]/30 rounded-lg flex items-center gap-3">
+                                <AlertCircle className="w-5 h-5 text-[#EF4444]" />
+                                <p className='text-[#EF4444] text-sm'>{error}</p>
+                            </div>
+                        )}
 
+                        {/* Investor Selection */}
+                        <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+                            <div className="md:col-span-1">
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    Select Investor
+                                </label>
+                                <CustomReactSelect 
+                                    items={investorList} 
+                                    bindName='label' 
+                                    bindValue='value' 
+                                    placeholder='select investor' 
+                                    value={investorId} 
+                                    onChange={(e: any) => handleInvestor(e.value)} 
+                                    className="bg-[#1F1A1A] border-[#2A2A2A] text-[#F9FAFB]"
+                                    styles={{
+                                        control: (base: any) => ({
+                                            ...base,
+                                            backgroundColor: '#1F1A1A',
+                                            borderColor: '#2A2A2A',
+                                            color: '#F9FAFB'
+                                        }),
+                                        menu: (base: any) => ({
+                                            ...base,
+                                            backgroundColor: '#1F1A1A',
+                                            border: '1px solid #2A2A2A'
+                                        }),
+                                        option: (base: any, state: any) => ({
+                                            ...base,
+                                            backgroundColor: state.isFocused ? '#2A2A2A' : '#1F1A1A',
+                                            color: '#F9FAFB',
+                                            cursor: 'pointer'
+                                        }),
+                                        singleValue: (base: any) => ({
+                                            ...base,
+                                            color: '#F9FAFB'
+                                        }),
+                                        input: (base: any) => ({
+                                            ...base,
+                                            color: '#F9FAFB'
+                                        }),
+                                        placeholder: (base: any) => ({
+                                            ...base,
+                                            color: '#9CA3AF'
+                                        })
+                                    }}
+                                />
+                            </div>
+                        </div>
 
+                        {/* Bank Details Section */}
+                        <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mt-6'>
+                            <div>
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    Bank Account
+                                </label>
+                                <CustomReactSelect
+                                    items={bankList}
+                                    bindName='account_no'
+                                    bindValue='account_no'
+                                    value={accountNumber}
+                                    onChange={(e: any) => handleAccount(e.account_no)}
+                                    className="bg-[#1F1A1A] border-[#2A2A2A] text-[#F9FAFB]"
+                                    styles={{
+                                        control: (base: any) => ({
+                                            ...base,
+                                            backgroundColor: '#1F1A1A',
+                                            borderColor: '#2A2A2A',
+                                            color: '#F9FAFB'
+                                        }),
+                                        menu: (base: any) => ({
+                                            ...base,
+                                            backgroundColor: '#1F1A1A',
+                                            border: '1px solid #2A2A2A'
+                                        }),
+                                        option: (base: any, state: any) => ({
+                                            ...base,
+                                            backgroundColor: state.isFocused ? '#2A2A2A' : '#1F1A1A',
+                                            color: '#F9FAFB',
+                                            cursor: 'pointer'
+                                        }),
+                                        singleValue: (base: any) => ({
+                                            ...base,
+                                            color: '#F9FAFB'
+                                        }),
+                                        input: (base: any) => ({
+                                            ...base,
+                                            color: '#F9FAFB'
+                                        }),
+                                        placeholder: (base: any) => ({
+                                            ...base,
+                                            color: '#9CA3AF'
+                                        })
+                                    }}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    Bank Name
+                                </label>
+                                <input
+                                    type="text"
+                                    disabled
+                                    value={bankName}
+                                    className="w-full px-4 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    IFSC Code
+                                </label>
+                                <input
+                                    type="text"
+                                    disabled
+                                    value={ifscCode}
+                                    className="w-full px-4 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed uppercase"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Additional Bank Details */}
+                        <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mt-6'>
+                            <div>
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    MICR Code
+                                </label>
+                                <input
+                                    type="text"
+                                    disabled
+                                    value={micrCode}
+                                    className="w-full px-4 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    Registration Mode
+                                </label>
+                                <CustomReactSelect 
+                                    items={regMode} 
+                                    bindName='name' 
+                                    bindValue='id' 
+                                    placeholder='--select--' 
+                                    onChange={(e: any) => {
+                                        setRegistrationMode(e.id);
+                                    }} 
+                                    value={registrationMode}
+                                    className="bg-[#1F1A1A] border-[#2A2A2A] text-[#F9FAFB]"
+                                    styles={{
+                                        control: (base: any) => ({
+                                            ...base,
+                                            backgroundColor: '#1F1A1A',
+                                            borderColor: '#2A2A2A',
+                                            color: '#F9FAFB'
+                                        }),
+                                        menu: (base: any) => ({
+                                            ...base,
+                                            backgroundColor: '#1F1A1A',
+                                            border: '1px solid #2A2A2A'
+                                        }),
+                                        option: (base: any, state: any) => ({
+                                            ...base,
+                                            backgroundColor: state.isFocused ? '#2A2A2A' : '#1F1A1A',
+                                            color: '#F9FAFB',
+                                            cursor: 'pointer'
+                                        }),
+                                        singleValue: (base: any) => ({
+                                            ...base,
+                                            color: '#F9FAFB'
+                                        }),
+                                        input: (base: any) => ({
+                                            ...base,
+                                            color: '#F9FAFB'
+                                        }),
+                                        placeholder: (base: any) => ({
+                                            ...base,
+                                            color: '#9CA3AF'
+                                        })
+                                    }}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    Account Type
+                                </label>
+                                <CustomReactSelect 
+                                    items={accountTypeList} 
+                                    bindName='name' 
+                                    bindValue='value' 
+                                    placeholder='--select--' 
+                                    value={accountType || ""} 
+                                    onChange={(e: any) => setAccountType(e.value)}
+                                    className="bg-[#1F1A1A] border-[#2A2A2A] text-[#F9FAFB]"
+                                    styles={{
+                                        control: (base: any) => ({
+                                            ...base,
+                                            backgroundColor: '#1F1A1A',
+                                            borderColor: '#2A2A2A',
+                                            color: '#F9FAFB'
+                                        }),
+                                        menu: (base: any) => ({
+                                            ...base,
+                                            backgroundColor: '#1F1A1A',
+                                            border: '1px solid #2A2A2A'
+                                        }),
+                                        option: (base: any, state: any) => ({
+                                            ...base,
+                                            backgroundColor: state.isFocused ? '#2A2A2A' : '#1F1A1A',
+                                            color: '#F9FAFB',
+                                            cursor: 'pointer'
+                                        }),
+                                        singleValue: (base: any) => ({
+                                            ...base,
+                                            color: '#F9FAFB'
+                                        }),
+                                        input: (base: any) => ({
+                                            ...base,
+                                            color: '#F9FAFB'
+                                        }),
+                                        placeholder: (base: any) => ({
+                                            ...base,
+                                            color: '#9CA3AF'
+                                        })
+                                    }}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Date and Amount Section */}
+                        <div className='grid grid-cols-1 md:grid-cols-4 gap-6 mt-6'>
+                            <div>
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    Start Date
+                                </label>
+                                <input 
+                                    type='date' 
+                                    value={startDate} 
+                                    max={formatDate(new Date())} 
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                    className="w-full px-4 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                                    style={{ colorScheme: 'dark' }}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    End Date
+                                </label>
+                                <input 
+                                    type='date' 
+                                    value={endDate} 
+                                    min={formatDate(new Date())} 
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    className="w-full px-4 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                                    style={{ colorScheme: 'dark' }}
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    {manType === "E-Mandate" ? "Limit Amount" : "SI Amount"}
+                                </label>
+                                <CustomReactSelect 
+                                    items={perDay} 
+                                    bindName='name' 
+                                    bindValue='id' 
+                                    placeholder='--select--' 
+                                    onChange={(e: any) => {
+                                        setCustomAmt(e.id);
+                                    }} 
+                                    value={CustomAmt}
+                                    className="bg-[#1F1A1A] border-[#2A2A2A] text-[#F9FAFB]"
+                                    styles={{
+                                        control: (base: any) => ({
+                                            ...base,
+                                            backgroundColor: '#1F1A1A',
+                                            borderColor: '#2A2A2A',
+                                            color: '#F9FAFB'
+                                        }),
+                                        menu: (base: any) => ({
+                                            ...base,
+                                            backgroundColor: '#1F1A1A',
+                                            border: '1px solid #2A2A2A'
+                                        }),
+                                        option: (base: any, state: any) => ({
+                                            ...base,
+                                            backgroundColor: state.isFocused ? '#2A2A2A' : '#1F1A1A',
+                                            color: '#F9FAFB',
+                                            cursor: 'pointer'
+                                        }),
+                                        singleValue: (base: any) => ({
+                                            ...base,
+                                            color: '#F9FAFB'
+                                        }),
+                                        input: (base: any) => ({
+                                            ...base,
+                                            color: '#F9FAFB'
+                                        }),
+                                        placeholder: (base: any) => ({
+                                            ...base,
+                                            color: '#9CA3AF'
+                                        })
+                                    }}
+                                />
+                            </div>
+                            
+                            {CustomAmt === "other" && (
+                                <div>
+                                    <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                        Custom Amount
+                                    </label>
+                                    <input 
+                                        type="number"
+                                        placeholder="Enter custom amount"
+                                        className="w-full px-4 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Submit Button Section */}
+                    <div className='p-6 border-t border-[#2A2A2A] bg-gradient-to-r from-[#1F1A1A] to-[#111111]'>
+                        <div className="flex justify-center">
+                            <button 
+                                onClick={handleSubmit}
+                                className="w-32 px-6 py-2.5 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg hover:opacity-90 transition-all duration-200 font-semibold shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled={isLoading}
+                            >
+                                {isLoading ? (
+                                    <div className="flex items-center justify-center gap-2">
+                                        <span>Wait...</span>
+                                        <Loader size="w-4 h-4" color="text-white" thickness="border-2" borderColor='border-[#3A3A3A]' />
+                                    </div>
+                                ) : (
+                                    'Register'
+                                )}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div className='p-4 text-center'>
-                <div>
-                    <CustomButton className='w-32' onClick={handleSubmit}>
-                        {isLoading ? `Wait...` :
-                            `Register`}
-                        {isLoading &&
-                            <Loader size="w-4 h-4" color="text-white" thickness="border-2" borderColor='border-gray-300' />
-                        }
-
-                    </CustomButton>
-                </div>
-            </div>
-
         </div>
     )
 }

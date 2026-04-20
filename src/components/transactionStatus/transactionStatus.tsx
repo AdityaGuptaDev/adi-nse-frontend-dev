@@ -78,7 +78,7 @@ const TransactionStatus = () => {
 
   return (
     <div className="max-w-8xl mx-auto">
-      <div className="bg-white rounded-lg">
+      <div className="bg-[#111111] rounded-lg">
         {/* Header */}
         <div className="text-center py-8">
           <h1 className="text-2xl font-normal text-base-content">

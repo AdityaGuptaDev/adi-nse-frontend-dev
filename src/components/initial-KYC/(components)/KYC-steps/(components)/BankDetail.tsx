@@ -569,7 +569,7 @@ const onScanCheque = async (index: number = 0) => {
 
               {fields.map((field, index) => (
                 <div key={field.id} className="mt-6">
-                  <div className="flex justify-between sm:justify-start items-center gap-3 mb-4 bg-white sticky z-10">
+                  <div className="flex justify-between sm:justify-start items-center gap-3 mb-4 bg-[#111111] sticky z-10">
                     <CustomText className="text-lg font-semibold">
                       Bank Account {index + 1}
                       {index === 0 && " (Primary)"}

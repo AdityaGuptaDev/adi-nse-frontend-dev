@@ -96,7 +96,7 @@ function ARNForm({ data, isView, isEdit, toggleForm }: ARNFormProps) {
     };
 
     return (
-        <div className="w-full p-6 bg-white border-t border-gray-200">
+        <div className="w-full p-6 bg-[#111111] border-t border-[#2A2A2A]">
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="grid lg:grid-cols-4 xl:grid-cols-4 gap-5">
 

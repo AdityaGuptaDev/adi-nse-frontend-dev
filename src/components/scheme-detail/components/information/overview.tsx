@@ -159,7 +159,7 @@ const Overview = ({ schemeData }: any) => {
 
   return (
     <div>
-      {/* <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-xs"> */}
+      {/* <div className="max-w-7xl mx-auto bg-[#111111] rounded-lg shadow-xs"> */}
       {/* Header */}
 
       {/* Main Content */}

@@ -77,13 +77,13 @@ const InvestmentTheme: React.FC<InvestmentThemesProps> = ({ data }) => {
                 isVisible={viewAllLoader}
                 message="Processing..."
             />
-            <div className="bg-white">
+            <div className="bg-[#111111]">
                 <div className="flex items-center justify-between mb-4">
-                    <CustomText className="text-lg font-montserrat font-semibold text-gray-900">
+                    <CustomText className="text-lg font-montserrat font-semibold text-[#F9FAFB]">
                         Investment Themes
                     </CustomText>
                     <CustomButton
-                        className="p-0 h-auto min-h-0 !text-secondary-content !bg-white"
+                        className="p-0 h-auto min-h-0 !text-secondary-content !bg-[#111111]"
                         onClick={() => onChangeViewAll()}
                     >
                         View All <span><FaAngleRight /></span>
@@ -94,7 +94,7 @@ const InvestmentTheme: React.FC<InvestmentThemesProps> = ({ data }) => {
                     {themesData.map((item, index) => (
                         <div
                             key={item.id}
-                            className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-all duration-200 cursor-pointer"
+                            className="bg-[#111111] border border-[#2A2A2A] rounded-lg p-4 hover:shadow-lg transition-all duration-200 cursor-pointer"
                         >
                             {/* AMC Icon/Logo */}
                             <div className="flex justify-center items-center text-center mb-3">
@@ -109,13 +109,13 @@ const InvestmentTheme: React.FC<InvestmentThemesProps> = ({ data }) => {
                             </div>
 
                             <div className="text-center mb-3">
-                                <CustomText className="font-semibold text-gray-900 text-base leading-tight">
+                                <CustomText className="font-semibold text-[#F9FAFB] text-base leading-tight">
                                     {item.name}
                                 </CustomText>
                             </div>
 
                             <div className="text-center mb-4">
-                                <CustomText className="font-medium text-gray-900 text-sm leading-tight">
+                                <CustomText className="font-medium text-[#F9FAFB] text-sm leading-tight">
                                     {item.description}
                                 </CustomText>
                             </div>
@@ -123,7 +123,7 @@ const InvestmentTheme: React.FC<InvestmentThemesProps> = ({ data }) => {
                             <div className="flex justify-between items-center">
                                 {/* Schemes Count */}
                                 <div className="">
-                                    <CustomText className="text-xs text-gray-500 ">
+                                    <CustomText className="text-xs text-[#9CA3AF] ">
                                         {item.schemes}  Schemes
                                     </CustomText>
                                 </div>

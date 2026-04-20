@@ -305,7 +305,7 @@ const UploadDashboard = () => {
   const uploadSections = [
     {
       title: "📘 CAMS Uploads",
-      icon: <Database className="h-5 w-5 text-blue-500" />,
+      icon: <Database className="h-5 w-5 text-[#F59E0B]" />,
       items: [
         { label: "Investor DBF (wbr2c)", api: "/cams/wbr2c", pattern: "Must end with R9.dbf" },
         { label: "AUM DBF (wbr22)", api: "/cams/wbr22", pattern: "Must end with R22.dbf" },
@@ -318,7 +318,7 @@ const UploadDashboard = () => {
     },
     {
       title: "📗 KFintech Uploads",
-      icon: <Database className="h-5 w-5 text-green-500" />,
+      icon: <Database className="h-5 w-5 text-[#F59E0B]" />,
       items: [
         { label: "AUM DBF (wbcum)", api: "/kfintech/wbcum", pattern: "Must contain W0C" },
         { label: "Transaction DBF (wbtrn)", api: "/kfintech/wbtrn", pattern: "Must contain W0T" },
@@ -334,30 +334,30 @@ const UploadDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#0A0A0A]">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+      <div className="bg-[#111111] border-b border-[#2A2A2A] px-6 py-4 flex flex-wrap justify-between items-center gap-4">
         <div className="flex items-center space-x-4">
-          <h1 className="text-lg font-medium text-gray-900 flex items-center">
-            <Upload className="h-5 w-5 text-teal-500 mr-2" />
+          <h1 className="text-lg font-medium text-[#F9FAFB] flex items-center">
+            <Upload className="h-5 w-5 text-[#F59E0B] mr-2" />
             Mutual Fund Data Processing (CAMS & KFintech)
           </h1>
           {uploadedFiles.length > 0 && (
-            <div className="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-sm font-medium">
+            <div className="bg-[#F59E0B]/20 text-[#F59E0B] px-3 py-1 rounded-full text-sm font-medium">
                {uploadedFiles.length} files uploaded
             </div>
           )}
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4 flex-wrap gap-3">
           <button
             onClick={runBackgroundJob}
             disabled={loading["job"]}
             className={`${
               loading["job"]
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-orange-500 hover:bg-orange-600"
-            } text-white px-4 py-2 rounded-md text-sm font-medium flex items-center space-x-2 transition-colors`}
+                ? "bg-[#2A2A2A] cursor-not-allowed opacity-50"
+                : "bg-gradient-to-r from-[#F59E0B] to-[#B45309] hover:opacity-90"
+            } text-white px-4 py-2 rounded-md text-sm font-medium flex items-center space-x-2 transition-all`}
           >
             {loading["job"] ? (
               <>
@@ -377,21 +377,21 @@ const UploadDashboard = () => {
             placeholder="Enter API Token"
             value={token}
             onChange={(e) => setToken(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 w-72"
+            className="px-3 py-2 border border-[#2A2A2A] rounded-md text-sm focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent bg-[#1F1A1A] text-[#F9FAFB] placeholder:text-[#9CA3AF] w-72"
           />
         </div>
       </div>
 
       {status["job"] && (
-        <div className="mx-6 mt-4 p-4 bg-white border border-gray-200 rounded-lg">
+        <div className="mx-6 mt-4 p-4 bg-[#111111] border border-[#2A2A2A] rounded-lg">
           <div className={`text-sm flex items-center space-x-2 ${
-            status["job"].includes("") ? "text-green-600" : 
-            status["job"].includes("") ? "text-red-600" : 
-            "text-blue-600"
+            status["job"].includes("Success") ? "text-green-400" : 
+            status["job"].includes("failed") ? "text-red-400" : 
+            "text-[#F59E0B]"
           }`}>
-            {status["job"].includes("") ? (
+            {status["job"].includes("Success") ? (
               <CheckCircle className="h-4 w-4" />
-            ) : status["job"].includes("") ? (
+            ) : status["job"].includes("failed") ? (
               <AlertCircle className="h-4 w-4" />
             ) : (
               <Play className="h-4 w-4" />
@@ -406,32 +406,32 @@ const UploadDashboard = () => {
         {uploadSections.map((section, sectionIdx) => (
           <div
             key={sectionIdx}
-            className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden"
+            className="bg-[#111111] border border-[#2A2A2A] rounded-xl shadow-lg overflow-hidden"
           >
             {/* Accordion Header */}
             <button
               onClick={() => toggleAccordion(section.title)}
-              className="w-full flex justify-between items-center px-5 py-4 bg-gray-100 hover:bg-gray-200 transition-colors"
+              className="w-full flex justify-between items-center px-5 py-4 bg-[#1F1A1A] hover:bg-[#2A2A2A] transition-colors"
             >
               <div className="flex items-center space-x-3">
                 {section.icon}
-                <h2 className="text-base font-semibold text-gray-800">{section.title}</h2>
-                <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
+                <h2 className="text-base font-semibold text-[#F9FAFB]">{section.title}</h2>
+                <span className="bg-[#F59E0B]/20 text-[#F59E0B] px-2 py-1 rounded-full text-xs font-medium">
                   {getUploadedFilesCount(section.title)}/{section.items.length} uploaded
                 </span>
               </div>
               <div className="flex items-center space-x-2">
                 {openAccordion === section.title ? (
-                  <ChevronUp className="h-5 w-5 text-gray-500" />
+                  <ChevronUp className="h-5 w-5 text-[#9CA3AF]" />
                 ) : (
-                  <ChevronDown className="h-5 w-5 text-gray-500" />
+                  <ChevronDown className="h-5 w-5 text-[#9CA3AF]" />
                 )}
               </div>
             </button>
 
          
             {openAccordion === section.title && (
-              <div className="p-5 space-y-6 bg-white">
+              <div className="p-5 space-y-6 bg-[#111111]">
                 {section.items.map((item, idx) => {
                   const fileKey = getFileKey(section.title, item.label);
                   const isFileSelected = !!selectedFiles[fileKey];
@@ -442,21 +442,21 @@ const UploadDashboard = () => {
                   return (
                     <div
                       key={idx}
-                      className="border border-gray-200 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow"
+                      className="border border-[#2A2A2A] rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow hover:border-[#F59E0B]/50"
                     >
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-sm font-medium text-gray-800 flex items-center space-x-2">
-                          <FileUp className="h-4 w-4 text-teal-500" />
+                      <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+                        <h3 className="text-sm font-medium text-[#F9FAFB] flex items-center space-x-2">
+                          <FileUp className="h-4 w-4 text-[#F59E0B]" />
                           <span>{item.label}</span>
                         </h3>
                         <div className="flex items-center space-x-2">
-                          <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
+                          <span className="text-xs bg-[#2A2A2A] text-[#9CA3AF] px-2 py-1 rounded">
                             {item.pattern}
                           </span>
                           {isFileSelected && (
                             <button
                               onClick={() => clearFileSelection(section.title, item.label)}
-                              className="text-gray-400 hover:text-red-500 transition-colors"
+                              className="text-[#9CA3AF] hover:text-red-400 transition-colors"
                               title="Clear selection"
                             >
                               <X className="h-4 w-4" />
@@ -476,7 +476,7 @@ const UploadDashboard = () => {
                             const file = e.target.files ? e.target.files[0] : null;
                             handleFileSelect(section.title, item.label, file);
                           }}
-                          className="block w-64 text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 cursor-pointer"
+                          className="block w-64 text-sm text-[#9CA3AF] file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[#F59E0B]/20 file:text-[#F59E0B] hover:file:bg-[#F59E0B]/30 cursor-pointer bg-[#1F1A1A] border border-[#2A2A2A] rounded-md p-1.5"
                           accept=".dbf,.DBF"
                         />
 
@@ -485,11 +485,11 @@ const UploadDashboard = () => {
                           disabled={loading[fileKey] || !selectedFiles[fileKey] || isUploaded}
                           className={`${
                             loading[fileKey]
-                              ? "bg-gray-400 cursor-not-allowed"
+                              ? "bg-[#2A2A2A] cursor-not-allowed opacity-50"
                               : !selectedFiles[fileKey] || isUploaded
-                              ? "bg-gray-300 cursor-not-allowed"
-                              : "bg-teal-500 hover:bg-teal-600"
-                          } text-white px-5 py-2 rounded-md text-sm font-medium flex items-center space-x-2 transition-colors`}
+                              ? "bg-[#2A2A2A] cursor-not-allowed opacity-50"
+                              : "bg-gradient-to-r from-[#F59E0B] to-[#B45309] hover:opacity-90"
+                          } text-white px-5 py-2 rounded-md text-sm font-medium flex items-center space-x-2 transition-all`}
                         >
                           {loading[fileKey] ? (
                             <>
@@ -514,16 +514,16 @@ const UploadDashboard = () => {
                       {status[fileKey] && (
                         <div
                           className={`mt-3 text-sm flex items-center space-x-2 ${
-                            status[fileKey].includes("")
-                              ? "text-green-600"
-                              : status[fileKey].includes("") || status[fileKey].includes("")
-                              ? "text-red-600"
-                              : "text-gray-600"
+                            status[fileKey].includes("Success") || status[fileKey].includes("success")
+                              ? "text-green-400"
+                              : status[fileKey].includes("failed") || status[fileKey].includes("Invalid")
+                              ? "text-red-400"
+                              : "text-[#9CA3AF]"
                           }`}
                         >
-                          {status[fileKey].includes("") ? (
+                          {status[fileKey].includes("Success") || status[fileKey].includes("success") ? (
                             <CheckCircle className="h-4 w-4" />
-                          ) : status[fileKey].includes("") || status[fileKey].includes("") ? (
+                          ) : status[fileKey].includes("failed") || status[fileKey].includes("Invalid") ? (
                             <AlertCircle className="h-4 w-4" />
                           ) : (
                             <FileText className="h-4 w-4" />
@@ -541,19 +541,19 @@ const UploadDashboard = () => {
 
        
         {uploadedFiles.length > 0 && (
-          <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+          <div className="bg-[#111111] border border-[#2A2A2A] rounded-xl shadow-lg overflow-hidden">
           
-            <div className="w-full flex justify-between items-center px-5 py-4 bg-purple-100">
+            <div className="w-full flex justify-between items-center px-5 py-4 bg-[#1F1A1A]">
               <div className="flex items-center space-x-3">
-                <History className="h-5 w-5 text-purple-500" />
-                <h2 className="text-base font-semibold text-gray-800">Recent Uploads</h2>
-                <span className="bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs font-medium">
+                <History className="h-5 w-5 text-[#F59E0B]" />
+                <h2 className="text-base font-semibold text-[#F9FAFB]">Recent Uploads</h2>
+                <span className="bg-[#F59E0B]/20 text-[#F59E0B] px-2 py-1 rounded-full text-xs font-medium">
                   {uploadedFiles.length} files
                 </span>
               </div>
               <button
                 onClick={clearUploadHistory}
-                className="text-purple-600 hover:text-purple-800 text-sm font-medium flex items-center space-x-1"
+                className="text-[#F59E0B] hover:text-[#FBBF24] text-sm font-medium flex items-center space-x-1 transition-colors"
               >
                 <X className="h-4 w-4" />
                 <span>Clear All</span>
@@ -565,29 +565,29 @@ const UploadDashboard = () => {
                 {uploadedFiles.slice().reverse().map((file, index) => (
                   <div
                     key={index}
-                    className="border border-gray-200 rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition-colors"
+                    className="border border-[#2A2A2A] rounded-lg p-4 bg-[#1F1A1A] hover:bg-[#2A2A2A] transition-colors"
                   >
                     <div className="flex justify-between items-start mb-2">
                       <div className="flex-1">
-                        <div className="font-medium text-sm text-gray-800 truncate">
+                        <div className="font-medium text-sm text-[#F9FAFB] truncate">
                           {file.fileName}
                         </div>
-                        <div className="text-xs text-gray-500 mt-1">
+                        <div className="text-xs text-[#9CA3AF] mt-1">
                           {file.uploadTime.toLocaleDateString()} at {file.uploadTime.toLocaleTimeString()}
                         </div>
-                        <div className="text-xs text-teal-600 font-medium mt-1">
+                        <div className="text-xs text-[#F59E0B] font-medium mt-1">
                           {file.sectionKey.split('-')[1]}
                         </div>
                       </div>
                       <button
                         onClick={() => removeUploadedFile(uploadedFiles.length - 1 - index)}
-                        className="text-gray-400 hover:text-red-500 ml-2 flex-shrink-0"
+                        className="text-[#9CA3AF] hover:text-red-400 ml-2 flex-shrink-0 transition-colors"
                         title="Remove from history"
                       >
                         <X className="h-3 w-3" />
                       </button>
                     </div>
-                    <div className="text-xs text-gray-400 truncate">
+                    <div className="text-xs text-[#9CA3AF] truncate">
                       {file.apiPath}
                     </div>
                   </div>
@@ -600,25 +600,25 @@ const UploadDashboard = () => {
 
      
       {showHistoryPanel && uploadedFiles.length > 0 && (
-        <div className="fixed bottom-4 right-4 bg-white border border-gray-200 rounded-lg shadow-lg p-4 max-w-sm">
+        <div className="fixed bottom-4 right-4 bg-[#111111] border border-[#2A2A2A] rounded-lg shadow-2xl p-4 max-w-sm">
           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-sm font-semibold text-gray-800 flex items-center">
-              <FileText className="h-4 w-4 mr-2 text-teal-500" />
+            <h3 className="text-sm font-semibold text-[#F9FAFB] flex items-center">
+              <FileText className="h-4 w-4 mr-2 text-[#F59E0B]" />
               Recently Uploaded ({uploadedFiles.length})
             </h3>
             <button
               onClick={() => setShowHistoryPanel(false)}
-              className="text-gray-400 hover:text-red-500 transition-colors"
+              className="text-[#9CA3AF] hover:text-red-400 transition-colors"
               title="Close panel"
             >
               <X className="h-4 w-4" />
             </button>
           </div>
-          <div className="max-h-48 overflow-y-auto space-y-2">
+          <div className="max-h-48 overflow-y-auto space-y-2 custom-scrollbar">
             {uploadedFiles.slice(-5).reverse().map((file, index) => (
-              <div key={index} className="text-xs text-gray-600 p-2 bg-gray-50 rounded">
-                <div className="font-medium truncate">{file.fileName}</div>
-                <div className="text-gray-400 text-xs">
+              <div key={index} className="text-xs text-[#9CA3AF] p-2 bg-[#1F1A1A] rounded border border-[#2A2A2A]">
+                <div className="font-medium truncate text-[#F9FAFB]">{file.fileName}</div>
+                <div className="text-[#9CA3AF] text-xs mt-1">
                   {file.uploadTime.toLocaleTimeString()} • {file.sectionKey.split('-')[1]}
                 </div>
               </div>
@@ -626,6 +626,23 @@ const UploadDashboard = () => {
           </div>
         </div>
       )}
+
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #2A2A2A;
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #F59E0B;
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #B45309;
+        }
+      `}</style>
     </div>
   );
 };

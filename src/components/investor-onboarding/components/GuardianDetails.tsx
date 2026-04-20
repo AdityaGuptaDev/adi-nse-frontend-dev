@@ -44,7 +44,6 @@ interface FormData {
     relationshipWithMinor: string,
     proofOfRelationship: string,
 
-
     // Additional KYC Details
     grossAnnualIncome: string;
     networth: string;
@@ -69,8 +68,7 @@ interface FormData {
 
 const LS_KEY = "ecan-soleprimary";
 
-
-export default function SolePrimaryHolder({
+export default function GuardianDetails({
     onCompletionUpdate,
     onNext,
     onPrevious,
@@ -81,7 +79,6 @@ export default function SolePrimaryHolder({
 }: SolePrimaryHolderProps) {
 
     const [formData, setFormData] = useState<FormData>({
-        // Basic Details
         name: '',
         dateOfBirth: '',
         pan: '',
@@ -94,12 +91,8 @@ export default function SolePrimaryHolder({
         email: '',
         mobileDeclaration: '',
         emailDeclaration: '',
-
         relationshipWithMinor: '',
         proofOfRelationship: '',
-
-
-        // Additional KYC Details
         grossAnnualIncome: '',
         networth: '',
         networthDate: '',
@@ -109,8 +102,6 @@ export default function SolePrimaryHolder({
         kraAddressType: '',
         sourceOfWealthOther: '',
         occupationOther: '',
-
-        // FATCA Details
         taxResidency: 'N',
         placeOfBirth: '',
         countryOfBirth: '',
@@ -121,21 +112,12 @@ export default function SolePrimaryHolder({
         taxIdentificationType: '',
     });
 
-    //const user: any = getLS(USER_DATA);
-    //const user: any = getLS("INVESTOR_DATA") || getLS("USER_DATA");
-
     const user: any = getLS("INVESTOR_DATA") || getLS(USER_DATA);
-
-
     const holding_nature = user?.InvestorRegistration?.holding_nature;
-
     const investor_category = user?.InvestorRegistration?.investor_category;
-
-
 
     const [showTaxSection, setShowTaxSection] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
-
     const [singzyData, setSingzyData] = useState<any>([]);
     const [userData, setUserData] = useState<any>("");
     const [FATCALoader, setFATCALoader] = useState<any>(false);
@@ -147,36 +129,17 @@ export default function SolePrimaryHolder({
     const [isMember, setIsMember] = useState(false);
     const [isError, setIsError] = useState(false);
 
-
-
     useEffect(() => {
         const loadData = async () => {
             const res = await fetchHolderDetails(user?.InvestorRegistration?.id);
             const result = res.data.data.data;
             console.log("FETCH HOLDER DETAILS ", result)
-            // setUserData(res.data);
-
-            const dob = user?.InvestorRegistration?.dob;
-            console.log("USESSSSSSSS", result?.basicDetails)
-            //const gender = data?.gender;
-            /* setFormData(prev => ({
-                 ...prev,
-                 name: user?.InvestorRegistration?.name,
-                 pan: user?.InvestorRegistration?.pan_no,
-                 mobileNumber: user?.mobile,
-                 email: result?.basicDetails[1]?.email,
-                 dateOfBirth: toDateInputValue(dob),
-                 taxResidency: 'N',
-             }));*/
 
             if (!result) return;
-
 
             const basic = Array.isArray(result?.basicDetails)
                 ? result.basicDetails[1]
                 : result?.basicDetails || {};
-
-
 
             const fatca = Array.isArray(result?.fatca)
                 ? result.fatca[1]
@@ -187,7 +150,6 @@ export default function SolePrimaryHolder({
             const additionalKyc = Array.isArray(result?.additionalKyc)
                 ? result.additionalKyc[1]
                 : result?.additionalKyc || {};
-
 
             setFormData(prev => ({
                 ...prev,
@@ -203,7 +165,6 @@ export default function SolePrimaryHolder({
                 user: user?.email,
                 mobileDeclaration: basic?.mobile_declaration,
                 emailDeclaration: basic?.email_declaration,
-
                 grossAnnualIncome: additionalKyc?.gross_annual_income,
                 networth: additionalKyc?.networth,
                 networthDate: additionalKyc?.networth_as_on,
@@ -213,7 +174,6 @@ export default function SolePrimaryHolder({
                 kraAddressType: additionalKyc?.kra_address_type,
                 sourceOfWealthOther: '',
                 occupationOther: '',
-
                 taxResidency: fatca?.is_tax_resident_other_than_india || 'N',
                 placeOfBirth: fatca?.place_of_birth,
                 countryOfBirth: fatca?.country_of_birth || '101',
@@ -222,15 +182,11 @@ export default function SolePrimaryHolder({
                 taxCountry: '',
                 taxIdentificationNumber: '',
                 taxIdentificationType: '',
-
-
             }));
-
         };
 
         loadData();
     }, []);
-
 
     const toDateInputValue = (dateString: string) => {
         if (!dateString) return "";
@@ -241,22 +197,14 @@ export default function SolePrimaryHolder({
         return `${year}-${month}-${day}`;
     };
 
-    // Alternative validation approach
-    const isFormValid =
-        formData.name !== '' &&
-        formData.pan !== ''
+    const isFormValid = formData.name !== '' && formData.pan !== '';
 
-
-    // Only call onCompletionUpdate when the validity actually changes
     useEffect(() => {
         onCompletionUpdate(isFormValid);
     }, [isFormValid, onCompletionUpdate]);
 
-
     const handleInputChange = (field: keyof FormData, value: string) => {
         setFormData(prev => ({ ...prev, [field]: value }));
-
-        // Clear error when user starts typing
         if (errors[field]) {
             setErrors(prev => ({ ...prev, [field]: '' }));
         }
@@ -313,21 +261,18 @@ export default function SolePrimaryHolder({
                 political_exposure: formData.pepStatus,
                 kra_address_type: formData.kraAddressType
             },
-
             fatca: {
                 investor_id: investorId,
-                is_tax_resident_other_than_india: formData.taxResidency, // boolean
+                is_tax_resident_other_than_india: formData.taxResidency,
                 place_of_birth: formData.placeOfBirth,
                 country_of_birth: formData.countryOfBirth,
                 country_of_citizenship: formData.countryOfCitizenship,
                 country_of_nationality: formData.countryOfNationality,
-                tax_residency_countries: formData.taxCountry, // array of strings or comma-separated text
-                tax_identification_numbers: formData.taxIdentificationNumber, // array of strings or comma-separated text
-                tax_identification_types: formData.taxIdentificationType // array of strings or comma-separated text
+                tax_residency_countries: formData.taxCountry,
+                tax_identification_numbers: formData.taxIdentificationNumber,
+                tax_identification_types: formData.taxIdentificationType
             }
-
         }
-
 
         let res: any = await api.post(`/kyc/update-basic-details`, payload);
         console.log(res)
@@ -335,7 +280,6 @@ export default function SolePrimaryHolder({
             onNext();
         }
     };
-
 
     const incomeOptions = [
         { value: '01', label: 'BELOW 1 LAC' },
@@ -372,8 +316,6 @@ export default function SolePrimaryHolder({
         { value: '08', label: 'Others' },
     ];
 
-
-
     const declarationOptions = [
         { value: '', label: 'Select' },
         { value: 'GD', label: 'Guardian' },
@@ -402,7 +344,6 @@ export default function SolePrimaryHolder({
         getDropdown()
     }, []);
 
-    // Set default India when country list is loaded
     useEffect(() => {
         if (countryList.length > 0) {
             const indiaCountry = countryList.find((country: any) =>
@@ -414,7 +355,6 @@ export default function SolePrimaryHolder({
     const getCountry = async () => {
         try {
             let country = await api.get(`/country/getAllCountry`);
-
             if (country?.data?.data) {
                 setCountryList(country?.data?.data);
             }
@@ -441,11 +381,9 @@ export default function SolePrimaryHolder({
         try {
             let res: any = await api.get(`/kyc/get-fatca-dropdown`);
             let { addresslist, incomeList, occupationList, annualIncome } = res.data.data
-
             setIncomeListData(incomeList)
             setOccupationListData(occupationList)
             setAnnualIncomeData(annualIncome)
-
         } catch (error) {
             handleServerError(error);
         }
@@ -456,93 +394,82 @@ export default function SolePrimaryHolder({
             handleInputChange("countryOfBirth", "101");
             handleInputChange("countryOfCitizenship", "101");
             handleInputChange("countryOfNationality", "101");
-
         }
     }, []);
 
     return (
-        <form onSubmit={handleSubmit} className="p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">Guardian Details</h2>
+        <form onSubmit={handleSubmit} className="p-6 bg-[#111111] rounded-xl border border-[#2A2A2A] shadow-xl">
+            <h2 className="text-xl font-semibold bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent mb-6">Guardian Details</h2>
 
             {/* Basic Details Section */}
-            <div className="bg-white rounded-lg border border-gray-200 mb-6">
-                <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-                    <h3 className="text-lg font-medium text-gray-900">Basic Details</h3>
+            <div className="bg-[#111111] rounded-lg border border-[#2A2A2A] mb-6">
+                <div className="bg-[#1F1A1A] px-4 py-3 border-b border-[#2A2A2A] rounded-t-lg">
+                    <h3 className="text-lg font-medium text-[#F9FAFB]">Basic Details</h3>
                 </div>
                 <div className="p-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         {/* Name */}
                         <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                                Name <span className="text-red-500">*</span>
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Name <span className="text-[#F59E0B]">*</span>
                             </label>
                             <input
                                 type="text"
-                                id="name"
-
                                 value={formData.name}
                                 onChange={(e) => handleInputChange('name', e.target.value)}
-                                className="w-full bg-gray-100 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase"
                                 maxLength={100}
                             />
-                            {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                            {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
                         </div>
 
                         {/* Date of Birth */}
                         <div>
-                            <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700 mb-2">
-                                Date of Birth <span className="text-red-500">*</span>
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Date of Birth <span className="text-[#F59E0B]">*</span>
                             </label>
-
                             <input
                                 type="date"
-                                id="dateOfBirth"
                                 value={formData.dateOfBirth}
                                 onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             />
-                            {errors.dateOfBirth && <p className="text-red-500 text-xs mt-1">{errors.dateOfBirth}</p>}
+                            {errors.dateOfBirth && <p className="text-red-400 text-xs mt-1">{errors.dateOfBirth}</p>}
                         </div>
 
                         {/* PAN */}
                         <div>
-                            <label htmlFor="pan" className="block text-sm font-medium text-gray-700 mb-2">
-                                PAN / PEKRN <span className="text-red-500">*</span>
-
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                PAN / PEKRN <span className="text-[#F59E0B]">*</span>
                             </label>
                             <input
                                 type="text"
-                                id="pan"
-
                                 value={formData.pan}
                                 onChange={(e) => handleInputChange('pan', e.target.value.toUpperCase())}
-                                className="w-full bg-gray-100 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase"
                                 maxLength={10}
                             />
-                            {errors.pan && <p className="text-red-500 text-xs mt-1">{errors.pan}</p>}
+                            {errors.pan && <p className="text-red-400 text-xs mt-1">{errors.pan}</p>}
                         </div>
                     </div>
 
                     {/* Note */}
                     <div className="mb-6">
-                        <p className="text-red-600 text-sm font-semibold">
+                        <p className="text-[#F59E0B] text-sm font-semibold">
                             Please provide Name and DOB as per Income Tax Department (ITD) records.
                         </p>
                     </div>
+
                     {/* Gender Selection */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         <div className="md:col-start-2">
-                            <label htmlFor="gender" className="block text-sm font-medium text-gray-700 mb-2 text-right">
-                                Gender <span className="text-red-500">*</span>
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2 text-right">
+                                Gender <span className="text-[#F59E0B]">*</span>
                             </label>
                             <select
-                                id="gender"
-                                name="gender"
                                 value={formData.gender}
                                 onChange={(e) => handleInputChange('gender', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                aria-describedby={errors.gender ? "gender-error" : undefined}
-                                aria-invalid={!!errors.gender}
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             >
                                 <option value="">Select Gender</option>
                                 {data?.gender?.map((option: any) => (
@@ -551,11 +478,7 @@ export default function SolePrimaryHolder({
                                     </option>
                                 ))}
                             </select>
-                            {errors.gender && (
-                                <p id="gender-error" className="text-red-500 text-xs mt-1">
-                                    {errors.gender}
-                                </p>
-                            )}
+                            {errors.gender && <p className="text-red-400 text-xs mt-1">{errors.gender}</p>}
                         </div>
                     </div>
 
@@ -563,7 +486,7 @@ export default function SolePrimaryHolder({
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         {/* Residential Phone */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
                                 Res. (ISD-STD-Phone)
                             </label>
                             <div className="flex gap-2">
@@ -571,21 +494,21 @@ export default function SolePrimaryHolder({
                                     type="text"
                                     value={formData.resISD}
                                     onChange={(e) => handleInputChange('resISD', e.target.value)}
-                                    className="w-1/4 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
+                                    className="w-1/4 px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent text-right"
                                     maxLength={5}
                                 />
                                 <input
                                     type="text"
                                     value={formData.resSTD}
                                     onChange={(e) => handleInputChange('resSTD', e.target.value)}
-                                    className="w-1/4 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
+                                    className="w-1/4 px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent text-right"
                                     maxLength={5}
                                 />
                                 <input
                                     type="text"
                                     value={formData.resPhone}
                                     onChange={(e) => handleInputChange('resPhone', e.target.value)}
-                                    className="w-2/4 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-2/4 px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                                     maxLength={15}
                                 />
                             </div>
@@ -593,42 +516,41 @@ export default function SolePrimaryHolder({
 
                         {/* Mobile Number */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Mobile (ISD-Mobile) <span className="text-red-500">*</span>
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Mobile (ISD-Mobile) <span className="text-[#F59E0B]">*</span>
                             </label>
                             <div className="flex gap-2">
                                 <input
                                     type="text"
                                     value={formData.mobileISD}
                                     onChange={(e) => handleInputChange('mobileISD', e.target.value)}
-                                    className="w-1/4 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
+                                    className="w-1/4 px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent text-right"
                                     maxLength={5}
                                 />
                                 <input
                                     type="text"
                                     value={formData.mobileNumber}
                                     onChange={(e) => handleInputChange('mobileNumber', e.target.value)}
-                                    className="w-3/4 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-3/4 px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                                     maxLength={15}
                                 />
                             </div>
-                            {errors.mobileNumber && <p className="text-red-500 text-xs mt-1">{errors.mobileNumber}</p>}
+                            {errors.mobileNumber && <p className="text-red-400 text-xs mt-1">{errors.mobileNumber}</p>}
                         </div>
 
                         {/* Email */}
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                                Email <span className="text-red-500">*</span>
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Email <span className="text-[#F59E0B]">*</span>
                             </label>
                             <input
                                 type="email"
-                                id="email"
                                 value={formData.email}
                                 onChange={(e) => handleInputChange('email', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                                 maxLength={100}
                             />
-                            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                            {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
                         </div>
                     </div>
 
@@ -637,14 +559,13 @@ export default function SolePrimaryHolder({
                         <div></div>
                         {/* Mobile Declaration */}
                         <div>
-                            <label htmlFor="mobileDeclaration" className="block text-sm font-medium text-gray-700 mb-2">
-                                Mobile Declaration <span className="text-red-500">*</span>
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Mobile Declaration <span className="text-[#F59E0B]">*</span>
                             </label>
                             <select
-                                id="mobileDeclaration"
                                 value={formData.mobileDeclaration}
                                 onChange={(e) => handleInputChange('mobileDeclaration', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 {declarationOptions.map(option => (
@@ -653,19 +574,18 @@ export default function SolePrimaryHolder({
                                     </option>
                                 ))}
                             </select>
-                            {errors.mobileDeclaration && <p className="text-red-500 text-xs mt-1">{errors.mobileDeclaration}</p>}
+                            {errors.mobileDeclaration && <p className="text-red-400 text-xs mt-1">{errors.mobileDeclaration}</p>}
                         </div>
 
                         {/* Email Declaration */}
                         <div>
-                            <label htmlFor="emailDeclaration" className="block text-sm font-medium text-gray-700 mb-2">
-                                Email Declaration <span className="text-red-500">*</span>
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Email Declaration <span className="text-[#F59E0B]">*</span>
                             </label>
                             <select
-                                id="emailDeclaration"
                                 value={formData.emailDeclaration}
                                 onChange={(e) => handleInputChange('emailDeclaration', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 {declarationOptions.map(option => (
@@ -674,77 +594,71 @@ export default function SolePrimaryHolder({
                                     </option>
                                 ))}
                             </select>
-                            {errors.emailDeclaration && <p className="text-red-500 text-xs mt-1">{errors.emailDeclaration}</p>}
+                            {errors.emailDeclaration && <p className="text-red-400 text-xs mt-1">{errors.emailDeclaration}</p>}
                         </div>
+                    </div>
 
-                        {/* Guardian Specific Details Section */}
+                    {/* Guardian Specific Details Section */}
+                    <div className="mt-6 pt-4 border-t border-[#2A2A2A]">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Relationship with Minor */}
+                            <div>
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    Relationship with Minor <span className="text-[#F59E0B]">*</span>
+                                </label>
+                                <select
+                                    value={formData.relationshipWithMinor}
+                                    onChange={(e) => handleInputChange('relationshipWithMinor', e.target.value)}
+                                    className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                                >
+                                    {relationshipWithMinorOptions.map(option => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.relationshipWithMinor && <p className="text-red-400 text-xs mt-1">{errors.relationshipWithMinor}</p>}
+                            </div>
 
-                        <div className="p-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Relationship with Minor */}
-                                <div>
-                                    <label htmlFor="relationshipWithMinor" className="block text-sm font-medium text-gray-700 mb-2">
-                                        Relationship with Minor <span className="text-red-500">*</span>
-                                    </label>
-                                    <select
-                                        id="relationshipWithMinor"
-                                        value={formData.relationshipWithMinor}
-                                        onChange={(e) => handleInputChange('relationshipWithMinor', e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    >
-                                        {relationshipWithMinorOptions.map(option => (
-                                            <option key={option.value} value={option.value}>
-                                                {option.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {errors.relationshipWithMinor && <p className="text-red-500 text-xs mt-1">{errors.relationshipWithMinor}</p>}
-                                </div>
-
-                                {/* Proof of Relationship */}
-                                <div>
-                                    <label htmlFor="proofOfRelationship" className="block text-sm font-medium text-gray-700 mb-2">
-                                        Proof of Relationship <span className="text-red-500">*</span>
-                                    </label>
-                                    <select
-                                        id="proofOfRelationship"
-                                        value={formData.proofOfRelationship}
-                                        onChange={(e) => handleInputChange('proofOfRelationship', e.target.value)}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                    >
-                                        {proofOfRelationshipOptions.map(option => (
-                                            <option key={option.value} value={option.value}>
-                                                {option.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {errors.proofOfRelationship && <p className="text-red-500 text-xs mt-1">{errors.proofOfRelationship}</p>}
-                                </div>
+                            {/* Proof of Relationship */}
+                            <div>
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    Proof of Relationship <span className="text-[#F59E0B]">*</span>
+                                </label>
+                                <select
+                                    value={formData.proofOfRelationship}
+                                    onChange={(e) => handleInputChange('proofOfRelationship', e.target.value)}
+                                    className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                                >
+                                    {proofOfRelationshipOptions.map(option => (
+                                        <option key={option.value} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.proofOfRelationship && <p className="text-red-400 text-xs mt-1">{errors.proofOfRelationship}</p>}
                             </div>
                         </div>
-
-
                     </div>
                 </div>
             </div>
 
             {/* Additional KYC Details Section */}
-            <div className="bg-white rounded-lg border border-gray-200 mb-6">
-                <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-                    <h3 className="text-lg font-medium text-gray-900">Additional KYC Details</h3>
+            <div className="bg-[#111111] rounded-lg border border-[#2A2A2A] mb-6">
+                <div className="bg-[#1F1A1A] px-4 py-3 border-b border-[#2A2A2A] rounded-t-lg">
+                    <h3 className="text-lg font-medium text-[#F9FAFB]">Additional KYC Details</h3>
                 </div>
                 <div className="p-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         {/* Gross Annual Income */}
                         <div>
-                            <label htmlFor="grossAnnualIncome" className="block text-sm font-medium text-gray-700 mb-2">
-                                Gross Annual Income <span className="text-red-500">*</span>
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Gross Annual Income <span className="text-[#F59E0B]">*</span>
                             </label>
                             <select
-                                id="grossAnnualIncome"
                                 value={formData.grossAnnualIncome}
                                 onChange={(e) => handleInputChange('grossAnnualIncome', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 {incomeOptions.map(option => (
@@ -757,47 +671,42 @@ export default function SolePrimaryHolder({
 
                         {/* Networth */}
                         <div>
-                            <label htmlFor="networth" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
                                 Networth (in Rs.)
                             </label>
                             <input
                                 type="text"
-                                id="networth"
                                 value={formData.networth}
                                 onChange={(e) => handleInputChange('networth', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                                 maxLength={10}
                             />
                         </div>
 
                         {/* Networth Date */}
                         <div>
-                            <label htmlFor="networthDate" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
                                 As on date
                             </label>
                             <input
                                 type="date"
-                                id="networthDate"
                                 value={formData.networthDate}
                                 onChange={(e) => handleInputChange('networthDate', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             />
                         </div>
                     </div>
 
-                    {errors.income && <p className="text-red-500 text-xs mb-4">{errors.income}</p>}
-
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         {/* Source of Wealth */}
                         <div>
-                            <label htmlFor="sourceOfWealth" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
                                 Source of Wealth
                             </label>
                             <select
-                                id="sourceOfWealth"
                                 value={formData.sourceOfWealth}
                                 onChange={(e) => handleInputChange('sourceOfWealth', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 {sourceOfWealthOptions.map(option => (
@@ -810,14 +719,13 @@ export default function SolePrimaryHolder({
 
                         {/* Occupation */}
                         <div>
-                            <label htmlFor="occupation" className="block text-sm font-medium text-gray-700 mb-2">
-                                Occupation <span className="text-red-500">*</span>
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Occupation <span className="text-[#F59E0B]">*</span>
                             </label>
                             <select
-                                id="occupation"
                                 value={formData.occupation}
                                 onChange={(e) => handleInputChange('occupation', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 {occupationOptions.map(option => (
@@ -826,40 +734,38 @@ export default function SolePrimaryHolder({
                                     </option>
                                 ))}
                             </select>
-                            {errors.occupation && <p className="text-red-500 text-xs mt-1">{errors.occupation}</p>}
+                            {errors.occupation && <p className="text-red-400 text-xs mt-1">{errors.occupation}</p>}
                         </div>
 
                         {/* Political Exposure */}
                         <div>
-                            <label htmlFor="pepStatus" className="block text-sm font-medium text-gray-700 mb-2">
-                                Political Exposure <span className="text-red-500">*</span>
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Political Exposure <span className="text-[#F59E0B]">*</span>
                             </label>
                             <select
-                                id="pepStatus"
                                 value={formData.pepStatus}
                                 onChange={(e) => handleInputChange('pepStatus', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 <option value="NA">Not Applicable</option>
                                 <option value="PEP">Politically Exposed Person</option>
                                 <option value="RPEP">Related to Politically Exposed Person</option>
                             </select>
-                            {errors.pepStatus && <p className="text-red-500 text-xs mt-1">{errors.pepStatus}</p>}
+                            {errors.pepStatus && <p className="text-red-400 text-xs mt-1">{errors.pepStatus}</p>}
                         </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {/* KRA Address Type */}
                         <div>
-                            <label htmlFor="kraAddressType" className="block text-sm font-medium text-gray-700 mb-2">
-                                KRA Address Type <span className="text-red-500">*</span>
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                KRA Address Type <span className="text-[#F59E0B]">*</span>
                             </label>
                             <select
-                                id="kraAddressType"
                                 value={formData.kraAddressType}
                                 onChange={(e) => handleInputChange('kraAddressType', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 <option value="1">Residential or Business</option>
@@ -867,20 +773,19 @@ export default function SolePrimaryHolder({
                                 <option value="3">Business</option>
                                 <option value="4">Registered Office</option>
                             </select>
-                            {errors.kraAddressType && <p className="text-red-500 text-xs mt-1">{errors.kraAddressType}</p>}
+                            {errors.kraAddressType && <p className="text-red-400 text-xs mt-1">{errors.kraAddressType}</p>}
                         </div>
 
                         {/* Source of Wealth Other */}
                         <div>
-                            <label htmlFor="sourceOfWealthOther" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
                                 Other
                             </label>
                             <input
                                 type="text"
-                                id="sourceOfWealthOther"
                                 value={formData.sourceOfWealthOther}
                                 onChange={(e) => handleInputChange('sourceOfWealthOther', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase"
                                 maxLength={50}
                                 readOnly={formData.sourceOfWealth !== '08'}
                             />
@@ -888,15 +793,14 @@ export default function SolePrimaryHolder({
 
                         {/* Occupation Other */}
                         <div>
-                            <label htmlFor="occupationOther" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
                                 Other
                             </label>
                             <input
                                 type="text"
-                                id="occupationOther"
                                 value={formData.occupationOther}
                                 onChange={(e) => handleInputChange('occupationOther', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase"
                                 maxLength={50}
                                 readOnly={formData.occupation !== '99'}
                             />
@@ -906,22 +810,21 @@ export default function SolePrimaryHolder({
             </div>
 
             {/* FATCA Details Section */}
-            <div className="bg-white rounded-lg border border-gray-200 mb-6">
-                <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-                    <h3 className="text-lg font-medium text-gray-900">FATCA Details</h3>
+            <div className="bg-[#111111] rounded-lg border border-[#2A2A2A] mb-6">
+                <div className="bg-[#1F1A1A] px-4 py-3 border-b border-[#2A2A2A] rounded-t-lg">
+                    <h3 className="text-lg font-medium text-[#F9FAFB]">FATCA Details</h3>
                 </div>
                 <div className="p-6">
                     {/* Tax Residency Question */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div className="md:col-span-2">
-                            <label htmlFor="taxResidency" className="block text-sm font-medium text-gray-700 mb-2">
-                                Tax Residency in a country other than India? <span className="text-red-500">*</span>
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Tax Residency in a country other than India? <span className="text-[#F59E0B]">*</span>
                             </label>
                             <select
-                                id="taxResidency"
                                 value={formData.taxResidency}
                                 onChange={(e) => handleTaxResidencyChange(e.target.value)}
-                                className="w-full md:w-1/2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full md:w-1/2 px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             >
                                 <option value="N">No - Not a Tax Resident in a Country other than India</option>
                                 <option value="Y">Yes - Tax Resident in a Country other than India</option>
@@ -933,30 +836,28 @@ export default function SolePrimaryHolder({
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                         {/* Place of Birth */}
                         <div>
-                            <label htmlFor="placeOfBirth" className="block text-sm font-medium text-gray-700 mb-2">
-                                Place of Birth <span className="text-red-500">*</span>
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Place of Birth <span className="text-[#F59E0B]">*</span>
                             </label>
                             <input
                                 type="text"
-                                id="placeOfBirth"
                                 value={formData.placeOfBirth}
                                 onChange={(e) => handleInputChange('placeOfBirth', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase"
                                 maxLength={60}
                             />
-                            {errors.placeOfBirth && <p className="text-red-500 text-xs mt-1">{errors.placeOfBirth}</p>}
+                            {errors.placeOfBirth && <p className="text-red-400 text-xs mt-1">{errors.placeOfBirth}</p>}
                         </div>
 
                         {/* Country of Birth */}
                         <div>
-                            <label htmlFor="countryOfBirth" className="block text-sm font-medium text-gray-700 mb-2">
-                                Country of Birth <span className="text-red-500">*</span>
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Country of Birth <span className="text-[#F59E0B]">*</span>
                             </label>
                             <select
-                                id="countryOfBirth"
                                 value={formData.countryOfBirth}
                                 onChange={(e) => handleInputChange('countryOfBirth', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 {countryList.map((option: any) => (
@@ -965,19 +866,18 @@ export default function SolePrimaryHolder({
                                     </option>
                                 ))}
                             </select>
-                            {errors.countryOfBirth && <p className="text-red-500 text-xs mt-1">{errors.countryOfBirth}</p>}
+                            {errors.countryOfBirth && <p className="text-red-400 text-xs mt-1">{errors.countryOfBirth}</p>}
                         </div>
 
                         {/* Country of Citizenship */}
                         <div>
-                            <label htmlFor="countryOfCitizenship" className="block text-sm font-medium text-gray-700 mb-2">
-                                Country of Citizenship <span className="text-red-500">*</span>
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Country of Citizenship <span className="text-[#F59E0B]">*</span>
                             </label>
                             <select
-                                id="countryOfCitizenship"
                                 value={formData.countryOfCitizenship}
                                 onChange={(e) => handleInputChange('countryOfCitizenship', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 {countryList.map((option: any) => (
@@ -986,19 +886,18 @@ export default function SolePrimaryHolder({
                                     </option>
                                 ))}
                             </select>
-                            {errors.countryOfCitizenship && <p className="text-red-500 text-xs mt-1">{errors.countryOfCitizenship}</p>}
+                            {errors.countryOfCitizenship && <p className="text-red-400 text-xs mt-1">{errors.countryOfCitizenship}</p>}
                         </div>
 
                         {/* Country of Nationality */}
                         <div>
-                            <label htmlFor="countryOfNationality" className="block text-sm font-medium text-gray-700 mb-2">
-                                Country of Nationality <span className="text-red-500">*</span>
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Country of Nationality <span className="text-[#F59E0B]">*</span>
                             </label>
                             <select
-                                id="countryOfNationality"
                                 value={formData.countryOfNationality}
                                 onChange={(e) => handleInputChange('countryOfNationality', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 {countryList.map((option: any) => (
@@ -1007,23 +906,22 @@ export default function SolePrimaryHolder({
                                     </option>
                                 ))}
                             </select>
-                            {errors.countryOfNationality && <p className="text-red-500 text-xs mt-1">{errors.countryOfNationality}</p>}
+                            {errors.countryOfNationality && <p className="text-red-400 text-xs mt-1">{errors.countryOfNationality}</p>}
                         </div>
                     </div>
 
                     {/* Tax Residency Section (Conditional) */}
                     {showTaxSection && (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 pt-6 border-t border-gray-200">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 pt-6 border-t border-[#2A2A2A]">
                             {/* Country of Tax Residency */}
                             <div>
-                                <label htmlFor="taxCountry" className="block text-sm font-medium text-gray-700 mb-2">
-                                    Countries of Tax Residency <span className="text-red-500">*</span>
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    Countries of Tax Residency <span className="text-[#F59E0B]">*</span>
                                 </label>
                                 <select
-                                    id="taxCountry"
                                     value={formData.taxCountry}
                                     onChange={(e) => handleInputChange('taxCountry', e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                                 >
                                     <option value="">Select</option>
                                     {countryList.map((option: any) => (
@@ -1032,35 +930,33 @@ export default function SolePrimaryHolder({
                                         </option>
                                     ))}
                                 </select>
-                                {errors.taxCountry && <p className="text-red-500 text-xs mt-1">{errors.taxCountry}</p>}
+                                {errors.taxCountry && <p className="text-red-400 text-xs mt-1">{errors.taxCountry}</p>}
                             </div>
 
                             {/* Tax Identification Number */}
                             <div>
-                                <label htmlFor="taxIdentificationNumber" className="block text-sm font-medium text-gray-700 mb-2">
-                                    Tax Identification Numbers <span className="text-red-500">*</span>
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    Tax Identification Numbers <span className="text-[#F59E0B]">*</span>
                                 </label>
                                 <input
                                     type="text"
-                                    id="taxIdentificationNumber"
                                     value={formData.taxIdentificationNumber}
                                     onChange={(e) => handleInputChange('taxIdentificationNumber', e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                    className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase"
                                     maxLength={20}
                                 />
-                                {errors.taxIdentificationNumber && <p className="text-red-500 text-xs mt-1">{errors.taxIdentificationNumber}</p>}
+                                {errors.taxIdentificationNumber && <p className="text-red-400 text-xs mt-1">{errors.taxIdentificationNumber}</p>}
                             </div>
 
                             {/* Tax Identification Type */}
                             <div>
-                                <label htmlFor="taxIdentificationType" className="block text-sm font-medium text-gray-700 mb-2">
-                                    Tax Identification Types <span className="text-red-500">*</span>
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    Tax Identification Types <span className="text-[#F59E0B]">*</span>
                                 </label>
                                 <select
-                                    id="taxIdentificationType"
                                     value={formData.taxIdentificationType}
                                     onChange={(e) => handleInputChange('taxIdentificationType', e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                                 >
                                     <option value="">Select</option>
                                     <option value="E">Driving License</option>
@@ -1074,7 +970,7 @@ export default function SolePrimaryHolder({
                                     <option value="T">TIN</option>
                                     <option value="G">UIDIA / Aadhar letter</option>
                                 </select>
-                                {errors.taxIdentificationType && <p className="text-red-500 text-xs mt-1">{errors.taxIdentificationType}</p>}
+                                {errors.taxIdentificationType && <p className="text-red-400 text-xs mt-1">{errors.taxIdentificationType}</p>}
                             </div>
                         </div>
                     )}
@@ -1082,15 +978,16 @@ export default function SolePrimaryHolder({
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+            <div className="flex justify-between items-center pt-6 border-t border-[#2A2A2A]">
                 <button
                     type="button"
                     onClick={onPrevious}
                     disabled={isFirstStep}
-                    className={`px-6 py-2 rounded-md transition-colors ${isFirstStep
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-gray-600 text-white hover:bg-gray-700'
-                        }`}
+                    className={`px-6 py-2 rounded-lg transition-all font-medium ${
+                        isFirstStep
+                            ? 'bg-[#2A2A2A] text-[#9CA3AF] cursor-not-allowed'
+                            : 'bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] hover:bg-[#2A2A2A] hover:border-[#F59E0B] transition-all'
+                    }`}
                 >
                     Previous
                 </button>
@@ -1098,10 +995,11 @@ export default function SolePrimaryHolder({
                 <button
                     type="submit"
                     disabled={!isFormValid}
-                    className={`px-6 py-2 rounded-md transition-colors ${isFormValid
-                        ? 'bg-blue-600 text-white hover:bg-blue-700'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        }`}
+                    className={`px-6 py-2 rounded-lg transition-all font-medium ${
+                        isFormValid
+                            ? 'bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white hover:opacity-90 shadow-lg'
+                            : 'bg-[#2A2A2A] text-[#9CA3AF] cursor-not-allowed'
+                    }`}
                 >
                     {isLastStep ? 'Submit' : 'Next'}
                 </button>

@@ -56,7 +56,7 @@ function statusBadge(status: string) {
     return "bg-red-100 text-red-700";
   if (s.includes("pending") || s.includes("submitted"))
     return "bg-yellow-100 text-yellow-700";
-  return "bg-gray-100 text-gray-600";
+  return "bg-[#1F1A1A] text-[#9CA3AF]";
 }
 
 // ══════════════════════════════════════════
@@ -131,9 +131,9 @@ export default function NseMandateList() {
       <h1 className="text-2xl font-bold text-[#D97706] mb-6">Mandate List</h1>
 
       {/* ── Filter ── */}
-      <div className="bg-white rounded-xl shadow-sm border p-4 mb-6 flex flex-wrap items-end gap-4">
+      <div className="bg-[#111111] rounded-xl shadow-sm border p-4 mb-6 flex flex-wrap items-end gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">From Date</label>
+          <label className="block text-sm font-medium text-[#9CA3AF] mb-1">From Date</label>
           <input
             type="date"
             value={fromDate}
@@ -142,7 +142,7 @@ export default function NseMandateList() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">To Date</label>
+          <label className="block text-sm font-medium text-[#9CA3AF] mb-1">To Date</label>
           <input
             type="date"
             value={toDate}
@@ -151,7 +151,7 @@ export default function NseMandateList() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">Client Code</label>
+          <label className="block text-sm font-medium text-[#9CA3AF] mb-1">Client Code</label>
           <input
             type="text"
             value={clientCode}
@@ -171,42 +171,42 @@ export default function NseMandateList() {
       </div>
 
       {/* ── Table ── */}
-      <div className="bg-white rounded-xl shadow-sm border overflow-x-auto">
+      <div className="bg-[#111111] rounded-xl shadow-sm border overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b" style={{ backgroundColor: "#f0fdfa" }}>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Client Code</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Client Name</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Mandate ID</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Type</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Bank</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Account No</th>
-              <th className="text-right px-4 py-3 text-gray-600 font-semibold">Amount</th>
-              <th className="text-center px-4 py-3 text-gray-600 font-semibold">Status</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">UMRN</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Reg Date</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Start Date</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">End Date</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Approved Date</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Collection</th>
+              <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Client Code</th>
+              <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Client Name</th>
+              <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Mandate ID</th>
+              <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Type</th>
+              <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Bank</th>
+              <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Account No</th>
+              <th className="text-right px-4 py-3 text-[#9CA3AF] font-semibold">Amount</th>
+              <th className="text-center px-4 py-3 text-[#9CA3AF] font-semibold">Status</th>
+              <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">UMRN</th>
+              <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Reg Date</th>
+              <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Start Date</th>
+              <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">End Date</th>
+              <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Approved Date</th>
+              <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Collection</th>
             </tr>
           </thead>
           <tbody>
             {!fetched ? (
               <tr>
-                <td colSpan={14} className="text-center py-12 text-gray-400">
+                <td colSpan={14} className="text-center py-12 text-[#6B7280]">
                   Select filters and click Search to view mandates
                 </td>
               </tr>
             ) : mandates.length === 0 ? (
               <tr>
-                <td colSpan={14} className="text-center py-12 text-gray-400">
+                <td colSpan={14} className="text-center py-12 text-[#6B7280]">
                   No mandates found
                 </td>
               </tr>
             ) : (
               mandates.map((m, idx) => (
-                <tr key={idx} className="border-b hover:bg-gray-50 transition">
+                <tr key={idx} className="border-b hover:bg-[#1F1A1A] transition">
                   <td className="px-4 py-3 font-mono text-xs">{m.clientCode}</td>
                   <td className="px-4 py-3">{m.clientName}</td>
                   <td className="px-4 py-3 font-medium font-mono text-xs" style={{ color: "#F59E0B" }}>
@@ -218,7 +218,7 @@ export default function NseMandateList() {
                   <td className="px-4 py-3">
                     <div className="text-sm">{m.bankName}</div>
                     {m.bankBranch !== "--" && (
-                      <div className="text-xs text-gray-400">{m.bankBranch}</div>
+                      <div className="text-xs text-[#6B7280]">{m.bankBranch}</div>
                     )}
                   </td>
                   <td className="px-4 py-3 font-mono text-xs">

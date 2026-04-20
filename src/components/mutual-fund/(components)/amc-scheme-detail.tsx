@@ -521,7 +521,7 @@ const AMCSchemeDetail = () => {
                 className={`px-4 py-3 text-sm font-semibold border-b-2 transition-all cursor-pointer ${
                   categoryActiveTab === tab.categoryName
                     ? "text-primary border-primary"
-                    : "text-gray-600 hover:text-gray-800 border-transparent"
+                    : "text-[#9CA3AF] hover:text-[#F9FAFB] border-transparent"
                 }`}
               >
                 <div className="flex gap-4 items-center">
@@ -558,7 +558,7 @@ const AMCSchemeDetail = () => {
                           aria-label="close sidebar"
                           className="drawer-overlay"
                         ></label>
-                        <ul className="menu rounded-l-2xl bg-white text-base-content min-h-full w-96 ">
+                        <ul className="menu rounded-l-2xl bg-[#111111] text-base-content min-h-full w-96 ">
                           <div className="flex justify-between items-center px-4">
                             <h3 className="text-lg font-medium font-montserrat">
                               {categoryActiveTab}
@@ -917,11 +917,11 @@ const AMCSchemeDetail = () => {
                 )}
               </tr>
             </thead>
-            <tbody className="bg-white mb-4">
+            <tbody className="bg-[#111111] mb-4">
               {activeClass?.schemeList?.rows ? (
                 activeClass?.schemeList?.rows.map(
                   (fund: any, index: number) => (
-                    <tr key={index} className="hover:bg-gray-50">
+                    <tr key={index} className="hover:bg-[#1F1A1A]">
                       <td className="px-4 py-4">
                         <div>
                           <div
@@ -1160,12 +1160,12 @@ const AMCSchemeDetail = () => {
   const renderOverview = () => (
     <div className="space-y-8 p-6">
       <div>
-        <CustomText className="text-lg font-semibold text-gray-900 mb-6">
+        <CustomText className="text-lg font-semibold text-[#F9FAFB] mb-6">
           AMC Overview
         </CustomText>
         <div className="grid md:grid-cols-2 gap-8">
           <div className="space-y-4">
-            <div className="flex justify-between border border-gray-50 bg-gray-50 p-4 rounded-lg">
+            <div className="flex justify-between border border-gray-50 bg-[#1F1A1A] p-4 rounded-lg">
               <CustomText className="text-sm font-semibold">
                 AMC Name
               </CustomText>
@@ -1173,7 +1173,7 @@ const AMCSchemeDetail = () => {
                 {overViewData.amc_name}
               </CustomText>
             </div>
-            <div className="flex justify-between border border-gray-50 bg-gray-50 p-4 rounded-lg">
+            <div className="flex justify-between border border-gray-50 bg-[#1F1A1A] p-4 rounded-lg">
               <CustomText className="text-sm font-semibold">
                 Number of schemes
               </CustomText>
@@ -1181,25 +1181,25 @@ const AMCSchemeDetail = () => {
                 {overViewData.total_schemes}
               </CustomText>
             </div>
-            <div className="flex justify-between border border-gray-50 bg-gray-50 p-4 rounded-lg">
+            <div className="flex justify-between border border-gray-50 bg-[#1F1A1A] p-4 rounded-lg">
               <CustomText className="text-sm font-semibold">AUM</CustomText>
               <CustomText className="text-sm font-medium ">
                 {convertToCrores(overViewData.total_AUM)} Cr.
               </CustomText>
             </div>
-            {/* <div className="flex justify-between border border-gray-50 bg-gray-50 p-4 rounded-lg">
+            {/* <div className="flex justify-between border border-gray-50 bg-[#1F1A1A] p-4 rounded-lg">
               <CustomText className="text-sm font-semibold">Inception Date</CustomText>
               <CustomText className="text-sm font-medium">{overViewData.inceptionDate}</CustomText>
             </div> */}
-            {/* <div className="flex justify-between border border-gray-50 bg-gray-50 p-4 rounded-lg">
+            {/* <div className="flex justify-between border border-gray-50 bg-[#1F1A1A] p-4 rounded-lg">
               <CustomText className="text-sm font-semibold">Trustee Name</CustomText>
               <CustomText className="text-sm font-medium">{overViewData.trusteeName}</CustomText>
             </div>
-            <div className="flex justify-between border border-gray-50 bg-gray-50 p-4 rounded-lg">
+            <div className="flex justify-between border border-gray-50 bg-[#1F1A1A] p-4 rounded-lg">
               <CustomText className="text-sm font-semibold">Sponsor Name</CustomText>
               <CustomText className="text-sm font-medium">{overViewData.sponsorName}</CustomText>
             </div> */}
-            <div className="flex justify-between border border-gray-50 bg-gray-50 p-4 rounded-lg">
+            <div className="flex justify-between border border-gray-50 bg-[#1F1A1A] p-4 rounded-lg">
               <CustomText className="text-sm font-semibold">Fax</CustomText>
               <CustomText className="text-sm font-medium">
                 {overViewData.fax || "--"}
@@ -1207,7 +1207,7 @@ const AMCSchemeDetail = () => {
             </div>
           </div>
           <div className="space-y-4">
-            <div className="flex justify-between border border-gray-50 bg-gray-50 p-4 rounded-lg">
+            <div className="flex justify-between border border-gray-50 bg-[#1F1A1A] p-4 rounded-lg">
               <CustomText className="text-sm font-semibold">
                 Office Address
               </CustomText>
@@ -1215,20 +1215,20 @@ const AMCSchemeDetail = () => {
                 {overViewData.office_address || "--"}
               </CustomText>
             </div>
-            <div className="flex justify-between border border-gray-50 bg-gray-50 p-4 rounded-lg">
+            <div className="flex justify-between border border-gray-50 bg-[#1F1A1A] p-4 rounded-lg">
               <CustomText className="text-sm font-semibold">City</CustomText>
               <CustomText className="text-sm font-medium">
                 {overViewData.city || "--"}
               </CustomText>
             </div>
-            <div className="flex justify-between border border-gray-50 bg-gray-50 p-4 rounded-lg">
+            <div className="flex justify-between border border-gray-50 bg-[#1F1A1A] p-4 rounded-lg">
               <CustomText className="text-sm font-semibold">Contact</CustomText>
               <CustomText className="text-sm font-medium">
                 {overViewData.contact || "--"}
               </CustomText>
             </div>
 
-            <div className="flex justify-between border border-gray-50 bg-gray-50 p-4 rounded-lg">
+            <div className="flex justify-between border border-gray-50 bg-[#1F1A1A] p-4 rounded-lg">
               <CustomText className="text-sm font-semibold">Website</CustomText>
               <CustomText className="text-sm font-medium text-blue-600 hover:underline cursor-pointer">
                 {overViewData.website || "--"}
@@ -1242,14 +1242,14 @@ const AMCSchemeDetail = () => {
 
   const renderKeyPerson = () => (
     <div className="p-6">
-      <CustomText className="text-lg font-semibold text-gray-900 mb-6">
+      <CustomText className="text-lg font-semibold text-[#F9FAFB] mb-6">
         Key Personnel
       </CustomText>
       <div className="space-y-6">
         {amcData.keyPersonnel.map((person: any) => (
           <div
             key={person.id}
-            className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg"
+            className="flex items-start gap-4 p-4 bg-[#1F1A1A] rounded-lg"
           >
             <div
               className={`w-12 h-12 ${person.bgColor} rounded-full flex items-center justify-center text-white font-semibold text-lg`}
@@ -1257,13 +1257,13 @@ const AMCSchemeDetail = () => {
               {person.initials}
             </div>
             <div className="flex-1">
-              <CustomText className="text-base font-semibold text-gray-900 mb-1">
+              <CustomText className="text-base font-semibold text-[#F9FAFB] mb-1">
                 {person.name}
               </CustomText>
               <CustomText className="text-sm mb-2">
                 {person.designation}
               </CustomText>
-              <CustomText className="text-xs text-gray-600">
+              <CustomText className="text-xs text-[#9CA3AF]">
                 {person.experience}
               </CustomText>
             </div>
@@ -1275,23 +1275,23 @@ const AMCSchemeDetail = () => {
 
   const renderAUM = () => (
     <div className="p-6">
-      <CustomText className="text-lg font-semibold text-gray-900 mb-6">
+      <CustomText className="text-lg font-semibold text-[#F9FAFB] mb-6">
         Assets Under Management (AUM)
       </CustomText>
       <div className="space-y-4">
         {amcData.aumData.map((item: any, index: number) => (
           <div
             key={index}
-            className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+            className="flex items-center justify-between p-4 bg-[#1F1A1A] rounded-lg"
           >
-            <CustomText className="text-sm font-medium text-gray-900">
+            <CustomText className="text-sm font-medium text-[#F9FAFB]">
               {item.month}
             </CustomText>
             <div className="flex items-center gap-4 ml-8">
-              <CustomText className="text-sm font-semibold text-gray-900  w-24 text-right">
+              <CustomText className="text-sm font-semibold text-[#F9FAFB]  w-24 text-right">
                 {item.amount}
               </CustomText>
-              {/* <div className="flex-1 bg-gray-200 rounded-full h-2"> */}
+              {/* <div className="flex-1 bg-[#2A2A2A] rounded-full h-2"> */}
               <div className="flex-1">
                 <progress
                   className="progress progress-secondary-content w-56"
@@ -1333,13 +1333,13 @@ const AMCSchemeDetail = () => {
     <>
       <div className="">
         {/* Header */}
-        <div className="border-b border-gray-200 px-6 py-4">
+        <div className="border-b border-[#2A2A2A] px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div onClick={onBack} className="p-1 cursor-pointer">
-                <IoArrowBack className="w-5 h-5 text-gray-600" />
+                <IoArrowBack className="w-5 h-5 text-[#9CA3AF]" />
               </div>
-              <CustomText className="text-lg font-semibold text-gray-900">
+              <CustomText className="text-lg font-semibold text-[#F9FAFB]">
                 {overViewData?.amc_name}
               </CustomText>
             </div>
@@ -1358,7 +1358,7 @@ const AMCSchemeDetail = () => {
                     className={`px-4 py-2 text-sm font-medium border transition-all cursor-pointer rounded-xl  ${
                       activeTab === tab
                         ? "text-white border-primary bg-primary"
-                        : "text-gray-600 hover:text-gray-800 border-transparent  bg-black/5"
+                        : "text-[#9CA3AF] hover:text-[#F9FAFB] border-transparent  bg-black/5"
                     }`}
                   >
                     {tab}
@@ -1435,7 +1435,7 @@ const AMCSchemeDetail = () => {
                             <label key={col.key} className="label my-2">
                               <input
                                 type="checkbox"
-                                className="checkbox checkbox-sm checkbox-info border-gray-500 before:bg-white checked:border-info"
+                                className="checkbox checkbox-sm checkbox-info border-gray-500 before:bg-[#111111] checked:border-info"
                                 checked={
                                   visibleColumns[col.key as ReturnColumnKey]
                                 }

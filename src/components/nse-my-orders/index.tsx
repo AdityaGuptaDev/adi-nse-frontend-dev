@@ -53,7 +53,7 @@ function statusBadge(status: string) {
     return "bg-yellow-100 text-yellow-700";
   if (s.includes("progress") || s.includes("process"))
     return "bg-blue-100 text-blue-700";
-  return "bg-gray-100 text-gray-600";
+  return "bg-[#1F1A1A] text-[#9CA3AF]";
 }
 
 // ══════════════════════════════════════════
@@ -138,16 +138,16 @@ export default function NseMyOrders() {
   return (
     <div className="nse-module p-6 max-w-[1400px] mx-auto">
       {/* ── Header ── */}
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">My Orders</h1>
+      <h1 className="text-2xl font-bold text-[#F9FAFB] mb-6">My Orders</h1>
 
       {/* ── Summary Cards ── */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
         {summaryCards.map((card) => (
           <div
             key={card.label}
-            className="bg-white rounded-xl shadow-sm border p-4 text-center"
+            className="bg-[#111111] rounded-xl shadow-sm border p-4 text-center"
           >
-            <p className="text-sm text-gray-500 mb-1">{card.label}</p>
+            <p className="text-sm text-[#9CA3AF] mb-1">{card.label}</p>
             <p className="text-2xl font-bold" style={{ color: card.color }}>
               {card.count}
             </p>
@@ -156,9 +156,9 @@ export default function NseMyOrders() {
       </div>
 
       {/* ── Date Filter ── */}
-      <div className="bg-white rounded-xl shadow-sm border p-4 mb-6 flex flex-wrap items-end gap-4">
+      <div className="bg-[#111111] rounded-xl shadow-sm border p-4 mb-6 flex flex-wrap items-end gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">From Date</label>
+          <label className="block text-sm font-medium text-[#9CA3AF] mb-1">From Date</label>
           <input
             type="date"
             value={fromDate}
@@ -167,7 +167,7 @@ export default function NseMyOrders() {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">To Date</label>
+          <label className="block text-sm font-medium text-[#9CA3AF] mb-1">To Date</label>
           <input
             type="date"
             value={toDate}
@@ -186,38 +186,38 @@ export default function NseMyOrders() {
       </div>
 
       {/* ── Table ── */}
-      <div className="bg-white rounded-xl shadow-sm border overflow-x-auto">
+      <div className="bg-[#111111] rounded-xl shadow-sm border overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b" style={{ backgroundColor: "#f0fdfa" }}>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Order Date</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Investor Name</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Folio No</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Scheme</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Type</th>
-              <th className="text-right px-4 py-3 text-gray-600 font-semibold">Amount</th>
-              <th className="text-right px-4 py-3 text-gray-600 font-semibold">Units</th>
-              <th className="text-center px-4 py-3 text-gray-600 font-semibold">Status</th>
-              <th className="text-left px-4 py-3 text-gray-600 font-semibold">Remarks</th>
-              <th className="text-center px-4 py-3 text-gray-600 font-semibold">Action</th>
+              <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Order Date</th>
+              <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Investor Name</th>
+              <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Folio No</th>
+              <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Scheme</th>
+              <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Type</th>
+              <th className="text-right px-4 py-3 text-[#9CA3AF] font-semibold">Amount</th>
+              <th className="text-right px-4 py-3 text-[#9CA3AF] font-semibold">Units</th>
+              <th className="text-center px-4 py-3 text-[#9CA3AF] font-semibold">Status</th>
+              <th className="text-left px-4 py-3 text-[#9CA3AF] font-semibold">Remarks</th>
+              <th className="text-center px-4 py-3 text-[#9CA3AF] font-semibold">Action</th>
             </tr>
           </thead>
           <tbody>
             {!fetched ? (
               <tr>
-                <td colSpan={10} className="text-center py-12 text-gray-400">
+                <td colSpan={10} className="text-center py-12 text-[#6B7280]">
                   Select a date range and click Search to view orders
                 </td>
               </tr>
             ) : orders.length === 0 ? (
               <tr>
-                <td colSpan={10} className="text-center py-12 text-gray-400">
+                <td colSpan={10} className="text-center py-12 text-[#6B7280]">
                   No orders found
                 </td>
               </tr>
             ) : (
               orders.map((o, idx) => (
-                <tr key={idx} className="border-b hover:bg-gray-50 transition">
+                <tr key={idx} className="border-b hover:bg-[#1F1A1A] transition">
                   <td className="px-4 py-3 whitespace-nowrap">{o.order_date}</td>
                   <td className="px-4 py-3">{o.investor_name}</td>
                   <td className="px-4 py-3">{o.folio_no}</td>
@@ -231,7 +231,7 @@ export default function NseMyOrders() {
                           ? "bg-green-100 text-green-700"
                           : o.trans_type === "R"
                           ? "bg-orange-100 text-orange-700"
-                          : "bg-gray-100 text-gray-600"
+                          : "bg-[#1F1A1A] text-[#9CA3AF]"
                       }`}
                     >
                       {o.trans_type === "P"

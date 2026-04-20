@@ -414,7 +414,7 @@ function RuralFundExplore() {
             <div className="flex justify-center gap-3">
               <div className="my-4 text-center">
                 <CustomButton
-                  className="bg-white !text-black !border !border-gray-300 w-36"
+                  className="bg-[#111111] !text-black !border !border-[#3A3A3A] w-36"
                   onClick={handleBackSchemeModel}
                 >
                   Back

@@ -233,11 +233,12 @@ export default function CanCriteria({
 
 
     return (
-        <form onSubmit={handleSubmit} className="p-6 sm:p-8 bg-white ">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">eCan Criteria</h2>
+        <form onSubmit={handleSubmit} className="p-6 sm:p-8 bg-[#111111] rounded-xl border border-[#2A2A2A] shadow-xl">
+            <h2 className="text-xl font-semibold bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent mb-6">eCan Criteria</h2>
+            
             <div className='w-50 mb-5'>
-                <label className="block text-sm font-medium text-gray-700">
-                    Choice of eCAN Registration
+                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                    Choice of eCAN Registration <span className="text-[#F59E0B]">*</span>
                 </label>
                 <select
                     //value={onChangeRegType}
@@ -248,12 +249,12 @@ export default function CanCriteria({
 
 
                     }}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent transition-all"
                     required
                 >
-                    <option value="">Select</option>
-                    <option value="E">Completely Electronic</option>
-                    <option value="D">Demat Electronic</option>
+                    <option value="" className="bg-[#1F1A1A]">Select</option>
+                    <option value="E" className="bg-[#1F1A1A]">Completely Electronic</option>
+                    <option value="D" className="bg-[#1F1A1A]">Demat Electronic</option>
                 </select>
             </div>
 
@@ -262,8 +263,8 @@ export default function CanCriteria({
             {/* Account Type */}
             <div className="grid grid-cols-2 gap-6 mb-8">
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                        Holding Nature*
+                    <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                        Holding Nature <span className="text-[#F59E0B]">*</span>
                     </label>
                     <select
                         value={formData.holding_nature}
@@ -287,19 +288,19 @@ export default function CanCriteria({
                             }
 
                         }}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent transition-all"
                         required
                     >
-                        <option value="">Select</option>
-                        <option value="SI">Single</option>
-                        <option value="JO">Joint</option>
-                        <option value="AS">Anyone or Survivor</option>
+                        <option value="" className="bg-[#1F1A1A]">Select</option>
+                        <option value="SI" className="bg-[#1F1A1A]">Single</option>
+                        <option value="JO" className="bg-[#1F1A1A]">Joint</option>
+                        <option value="AS" className="bg-[#1F1A1A]">Anyone or Survivor</option>
                     </select>
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                        Investor Category*
+                    <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                        Investor Category <span className="text-[#F59E0B]">*</span>
                     </label>
                     <select
                         value={formData.investor_category}
@@ -322,14 +323,13 @@ export default function CanCriteria({
                             }
 
                         }}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent transition-all"
                         required
                     >
-                        <option value="">Select</option>
-
+                        <option value="" className="bg-[#1F1A1A]">Select</option>
                         {filteredInvestorCategory.map((item: any) => {
                             return (
-                                <option key={item.value} value={item.value}>
+                                <option key={item.value} value={item.value} className="bg-[#1F1A1A]">
                                     {item.label}
                                 </option>
                             );
@@ -343,20 +343,19 @@ export default function CanCriteria({
             {/* Tax Status */}
             <div className="grid grid-cols-2 gap-6 mb-8">
                 <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Tax Status <span className="text-red-500">*</span>
+                    <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                        Tax Status <span className="text-[#F59E0B]">*</span>
                     </label>
 
                     <select
                         value={formData.tax_status}
                         onChange={(e) => handleInputChange('tax_status', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent transition-all"
                         required
                     >
-                        <option value="">Select Tax Status</option>
-
+                        <option value="" className="bg-[#1F1A1A]">Select Tax Status</option>
                         {data?.tax_status?.map((option: any) => (
-                            <option key={option.id} value={option.id}>
+                            <option key={option.id} value={option.id} className="bg-[#1F1A1A]">
                                 {option.status}
                             </option>
                         ))}
@@ -368,14 +367,14 @@ export default function CanCriteria({
 
                 {/* Holders Section */}
                 <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Holders
+                    <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                        Holders <span className="text-[#F59E0B]">*</span>
                     </label>
                     <input
                         type="text"
                         value={holders}
                         onChange={(e) => handleInputChange('holders', holders.toString())}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent transition-all"
                         required
                     />
 
@@ -384,14 +383,14 @@ export default function CanCriteria({
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+            <div className="flex justify-between items-center pt-6 border-t border-[#2A2A2A]">
                 <button
                     type="button"
                     onClick={onPrevious}
                     disabled={isFirstStep}
-                    className={`px-6 py-2 rounded-md transition-colors ${isFirstStep
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-gray-600 text-white hover:bg-gray-700'
+                    className={`px-6 py-2 rounded-lg transition-all font-medium ${isFirstStep
+                        ? 'bg-[#2A2A2A] text-[#9CA3AF] cursor-not-allowed'
+                        : 'bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] hover:bg-[#2A2A2A] hover:border-[#F59E0B] transition-all'
                         }`}
                 >
                     Previous
@@ -400,9 +399,9 @@ export default function CanCriteria({
                 <button
                     type="submit"
                     disabled={!isFormValid}
-                    className={`px-6 py-2 rounded-md transition-colors ${isFormValid
-                        ? 'bg-blue-600 text-white hover:bg-blue-700'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                    className={`px-6 py-2 rounded-lg transition-all font-medium ${isFormValid
+                        ? 'bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white hover:opacity-90 shadow-lg'
+                        : 'bg-[#2A2A2A] text-[#9CA3AF] cursor-not-allowed'
                         }`}
                 >
                     {isLastStep ? 'Submit' : 'Next'}

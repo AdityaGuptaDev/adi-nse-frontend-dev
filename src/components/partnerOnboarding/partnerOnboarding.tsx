@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
@@ -64,22 +64,17 @@ const STORAGE_KEYS = {
 // Helper function to format dates for input
 const formatDateForInput = (dateString: string): string => {
   if (!dateString) return '';
-
-  // Handle different date formats
   if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-    return dateString; // Already in YYYY-MM-DD format
+    return dateString;
   }
-
   if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateString)) {
     const [day, month, year] = dateString.split('/');
     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
   }
-
   if (/^\d{2}-\d{2}-\d{4}$/.test(dateString)) {
     const [day, month, year] = dateString.split('-');
     return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
   }
-
   try {
     const date = new Date(dateString);
     if (!isNaN(date.getTime())) {
@@ -88,8 +83,7 @@ const formatDateForInput = (dateString: string): string => {
   } catch (e) {
     console.warn('Could not parse date:', dateString);
   }
-
-  return dateString; // Return as is if cannot parse
+  return dateString;
 };
 
 // Helper functions for localStorage
@@ -124,9 +118,6 @@ const clearLocalStorage = (): void => {
   }
 };
 
-
-
-
 // Custom hook for client-side only state with localStorage
 function useClientState<T>(key: string, defaultValue: T) {
   const [state, setState] = useState<T>(defaultValue);
@@ -138,7 +129,7 @@ function useClientState<T>(key: string, defaultValue: T) {
       setState(saved);
       setIsInitialized(true);
     }
-  }, [key]); // Remove defaultValue from dependencies
+  }, [key]);
 
   const setClientState = useCallback((value: T | ((prev: T) => T)) => {
     setState(prev => {
@@ -155,8 +146,7 @@ const KYCVerification: React.FC = () => {
   const searchParams = useSearchParams();
   const mobileFromUrl = searchParams.get('mobile');
   const fromAdmin = searchParams.get('fromAdmin');
-console.log("fromAdmin:", fromAdmin);
-
+  console.log("fromAdmin:", fromAdmin);
 
   const [currentScreen, setCurrentScreen, isScreenInitialized] = useClientState<Screen>(
     STORAGE_KEYS.CURRENT_SCREEN,
@@ -185,7 +175,6 @@ console.log("fromAdmin:", fromAdmin);
   const emailOtpInputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const router = useRouter();
 
-  //getting value of email from local storage-
   const verificationData = localStorage.getItem(STORAGE_KEYS.VERIFICATION_DATA);
   const parsedData = verificationData ? JSON.parse(verificationData) : null;
   const email = parsedData?.email?.value || "";
@@ -194,11 +183,11 @@ console.log("fromAdmin:", fromAdmin);
   const prodUserData = getLS(USER_DATA);
   const userTypeId = prodUserData?.partner?.userType_id ?? 0;
 
-  let userType=0;
-  if(fromAdmin==="1"){
-    userType=4;
+  let userType = 0;
+  if (fromAdmin === "1") {
+    userType = 4;
   }
-  else{
+  else {
     userType = prodUserData?.userTypeId ?? 0;
   }
 
@@ -294,7 +283,6 @@ console.log("fromAdmin:", fromAdmin);
     }
   );
 
-  // Update your checkAndClearSession function to also reset state
   const checkAndClearSession = useCallback(() => {
     if (typeof window === 'undefined') return false;
 
@@ -303,15 +291,9 @@ console.log("fromAdmin:", fromAdmin);
       console.log("loginEmailId:", loginEmailId)
       console.log("email from verification state:", verification.email.value)
 
-      // Check if emails don't match
       if (loginEmailId && verification.email.value && loginEmailId !== verification.email.value) {
         console.log("User email mismatch detected. Clearing session...");
-
-        // First, clear localStorage
         clearLocalStorage();
-
-        // Then reset all states to defaults
-        // Reset partnerData
         setPartnerData({
           name: '',
           email: '',
@@ -323,8 +305,6 @@ console.log("fromAdmin:", fromAdmin);
           pincode: '',
           errors: { phone: '' }
         });
-
-        // Reset verification
         setVerification({
           pan: { value: '', verified: false, loading: false, error: '' },
           email: { value: '', verified: false, loading: false, error: '', ref_id: '' },
@@ -366,8 +346,6 @@ console.log("fromAdmin:", fromAdmin);
             error: ''
           }
         });
-
-        // Reset other states
         setAadhaarOtpState({
           otp: '',
           timer: 0,
@@ -377,7 +355,6 @@ console.log("fromAdmin:", fromAdmin);
           sent: false,
           verifying: false
         });
-
         setEmailOtpState({
           otp: '',
           timer: 0,
@@ -387,7 +364,6 @@ console.log("fromAdmin:", fromAdmin);
           sent: false,
           verifying: false
         });
-
         setAddresses([]);
         setSelectedAddressIndex(0);
         setIsEditing({
@@ -397,24 +373,19 @@ console.log("fromAdmin:", fromAdmin);
           email: false,
           personal: false
         });
-
         setRegistrationStatus({
           loading: false,
           data: null,
           error: ''
         });
-
-        // Force a small delay to ensure localStorage is cleared
         setTimeout(() => {
           console.log("LocalStorage after clearing:");
           Object.values(STORAGE_KEYS).forEach(key => {
             console.log(`${key}:`, localStorage.getItem(key));
           });
         }, 100);
-
         return true;
       }
-
       return false;
     } catch (error) {
       console.error("Error checking session:", error);
@@ -422,20 +393,12 @@ console.log("fromAdmin:", fromAdmin);
     }
   }, [loginEmailId, verification.email.value, mobileFromUrl]);
 
-  //adding for adhaar otp reset after reload-
-  // Add this useEffect to reset OTP states on page reload
   useEffect(() => {
-    // Check if page was reloaded
     const handleBeforeUnload = () => {
-      // Save a flag indicating we're about to reload
       sessionStorage.setItem('kyc_was_reloading', 'true');
     };
-
     window.addEventListener('beforeunload', handleBeforeUnload);
-
-    // On mount, check if we just reloaded
     if (sessionStorage.getItem('kyc_was_reloading') === 'true') {
-      // Reset OTP states but keep other data
       setAadhaarOtpState({
         otp: '',
         timer: 0,
@@ -445,7 +408,6 @@ console.log("fromAdmin:", fromAdmin);
         sent: false,
         verifying: false
       });
-
       setEmailOtpState({
         otp: '',
         timer: 0,
@@ -455,29 +417,18 @@ console.log("fromAdmin:", fromAdmin);
         sent: false,
         verifying: false
       });
-
-      // Clear the reload flag
       sessionStorage.removeItem('kyc_was_reloading');
     }
-
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, []);
 
-
-  // Then call this in your useEffect
   useEffect(() => {
-    // Wait for verification state to be initialized
     if (loginEmailId && isVerificationInitialized) {
       console.log("Running session check...");
-      //const wasCleared = checkAndClearSession();
-      // if (wasCleared) {
-      //   toast.warning("New user detected. Starting fresh registration.");
-      // }
     }
   }, [loginEmailId, checkAndClearSession, isVerificationInitialized]);
-
 
   const [addresses, setAddresses, isAddressesInitialized] = useClientState<
     Array<{
@@ -506,7 +457,6 @@ console.log("fromAdmin:", fromAdmin);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string>('');
 
-  // Check if all client states are initialized
   const isAllInitialized =
     isScreenInitialized &&
     isPartnerDataInitialized &&
@@ -519,7 +469,6 @@ console.log("fromAdmin:", fromAdmin);
     isRegistrationStatusInitialized &&
     isMobileInitialized;
 
-  // Timer effects
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (aadhaarOtpState.timer > 0) {
@@ -548,7 +497,6 @@ console.log("fromAdmin:", fromAdmin);
     return () => clearInterval(interval);
   }, [emailOtpState.timer, setEmailOtpState]);
 
-  // Fetch user data on component mount or when mobile number changes
   useEffect(() => {
     const fetchData = async () => {
       if (!mobileFromUrl) {
@@ -556,124 +504,172 @@ console.log("fromAdmin:", fromAdmin);
         setIsLoading(false);
         return;
       }
-
-      // Validate mobile number
       if (!validatePhone(mobileFromUrl)) {
         setError('Invalid mobile number. Please check the URL parameter.');
         setIsLoading(false);
         return;
       }
-
       try {
         setIsLoading(true);
         setError('');
-
-        // Set mobile number in state
         setMobileNumber(mobileFromUrl);
         setPartnerData(prev => ({
           ...prev,
           phone: mobileFromUrl
         }));
-
-        // Fetch partner data from new API
         await fetchPartnerData(mobileFromUrl);
-
-        setIsLoading(false);
       } catch (err: any) {
-        setError(err.message || 'Failed to fetch partner data');
+        // Don't set error for "no data found" cases
+        if (!err.message?.includes("No partner data") && !err.message?.includes("Failed to fetch partner data")) {
+          setError(err.message || 'Failed to fetch partner data');
+        }
+      } finally {
         setIsLoading(false);
       }
     };
-
     if (mobileFromUrl) {
       fetchData();
     }
   }, [mobileFromUrl]);
 
-  //function to clear the local storage-
-
-  //   const checkAndClearSession = useCallback(() => {
-  //   if (typeof window === 'undefined') return false;
-
-  //   try {
-
-  //     console.log("inside the function ")
-  //     // Check if emails don't match
-  //     if (loginEmailId && email && loginEmailId !== email) {
-  //       console.log("User email mismatch detected. Clearing session...");
-  //       clearLocalStorage();
-  //       return true;
-  //     }
-
-  //     return false;
-  //   } catch (error) {
-  //     console.error("Error checking session:", error);
-  //     return false;
-  //   }
-  // }, [loginEmailId]);
-
-  // // Then call this in your useEffect
-  // useEffect(() => {
-  //   if (loginEmailId) {
-  //     const wasCleared = checkAndClearSession();
-  //     if (wasCleared) {
-  //       // Optionally redirect or show message
-  //       toast.warning("New user detected. Starting fresh registration.");
-  //     }
-  //   }
-  // }, [loginEmailId, checkAndClearSession]);
-
-
-  // Fetch partner data from the new API
   const fetchPartnerData = async (mobile: string) => {
     try {
       setIsFetchingUserData(true);
 
-      // Call the new API service
-      const response = await PartnerService.getUserDecentroData(mobile);
+      const lastMobile = localStorage.getItem('last_fetched_mobile');
 
+
+      if (lastMobile && lastMobile !== mobile) {
+        console.log('Mobile number changed from', lastMobile, 'to', mobile, '- Clearing old data');
+        clearLocalStorage();
+      }
+
+      localStorage.setItem('last_fetched_mobile', mobile);
+
+      setPartnerData({
+        name: '',
+        email: '',
+        phone: mobile,
+        address: '',
+        dob: '',
+        age: '',
+        gender: '',
+        pincode: '',
+        errors: { phone: '' }
+      });
+
+      setVerification({
+        pan: { value: '', verified: false, loading: false, error: '' },
+        email: { value: '', verified: false, loading: false, error: '', ref_id: '' },
+        aadhaar: {
+          value: '', verified: false, loading: false, error: '', modified: false, ref_id: '',
+          isEditingAddress: false
+        },
+        nism: {
+          fileName: '',
+          fileSize: '',
+          fileType: '',
+          base64Data: '',
+          verified: false,
+          loading: false,
+          fileError: '',
+          uploaded: '',
+          uploadError: '',
+          arnNumber: '',
+          euinNumber: '',
+          arnError: '',
+          euinError: '',
+          skipped: false,
+        },
+        bank: {
+          accountNumber: '',
+          ifsc: '',
+          verified: false,
+          loading: false,
+          accountError: '',
+          ifscError: '',
+          ref_id: '',
+          bankName: '',
+          branch: '',
+          centre: '',
+          city: '',
+          state: '',
+          micr: '',
+          address: '',
+          error: ''
+        }
+      });
+
+      setAddresses([]);
+      setSelectedAddressIndex(0);
+      setAadhaarOtpState({
+        otp: '',
+        timer: 0,
+        canResend: true,
+        loading: false,
+        error: '',
+        sent: false,
+        verifying: false
+      });
+      setEmailOtpState({
+        otp: '',
+        timer: 0,
+        canResend: true,
+        loading: false,
+        error: '',
+        sent: false,
+        verifying: false
+      });
+
+      // Now fetch new data
+      const response = await PartnerService.getUserDecentroData(mobile);
       console.log('Partner Decentro Data Response:', response);
 
+      // Check if response has data - if not, don't throw error, just let user fill manually
       if (response && response.data && response.data.data && response.data.data.length > 0) {
         const partnerData = response.data.data[0]?.response_data?.data;
-
         if (partnerData && partnerData.length > 0) {
           await processPartnerData(partnerData);
-          // toast.success("Partner data fetched successfully!");
+          toast.success('Partner data loaded successfully');
         } else {
-          throw new Error("No partner data found in response");
+          // No data found - this is okay for new partners
+          console.log('No existing KYC data found for this mobile number');
+          toast.info('No existing KYC data found. Please fill in your details manually.');
+          // Don't throw error - allow manual entry
         }
       } else {
-        throw new Error("Failed to fetch partner data");
+        // No data found - this is okay for new partners
+        console.log('No partner record exists for this mobile number');
+        toast.info('New partner. Please complete your KYC details below.');
+        // Don't throw error - allow manual entry
       }
     } catch (error: any) {
       console.error('Error fetching partner data:', error);
-      const errorMessage =
-        error.response?.data?.message ||
-        error.message ||
-        "An error occurred while fetching partner data";
-      toast.error(errorMessage);
-      throw error;
+      // Only show error for actual network/server issues, not for "no data found"
+      const errorMessage = error.response?.data?.message || error.message || "";
+
+      if (errorMessage.includes("network") || errorMessage.includes("timeout") || error.code === 'ECONNABORTED') {
+        toast.error("Network error. Please check your connection and try again.");
+      } else if (error.response?.status === 404) {
+        toast.info("No existing KYC data found. Please fill in your details manually.");
+      } else {
+        toast.error("Unable to fetch existing data. You can fill in your details manually.");
+      }
+      // Don't throw error - allow user to proceed with manual entry
     } finally {
       setIsFetchingUserData(false);
     }
   };
-
   const processPartnerData = async (apiResponse: any) => {
     try {
       console.log('Raw Partner API Response:', apiResponse);
-
       const mobileToAccountData = apiResponse.find((item: any) => item.source === 'mobile_to_account');
       const financialData = apiResponse.find((item: any) => item.source === 'financial_service_data_pull');
-
       console.log('Mobile to Account Data:', mobileToAccountData);
       console.log('Financial Data:', financialData);
-
-      // Process bank data from mobile_to_account
       if (mobileToAccountData?.response?.data) {
         const bankData = mobileToAccountData.response.data;
         console.log('Bank Data Found:', bankData);
-
         setVerification(prev => ({
           ...prev,
           bank: {
@@ -689,52 +685,39 @@ console.log("fromAdmin:", fromAdmin);
             address: bankData.branchDetails?.address || ''
           }
         }));
-
         if (bankData.nameAsPerBank) {
-         console.log("bankname-",bankData.nameAsPerBank);
-
+          console.log("bankname-", bankData.nameAsPerBank);
           setPartnerData(prev => ({
             ...prev,
             name: bankData.nameAsPerBank.trim()
           }));
         }
       }
-
-      // Process personal, identity, and address data from financial_service_data_pull
       if (financialData?.response?.data) {
         const financialDataResp = financialData.response.data;
         console.log('Financial Data Response:', financialDataResp);
-
-        // Set personal info including DOB
         if (financialDataResp.personalInfo) {
           const personalInfo = financialDataResp.personalInfo;
           console.log('Personal Info:', personalInfo);
-
-          // Set name from personalInfo if not already set from bank data
           if (personalInfo.fullName && !partnerData.name) {
             setPartnerData(prev => ({
               ...prev,
               name: personalInfo.fullName.trim()
             }));
           }
-
-          // Set DOB from personalInfo
           if (personalInfo.dob) {
             console.log('Setting DOB from personalInfo:', personalInfo.dob);
             setPartnerData(prev => ({
               ...prev,
-              dob: personalInfo.dob // Already in YYYY-MM-DD format
+              dob: personalInfo.dob
             }));
           }
-
-          // Set age and gender if available
           if (personalInfo.age) {
             setPartnerData(prev => ({
               ...prev,
               age: personalInfo.age
             }));
           }
-
           if (personalInfo.gender) {
             setPartnerData(prev => ({
               ...prev,
@@ -742,33 +725,15 @@ console.log("fromAdmin:", fromAdmin);
             }));
           }
         }
-
-        // Set email data
         if (financialDataResp.emailInfo && financialDataResp.emailInfo.length > 0) {
           const emailData = financialDataResp.emailInfo[0];
           console.log('Email Data:', emailData);
-
           const emailValue = (emailData.emailAddress || '').toLowerCase();
-          // setVerification(prev => ({
-          //   ...prev,
-          //   email: {
-          //     ...prev.email,
-          //     value: emailValue,
-          //     verified: false // Set to false initially, will require OTP verification
-          //   }
-          // }));
-          // setPartnerData(prev => ({
-          //   ...prev,
-          //   email: emailValue
-          // }));
           console.log('Setting Email:', emailValue);
         }
-
-        // Set PAN data
         if (financialDataResp.identityInfo?.panNumber && financialDataResp.identityInfo.panNumber.length > 0) {
           const panData = financialDataResp.identityInfo.panNumber[0];
           console.log('PAN Data:', panData);
-
           setVerification(prev => ({
             ...prev,
             pan: {
@@ -778,26 +743,20 @@ console.log("fromAdmin:", fromAdmin);
             }
           }));
         }
-
-        // Set Aadhaar data
         if (financialDataResp.identityInfo?.aadhaarNumber && financialDataResp.identityInfo.aadhaarNumber.length > 0) {
           const aadhaarData = financialDataResp.identityInfo.aadhaarNumber[0];
           console.log('Aadhaar Data:', aadhaarData);
-
           setVerification(prev => ({
             ...prev,
             aadhaar: {
               ...prev.aadhaar,
               value: formatAadhaar(aadhaarData.idNumber || ''),
-              verified: false // Set to false initially, will require OTP verification
+              verified: false
             }
           }));
         }
-
-        // Set addresses
         if (financialDataResp.addressInfo && financialDataResp.addressInfo.length > 0) {
           console.log('Address Info:', financialDataResp.addressInfo);
-
           const formattedAddresses = financialDataResp.addressInfo.map((addr: any, index: number) => ({
             sequence: addr.sequence || `${index + 1}`,
             address: addr.address || '',
@@ -806,10 +765,8 @@ console.log("fromAdmin:", fromAdmin);
             postal: addr.postal || '',
             reportedDate: addr.reportedDate || ''
           }));
-
           console.log('Formatted Addresses:', formattedAddresses);
           setAddresses(formattedAddresses);
-
           if (formattedAddresses.length > 0) {
             setPartnerData(prev => ({
               ...prev,
@@ -818,8 +775,6 @@ console.log("fromAdmin:", fromAdmin);
             }));
           }
         }
-
-        // Set phone data if needed
         if (financialDataResp.phoneInfo && financialDataResp.phoneInfo.length > 0) {
           console.log('Phone Info:', financialDataResp.phoneInfo);
           const primaryPhone = financialDataResp.phoneInfo.find((phone: any) =>
@@ -833,34 +788,27 @@ console.log("fromAdmin:", fromAdmin);
           }
         }
       }
-
     } catch (error) {
       console.error('Error processing API response:', error);
       toast.error('Error processing partner data');
     }
   };
 
-  // OTP Input Handlers for Aadhaar verification
   const handleAadhaarOTPChange = (value: string, index: number) => {
     const newOtp = aadhaarOtpState.otp.split('');
     newOtp[index] = value;
     const otpString = newOtp.join('');
-
     setAadhaarOtpState(prev => ({ ...prev, otp: otpString, error: '' }));
-
     if (value && index < 5) {
       aadhaarOtpInputRefs.current[index + 1]?.focus();
     }
   };
 
-  // OTP Input Handlers for Email verification
   const handleEmailOTPChange = (value: string, index: number) => {
     const newOtp = emailOtpState.otp.split('');
     newOtp[index] = value;
     const otpString = newOtp.join('');
-
     setEmailOtpState(prev => ({ ...prev, otp: otpString, error: '' }));
-
     if (value && index < 5) {
       emailOtpInputRefs.current[index + 1]?.focus();
     }
@@ -882,7 +830,6 @@ console.log("fromAdmin:", fromAdmin);
     e.preventDefault();
     const pastedData = e.clipboardData.getData('text').slice(0, 6);
     const digits = pastedData.split('');
-
     digits.forEach((digit, index) => {
       if (index < 6) {
         handleAadhaarOTPChange(digit, index);
@@ -894,7 +841,6 @@ console.log("fromAdmin:", fromAdmin);
     e.preventDefault();
     const pastedData = e.clipboardData.getData('text').slice(0, 6);
     const digits = pastedData.split('');
-
     digits.forEach((digit, index) => {
       if (index < 6) {
         handleEmailOTPChange(digit, index);
@@ -902,17 +848,21 @@ console.log("fromAdmin:", fromAdmin);
     });
   };
 
-  // Send OTP for Aadhaar verification
   const sendAadhaarOTP = async () => {
-    if (!verification.aadhaar.value || verification.aadhaar.value.length !== 14) {
+    if (!verification.aadhaar.value || verification.aadhaar.value.replace(/\s/g, '').length !== 12) {
       setVerification(prev => ({
         ...prev,
         aadhaar: {
           ...prev.aadhaar,
-          error: 'Please enter a valid Aadhaar number',
+          error: 'Please enter a valid 12-digit Aadhaar number',
           otpError: ''
         }
       }));
+      return;
+    }
+
+    if (!partnerData.phone) {
+      toast.error('Mobile number is missing. Please refresh the page.');
       return;
     }
 
@@ -931,7 +881,8 @@ console.log("fromAdmin:", fromAdmin);
 
       console.log('Sending Aadhaar OTP request:', {
         mobile: partnerData.phone,
-        aadhaar: aadhaarNumber
+        aadhaar: aadhaarNumber,
+        userTypeId: userType
       });
 
       const response = await PartnerService.sendOtpForAadhaarVerification({
@@ -943,10 +894,34 @@ console.log("fromAdmin:", fromAdmin);
       console.log('Aadhaar OTP Response:', response);
 
       if (response && response.data && response.data.status === 'S') {
-        const userRegArray = response.data.userReg[1];
-        const refId = userRegArray.ref_id;
+        // Safely extract ref_id from different possible response structures
+        let refId = '';
+
+        if (response.data.userReg) {
+          // Case 1: userReg is array with ref_id in second element
+          if (Array.isArray(response.data.userReg) && response.data.userReg.length > 1) {
+            refId = response.data.userReg[1]?.ref_id || '';
+          }
+          // Case 2: userReg is array with ref_id in first element
+          else if (Array.isArray(response.data.userReg) && response.data.userReg[0]?.ref_id) {
+            refId = response.data.userReg[0].ref_id;
+          }
+          // Case 3: userReg is object with ref_id
+          else if (typeof response.data.userReg === 'object' && response.data.userReg.ref_id) {
+            refId = response.data.userReg.ref_id;
+          }
+        }
+
+        // Fallback to direct ref_id if available
+        if (!refId && response.data.ref_id) {
+          refId = response.data.ref_id;
+        }
 
         console.log('Extracted ref_id:', refId);
+
+        if (!refId) {
+          console.warn('No ref_id found in response:', response.data);
+        }
 
         setAadhaarOtpState({
           otp: '',
@@ -970,14 +945,26 @@ console.log("fromAdmin:", fromAdmin);
             otpError: ''
           }
         }));
+
         toast.success('Aadhaar OTP sent successfully!');
+
       } else {
-        const errorMessage = response?.data?.remark || 'Failed to send Aadhaar OTP';
+        const errorMessage = response?.data?.remark || response?.data?.message || 'Failed to send Aadhaar OTP';
         throw new Error(errorMessage);
       }
     } catch (error: any) {
       console.error('Aadhaar OTP Error:', error);
-      const errorMessage = 'An error occurred while sending Aadhaar OTP';
+
+      let errorMessage = 'An error occurred while sending Aadhaar OTP';
+
+      if (error.response?.data?.remark) {
+        errorMessage = error.response.data.remark;
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
       setVerification(prev => ({
         ...prev,
         aadhaar: {
@@ -987,11 +974,11 @@ console.log("fromAdmin:", fromAdmin);
           otpError: errorMessage
         }
       }));
+
       toast.error(errorMessage);
     }
   };
 
-  // Send OTP for Email verification
   const sendEmailOTP = async () => {
     if (!verification.email.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(verification.email.value)) {
       setVerification(prev => ({
@@ -1003,7 +990,6 @@ console.log("fromAdmin:", fromAdmin);
       }));
       return;
     }
-
     try {
       setVerification(prev => ({
         ...prev,
@@ -1013,20 +999,16 @@ console.log("fromAdmin:", fromAdmin);
           error: ''
         }
       }));
-
       console.log('Sending Email OTP request:', {
         mobile: partnerData.phone,
         email: verification.email.value
       });
-
       const response = await PartnerService.sentOtpForEmailVerification({
         mobile: partnerData.phone,
         email: verification.email.value
       });
-
       console.log('Email OTP Response:', response);
       console.log(response.data);
-
       if (response && response.data && response.data.status === 'S') {
         setEmailOtpState({
           otp: '',
@@ -1037,7 +1019,6 @@ console.log("fromAdmin:", fromAdmin);
           sent: true,
           verifying: false
         });
-
         setVerification(prev => ({
           ...prev,
           email: {
@@ -1068,107 +1049,37 @@ console.log("fromAdmin:", fromAdmin);
     }
   };
 
-  // const verifyAadhaarOTP = async () => {
-  //   if (aadhaarOtpState.otp.length !== 6) {
-  //     setAadhaarOtpState(prev => ({ ...prev, error: 'Please enter a valid 6-digit OTP' }));
-  //     return;
-  //   }
-
-  //   try {
-  //     setAadhaarOtpState(prev => ({ ...prev, verifying: true, error: '' }));
-
-  //     const response = await PartnerService.verifyOtpForAadhaarVerification({
-  //       mobile: partnerData.phone,
-  //       aadhaar: verification.aadhaar.value.replace(/\s+/g, ''),
-  //       otp: aadhaarOtpState.otp,
-  //       ref_id: verification.aadhaar.ref_id
-  //     });
-
-  //     console.log(response.data);
-
-  //     if (response && response.data && response.data.status === 'S') {
-  //       const aadhaarData = response.data.userReg[0];
-
-  //       setPartnerData(prev => ({
-  //         ...prev,
-  //         name: aadhaarData.name?.trim() || prev.name,
-  //         dob: aadhaarData.dob?.trim() || prev.dob,
-  //         address: aadhaarData.address?.trim() || prev.address,
-  //         pincode: aadhaarData.split_address?.pincode?.trim() || prev.pincode,
-  //       }));
-  //       setAadhaarOtpState(prev => ({ ...prev, verifying: false }));
-  //       toggleEdit('aadhaar')
-  //       setVerification(prev => ({
-  //         ...prev,
-  //         aadhaar: { ...prev.aadhaar, verified: true, error: '' }
-  //       }));
-
-  //       toast.success('Aadhaar verified successfully!');
-  //     } else {
-  //       const errorMessage = response?.data?.remark || 'Invalid Aadhaar OTP';
-  //       throw new Error(errorMessage);
-  //     }
-  //   } catch (error: any) {
-  //     const errorMessage = error.message || 'Aadhaar OTP verification failed';
-  //     setAadhaarOtpState(prev => ({
-  //       ...prev,
-  //       verifying: false,
-  //       error: errorMessage
-  //     }));
-  //     toast.error(errorMessage);
-  //   }
-  // };
-
   const verifyAadhaarOTP = async () => {
     if (aadhaarOtpState.otp.length !== 6) {
       setAadhaarOtpState(prev => ({ ...prev, error: 'Please enter a valid 6-digit OTP' }));
       return;
     }
-
     try {
       setAadhaarOtpState(prev => ({ ...prev, verifying: true, error: '' }));
-
       const response = await PartnerService.verifyOtpForAadhaarVerification({
         mobile: partnerData.phone,
         aadhaar: verification.aadhaar.value.replace(/\s+/g, ''),
         otp: aadhaarOtpState.otp,
         ref_id: verification.aadhaar.ref_id
       });
-
       console.log('Aadhaar OTP Verification Response:', response);
-
       if (response && response.data) {
         const responseData = response.data;
-
-        // Check if top-level status is 'S'
         if (responseData.status === 'S') {
-          // FIRST: Check if userReg is an error object (not an array)
           if (responseData.userReg && typeof responseData.userReg === 'object' && !Array.isArray(responseData.userReg)) {
             const userRegObj = responseData.userReg;
-
             if (userRegObj.status === 'error') {
-              // OTP VERIFICATION FAILED - Show the error message
-              const errorMessage = userRegObj.message ||
-                userRegObj.error ||
-                'Invalid Aadhaar OTP';
-
+              const errorMessage = userRegObj.message || userRegObj.error || 'Invalid Aadhaar OTP';
               console.log('OTP verification failed:', errorMessage);
               handleOTPError(errorMessage);
               return;
             }
           }
-
-          // SECOND: Check if userReg is an array with success data
           if (Array.isArray(responseData.userReg) && responseData.userReg.length > 0) {
             const userRegData = responseData.userReg[0];
-
-            // Check if verification was successful
             if (userRegData.status === 'VALID') {
-              // SUCCESSFUL VERIFICATION
               const aadhaarData = userRegData;
-
               console.log('Aadhaar verification successful:', aadhaarData);
-
               setPartnerData(prev => ({
                 ...prev,
                 name: aadhaarData.name?.trim() || prev.name,
@@ -1176,8 +1087,6 @@ console.log("fromAdmin:", fromAdmin);
                 address: aadhaarData.address?.trim() || prev.address,
                 pincode: aadhaarData.split_address?.pincode?.trim() || prev.pincode,
               }));
-
-              // Reset OTP state completely
               setAadhaarOtpState({
                 otp: '',
                 timer: 0,
@@ -1187,13 +1096,9 @@ console.log("fromAdmin:", fromAdmin);
                 sent: false,
                 verifying: false
               });
-
-              // Clear OTP input fields
               aadhaarOtpInputRefs.current.forEach(ref => {
                 if (ref) ref.value = '';
               });
-
-              // Toggle edit mode and set verification to true
               toggleEdit('aadhaar');
               setVerification(prev => ({
                 ...prev,
@@ -1204,24 +1109,18 @@ console.log("fromAdmin:", fromAdmin);
                   ref_id: ''
                 }
               }));
-
               toast.success('Aadhaar verified successfully!');
             } else {
-              // Handle invalid status in array
-              const errorMessage = userRegData.message ||
-                'Aadhaar OTP verification failed';
-
+              const errorMessage = userRegData.message || 'Aadhaar OTP verification failed';
               console.log('Invalid status in array:', errorMessage);
               handleOTPError(errorMessage);
             }
           } else {
-            // If we reach here, it means userReg is neither an error object nor a valid array
             const errorMessage = responseData.remark || 'Invalid response format from server';
             console.log('Invalid userReg structure:', responseData.userReg);
             handleOTPError(errorMessage);
           }
         } else {
-          // Top-level failure
           const errorMessage = responseData.remark || 'Aadhaar OTP verification failed';
           console.log('Top-level failure:', errorMessage);
           handleOTPError(errorMessage);
@@ -1235,36 +1134,27 @@ console.log("fromAdmin:", fromAdmin);
         error.response?.data?.remark ||
         error.message ||
         'Aadhaar OTP verification failed';
-
       handleOTPError(errorMessage);
     }
   };
 
   const handleOTPError = (errorMessage: string) => {
     console.log('Handling OTP error:', errorMessage);
-
-    // Check if it's a session expired error
     const isSessionExpired = errorMessage.toLowerCase().includes('session expired') ||
       errorMessage.toLowerCase().includes('generate a new otp');
-
-    // Clear OTP input fields
     aadhaarOtpInputRefs.current.forEach(ref => {
       if (ref) ref.value = '';
     });
-
     if (isSessionExpired) {
-      // For session expired, reset everything so user has to start over
       setAadhaarOtpState({
         otp: '',
         timer: 0,
         canResend: true,
         loading: false,
         error: 'OTP session expired. Please request a new OTP.',
-        sent: false, // Set to false so user sees "Verify Aadhaar" button again
+        sent: false,
         verifying: false
       });
-
-      // Also reset verification state
       setVerification(prev => ({
         ...prev,
         aadhaar: {
@@ -1275,15 +1165,13 @@ console.log("fromAdmin:", fromAdmin);
         }
       }));
     } else {
-      // For other errors, keep OTP section visible for retry
       setAadhaarOtpState(prev => ({
         ...prev,
         otp: '',
         verifying: false,
         error: errorMessage,
-        sent: true // Keep sent=true so OTP section stays visible
+        sent: true
       }));
-
       setVerification(prev => ({
         ...prev,
         aadhaar: {
@@ -1293,10 +1181,7 @@ console.log("fromAdmin:", fromAdmin);
         }
       }));
     }
-
     toast.error(errorMessage);
-
-    // Focus on first OTP input if OTP section is still visible
     if (!isSessionExpired) {
       setTimeout(() => {
         aadhaarOtpInputRefs.current[0]?.focus();
@@ -1309,24 +1194,20 @@ console.log("fromAdmin:", fromAdmin);
       setEmailOtpState(prev => ({ ...prev, error: 'Please enter a valid 6-digit OTP' }));
       return;
     }
-
     try {
       setEmailOtpState(prev => ({ ...prev, verifying: true, error: '' }));
-
       const response = await PartnerService.verifyOtpForEmailVerification({
         mobile: partnerData.phone,
         email: verification.email.value,
         otp: emailOtpState.otp,
         userTypeId: userType
       });
-
       setEmailOtpState(prev => ({ ...prev, verifying: false }));
-      toggleEdit('email')
+      toggleEdit('email');
       setVerification(prev => ({
         ...prev,
         email: { ...prev.email, verified: true, error: '' }
       }));
-
       toast.success('Email verified successfully!');
     } catch (error: any) {
       const errorMessage = error.message || 'Email OTP verification failed';
@@ -1339,7 +1220,6 @@ console.log("fromAdmin:", fromAdmin);
     }
   };
 
-  // PAN Validation Function
   const verifyPAN = async () => {
     if (!verification.pan.value || verification.pan.value.length !== 10) {
       setVerification(prev => ({
@@ -1352,7 +1232,6 @@ console.log("fromAdmin:", fromAdmin);
       }));
       return { isValid: false, message: 'Please enter a valid PAN number' };
     }
-
     try {
       setVerification(prev => ({
         ...prev,
@@ -1366,23 +1245,17 @@ console.log("fromAdmin:", fromAdmin);
         userTypeId: userType
       });
       console.log(response);
-
       let responseData = response.data;
       console.log('PAN Validation Response:', responseData);
-
       if (responseData && responseData.status === 'S' && responseData.userReg[0].valid === true) {
         const kycStatus = responseData.data?.kycStatus || false;
         const cvlKraMessage = responseData.data?.cvlKraMessage || '';
         const apiMessage = responseData.msg || 'PAN validation completed';
-
         const displayMessage = cvlKraMessage
           ? `${cvlKraMessage} - ${apiMessage}`
           : apiMessage;
-
-        // IMPORTANT: Allow registration even if KYC is pending
         const isPending = cvlKraMessage.toLowerCase().includes('pending') ||
           cvlKraMessage.toLowerCase().includes('kyc status is pending');
-
         setVerification(prev => ({
           ...prev,
           pan: {
@@ -1393,7 +1266,6 @@ console.log("fromAdmin:", fromAdmin);
             validationMessage: displayMessage
           }
         }));
-
         if (kycStatus) {
           toast.success('PAN validated successfully!');
         } else if (isPending) {
@@ -1401,7 +1273,6 @@ console.log("fromAdmin:", fromAdmin);
         } else {
           toast.warning(apiMessage);
         }
-
         return { isValid: kycStatus || isPending, message: displayMessage };
       } else {
         const errorMessage = responseData.message || 'Invalid PAN';
@@ -1410,14 +1281,11 @@ console.log("fromAdmin:", fromAdmin);
           pan: { ...prev.pan, loading: false, error: errorMessage }
         }));
         toast.error(errorMessage);
-
         throw new Error(errorMessage);
       }
     } catch (error: any) {
       console.error('PAN Validation Error:', error);
-
       let errorMessage = 'PAN validation error';
-
       if (error.response?.data?.msg) {
         errorMessage = error.response.data.msg;
       } else if (error.response?.data?.message) {
@@ -1425,32 +1293,27 @@ console.log("fromAdmin:", fromAdmin);
       } else if (error.message) {
         errorMessage = error.message;
       }
-
       const isKycPending = errorMessage.toLowerCase().includes('pending') ||
         errorMessage.toLowerCase().includes('kyc');
-
       setVerification(prev => ({
         ...prev,
         pan: {
           ...prev.pan,
-          verified: isKycPending, // Allow pending status
+          verified: isKycPending,
           loading: false,
           error: isKycPending ? '' : errorMessage,
           validationMessage: isKycPending ? errorMessage : ''
         }
       }));
-
       if (isKycPending) {
         toast.warning('PAN KYC is pending. You can proceed with registration.');
       } else {
         toast.error(errorMessage);
       }
-
       return { isValid: isKycPending, message: errorMessage };
     }
   };
 
-  // Bank Verification Function
   const verifyBank = async () => {
     if (!verification.bank.accountNumber || !verification.bank.ifsc) {
       setVerification(prev => ({
@@ -1463,13 +1326,11 @@ console.log("fromAdmin:", fromAdmin);
       }));
       return;
     }
-
     try {
       setVerification(prev => ({
         ...prev,
         bank: { ...prev.bank, loading: true, accountError: '', ifscError: '' }
       }));
-
       const response = await PartnerService.bankAccountVerification({
         mobile: partnerData.phone,
         bankAcNo: verification.bank.accountNumber,
@@ -1478,12 +1339,10 @@ console.log("fromAdmin:", fromAdmin);
       });
       console.log(response.data);
       if (response && response.data && response.data.status === 'S') {
-
         setVerification(prev => ({
           ...prev,
           bank: { ...prev.bank, bankName: response.data.userReg[1].bank_name, micr: response.data.userReg[1].ifsc_details.micr, loading: false, verified: true, accountError: '', ifscError: '' }
         }));
-
         toast.success('Bank account verified successfully!');
       } else {
         const errorMessage = response?.data?.remark || 'Invalid Bank Detail!';
@@ -1500,10 +1359,21 @@ console.log("fromAdmin:", fromAdmin);
   };
 
   const resendAadhaarOTP = async () => {
+    // Validate that we have required data before making API call
+    if (!partnerData.phone) {
+      toast.error('Mobile number is missing. Please refresh the page.');
+      return;
+    }
+
+    if (!verification.aadhaar.value) {
+      toast.error('Aadhaar number is missing. Please enter your Aadhaar number.');
+      return;
+    }
+
     try {
       setAadhaarOtpState(prev => ({ ...prev, loading: true, error: '' }));
 
-      // Reset all OTP fields
+      // Clear previous OTP inputs
       aadhaarOtpInputRefs.current.forEach(ref => {
         if (ref) {
           ref.value = '';
@@ -1511,16 +1381,35 @@ console.log("fromAdmin:", fromAdmin);
         }
       });
 
-      // Call actual API to resend OTP
+      console.log('Resending Aadhaar OTP with:', {
+        mobile: partnerData.phone,
+        aadhaar: verification.aadhaar.value.replace(/\s/g, ''),
+        userTypeId: userType
+      });
+
       const response = await PartnerService.sendOtpForAadhaarVerification({
         mobile: partnerData.phone,
         aadhaar: verification.aadhaar.value.replace(/\s/g, ''),
         userTypeId: userType
       });
 
+      console.log('Resend Aadhaar OTP Response:', response);
+
       if (response && response.data && response.data.status === 'S') {
-        const userRegArray = response.data.userReg[1];
-        const refId = userRegArray.ref_id;
+        // Extract ref_id safely - check different possible response structures
+        let refId = '';
+
+        if (response.data.userReg) {
+          if (Array.isArray(response.data.userReg) && response.data.userReg[1]) {
+            refId = response.data.userReg[1].ref_id;
+          } else if (typeof response.data.userReg === 'object' && response.data.userReg.ref_id) {
+            refId = response.data.userReg.ref_id;
+          } else if (response.data.ref_id) {
+            refId = response.data.ref_id;
+          }
+        }
+
+        console.log('Extracted ref_id for resend:', refId);
 
         setAadhaarOtpState({
           otp: '',
@@ -1537,27 +1426,51 @@ console.log("fromAdmin:", fromAdmin);
           aadhaar: {
             ...prev.aadhaar,
             loading: false,
-            ref_id: refId,
-            error: ''
+            otpSent: true,
+            showOtpModal: true,
+            ref_id: refId || prev.aadhaar.ref_id,
+            error: '',
+            otpError: ''
           }
         }));
 
         toast.success('Aadhaar OTP resent successfully!');
+
+        // Focus on first OTP input
+        setTimeout(() => {
+          aadhaarOtpInputRefs.current[0]?.focus();
+        }, 100);
+
       } else {
-        const errorMessage = response?.data?.remark || 'Failed to resend Aadhaar OTP';
+        const errorMessage = response?.data?.remark || response?.data?.message || 'Failed to resend Aadhaar OTP';
         throw new Error(errorMessage);
       }
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || error.message || 'An error occurred while resending OTP';
+      console.error('Resend Aadhaar OTP Error:', error);
+
+      let errorMessage = 'An error occurred while resending OTP';
+
+      if (error.response?.data?.remark) {
+        errorMessage = error.response.data.remark;
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
       setAadhaarOtpState(prev => ({
         ...prev,
         loading: false,
         error: errorMessage,
-        sent: false
+        sent: false,
+        canResend: false,
+        timer: 5
       }));
+
       toast.error(errorMessage);
     }
   };
+
   const clearAadhaarOTP = () => {
     setAadhaarOtpState({
       otp: '',
@@ -1568,7 +1481,6 @@ console.log("fromAdmin:", fromAdmin);
       sent: false,
       verifying: false
     });
-
     setVerification(prev => ({
       ...prev,
       aadhaar: {
@@ -1578,7 +1490,6 @@ console.log("fromAdmin:", fromAdmin);
         ref_id: ''
       }
     }));
-
     aadhaarOtpInputRefs.current.forEach(ref => {
       if (ref) ref.value = '';
     });
@@ -1587,10 +1498,7 @@ console.log("fromAdmin:", fromAdmin);
   const resendEmailOTP = async () => {
     try {
       setEmailOtpState(prev => ({ ...prev, loading: true, error: '' }));
-
-      // Simulate API call - replace with actual API
       await new Promise(resolve => setTimeout(resolve, 1000));
-
       setEmailOtpState({
         otp: '',
         timer: 30,
@@ -1600,7 +1508,6 @@ console.log("fromAdmin:", fromAdmin);
         sent: true,
         verifying: false
       });
-
       emailOtpInputRefs.current.forEach(ref => {
         if (ref) ref.value = '';
       });
@@ -1625,13 +1532,11 @@ console.log("fromAdmin:", fromAdmin);
       }));
       return;
     }
-
     try {
       setVerification(prev => ({
         ...prev,
         nism: { ...prev.nism, loading: true, uploadError: '' }
       }));
-
       if (!verification.nism.skipped) {
         const response = await PartnerService.uploadNismDocument({
           mobile: partnerData.phone,
@@ -1639,7 +1544,6 @@ console.log("fromAdmin:", fromAdmin);
           arn_no: verification.nism.arnNumber,
           euin_no: verification.nism.euinNumber,
         });
-
         if (response && response.data && response.data.status === 'S') {
           setVerification(prev => ({
             ...prev,
@@ -1692,12 +1596,9 @@ console.log("fromAdmin:", fromAdmin);
         verified: false
       }
     }));
-
     if (!file) return;
-
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/svg+xml', 'application/pdf'];
     const maxSizeInBytes = 1 * 1024 * 1024;
-
     if (!allowedTypes.includes(file.type)) {
       setVerification(prev => ({
         ...prev,
@@ -1705,7 +1606,6 @@ console.log("fromAdmin:", fromAdmin);
       }));
       return;
     }
-
     if (file.size > maxSizeInBytes) {
       setVerification(prev => ({
         ...prev,
@@ -1713,15 +1613,12 @@ console.log("fromAdmin:", fromAdmin);
       }));
       return;
     }
-
     try {
       setVerification(prev => ({
         ...prev,
         nism: { ...prev.nism, loading: true, uploadError: '' }
       }));
-
       const base64 = await convertFileToBase64(file);
-
       setVerification(prev => ({
         ...prev,
         nism: {
@@ -1774,9 +1671,14 @@ console.log("fromAdmin:", fromAdmin);
     const formatted = formatAadhaar(value);
     setVerification(prev => ({
       ...prev,
-      aadhaar: { ...prev.aadhaar, value: formatted, error: '', verified: false }
+      aadhaar: {
+        ...prev.aadhaar,
+        value: formatted,
+        error: '',
+        otpError: '',
+        verified: false
+      }
     }));
-    // Reset OTP state when Aadhaar changes
     setAadhaarOtpState({
       otp: '',
       timer: 0,
@@ -1807,12 +1709,10 @@ console.log("fromAdmin:", fromAdmin);
       ...prev,
       email: { ...prev.email, value: formatted, error: '', verified: false }
     }));
-    // Also update partnerData email
     setPartnerData(prev => ({
       ...prev,
       email: formatted
     }));
-    // Reset OTP state when Email changes
     setEmailOtpState({
       otp: '',
       timer: 0,
@@ -1836,7 +1736,6 @@ console.log("fromAdmin:", fromAdmin);
     }));
   };
 
-  // Simple toggle edit function - no API calls
   const toggleEdit = (field: keyof typeof isEditing) => {
     setIsEditing(prev => ({
       ...prev,
@@ -1853,411 +1752,302 @@ console.log("fromAdmin:", fromAdmin);
     }));
   };
 
-  // Helper function to check if ARN requirements are complete
   const isARNComplete = () => {
     if (verification.nism.arnHolder === true) {
-      // If user selected "Yes" for ARN holder, then ARN, EUIN and document are required
       return verification.nism.arnNumber &&
         verification.nism.euinNumber &&
         verification.nism.verified;
     } else if (verification.nism.arnHolder === false) {
-      // If user selected "No" for ARN holder, then it's considered complete
       return true;
     }
-    // If ARN holder status is not selected yet, it's not complete
     return false;
   };
 
-  // Calculate overall progress based on specified fields only
   const calculateOverallProgress = () => {
-
-    // 1. If loginEmailId is NOT "admin@gmail.com", email is considered verified
-  // 2. If loginEmailId IS "admin@gmail.com", email is verified only when user has entered an email
-  const isEmailVerified = 
-    loginEmailId !== "admin@gmail.com" 
-      ? true 
-      : (verification.email.value && verification.email.value.includes('@'));
-
-
+    const isEmailVerified =
+      loginEmailId !== "admin@gmail.com"
+        ? true
+        : (verification.email.value && verification.email.value.includes('@'));
     const steps = [
-      !!partnerData.phone, // Mobile
-      !!(partnerData.name && partnerData.dob), // Personal Details
-      verification.aadhaar.verified, // Aadhaar
-      verification.pan.verified, // PAN
-       isEmailVerified, // Email (conditional)
-      // verification.email.verified, // Email
-      isARNComplete(), // ARN (with conditional logic)
+      !!partnerData.phone,
+      !!(partnerData.name && partnerData.dob),
+      verification.aadhaar.verified,
+      verification.pan.verified,
+      isEmailVerified,
+      isARNComplete(),
     ];
-
     const completed = steps.filter(Boolean).length;
     return Math.round((completed / steps.length) * 100);
   };
 
-  // Update isAllVerified to use the new calculation
   const isAllVerified = calculateOverallProgress() === 100;
 
- // Single API call for complete registration
-const handleCompleteRegistration = async () => {
-  if (!isAllVerified) {
-    toast.error('Please complete all verification steps before proceeding');
-    return;
-  }
-
-  try {
-    setRegistrationStatus(prev => ({ ...prev, loading: true, error: '' }));
-
-    // Determine which email to use
-    // If loginEmailId is NOT "admin@gmail.com", use loginEmailId
-    // If loginEmailId IS "admin@gmail.com", use the email entered by user
-    const finalEmail = 
-      loginEmailId !== "admin@gmail.com" 
-        ? loginEmailId 
-        : verification.email.value;
-
-    // Validate that email exists when needed
-    if (loginEmailId === "admin@gmail.com" && !verification.email.value) {
-      toast.error('Please enter an email address');
+  const handleCompleteRegistration = async () => {
+    if (!isAllVerified) {
+      toast.error('Please complete all verification steps before proceeding');
       return;
     }
-
-    // Also update partnerData with the email for consistency
-    const partnerDataWithEmail = {
-      ...partnerData,
-      email: finalEmail
-    };
-
-    // Single API call with ALL data - pass the email as third parameter
-    const response = await PartnerService.createPartnerUser(
-      partnerDataWithEmail,
-      verification,
-      finalEmail // Pass the determined email
-    );
-
-    if (response && response.data && response.data.status === 'S') {
-      setRegistrationStatus(prev => ({ ...prev, loading: false }));
-
-      // Clear localStorage when registration is complete
-      clearLocalStorage();
-
-      setCurrentScreen('completion');
-      toast.success('Registration completed successfully!');
-    } else {
-      const errorMessage = response?.data?.remark || 'Registration failed';
-      throw new Error(errorMessage);
+    try {
+      setRegistrationStatus(prev => ({ ...prev, loading: true, error: '' }));
+      const finalEmail =
+        loginEmailId !== "admin@gmail.com"
+          ? loginEmailId
+          : verification.email.value;
+      if (loginEmailId === "admin@gmail.com" && !verification.email.value) {
+        toast.error('Please enter an email address');
+        return;
+      }
+      const partnerDataWithEmail = {
+        ...partnerData,
+        email: finalEmail
+      };
+      const response = await PartnerService.createPartnerUser(
+        partnerDataWithEmail,
+        verification,
+        finalEmail
+      );
+      if (response && response.data && response.data.status === 'S') {
+        setRegistrationStatus(prev => ({ ...prev, loading: false }));
+        clearLocalStorage();
+        setCurrentScreen('completion');
+        toast.success('Registration completed successfully!');
+      } else {
+        const errorMessage = response?.data?.remark || 'Registration failed';
+        throw new Error(errorMessage);
+      }
+    } catch (error: any) {
+      const errorMessage = error.message || 'An error occurred during registration';
+      setRegistrationStatus(prev => ({ ...prev, loading: false, error: errorMessage }));
+      toast.warning(`${errorMessage}`);
     }
-  } catch (error: any) {
-    const errorMessage = error.message || 'An error occurred during registration';
-    setRegistrationStatus(prev => ({ ...prev, loading: false, error: errorMessage }));
-    toast.warning(`${errorMessage}`);
-  }
-};
+  };
 
-  // Show loading state during hydration
-  // if (!isAllInitialized || isLoading) {
-  //   return (
-  //     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
-  //       <div className="text-center">
-  //         <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-4" />
-  //         <p className="text-gray-600">Loading partner data...</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  // Show error state if mobile number is missing or invalid
-  // if (error || !mobileFromUrl) {
-  //   return (
-  //     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
-  //       <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-6 text-center">
-  //         <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-  //           <Smartphone className="w-8 h-8 text-red-600" />
-  //         </div>
-  //         <h1 className="text-xl font-bold text-gray-900 mb-2">Mobile Number Required</h1>
-  //         <p className="text-gray-600 mb-4">
-  //           {error || 'Please provide a valid mobile number in the URL parameter (?mobile=xxxxxxxxxx)'}
-  //         </p>
-  //         <button
-  //           onClick={() => router.push('/')}
-  //           className="w-full bg-blue-600 text-white rounded-lg py-3 font-semibold hover:bg-blue-700 transition-colors"
-  //         >
-  //           Go Back
-  //         </button>
-  //       </div>
-  //     </div>
-  //   );
-  // }
-
-  // Completion Screen
   if (currentScreen === 'completion') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
-        <div className="w-full max-w-2xl bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 text-center border border-gray-200">
-          <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
-            <CheckCircle className="w-8 h-8 text-green-600" />
+      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center p-4">
+        <div className="w-full max-w-2xl bg-[#111111] backdrop-blur-sm rounded-2xl shadow-xl p-6 text-center border border-[#2A2A2A]">
+          <div className="w-16 h-16 bg-[#10B981]/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <CheckCircle className="w-8 h-8 text-[#10B981]" />
           </div>
-
-          <h1 className="text-xl font-bold text-gray-900 mb-3">Registration Completed Successfully!</h1>
-          <p className="text-gray-600 text-sm mb-4">
+          <h1 className="text-xl font-bold text-[#F9FAFB] mb-3">Registration Completed Successfully!</h1>
+          <p className="text-[#9CA3AF] text-sm mb-4">
             Your partner account has been created successfully. You can now login to access your dashboard.
           </p>
-
-          <div className="bg-white/60 rounded-lg p-4 mb-4 text-left border border-gray-200/50">
-            <h3 className="text-sm font-semibold text-gray-900 mb-3">Account Details</h3>
+          <div className="bg-[#1F1A1A] rounded-lg p-4 mb-4 text-left border border-[#2A2A2A]">
+            <h3 className="text-sm font-semibold text-[#F9FAFB] mb-3">Account Details</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
               <div>
-                <p className="text-gray-600">Mobile Number</p>
-                <p className="font-semibold text-gray-900">{partnerData.phone}</p>
+                <p className="text-[#9CA3AF]">Mobile Number</p>
+                <p className="font-semibold text-[#F9FAFB]">{partnerData.phone}</p>
               </div>
-              {/* <div>
-                <p className="text-gray-600">Email</p>
-                <p className="font-semibold text-gray-900">{loginEmailId}</p>
-              </div> */}
-              {/* <div>
-                <p className="text-gray-600">Name</p>
-                <p className="font-semibold text-gray-900">{partnerData.name}</p>
-              </div>
-              <div>
-                <p className="text-gray-600">Date of Birth</p>
-                <p className="font-semibold text-gray-900">{partnerData.dob || 'Please enter'}</p>
-              </div>
-              <div>
-                <p className="text-gray-600">PAN Number</p>
-                <p className="font-semibold text-gray-900">{verification.pan.value}</p>
-              </div> */}
             </div>
           </div>
-
           <button
             onClick={() => {
-              //clearLocalStorage();
-              if(loginEmailId !== "admin@gmail.com" ){
-              router.push('/partner-dashboard');  
-              }else{
+              if (loginEmailId !== "admin@gmail.com") {
+                router.push('/partner-dashboard');
+              } else {
                 router.push('/admin-dashboard');
               }
-             // router.push('/partner-dashboard');
             }}
-            className="w-full bg-blue-600 text-white rounded-lg py-3 text-sm font-semibold hover:bg-blue-700 transition-colors shadow-md"
+            className="w-full bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-[#F9FAFB] rounded-lg py-3 text-sm font-semibold hover:opacity-90 transition-colors shadow-md"
           >
-            Proceed to DashBoard
+            Proceed to Dashboard
           </button>
         </div>
       </div>
     );
   }
 
-  // Main Dashboard Screen
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-3">
+    <div className="min-h-screen bg-[#0A0A0A] p-3">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 backdrop-blur-sm rounded-xl shadow-md p-4 border border-blue-100 mb-4">
+        <div className="bg-[#111111] backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A] mb-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center mr-3 shadow-sm">
+              <div className="w-10 h-10 bg-gradient-to-r from-[#F59E0B] to-[#B45309] rounded-xl flex items-center justify-center mr-3 shadow-sm">
                 <ShieldUser className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-gray-900">Partner Onboading Process</h1>
-                <p className="text-gray-600 text-xs mt-0.5">Complete verification steps to activate your partner account</p>
-
-                {/* Progress Stats */}
+                <h1 className="text-lg font-bold text-[#F9FAFB]">Partner Onboarding Process</h1>
+                <p className="text-[#9CA3AF] text-xs mt-0.5">Complete verification steps to activate your partner account</p>
                 <div className="flex items-center gap-4 mt-1">
                   <div className="flex items-center">
-                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5"></div>
-                    <span className="text-xs text-gray-700">
+                    <div className="w-1.5 h-1.5 bg-[#10B981] rounded-full mr-1.5"></div>
+                    <span className="text-xs text-[#F9FAFB]">
                       <span className="font-semibold">{Math.round(calculateOverallProgress())}%</span> Complete
                     </span>
                   </div>
                 </div>
               </div>
             </div>
-
             <div className="flex flex-col items-end gap-1.5">
-              {/* Mobile Verification Badge */}
               <div className="text-right">
                 <div className="flex items-center justify-end mb-0.5">
-                  <CheckCircle className="w-3 h-3 text-green-500 mr-1" />
-                  <span className="text-xs font-semibold text-green-700">Mobile Verified-</span>
-                  <p className="font-bold text-gray-900 text-base">{partnerData.phone}</p>
+                  <CheckCircle className="w-3 h-3 text-[#10B981] mr-1" />
+                  <span className="text-xs font-semibold text-[#10B981]">Mobile Verified-</span>
+                  <p className="font-bold text-[#F9FAFB] text-base">{partnerData.phone}</p>
                 </div>
-                {/* <div className="flex items-center justify-end mb-0.5">
-                  <CheckCircle className="w-3 h-3 text-green-500 mr-1" />
-                  <span className="text-xs font-semibold text-green-700">Email Verified-</span>
-                  <p className="font-bold text-gray-900 text-base">{loginEmailId}</p>
-                </div>
-                 */}
                 {loginEmailId !== "admin@gmail.com" && (
-  <div className="flex items-center justify-end mb-0.5">
-    <CheckCircle className="w-3 h-3 text-green-500 mr-1" />
-    <span className="text-xs font-semibold text-green-700">
-      Email Verified -
-    </span>
-    <p className="font-bold text-gray-900 text-base">
-      {loginEmailId}
-    </p>
-  </div>
-)}
-
-
+                  <div className="flex items-center justify-end mb-0.5">
+                    <CheckCircle className="w-3 h-3 text-[#10B981] mr-1" />
+                    <span className="text-xs font-semibold text-[#10B981]">Email Verified -</span>
+                    <p className="font-bold text-[#F9FAFB] text-base">{loginEmailId}</p>
+                  </div>
+                )}
               </div>
-
-              {/* Start Over Button */}
-              {/* <button
-                onClick={() => {
-                  clearLocalStorage();
-                  window.location.reload();
-                }}
-                className="flex items-center px-2.5 py-1 bg-red-500 text-white rounded-lg text-xs font-semibold hover:bg-red-600 transition-colors"
-              >
-                <RefreshCw className="w-2.5 h-2.5 mr-1" />
-                Refresh Data
-              </button> */}
             </div>
           </div>
         </div>
 
         {/* Verification Steps Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-          {/* Personal Details Card */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
-                  <User className="w-5 h-5 text-blue-600" />
+          {/* PAN & Email Verification Card */}
+          <div className="bg-[#111111] backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
+            <div className="space-y-4">
+              {/* PAN Section */}
+              <div className="bg-[#0A0A0A] rounded-lg p-3 border border-[#2A2A2A]">
+                <div className="flex items-center mb-3">
+                  <div className="flex items-center">
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center mr-3 ${verification.pan.verified ? 'bg-[#10B981]/20' : 'bg-[#1F1A1A]'}`}>
+                      <IdCard className={`w-4 h-4 ${verification.pan.verified ? 'text-[#10B981]' : 'text-[#F59E0B]'}`} />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-[#F9FAFB]">PAN Verification</h3>
+                      <p className="text-[#9CA3AF] text-xs">Auto-filled from your details</p>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-900">Personal Details</h3>
-                  <p className="text-gray-600 text-xs">Your personal information</p>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-medium text-[#F9FAFB] mb-1">PAN Number</label>
+                    <input
+                      type="text"
+                      value={verification.pan.value}
+                      onChange={(e) => handlePanChange(e.target.value)}
+                      placeholder="ABCDE1234F"
+                      className="w-full px-3 py-2 text-sm bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase"
+                      maxLength={10}
+                      disabled={verification.pan.verified}
+                    />
+                    {verification.pan.verified && (
+                      <p className="text-[#10B981] text-xs mt-1">✓ PAN verified - Cannot edit</p>
+                    )}
+                  </div>
+
+                  {verification.pan.value && !verification.pan.verified && (
+                    <div className="space-y-2">
+                      <button
+                        onClick={verifyPAN}
+                        disabled={verification.pan.loading || verification.pan.value.length !== 10}
+                        className="w-full bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg py-2 text-xs font-semibold hover:opacity-90 transition-colors disabled:opacity-50 flex items-center justify-center"
+                      >
+                        {verification.pan.loading ? (
+                          <div className="flex items-center">
+                            <Loader2 className="w-3 h-3 animate-spin mr-1" />
+                            Verifying...
+                          </div>
+                        ) : (
+                          'Verify PAN'
+                        )}
+                      </button>
+                      {verification.pan.error && (
+                        <p className="text-red-400 text-xs text-center">{verification.pan.error}</p>
+                      )}
+                    </div>
+                  )}
+
+                  {verification.pan.verified && (
+                    <div className="p-2 bg-[#10B981]/20 border border-[#10B981]/30 rounded-lg">
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-[#10B981] mr-1" />
+                        <span className="text-xs font-semibold text-[#10B981]">PAN Verified</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
-              <button
-                onClick={() => toggleEdit('personal')}
-                className={`flex items-center px-2 py-1.5 rounded text-xs ${isEditing.personal
-                  ? 'bg-green-600 text-white hover:bg-green-700'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
-                  } transition-colors`}
-              >
-                {isEditing.personal ? <Save className="w-3 h-3 mr-1" /> : <Edit className="w-3 h-3 mr-1" />}
-                {isEditing.personal ? 'Save' : 'Edit'}
-              </button>
-            </div>
 
-            <div className="space-y-3">
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Full Name</label>
-                {isEditing.personal ? (
-                  <input
-                    type="text"
-                    value={partnerData.name}
-                    onChange={(e) => handlePartnerInputChange('name', e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                ) : (
-                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">{partnerData.name || 'Please enter'}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Date of Birth</label>
-                {isEditing.personal ? (
-                  <input
-                    type="date"
-                    value={partnerData.dob}
-                    onChange={(e) => handlePartnerInputChange('dob', e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                ) : (
-                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">{partnerData.dob || 'Please enter'}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Address</label>
-                {isEditing.personal ? (
-                  <textarea
-                    value={partnerData.address}
-                    onChange={(e) => handlePartnerInputChange('address', e.target.value)}
-                    rows={2}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                  />
-                ) : (
-                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm whitespace-pre-wrap">{partnerData.address || 'Please enter'}</p>
-                )}
-              </div>
-
-              {/* PINCODE FIELD ADDED */}
-              <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Pincode</label>
-                {isEditing.personal ? (
-                  <input
-                    type="text"
-                    value={partnerData.pincode}
-                    onChange={(e) => handlePartnerInputChange('pincode', e.target.value)}
-                    placeholder="Enter pincode"
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    maxLength={6}
-                  />
-                ) : (
-                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">{partnerData.pincode || 'Please enter'}</p>
-                )}
-              </div>
+              {/* Email Section - Show only when loginEmailId is "admin@gmail.com" */}
+              {loginEmailId === "admin@gmail.com" && (
+                <div className="bg-[#0A0A0A] rounded-lg p-3 border border-[#2A2A2A]">
+                  <div className="flex items-center mb-3">
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center mr-3 bg-[#1F1A1A]">
+                      <Mail className="w-4 h-4 text-[#F59E0B]" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-semibold text-[#F9FAFB]">Email Address</h3>
+                      <p className="text-[#9CA3AF] text-xs">Will be used for registration</p>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-medium text-[#F9FAFB] mb-1">Email Address</label>
+                      <input
+                        type="email"
+                        value={verification.email.value}
+                        onChange={(e) => handleEmailChange(e.target.value)}
+                        placeholder="Enter your email address"
+                        className="w-full px-3 py-2 text-sm bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                      />
+                      <p className="text-xs text-[#9CA3AF] mt-1">This email will be used for registration</p>
+                    </div>
+                    {verification.email.error && (
+                      <p className="text-red-400 text-xs text-center">{verification.email.error}</p>
+                    )}
+                    {verification.email.value && (
+                      <div className="p-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg">
+                        <div className="flex items-center">
+                          <Mail className="w-4 h-4 text-[#F59E0B] mr-1" />
+                          <span className="text-xs font-semibold text-[#F59E0B]">Email entered</span>
+                        </div>
+                        <p className="text-[#F59E0B] text-xs mt-1">✓ This email will be used for registration</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Aadhaar Verification Card */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
-            <div className="flex items-center justify-between mb-3">
+          <div className="bg-[#111111] backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
+            <div className="flex items-center mb-3">
               <div className="flex items-center">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${verification.aadhaar.verified ? 'bg-green-100' : 'bg-blue-100'
-                  }`}>
-                  <Fingerprint className={`w-5 h-5 ${verification.aadhaar.verified ? 'text-green-600' : 'text-blue-600'
-                    }`} />
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${verification.aadhaar.verified ? 'bg-[#10B981]/20' : 'bg-[#1F1A1A]'}`}>
+                  <Fingerprint className={`w-5 h-5 ${verification.aadhaar.verified ? 'text-[#10B981]' : 'text-[#F59E0B]'}`} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">Aadhaar Details</h3>
-                  <p className="text-gray-600 text-xs">Auto-filled from your details</p>
+                  <h3 className="text-sm font-semibold text-[#F9FAFB]">Aadhaar Details</h3>
+                  <p className="text-[#9CA3AF] text-xs">Auto-filled from your details</p>
                 </div>
               </div>
-              <button
-                onClick={() => toggleEdit('aadhaar')}
-                className={`flex items-center px-2 py-1.5 rounded text-xs ${isEditing.aadhaar
-                  ? 'bg-green-600 text-white hover:bg-green-700'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
-                  } transition-colors`}
-              >
-                {isEditing.aadhaar ? <Save className="w-3 h-3 mr-1" /> : <Edit className="w-3 h-3 mr-1" />}
-                {isEditing.aadhaar ? 'Save' : 'Edit'}
-              </button>
             </div>
-
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Aadhaar Number</label>
-                {isEditing.aadhaar ? (
-                  <input
-                    type="text"
-                    value={verification.aadhaar.value}
-                    onChange={(e) => handleAadhaarChange(e.target.value)}
-                    placeholder="Enter 12-digit Aadhaar"
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    maxLength={14}
-                  />
-                ) : (
-                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
-                    {verification.aadhaar.value ? maskAadhar(verification.aadhaar.value) : 'Please enter'}
-                  </p>
+                <label className="block text-xs font-medium text-[#F9FAFB] mb-1">Aadhaar Number</label>
+                <input
+                  type="text"
+                  value={verification.aadhaar.value}
+                  onChange={(e) => handleAadhaarChange(e.target.value)}
+                  placeholder="Enter 12-digit Aadhaar"
+                  className="w-full px-3 py-2 text-sm bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                  maxLength={14}
+                  disabled={verification.aadhaar.verified} // Disable if already verified
+                />
+                {verification.aadhaar.verified && (
+                  <p className="text-[#10B981] text-xs mt-1">✓ Aadhaar verified - Cannot edit</p>
                 )}
               </div>
 
-              {/* Aadhaar Verification Button and OTP Section */}
               {!verification.aadhaar.verified && (
                 <div className="space-y-3">
                   {!aadhaarOtpState.sent ? (
                     <button
                       onClick={sendAadhaarOTP}
-                      disabled={verification.aadhaar.loading || !verification.aadhaar.value}
-                      className="w-full bg-blue-600 text-white rounded-lg py-2 text-xs font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-300 flex items-center justify-center"
+                      disabled={verification.aadhaar.loading || !verification.aadhaar.value || verification.aadhaar.value.replace(/\s/g, '').length !== 12}
+                      className="w-full bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg py-2 text-xs font-semibold hover:opacity-90 transition-colors disabled:opacity-50 flex items-center justify-center"
                     >
                       {verification.aadhaar.loading ? (
                         <div className="flex items-center">
@@ -2265,22 +2055,18 @@ const handleCompleteRegistration = async () => {
                           Sending OTP...
                         </div>
                       ) : (
-                        'Verify Aadhaar'
+                        'Send OTP'
                       )}
                     </button>
                   ) : (
-                    <div className="space-y-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                    <div className="space-y-3 p-3 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A]">
                       <div className="text-center">
-                        <label className="block text-xs font-medium text-gray-700 mb-2">
-                          6-digit Aadhaar OTP
-                        </label>
+                        <label className="block text-xs font-medium text-[#F9FAFB] mb-2">6-digit Aadhaar OTP</label>
                         <div className="flex justify-center space-x-2 mb-3">
                           {[0, 1, 2, 3, 4, 5].map((index) => (
                             <input
                               key={index}
-                              ref={(el) => {
-                                aadhaarOtpInputRefs.current[index] = el;
-                              }}
+                              ref={(el) => { aadhaarOtpInputRefs.current[index] = el; }}
                               type="text"
                               maxLength={1}
                               value={aadhaarOtpState.otp[index] || ''}
@@ -2290,16 +2076,15 @@ const handleCompleteRegistration = async () => {
                               }}
                               onKeyDown={(e) => handleAadhaarKeyDown(e, index)}
                               onPaste={handleAadhaarPaste}
-                              className="w-10 h-10 text-center text-lg font-bold border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white shadow-sm"
+                              className="w-10 h-10 text-center text-lg font-bold border border-[#2A2A2A] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-[#F59E0B] transition-all duration-200 bg-[#111111] text-[#F9FAFB] shadow-sm"
                               disabled={aadhaarOtpState.verifying}
                             />
                           ))}
                         </div>
                         {aadhaarOtpState.error && (
-                          <p className="text-red-500 text-xs text-center">{aadhaarOtpState.error}</p>
+                          <p className="text-red-400 text-xs text-center">{aadhaarOtpState.error}</p>
                         )}
                       </div>
-
                       <div className="flex items-center justify-between text-xs px-1">
                         <button
                           onClick={() => {
@@ -2317,25 +2102,23 @@ const handleCompleteRegistration = async () => {
                               aadhaar: { ...prev.aadhaar, error: '' }
                             }));
                           }}
-                          className="text-gray-600 hover:text-gray-800 font-medium"
+                          className="text-[#9CA3AF] hover:text-[#F9FAFB] font-medium"
                         >
                           Cancel
                         </button>
-
                         <button
                           onClick={resendAadhaarOTP}
                           disabled={!aadhaarOtpState.canResend || aadhaarOtpState.loading}
-                          className="text-blue-600 hover:text-blue-700 font-medium disabled:text-gray-400"
+                          className="text-[#F59E0B] hover:text-[#FBBF24] font-medium disabled:text-[#9CA3AF]"
                         >
                           {aadhaarOtpState.loading ? 'Resending...' :
                             aadhaarOtpState.timer > 0 ? `Resend in ${aadhaarOtpState.timer}s` : 'Resend OTP'}
                         </button>
                       </div>
-
                       <button
                         onClick={verifyAadhaarOTP}
                         disabled={aadhaarOtpState.otp.length !== 6 || aadhaarOtpState.verifying}
-                        className="w-full bg-green-600 text-white rounded-lg py-2 text-xs font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-300 flex items-center justify-center"
+                        className="w-full bg-gradient-to-r from-[#10B981] to-[#059669] text-white rounded-lg py-2 text-xs font-semibold hover:opacity-90 transition-colors disabled:opacity-50 flex items-center justify-center"
                       >
                         {aadhaarOtpState.verifying ? (
                           <div className="flex items-center">
@@ -2352,240 +2135,153 @@ const handleCompleteRegistration = async () => {
               )}
 
               {verification.aadhaar.verified && (
-                <div className="p-2 bg-green-50 border border-green-200 rounded-lg">
+                <div className="p-2 bg-[#10B981]/20 border border-[#10B981]/30 rounded-lg">
                   <div className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-600 mr-1" />
-                    <span className="text-xs font-semibold text-green-800">Aadhaar Verified</span>
+                    <CheckCircle className="w-4 h-4 text-[#10B981] mr-1" />
+                    <span className="text-xs font-semibold text-[#10B981]">Aadhaar Verified</span>
                   </div>
                 </div>
               )}
-
-              {/* {verification.aadhaar.error && (
-                <p className="text-red-500 text-xs">{verification.aadhaar.error}</p>
-              )} */}
             </div>
           </div>
-
-          {/* PAN & Email Verification Card */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
-            <div className="space-y-4">
-              {/* PAN Section - Looks like a separate card */}
-              <div className="bg-gray-50/60 rounded-lg p-3 border border-gray-200">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center mr-3 ${verification.pan.verified ? 'bg-green-100' : 'bg-blue-100'
-                      }`}>
-                      <IdCard className={`w-4 h-4 ${verification.pan.verified ? 'text-green-600' : 'text-blue-600'
-                        }`} />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-semibold text-gray-900">PAN Verification</h3>
-                      <p className="text-gray-600 text-xs">Auto-filled from your details</p>
-                    </div>
-                  </div>
-
-                  {/* Show edit button only when PAN data is Please enter */}
-                  {!verification.pan.value && (
-                    <button
-                      onClick={() => toggleEdit('pan')}
-                      className={`flex items-center px-2 py-1.5 rounded text-xs ${isEditing.pan
-                        ? 'bg-green-600 text-white hover:bg-green-700'
-                        : 'bg-blue-600 text-white hover:bg-blue-700'
-                        } transition-colors`}
-                    >
-                      {isEditing.pan ? <Save className="w-3 h-3 mr-1" /> : <Edit className="w-3 h-3 mr-1" />}
-                      {isEditing.pan ? 'Save' : 'Edit'}
-                    </button>
-                  )}
-                </div>
-
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">PAN Number</label>
-                    {isEditing.pan ? (
-                      <input
-                        type="text"
-                        value={verification.pan.value}
-                        onChange={(e) => handlePanChange(e.target.value)}
-                        placeholder="ABCDE1234F"
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
-                        maxLength={10}
-                      />
-                    ) : (
-                      <p className="px-3 py-2 bg-white rounded-lg border border-gray-200 text-sm">
-                        {verification.pan.value || 'Please enter'}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* PAN Verification Button */}
-                  {verification.pan.value && !verification.pan.verified && (
-                    <div className="space-y-2">
-                      <button
-                        onClick={verifyPAN}
-                        disabled={verification.pan.loading}
-                        className="w-full bg-blue-600 text-white rounded-lg py-2 text-xs font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-300 flex items-center justify-center"
-                      >
-                        {verification.pan.loading ? (
-                          <div className="flex items-center">
-                            <Loader2 className="w-3 h-3 animate-spin mr-1" />
-                            Verifying...
-                          </div>
-                        ) : (
-                          'Verify PAN'
-                        )}
-                      </button>
-                      {verification.pan.error && (
-                        <p className="text-red-500 text-xs text-center">{verification.pan.error}</p>
-                      )}
-                    </div>
-                  )}
-
-                  {verification.pan.verified && (
-                    <div className="p-2 bg-green-50 border border-green-200 rounded-lg">
-                      <div className="flex items-center">
-                        <CheckCircle className="w-4 h-4 text-green-600 mr-1" />
-                        <span className="text-xs font-semibold text-green-800">PAN Verified</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-             {/* Email Section - Show based on loginEmailId */}
-     {/* Show Email Input ONLY when loginEmailId is "admin@gmail.com" */}
-    {loginEmailId === "admin@gmail.com" && (
-      <div className="bg-gray-50/60 rounded-lg p-3 border border-gray-200">
-        <div className="flex items-center mb-3">
-          <div className={`w-8 h-8 rounded-lg flex items-center justify-center mr-3 ${
-            verification.email.value ? 'bg-blue-100' : 'bg-gray-100'
-          }`}>
-            <Mail className={`w-4 h-4 ${
-              verification.email.value ? 'text-blue-600' : 'text-gray-400'
-            }`} />
-          </div>
-          <div>
-            <h3 className="text-sm font-semibold text-gray-900">Email Address</h3>
-            <p className="text-gray-600 text-xs">Will be used for registration</p>
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          <div>
-            <label className="block text-xs font-medium text-gray-700 mb-1">Email Address</label>
-            <input
-              type="email"
-              value={verification.email.value}
-              onChange={(e) => handleEmailChange(e.target.value)}
-              placeholder="Enter your email address"
-              className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            <p className="text-xs text-gray-500 mt-1">
-              This email will be passed during registration
-            </p>
-          </div>
-
-          {/* Email Validation Message */}
-          {verification.email.error && (
-            <p className="text-red-500 text-xs text-center">{verification.email.error}</p>
-          )}
-
-          {/* Email Status Indicator */}
-          {verification.email.value && (
-            <div className="p-2 bg-blue-50 border border-blue-200 rounded-lg">
-              <div className="flex items-center">
-                <Mail className="w-4 h-4 text-blue-600 mr-1" />
-                <span className="text-xs font-semibold text-blue-800">Email entered</span>
-              </div>
-              <p className="text-blue-700 text-xs mt-1">
-                ✓ This email will be used for registration
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
-    )}
-            </div>
-          </div>
-
-          {/* Bank Verification Card */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
+          {/* Personal Details Card */}
+          <div className="bg-[#111111] backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${verification.bank.verified ? 'bg-green-100' : 'bg-blue-100'
-                  }`}>
-                  <Building2 className={`w-5 h-5 ${verification.bank.verified ? 'text-green-600' : 'text-blue-600'
-                    }`} />
+                <div className="w-10 h-10 bg-[#1F1A1A] rounded-lg flex items-center justify-center mr-3">
+                  <User className="w-5 h-5 text-[#F59E0B]" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">Bank Details</h3>
-                  <p className="text-gray-600 text-xs">Auto-filled from your details</p>
+                  <h3 className="text-sm font-semibold text-[#F9FAFB]">Personal Details</h3>
+                  <p className="text-[#9CA3AF] text-xs">Your personal information</p>
                 </div>
               </div>
               <button
-                onClick={() => toggleEdit('bank')}
-                className={`flex items-center px-2 py-1.5 rounded text-xs ${isEditing.bank
-                  ? 'bg-green-600 text-white hover:bg-green-700'
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
+                onClick={() => toggleEdit('personal')}
+                className={`flex items-center px-2 py-1.5 rounded text-xs ${isEditing.personal
+                  ? 'bg-[#10B981] text-white hover:bg-[#059669]'
+                  : 'bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white hover:opacity-90'
                   } transition-colors`}
               >
-                {isEditing.bank ? <Save className="w-3 h-3 mr-1" /> : <Edit className="w-3 h-3 mr-1" />}
-                {isEditing.bank ? 'Save' : 'Edit'}
+                {isEditing.personal ? <Save className="w-3 h-3 mr-1" /> : <Edit className="w-3 h-3 mr-1" />}
+                {isEditing.personal ? 'Save' : 'Edit'}
               </button>
             </div>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-xs font-medium text-[#F9FAFB] mb-1">Full Name</label>
+                {isEditing.personal ? (
+                  <input
+                    type="text"
+                    value={partnerData.name}
+                    onChange={(e) => handlePartnerInputChange('name', e.target.value)}
+                    className="w-full px-3 py-2 text-sm bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                  />
+                ) : (
+                  <p className="px-3 py-2 bg-[#0A0A0A] rounded-lg border border-[#2A2A2A] text-sm text-[#F9FAFB]">{partnerData.name || 'Please enter'}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[#F9FAFB] mb-1">Date of Birth</label>
+                {isEditing.personal ? (
+                  <input
+                    type="date"
+                    value={partnerData.dob}
+                    onChange={(e) => handlePartnerInputChange('dob', e.target.value)}
+                    className="w-full px-3 py-2 text-sm bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                  />
+                ) : (
+                  <p className="px-3 py-2 bg-[#0A0A0A] rounded-lg border border-[#2A2A2A] text-sm text-[#F9FAFB]">{partnerData.dob || 'Please enter'}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[#F9FAFB] mb-1">Address</label>
+                {isEditing.personal ? (
+                  <textarea
+                    value={partnerData.address}
+                    onChange={(e) => handlePartnerInputChange('address', e.target.value)}
+                    rows={2}
+                    className="w-full px-3 py-2 text-sm bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent resize-none"
+                  />
+                ) : (
+                  <p className="px-3 py-2 bg-[#0A0A0A] rounded-lg border border-[#2A2A2A] text-sm text-[#F9FAFB] whitespace-pre-wrap">{partnerData.address || 'Please enter'}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-[#F9FAFB] mb-1">Pincode</label>
+                {isEditing.personal ? (
+                  <input
+                    type="text"
+                    value={partnerData.pincode}
+                    onChange={(e) => handlePartnerInputChange('pincode', e.target.value)}
+                    placeholder="Enter pincode"
+                    className="w-full px-3 py-2 text-sm bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                    maxLength={6}
+                  />
+                ) : (
+                  <p className="px-3 py-2 bg-[#0A0A0A] rounded-lg border border-[#2A2A2A] text-sm text-[#F9FAFB]">{partnerData.pincode || 'Please enter'}</p>
+                )}
+              </div>
+            </div>
+          </div>
 
+
+          {/* Bank Verification Card */}
+          <div className="bg-[#111111] backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
+            <div className="flex items-center mb-3">
+              <div className="flex items-center">
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${verification.bank.verified ? 'bg-[#10B981]/20' : 'bg-[#1F1A1A]'}`}>
+                  <Building2 className={`w-5 h-5 ${verification.bank.verified ? 'text-[#10B981]' : 'text-[#F59E0B]'}`} />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-[#F9FAFB]">Bank Details</h3>
+                  <p className="text-[#9CA3AF] text-xs">Auto-filled from your details</p>
+                </div>
+              </div>
+            </div>
             <div className="space-y-3">
               <div className="grid grid-cols-1 gap-3">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Account Number</label>
-                    {isEditing.bank ? (
-                      <input
-                        type="text"
-                        value={verification.bank.accountNumber}
-                        onChange={(e) => handleBankChange('accountNumber', e.target.value)}
-                        placeholder="Enter account number"
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    ) : (
-                      <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
-                        {verification.bank.accountNumber ? verification.bank.accountNumber : 'Please enter'}
-                      </p>
+                    <label className="block text-xs font-medium text-[#F9FAFB] mb-1">Account Number</label>
+                    <input
+                      type="text"
+                      value={verification.bank.accountNumber}
+                      onChange={(e) => handleBankChange('accountNumber', e.target.value)}
+                      placeholder="Enter account number"
+                      className="w-full px-3 py-2 text-sm bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                      disabled={verification.bank.verified}
+                    />
+                    {verification.bank.verified && (
+                      <p className="text-[#10B981] text-xs mt-1">✓ Bank verified - Cannot edit</p>
                     )}
                     {verification.bank.accountError && (
-                      <p className="text-red-500 text-xs mt-1">{verification.bank.accountError}</p>
+                      <p className="text-red-400 text-xs mt-1">{verification.bank.accountError}</p>
                     )}
                   </div>
-
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">IFSC Code</label>
-                    {isEditing.bank ? (
-                      <input
-                        type="text"
-                        value={verification.bank.ifsc}
-                        onChange={(e) => handleBankChange('ifsc', e.target.value)}
-                        placeholder="Enter IFSC code"
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
-                        maxLength={11}
-                      />
-                    ) : (
-                      <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
-                        {verification.bank.ifsc || 'Please enter'}
-                      </p>
-                    )}
+                    <label className="block text-xs font-medium text-[#F9FAFB] mb-1">IFSC Code</label>
+                    <input
+                      type="text"
+                      value={verification.bank.ifsc}
+                      onChange={(e) => handleBankChange('ifsc', e.target.value)}
+                      placeholder="Enter IFSC code"
+                      className="w-full px-3 py-2 text-sm bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase"
+                      maxLength={11}
+                      disabled={verification.bank.verified}
+                    />
                     {verification.bank.ifscError && (
-                      <p className="text-red-500 text-xs mt-1">{verification.bank.ifscError}</p>
+                      <p className="text-red-400 text-xs mt-1">{verification.bank.ifscError}</p>
                     )}
                   </div>
                 </div>
 
-                {/* Bank Verification Button */}
                 {verification.bank.accountNumber && verification.bank.ifsc && !verification.bank.verified && (
                   <div className="space-y-3">
                     <button
                       onClick={verifyBank}
                       disabled={verification.bank.loading}
-                      className="w-full bg-blue-600 text-white rounded-lg py-2 text-xs font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-300 flex items-center justify-center"
+                      className="w-full bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg py-2 text-xs font-semibold hover:opacity-90 transition-colors disabled:opacity-50 flex items-center justify-center"
                     >
                       {verification.bank.loading ? (
                         <div className="flex items-center">
@@ -2597,73 +2293,57 @@ const handleCompleteRegistration = async () => {
                       )}
                     </button>
                     {verification.bank.error && (
-                      <p className="text-red-500 text-xs text-center">{verification.bank.error}</p>
+                      <p className="text-red-400 text-xs text-center">{verification.bank.error}</p>
                     )}
                   </div>
                 )}
 
-                {/* New Bank Name and MICR Fields */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Bank Name</label>
-                    {isEditing.bank ? (
-                      <input
-                        type="text"
-                        value={verification.bank.bankName}
-                        onChange={(e) => handleBankChange('bankName', e.target.value)}
-                        placeholder="Bank name"
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      />
-                    ) : (
-                      <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
-                        {verification.bank.bankName || 'Please enter'}
-                      </p>
-                    )}
+                    <label className="block text-xs font-medium text-[#F9FAFB] mb-1">Bank Name</label>
+                    <input
+                      type="text"
+                      value={verification.bank.bankName}
+                      onChange={(e) => handleBankChange('bankName', e.target.value)}
+                      placeholder="Bank name"
+                      className="w-full px-3 py-2 text-sm bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                      disabled={verification.bank.verified}
+                    />
                   </div>
-
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">MICR Code</label>
-                    {isEditing.bank ? (
-                      <input
-                        type="text"
-                        value={verification.bank.micr}
-                        onChange={(e) => handleBankChange('micr', e.target.value)}
-                        placeholder="MICR code"
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        maxLength={9}
-                      />
-                    ) : (
-                      <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
-                        {verification.bank.micr || 'Please enter'}
-                      </p>
-                    )}
+                    <label className="block text-xs font-medium text-[#F9FAFB] mb-1">MICR Code</label>
+                    <input
+                      type="text"
+                      value={verification.bank.micr}
+                      onChange={(e) => handleBankChange('micr', e.target.value)}
+                      placeholder="MICR code"
+                      className="w-full px-3 py-2 text-sm bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                      maxLength={9}
+                      disabled={verification.bank.verified}
+                    />
                   </div>
                 </div>
               </div>
 
               {verification.bank.verified && (
-                <div className="p-2 bg-green-50 border border-green-200 rounded-lg">
+                <div className="p-2 bg-[#10B981]/20 border border-[#10B981]/30 rounded-lg">
                   <div className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-600 mr-1" />
-                    <span className="text-xs font-semibold text-green-800">Bank Account Verified</span>
+                    <CheckCircle className="w-4 h-4 text-[#10B981] mr-1" />
+                    <span className="text-xs font-semibold text-[#10B981]">Bank Account Verified</span>
                   </div>
                 </div>
               )}
             </div>
           </div>
-
           {/* NISM Upload Card */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
+          <div className="bg-[#111111] backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
             <div className="flex items-center mb-3">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${verification.nism.verified ? 'bg-green-100' : 'bg-blue-100'
-                }`}>
-                <FileText className={`w-5 h-5 ${verification.nism.verified ? 'text-green-600' : 'text-blue-600'
-                  }`} />
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${verification.nism.verified ? 'bg-[#10B981]/20' : 'bg-[#1F1A1A]'}`}>
+                <FileText className={`w-5 h-5 ${verification.nism.verified ? 'text-[#10B981]' : 'text-[#F59E0B]'}`} />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-gray-900">Are you an ARN Holder?</h3>
-                {/* REMOVE THE <p> TAG AND PUT CONTENT DIRECTLY */}
-                <div className="text-gray-600 text-xs">
+                <h3 className="text-sm font-semibold text-[#F9FAFB]">Are you an ARN Holder?</h3>
+                <div className="text-[#9CA3AF] text-xs">
                   <div className="flex items-center gap-4 mt-1">
                     <label className="flex items-center">
                       <input
@@ -2684,9 +2364,9 @@ const handleCompleteRegistration = async () => {
                             }
                           }));
                         }}
-                        className="mr-2"
+                        className="mr-2 accent-[#F59E0B]"
                       />
-                      <span className="text-xs text-gray-700">Yes</span>
+                      <span className="text-xs text-[#F9FAFB]">Yes</span>
                     </label>
                     <label className="flex items-center">
                       <input
@@ -2707,37 +2387,30 @@ const handleCompleteRegistration = async () => {
                             }
                           }));
                         }}
-                        className="mr-2"
+                        className="mr-2 accent-[#F59E0B]"
                       />
-                      <span className="text-xs text-gray-700">No</span>
+                      <span className="text-xs text-[#F9FAFB]">No</span>
                     </label>
                   </div>
                 </div>
               </div>
             </div>
-
             {!verification.nism.verified && !verification.nism.skipped ? (
               <div className="space-y-3">
-                {/* ARN Holder Fields - Only show if user selected Yes */}
                 {verification.nism.arnHolder && (
                   <>
-                    {/* ARN Number and EUIN Number in one line */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
-                          ARN Number
-                        </label>
+                        <label className="block text-xs font-medium text-[#F9FAFB] mb-1">ARN Number</label>
                         <input
                           type="text"
                           value={verification.nism.arnNumber}
                           onChange={(e) => {
                             const value = e.target.value.toUpperCase();
                             let error = "";
-
                             if (value && !/^ARN-\d{1,7}$/.test(value)) {
                               error = "ARN must start with ARN- followed by up to 7 digits (e.g., ARN-1234567)";
                             }
-
                             setVerification((prev) => ({
                               ...prev,
                               nism: {
@@ -2748,30 +2421,24 @@ const handleCompleteRegistration = async () => {
                             }));
                           }}
                           placeholder="e.g. ARN-1234567"
-                          className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase ${verification.nism.arnError ? "border-red-300 bg-red-50" : "border-gray-300"
-                            }`}
+                          className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase bg-[#1F1A1A] text-[#F9FAFB] placeholder:text-[#9CA3AF] ${verification.nism.arnError ? "border-red-400" : "border-[#2A2A2A]"}`}
                           maxLength={11}
                         />
                         {verification.nism.arnError && (
-                          <p className="text-red-500 text-xs mt-0.5">{verification.nism.arnError}</p>
+                          <p className="text-red-400 text-xs mt-0.5">{verification.nism.arnError}</p>
                         )}
                       </div>
-
                       <div>
-                        <label className="block text-xs font-medium text-gray-700 mb-1">
-                          EUIN Number
-                        </label>
+                        <label className="block text-xs font-medium text-[#F9FAFB] mb-1">EUIN Number</label>
                         <input
                           type="text"
                           value={verification.nism.euinNumber}
                           onChange={(e) => {
                             const value = e.target.value.toUpperCase();
                             let error = "";
-
                             if (value && !/^E\d{1,6}$/.test(value)) {
                               error = "EUIN must start with E followed by up to 6 digits (e.g., E123456)";
                             }
-
                             setVerification((prev) => ({
                               ...prev,
                               nism: {
@@ -2782,31 +2449,23 @@ const handleCompleteRegistration = async () => {
                             }));
                           }}
                           placeholder="e.g. E123456"
-                          className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase ${verification.nism.euinError ? "border-red-300 bg-red-50" : "border-gray-300"
-                            }`}
+                          className={`w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase bg-[#1F1A1A] text-[#F9FAFB] placeholder:text-[#9CA3AF] ${verification.nism.euinError ? "border-red-400" : "border-[#2A2A2A]"}`}
                           maxLength={7}
                         />
                         {verification.nism.euinError && (
-                          <p className="text-red-500 text-xs mt-0.5">{verification.nism.euinError}</p>
+                          <p className="text-red-400 text-xs mt-0.5">{verification.nism.euinError}</p>
                         )}
                       </div>
                     </div>
-
                     <div>
-                      <label className="block text-xs font-medium text-gray-700 mb-1">
-                        Upload NISM Certificate
-                      </label>
+                      <label className="block text-xs font-medium text-[#F9FAFB] mb-1">Upload NISM Certificate</label>
                       <div
-                        className="border border-dashed border-gray-300 rounded-lg p-3 text-center hover:border-blue-400 transition-colors cursor-pointer"
+                        className="border border-dashed border-[#2A2A2A] rounded-lg p-3 text-center hover:border-[#F59E0B] transition-colors cursor-pointer bg-[#1F1A1A]"
                         onClick={() => document.getElementById('nism-upload')?.click()}
                       >
-                        <Upload className="w-6 h-6 text-gray-400 mx-auto mb-1" />
-                        <p className="text-gray-600 text-xs">
-                          {verification.nism.fileName || 'Click to upload file'}
-                        </p>
-                        <p className="text-xs text-gray-500 mt-0.5">
-                          JPEG, JPG, PNG, SVG, PDF • Max 1MB
-                        </p>
+                        <Upload className="w-6 h-6 text-[#9CA3AF] mx-auto mb-1" />
+                        <p className="text-[#9CA3AF] text-xs">{verification.nism.fileName || 'Click to upload file'}</p>
+                        <p className="text-xs text-[#9CA3AF] mt-0.5">JPEG, JPG, PNG, SVG, PDF • Max 1MB</p>
                         <input
                           id="nism-upload"
                           type="file"
@@ -2816,20 +2475,17 @@ const handleCompleteRegistration = async () => {
                         />
                       </div>
                       {verification.nism.uploadError && (
-                        <p className="text-red-500 text-xs mt-1">{verification.nism.uploadError}</p>
+                        <p className="text-red-400 text-xs mt-1">{verification.nism.uploadError}</p>
                       )}
                     </div>
                   </>
                 )}
-
-                {/* Action Buttons */}
                 <div className="flex gap-2">
                   {verification.nism.arnHolder ? (
-                    // Show Upload button only for ARN holders
                     <button
                       onClick={uploadNismDocuments}
                       disabled={verification.nism.loading}
-                      className="flex-1 bg-blue-600 text-white rounded-lg py-2 text-xs font-semibold hover:bg-blue-700 transition-colors disabled:bg-gray-300"
+                      className="flex-1 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg py-2 text-xs font-semibold hover:opacity-90 transition-colors disabled:opacity-50"
                     >
                       {verification.nism.loading ? (
                         <div className="flex items-center justify-center">
@@ -2841,7 +2497,6 @@ const handleCompleteRegistration = async () => {
                       )}
                     </button>
                   ) : (
-                    // Show Skip button for non-ARN holders (full width)
                     <button
                       onClick={() => {
                         setVerification(prev => ({
@@ -2854,13 +2509,11 @@ const handleCompleteRegistration = async () => {
                           }
                         }));
                       }}
-                      className="w-full bg-gray-500 text-white rounded-lg py-2 text-xs font-semibold hover:bg-gray-600 transition-colors"
+                      className="w-full bg-[#0A0A0A] text-[#F9FAFB] rounded-lg py-2 text-xs font-semibold hover:bg-gray-600 transition-colors"
                     >
                       Skip (Not an ARN Holder)
                     </button>
                   )}
-
-                  {/* Show Skip button for ARN holders as well (optional) */}
                   {verification.nism.arnHolder && (
                     <button
                       onClick={() => {
@@ -2873,7 +2526,7 @@ const handleCompleteRegistration = async () => {
                           }
                         }));
                       }}
-                      className="flex-1 bg-gray-500 text-white rounded-lg py-2 text-xs font-semibold hover:bg-gray-600 transition-colors"
+                      className="flex-1 bg-[#0A0A0A] text-[#F9FAFB] rounded-lg py-2 text-xs font-semibold hover:bg-gray-600 transition-colors"
                     >
                       Skip
                     </button>
@@ -2882,24 +2535,21 @@ const handleCompleteRegistration = async () => {
               </div>
             ) : verification.nism.skipped ? (
               <div className="space-y-3">
-                <div className="p-2 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div className="p-2 bg-[#F59E0B]/20 border border-[#F59E0B]/30 rounded-lg">
                   <div className="flex items-center">
-                    <FileText className="w-4 h-4 text-yellow-600 mr-1" />
-                    <span className="text-xs font-semibold text-yellow-800">
+                    <FileText className="w-4 h-4 text-[#F59E0B] mr-1" />
+                    <span className="text-xs font-semibold text-[#F59E0B]">
                       {verification.nism.arnHolder === false
                         ? 'NISM Upload Skipped (Not an ARN Holder)'
-                        : 'NISM Upload Skipped'
-                      }
+                        : 'NISM Upload Skipped'}
                     </span>
                   </div>
-                  <p className="text-yellow-700 text-xs mt-1">
+                  <p className="text-[#F59E0B] text-xs mt-1">
                     {verification.nism.arnHolder === false
                       ? 'You indicated you are not an ARN holder'
-                      : 'You can upload NISM certificate later if needed'
-                    }
+                      : 'You can upload NISM certificate later if needed'}
                   </p>
                 </div>
-
                 <button
                   onClick={() => {
                     setVerification(prev => ({
@@ -2912,11 +2562,11 @@ const handleCompleteRegistration = async () => {
                         base64Data: '',
                         arnNumber: '',
                         euinNumber: '',
-                        arnHolder: undefined // Reset the selection
+                        arnHolder: undefined
                       }
                     }));
                   }}
-                  className="w-full bg-blue-600 text-white rounded-lg py-2 text-xs font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center"
+                  className="w-full bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg py-2 text-xs font-semibold hover:opacity-90 transition-colors flex items-center justify-center"
                 >
                   <Upload className="w-3 h-3 mr-1" />
                   {verification.nism.arnHolder === false ? 'I am an ARN Holder' : 'Upload NISM Certificate'}
@@ -2924,18 +2574,17 @@ const handleCompleteRegistration = async () => {
               </div>
             ) : (
               <div className="space-y-3">
-                <div className="p-2 bg-green-50 border border-green-200 rounded-lg">
+                <div className="p-2 bg-[#10B981]/20 border border-[#10B981]/30 rounded-lg">
                   <div className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-600 mr-1" />
-                    <span className="text-xs font-semibold text-green-800">
+                    <CheckCircle className="w-4 h-4 text-[#10B981] mr-1" />
+                    <span className="text-xs font-semibold text-[#10B981]">
                       {verification.nism.arnHolder
                         ? 'Uploaded Successfully'
-                        : 'Completed Successfully'
-                      }
+                        : 'Completed Successfully'}
                     </span>
                   </div>
                 </div>
-                <div className="text-xs text-gray-600 space-y-0.5">
+                <div className="text-xs text-[#9CA3AF] space-y-0.5">
                   {verification.nism.arnHolder && (
                     <>
                       {verification.nism.fileName && <p><strong>File:</strong> {verification.nism.fileName}</p>}
@@ -2952,152 +2601,118 @@ const handleCompleteRegistration = async () => {
           </div>
 
           {/* Complete Registration Card */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
+          <div className="bg-[#111111] backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
             <div className="flex items-center mb-3">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${isAllVerified ? 'bg-green-100' : 'bg-yellow-100'
-                }`}>
-                <CheckCircle className={`w-5 h-5 ${isAllVerified ? 'text-green-600' : 'text-yellow-600'
-                  }`} />
+              <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${isAllVerified ? 'bg-[#10B981]/20' : 'bg-[#F59E0B]/20'}`}>
+                <CheckCircle className={`w-5 h-5 ${isAllVerified ? 'text-[#10B981]' : 'text-[#F59E0B]'}`} />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-gray-900">Complete Registration</h3>
-                <p className="text-gray-600 text-xs">{calculateOverallProgress()}% Complete</p>
+                <h3 className="text-sm font-semibold text-[#F9FAFB]">Complete Registration</h3>
+                <p className="text-[#9CA3AF] text-xs">{calculateOverallProgress()}% Complete</p>
               </div>
             </div>
-
-            {/* Verification Status Details - Two Columns */}
             <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-3">
-              {/* Column 1 */}
               <div className="space-y-2">
-                {/* Mobile Verification */}
                 <div className="flex items-center justify-between py-1">
                   <div className="flex items-center">
                     {partnerData.phone ? (
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <CheckCircle className="w-4 h-4 text-[#10B981] mr-2" />
                     ) : (
-                      <div className="w-4 h-4 text-red-500 mr-2 flex items-center justify-center">
+                      <div className="w-4 h-4 text-red-400 mr-2 flex items-center justify-center">
                         <span className="text-lg font-bold">×</span>
                       </div>
                     )}
-                    <span className="text-xs font-medium text-gray-900">Mobile</span>
+                    <span className="text-xs font-medium text-[#F9FAFB]">Mobile</span>
                   </div>
                 </div>
-
-                {/* Aadhaar Verification */}
                 <div className="flex items-center justify-between py-1">
                   <div className="flex items-center">
                     {verification.aadhaar.verified ? (
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <CheckCircle className="w-4 h-4 text-[#10B981] mr-2" />
                     ) : (
-                      <div className="w-4 h-4 text-red-500 mr-2 flex items-center justify-center">
+                      <div className="w-4 h-4 text-red-400 mr-2 flex items-center justify-center">
                         <span className="text-lg font-bold">×</span>
                       </div>
                     )}
-                    <span className="text-xs font-medium text-gray-900">Aadhaar</span>
+                    <span className="text-xs font-medium text-[#F9FAFB]">Aadhaar</span>
                   </div>
                 </div>
-
-                {/* Email Verification */}
-                {/* <div className="flex items-center justify-between py-1">
-                  <div className="flex items-center">
-                    {verification.email.verified ? (
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    ) : (
-                      <div className="w-4 h-4 text-red-500 mr-2 flex items-center justify-center">
-                        <span className="text-lg font-bold">×</span>
-                      </div>
-                    )}
-                    <span className="text-xs font-medium text-gray-900">Email</span>
-                  </div>
-                </div> */}
-
-                {/* ARN Status */}
                 <div className="flex items-center justify-between py-1">
                   <div className="flex items-center">
                     {verification.nism.arnHolder === true ? (
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <CheckCircle className="w-4 h-4 text-[#10B981] mr-2" />
                     ) : verification.nism.arnHolder === false ? (
-                      <div className="w-4 h-4 text-gray-400 mr-2 flex items-center justify-center">
+                      <div className="w-4 h-4 text-[#9CA3AF] mr-2 flex items-center justify-center">
                         <span className="text-lg font-bold">○</span>
                       </div>
                     ) : (
-                      <div className="w-4 h-4 text-gray-300 mr-2 flex items-center justify-center">
+                      <div className="w-4 h-4 text-[#9CA3AF] mr-2 flex items-center justify-center">
                         <span className="text-lg font-bold">-</span>
                       </div>
                     )}
-                    <span className="text-xs font-medium text-gray-900">ARN Holder</span>
+                    <span className="text-xs font-medium text-[#F9FAFB]">ARN Holder</span>
                   </div>
                 </div>
               </div>
-
-              {/* Column 2 */}
               <div className="space-y-2">
-                {/* Personal Details */}
                 <div className="flex items-center justify-between py-1">
                   <div className="flex items-center">
                     {partnerData.name && partnerData.dob ? (
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <CheckCircle className="w-4 h-4 text-[#10B981] mr-2" />
                     ) : (
-                      <div className="w-4 h-4 text-red-500 mr-2 flex items-center justify-center">
+                      <div className="w-4 h-4 text-red-400 mr-2 flex items-center justify-center">
                         <span className="text-lg font-bold">×</span>
                       </div>
                     )}
-                    <span className="text-xs font-medium text-gray-900">Personal</span>
+                    <span className="text-xs font-medium text-[#F9FAFB]">Personal</span>
                   </div>
                 </div>
-
-                {/* PAN Verification */}
                 <div className="flex items-center justify-between py-1">
                   <div className="flex items-center">
                     {verification.pan.verified ? (
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <CheckCircle className="w-4 h-4 text-[#10B981] mr-2" />
                     ) : (
-                      <div className="w-4 h-4 text-red-500 mr-2 flex items-center justify-center">
+                      <div className="w-4 h-4 text-red-400 mr-2 flex items-center justify-center">
                         <span className="text-lg font-bold">×</span>
                       </div>
                     )}
-                    <span className="text-xs font-medium text-gray-900">PAN</span>
+                    <span className="text-xs font-medium text-[#F9FAFB]">PAN</span>
                   </div>
                 </div>
-
-                {/* Bank Account Verification */}
                 <div className="flex items-center justify-between py-1">
                   <div className="flex items-center">
                     {verification.bank.verified ? (
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <CheckCircle className="w-4 h-4 text-[#10B981] mr-2" />
                     ) : (
-                      <div className="w-4 h-4 text-red-500 mr-2 flex items-center justify-center">
+                      <div className="w-4 h-4 text-red-400 mr-2 flex items-center justify-center">
                         <span className="text-lg font-bold">×</span>
                       </div>
                     )}
-                    <span className="text-xs font-medium text-gray-900">Bank</span>
+                    <span className="text-xs font-medium text-[#F9FAFB]">Bank</span>
                   </div>
                 </div>
-
-                {/* NISM Certificate */}
                 <div className="flex items-center justify-between py-1">
                   <div className="flex items-center">
                     {verification.nism.verified ? (
-                      <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
+                      <CheckCircle className="w-4 h-4 text-[#10B981] mr-2" />
                     ) : verification.nism.skipped ? (
-                      <div className="w-4 h-4 text-gray-400 mr-2 flex items-center justify-center">
+                      <div className="w-4 h-4 text-[#9CA3AF] mr-2 flex items-center justify-center">
                         <span className="text-lg font-bold">○</span>
                       </div>
                     ) : (
-                      <div className="w-4 h-4 text-gray-300 mr-2 flex items-center justify-center">
+                      <div className="w-4 h-4 text-[#9CA3AF] mr-2 flex items-center justify-center">
                         <span className="text-lg font-bold">-</span>
                       </div>
                     )}
-                    <span className="text-xs font-medium text-gray-900">NISM</span>
+                    <span className="text-xs font-medium text-[#F9FAFB]">NISM</span>
                   </div>
                 </div>
               </div>
             </div>
-
             <button
               onClick={handleCompleteRegistration}
               disabled={!isAllVerified || registrationStatus.loading}
-              className="w-full bg-green-600 text-white rounded-lg py-2 text-xs font-semibold hover:bg-green-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+              className="w-full bg-gradient-to-r from-[#10B981] to-[#059669] text-white rounded-lg py-2 text-xs font-semibold hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {registrationStatus.loading ? (
                 <div className="flex items-center justify-center">

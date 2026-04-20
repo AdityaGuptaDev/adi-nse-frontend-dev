@@ -1042,7 +1042,7 @@ const getStateList = useCallback(async (e: any) => {
                       onChange={(e) => handleSameAsPermAddressChange(e.target.checked)}
                       className="checkbox checkbox-primary checkbox-sm"
                     />
-                    <span className="text-sm text-gray-600">Same as Permanent Address</span>
+                    <span className="text-sm text-[#9CA3AF]">Same as Permanent Address</span>
                   </label>
                 </div>
 

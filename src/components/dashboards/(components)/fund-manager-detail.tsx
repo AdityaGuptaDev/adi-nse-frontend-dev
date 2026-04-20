@@ -94,7 +94,7 @@ const FundManagerDetail = () => {
       <div className="grid md:grid-cols-2 gap-8">
         {/* Personal Information */}
         <div>
-          <CustomText className="text-lg font-semibold text-gray-900 mb-4">
+          <CustomText className="text-lg font-semibold text-[#F9FAFB] mb-4">
             Personal Information
           </CustomText>
           <div className="space-y-3">
@@ -123,7 +123,7 @@ const FundManagerDetail = () => {
 
         {/* Performance Metrics */}
         <div>
-          <CustomText className="text-lg font-semibold text-gray-900 mb-4">
+          <CustomText className="text-lg font-semibold text-[#F9FAFB] mb-4">
             Performance Metrics
           </CustomText>
           <div className="space-y-3">
@@ -157,10 +157,10 @@ const FundManagerDetail = () => {
       {managerData.manager_biography && (
         <>
           <div>
-            <CustomText className="text-lg font-semibold text-gray-900 mb-4">
+            <CustomText className="text-lg font-semibold text-[#F9FAFB] mb-4">
               Investment Philosophy
             </CustomText>
-            <CustomText className="text-sm text-gray-700 leading-relaxed">
+            <CustomText className="text-sm text-[#E5E7EB] leading-relaxed">
               {managerData.manager_biography}
             </CustomText>
           </div>
@@ -171,14 +171,14 @@ const FundManagerDetail = () => {
 
       {/* Awards & Recognition */}
       {/* <div className="mb-4">
-        <CustomText className="text-lg font-semibold text-gray-900 mb-4">
+        <CustomText className="text-lg font-semibold text-[#F9FAFB] mb-4">
           Awards & Recognition
         </CustomText>
         <ul className="space-y-2">
           {managerData.awards.map((award: any, index: number) => (
             <li key={index} className="flex items-center gap-2">
               <span className="">•</span>
-              <CustomText className="text-sm text-gray-700">{award}</CustomText>
+              <CustomText className="text-sm text-[#E5E7EB]">{award}</CustomText>
             </li>
           ))}
         </ul>
@@ -189,7 +189,7 @@ const FundManagerDetail = () => {
   const renderSchemesTab = () => (
     <div className="overflow-auto h-[calc(100vh-230px)] 2xl:h-[calc(100vh-210px)]">
       <table className="table table-pin-rows">
-        <thead className="thead border-b border-gray-200">
+        <thead className="thead border-b border-[#2A2A2A]">
           <tr>
             <th rowSpan={2} className="px-4 py-3 text-left text-sm font-semibold  tracking-wider">
               Fund Name
@@ -224,9 +224,9 @@ const FundManagerDetail = () => {
             <th className="colTh px-4 py-3">10Y</th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="bg-[#111111] divide-y divide-[#2A2A2A]">
           {managerData?.SchemeFundManagers?.map((scheme: any, index: any) => (
-            <tr key={index} className="hover:bg-gray-50">
+            <tr key={index} className="hover:bg-[#1F1A1A]">
               <td className="px-4 py-4">
                 <div>
                   <CustomText className="text-sm font-medium text-secondary-content cursor-pointer" onClick={(e: any) =>
@@ -358,10 +358,10 @@ const FundManagerDetail = () => {
                 {convertManagerName(managerData?.manager_name)}
               </div>
               <div>
-                <CustomText className="text-xl font-semibold text-gray-900">
+                <CustomText className="text-xl font-semibold text-[#F9FAFB]">
                   {managerData.manager_name}
                 </CustomText>
-                {/* <CustomText className="text-sm text-gray-600">
+                {/* <CustomText className="text-sm text-[#9CA3AF]">
                 {managerData.designation}
               </CustomText> */}
               </div>
@@ -386,7 +386,7 @@ const FundManagerDetail = () => {
                   onClick={() => setActiveTab(tab)}
                   className={`px-4 py-3 text-sm font-medium border-b-2 transition-all cursor-pointer ${activeTab === tab
                     ? "text-secondary-content border-secondary-content"
-                    : "text-gray-600 hover:text-gray-800 border-transparent"
+                    : "text-[#9CA3AF] hover:text-[#F9FAFB] border-transparent"
                     }`}
                 >
                   {tab}

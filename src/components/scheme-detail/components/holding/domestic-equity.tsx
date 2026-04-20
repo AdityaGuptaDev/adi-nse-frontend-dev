@@ -109,7 +109,7 @@ function DomesticEquity({ domesticEquityData }: any) {
   console.log(domesticEquityData,"domesticEquityData")
 
   return (
-    <div className=" bg-white overflow-auto">
+    <div className=" bg-[#111111] overflow-auto">
       <table className="w-full border-collapse">
         <thead>
           <tr className="border-b border-accent">

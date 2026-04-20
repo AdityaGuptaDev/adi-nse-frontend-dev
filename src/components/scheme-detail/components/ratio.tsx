@@ -44,7 +44,7 @@ const Ratio = ({ schemeData }: any) => {
 
   return (
     <div className=" p-6">
-      <div className="max-w-9xl mx-auto bg-white rounded-lg shadow-sm">
+      <div className="max-w-9xl mx-auto bg-[#111111] rounded-lg shadow-sm">
         {/* Header */}
         <div className="flex justify-between items-center px-6 py-4 border-b border-field-border">
           <h1 className="text-sm font-semibold blackbase-content">Ratio</h1>
@@ -54,7 +54,7 @@ const Ratio = ({ schemeData }: any) => {
         {/* Ratios List */}
         <div className="divide-y divide-field-border">
           <div
-            className="px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
+            className="px-6 py-4 flex justify-between items-center hover:bg-[#1F1A1A] transition-colors"
           >
             <div className="flex items-center space-x-2">
               <span className="text-base-content text-sm font-medium">
@@ -74,7 +74,7 @@ const Ratio = ({ schemeData }: any) => {
             </span>
           </div>
           <div
-            className="px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
+            className="px-6 py-4 flex justify-between items-center hover:bg-[#1F1A1A] transition-colors"
           >
             <div className="flex items-center space-x-2">
               <span className="text-base-content text-sm font-medium">
@@ -94,7 +94,7 @@ const Ratio = ({ schemeData }: any) => {
             </span>
           </div>
           <div
-            className="px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
+            className="px-6 py-4 flex justify-between items-center hover:bg-[#1F1A1A] transition-colors"
           >
             <div className="flex items-center space-x-2">
               <span className="text-base-content text-sm font-medium">
@@ -114,7 +114,7 @@ const Ratio = ({ schemeData }: any) => {
             </span>
           </div>
           <div
-            className="px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
+            className="px-6 py-4 flex justify-between items-center hover:bg-[#1F1A1A] transition-colors"
           >
             <div className="flex items-center space-x-2">
               <span className="text-base-content text-sm font-medium">
@@ -134,7 +134,7 @@ const Ratio = ({ schemeData }: any) => {
             </span>
           </div>
           <div
-            className="px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
+            className="px-6 py-4 flex justify-between items-center hover:bg-[#1F1A1A] transition-colors"
           >
             <div className="flex items-center space-x-2">
               <span className="text-base-content text-sm font-medium">
@@ -154,7 +154,7 @@ const Ratio = ({ schemeData }: any) => {
             </span>
           </div>
           <div
-            className="px-6 py-4 flex justify-between items-center hover:bg-gray-50 transition-colors"
+            className="px-6 py-4 flex justify-between items-center hover:bg-[#1F1A1A] transition-colors"
           >
             <div className="flex items-center space-x-2">
               <span className="text-base-content text-sm font-medium">

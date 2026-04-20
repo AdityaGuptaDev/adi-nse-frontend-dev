@@ -59,11 +59,11 @@ const OnboardingAlertPopup = ({
 
     return (
       <div className="fixed top-4 right-4 z-50 animate-slide-in">
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 shadow-lg flex items-center space-x-3">
-          <Clock className="w-5 h-5 text-blue-500" />
+        <div className="bg-[#1F1A1A] border border-blue-200 rounded-lg p-4 shadow-lg flex items-center space-x-3">
+          <Clock className="w-5 h-5 text-[#F59E0B]" />
           <div>
-            <p className="text-sm font-medium text-blue-800">Onboarding reminder set</p>
-            <p className="text-xs text-blue-600">We'll remind you again in 24 hours</p>
+            <p className="text-sm font-medium text-[#F59E0B]">Onboarding reminder set</p>
+            <p className="text-xs text-[#F59E0B]">We'll remind you again in 24 hours</p>
           </div>
         </div>
       </div>
@@ -82,9 +82,9 @@ const OnboardingAlertPopup = ({
       {/* Overlay */}
       <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
         {/* Popup */}
-        <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all animate-fade-in">
+        <div className="bg-[#111111] rounded-2xl shadow-2xl max-w-md w-full transform transition-all animate-fade-in">
           {/* Header */}
-          <div className="p-6 border-b border-gray-100">
+          <div className="p-6 border-b border-[#2A2A2A]">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center">
                 {isLoading ? (
@@ -94,10 +94,10 @@ const OnboardingAlertPopup = ({
                 )}
               </div>
               <div>
-                <h3 className="text-xl font-bold text-gray-900">
+                <h3 className="text-xl font-bold text-[#F9FAFB]">
                   {isLoading ? 'Checking Status...' : 'Complete Your Onboarding'}
                 </h3>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-sm text-[#9CA3AF] mt-1">
                   {isLoading ? 'Verifying your profile status' : 'Action required to access all features'}
                 </p>
               </div>
@@ -116,22 +116,22 @@ const OnboardingAlertPopup = ({
             <>
               {/* Content */}
               <div className="p-6">
-                <p className="text-gray-700 mb-4">
+                <p className="text-[#F9FAFB] mb-4">
                   Your partner onboarding process is incomplete. To unlock all dashboard features and start managing clients, please complete your profile setup.
                 </p>
                 
                 <div className="space-y-3 mb-6">
                   <div className="flex items-center space-x-2">
                     <CheckCircle className="w-5 h-5 text-green-500" />
-                    <span className="text-sm text-gray-600">Verify your identity</span>
+                    <span className="text-sm text-[#9CA3AF]">Verify your identity</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <CheckCircle className="w-5 h-5 text-green-500" />
-                    <span className="text-sm text-gray-600">Set up payment preferences</span>
+                    <span className="text-sm text-[#9CA3AF]">Set up payment preferences</span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <CheckCircle className="w-5 h-5 text-green-500" />
-                    <span className="text-sm text-gray-600">Configure investment preferences</span>
+                    <span className="text-sm text-[#9CA3AF]">Configure investment preferences</span>
                   </div>
                 </div>
 
@@ -149,10 +149,10 @@ const OnboardingAlertPopup = ({
               </div>
 
               {/* Footer */}
-              <div className="p-6 border-t border-gray-100 flex flex-col sm:flex-row gap-3">
+              <div className="p-6 border-t border-[#2A2A2A] flex flex-col sm:flex-row gap-3">
                 <button
                   onClick={handleRemindLater}
-                  className="px-4 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors flex-1"
+                  className="px-4 py-3 border border-[#3A3A3A] text-[#E5E7EB] rounded-lg font-medium hover:bg-[#1F1A1A] transition-colors flex-1"
                 >
                   Maybe Later
                 </button>
@@ -476,7 +476,7 @@ const InvestorSelectionModal: React.FC<InvestorSelectionModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
+      <div className="bg-[#111111] rounded-xl shadow-2xl max-w-6xl w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className={`bg-gradient-to-r ${colors.headerGradient} px-6 py-4 flex items-center justify-between`}>
           <div>
@@ -551,12 +551,12 @@ const InvestorSelectionModal: React.FC<InvestorSelectionModalProps> = ({
           {loading ? (
             <div className="flex justify-center items-center py-12">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <span className="ml-3 text-gray-600">Loading investors...</span>
+              <span className="ml-3 text-[#9CA3AF]">Loading investors...</span>
             </div>
           ) : (
             <>
 
-              <div className="bg-white rounded-lg border border-slate-200 overflow-hidden">
+              <div className="bg-[#111111] rounded-lg border border-slate-200 overflow-hidden">
 
                 <div className="bg-slate-50 grid grid-cols-12 gap-4 px-4 py-3 border-b border-slate-200">
                   <div className="col-span-3">
@@ -1174,7 +1174,7 @@ const BCDashboard = () => {
       case 'very high risk':
         return 'bg-purple-100 text-purple-800';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-[#1F1A1A] text-[#F9FAFB]';
     }
   };
 
@@ -1349,13 +1349,13 @@ const BCDashboard = () => {
   if (!bcId || loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 p-4 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 text-center">
+        <div className="bg-[#111111] rounded-2xl shadow-lg border border-[#2A2A2A] p-8 text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">
+          <p className="text-[#9CA3AF] font-medium">
             {!bcId ? 'Loading user data...' : 'Loading dashboard data...'}
           </p>
           {bcId && (
-            <p className="text-sm text-gray-500 mt-2">Fetching data for BC ID: {bcId}</p>
+            <p className="text-sm text-[#9CA3AF] mt-2">Fetching data for BC ID: {bcId}</p>
           )}
         </div>
       </div>
@@ -1366,12 +1366,12 @@ const BCDashboard = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100 p-4 flex items-center justify-center">
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 text-center max-w-md">
+        <div className="bg-[#111111] rounded-2xl shadow-lg border border-[#2A2A2A] p-8 text-center max-w-md">
           <div className="bg-red-100 p-3 rounded-full w-12 h-12 mx-auto mb-4 flex items-center justify-center">
             <AlertTriangle className="w-6 h-6 text-red-600" />
           </div>
-          <h3 className="text-lg font-bold text-gray-800 mb-2">Error Loading Data</h3>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <h3 className="text-lg font-bold text-[#F9FAFB] mb-2">Error Loading Data</h3>
+          <p className="text-[#9CA3AF] mb-4">{error}</p>
           <div className="flex gap-2 justify-center">
             <button
               onClick={() => window.location.reload()}
@@ -1441,30 +1441,30 @@ const BCDashboard = () => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
           <div className="flex items-center gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Welcome !</h1>
+              <h1 className="text-2xl font-bold text-[#F9FAFB]">Welcome !</h1>
 
             </div>
             <div className="flex flex-wrap items-center gap-4">
               <div className="flex items-center gap-2">
                 <Users className="w-4 h-4 text-blue-600" />
-                <span className="text-sm text-gray-700 font-medium">{bcDetails.name}</span>
+                <span className="text-sm text-[#E5E7EB] font-medium">{bcDetails.name}</span>
               </div>
               <div className="flex items-center gap-2">
                 <FileText className="w-4 h-4 text-purple-600" />
-                <span className="text-sm text-gray-700">PAN: {bcDetails.pan}</span>
+                <span className="text-sm text-[#E5E7EB]">PAN: {bcDetails.pan}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Target className="w-4 h-4 text-green-600" />
-                <span className="text-sm text-gray-700">{bcDetails.email}</span>
+                <span className="text-sm text-[#E5E7EB]">{bcDetails.email}</span>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+        <div className="bg-[#111111] rounded-xl shadow-lg border border-[#2A2A2A] p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-xl font-bold text-gray-900">Quick Overview</h2>
+              <h2 className="text-xl font-bold text-[#F9FAFB]">Quick Overview</h2>
             </div>
 
           </div>
@@ -1475,7 +1475,7 @@ const BCDashboard = () => {
                 <div className="bg-blue-500 p-2 rounded-lg">
                   <Users className="w-4 h-4 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 animate-count">
+                <h3 className="text-2xl font-bold text-[#F9FAFB] animate-count">
                   {animatedNumbers.clients.toLocaleString('en-IN')}
                 </h3>
               </div>
@@ -1488,7 +1488,7 @@ const BCDashboard = () => {
                 <div className="bg-purple-500 p-2 rounded-lg">
                   <IndianRupee className="w-4 h-4 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 animate-count">
+                <h3 className="text-2xl font-bold text-[#F9FAFB] animate-count">
                   {formatNumber(animatedNumbers.totalCurrentValue)}
                 </h3>
               </div>
@@ -1501,7 +1501,7 @@ const BCDashboard = () => {
                 <div className="bg-orange-500 p-2 rounded-lg">
                   <TrendingUp className="w-4 h-4 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 animate-count">
+                <h3 className="text-2xl font-bold text-[#F9FAFB] animate-count">
                   {formatNumber(animatedNumbers.totalTransactionValue)}
                 </h3>
               </div>
@@ -1511,12 +1511,12 @@ const BCDashboard = () => {
         </div>
 
         {/* Recommended Mutual Fund Schemes - Show All Schemes */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 relative">
+        <div className="bg-[#111111] rounded-xl shadow-lg border border-[#2A2A2A] p-6 relative">
 
           <div className="absolute -top-4 -right-4 z-10 animate-bounce hover:animate-pulse cursor-pointer">
             <div className="relative">
               <div className="w-16 h-16 bg-gradient-to-r from-blue-400 to-purple-500 rounded-lg flex items-center justify-center shadow-lg border-2 border-white">
-                <div className="w-12 h-10 bg-white rounded-lg flex items-center justify-center relative">
+                <div className="w-12 h-10 bg-[#111111] rounded-lg flex items-center justify-center relative">
                   <div className="flex items-end gap-1">
                     <div className="w-1 h-2 bg-green-500 animate-pulse"></div>
                     <div className="w-1 h-3 bg-green-500 animate-pulse" style={{ animationDelay: '0.2s' }}></div>
@@ -1535,11 +1535,11 @@ const BCDashboard = () => {
               <div className="absolute -left-6 top-1/2 transform -translate-y-1/2 animate-ping">
                 <div className="text-xl">📈</div>
               </div>
-              <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-white border-2 border-purple-300 rounded-lg px-2 py-1 shadow-lg">
+              <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-[#111111] border-2 border-purple-300 rounded-lg px-2 py-1 shadow-lg">
                 <div className="text-xs font-bold text-purple-600 whitespace-nowrap">
                   Invest Now! 🚀
                 </div>
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1 w-2 h-2 bg-white border-b-2 border-r-2 border-purple-300 rotate-45"></div>
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1 w-2 h-2 bg-[#111111] border-b-2 border-r-2 border-purple-300 rotate-45"></div>
               </div>
             </div>
           </div>
@@ -1550,8 +1550,8 @@ const BCDashboard = () => {
                 <TrendingUp className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-gray-900">Recommended Mutual Fund Plans</h2>
-                <p className="text-gray-600 text-sm mt-1">Top investment opportunities for your clients</p>
+                <h2 className="text-xl font-bold text-[#F9FAFB]">Recommended Mutual Fund Plans</h2>
+                <p className="text-[#9CA3AF] text-sm mt-1">Top investment opportunities for your clients</p>
               </div>
             </div>
             <button
@@ -1566,7 +1566,7 @@ const BCDashboard = () => {
           {schemesLoading ? (
             <div className="flex justify-center items-center py-8">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-              <span className="ml-2 text-gray-600 text-sm">Loading investment opportunities...</span>
+              <span className="ml-2 text-[#9CA3AF] text-sm">Loading investment opportunities...</span>
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -1594,10 +1594,10 @@ const BCDashboard = () => {
                       {colorSchemes.map((scheme, index) => (
                         <div
                           key={scheme.scheme_id}
-                          className="bg-white rounded-lg border border-gray-200 p-3 hover:border-gray-300 transition-all duration-150 hover:shadow-sm"
+                          className="bg-[#111111] rounded-lg border border-[#2A2A2A] p-3 hover:border-[#3A3A3A] transition-all duration-150 hover:shadow-sm"
                         >
                           <div className="flex items-start justify-between mb-2">
-                            <h4 className="font-semibold text-gray-800 text-sm leading-tight flex-1 pr-2" title={scheme.scheme_name}>
+                            <h4 className="font-semibold text-[#F9FAFB] text-sm leading-tight flex-1 pr-2" title={scheme.scheme_name}>
                               {scheme.scheme_name}
                             </h4>
                             <span className={`font-bold text-sm ${colorConfig.percentageText} whitespace-nowrap`}>
@@ -1609,14 +1609,14 @@ const BCDashboard = () => {
                             <span className={`text-xs font-medium px-2 py-1 rounded-full ${colorConfig.riskBg} ${colorConfig.riskText}`}>
                               {scheme.risk_level}
                             </span>
-                            <span className="text-xs text-gray-500 font-medium">
+                            <span className="text-xs text-[#9CA3AF] font-medium">
                               {scheme.scheme_isin.slice(-6)}...
                             </span>
                           </div>
 
-                          <div className="text-xs text-gray-600">
+                          <div className="text-xs text-[#9CA3AF]">
                             <div className="flex justify-between items-center">
-                              <span className="text-gray-500">Fund House:</span>
+                              <span className="text-[#9CA3AF]">Fund House:</span>
                               <span className="font-medium text-right max-w-[120px] truncate" title={scheme.fund_name}>
                                 {scheme.fund_name}
                               </span>
@@ -1627,7 +1627,7 @@ const BCDashboard = () => {
                     </div>
 
 
-                    <div className="p-4 border-t border-gray-200 bg-white/50 flex-shrink-0">
+                    <div className="p-4 border-t border-[#2A2A2A] bg-[#111111]/50 flex-shrink-0">
                       <button
                         onClick={() => handleCategoryInvestNow(colorName, colorSchemes)}
                         disabled={clientsLoading}
@@ -1655,18 +1655,18 @@ const BCDashboard = () => {
 
 
           {!schemesLoading && schemes.length === 0 && (
-            <div className="text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-              <FileText className="w-10 h-10 text-gray-400 mx-auto mb-3" />
-              <p className="text-gray-500 font-medium">No mutual fund schemes available</p>
-              <p className="text-gray-400 text-sm mt-1">Check back later for new opportunities</p>
+            <div className="text-center py-8 bg-[#1F1A1A] rounded-lg border border-dashed border-[#3A3A3A]">
+              <FileText className="w-10 h-10 text-[#6B7280] mx-auto mb-3" />
+              <p className="text-[#9CA3AF] font-medium">No mutual fund schemes available</p>
+              <p className="text-[#6B7280] text-sm mt-1">Check back later for new opportunities</p>
             </div>
           )}
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-[#111111] rounded-xl shadow-sm border border-[#2A2A2A] p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">Quick Actions</h2>
+              <h2 className="text-lg font-semibold text-[#F9FAFB]">Quick Actions</h2>
             </div>
           </div>
 
@@ -1675,27 +1675,27 @@ const BCDashboard = () => {
               <button
                 key={index}
                 onClick={action.onClick}
-                className="group bg-white hover:bg-gray-50 border border-gray-200 hover:border-gray-300 rounded-lg p-3 transition-all duration-200 hover:shadow-sm flex flex-col items-center gap-2"
+                className="group bg-[#111111] hover:bg-[#1F1A1A] border border-[#2A2A2A] hover:border-[#3A3A3A] rounded-lg p-3 transition-all duration-200 hover:shadow-sm flex flex-col items-center gap-2"
               >
                 <div className={`${action.bgColor} p-2 rounded-lg transition-all duration-200 group-hover:scale-110`}>
                   <action.icon className={`w-4 h-4 ${action.iconColor}`} />
                 </div>
-                <span className="text-xs font-medium text-gray-700 text-center leading-tight">{action.label}</span>
+                <span className="text-xs font-medium text-[#E5E7EB] text-center leading-tight">{action.label}</span>
               </button>
             ))}
           </div>
         </div>
 
         {/* Top Performing Funds - Horizontal Layout */}
-        <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+        <div className="bg-[#111111] rounded-xl shadow-lg border border-[#2A2A2A] p-6">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <div className="bg-gradient-to-r from-green-500 to-emerald-600 p-2 rounded-lg">
                 <Rocket className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-gray-900">Top Performing Funds</h2>
-                <p className="text-gray-600 text-sm mt-1">Best performing mutual funds</p>
+                <h2 className="text-xl font-bold text-[#F9FAFB]">Top Performing Funds</h2>
+                <p className="text-[#9CA3AF] text-sm mt-1">Best performing mutual funds</p>
               </div>
             </div>
             <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
@@ -1706,7 +1706,7 @@ const BCDashboard = () => {
           {topFundsLoading ? (
             <div className="flex justify-center items-center py-6">
               <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-green-600"></div>
-              <span className="ml-2 text-gray-600 text-sm">Loading top funds...</span>
+              <span className="ml-2 text-[#9CA3AF] text-sm">Loading top funds...</span>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -1718,19 +1718,19 @@ const BCDashboard = () => {
                   return (
                     <div
                       key={fund.id}
-                      className="bg-gradient-to-r from-white to-gray-50 border border-gray-200 rounded-lg p-4 hover:border-green-200 transition-all duration-200 min-w-[280px] flex-shrink-0 shadow-sm hover:shadow-md"
+                      className="bg-gradient-to-r from-white to-gray-50 border border-[#2A2A2A] rounded-lg p-4 hover:border-green-200 transition-all duration-200 min-w-[280px] flex-shrink-0 shadow-sm hover:shadow-md"
                     >
 
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-gray-800 text-sm mb-2 leading-tight line-clamp-2" title={fund.SchemeMaster.name}>
+                          <h3 className="font-semibold text-[#F9FAFB] text-sm mb-2 leading-tight line-clamp-2" title={fund.SchemeMaster.name}>
                             {fund.SchemeMaster.name}
                           </h3>
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className={`text-xs font-medium px-2 py-1 rounded-full ${getRiskColor(fund.SchemeMaster.riskLevel)}`}>
                               {simplifiedRisk}
                             </span>
-                            <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                            <span className="text-xs text-[#9CA3AF] bg-[#1F1A1A] px-2 py-1 rounded-full">
                               {fund.SchemeMaster.SchemeSubcategory?.Name || 'Others'}
                             </span>
                           </div>
@@ -1739,7 +1739,7 @@ const BCDashboard = () => {
 
                       <div className="flex items-center justify-between mb-4">
                         <div>
-                          <div className="text-xs text-gray-500 mb-1">1 Year Return</div>
+                          <div className="text-xs text-[#9CA3AF] mb-1">1 Year Return</div>
                           <div className="flex items-center gap-1">
                             {trend === 'up' ? (
                               <TrendingUp className="w-4 h-4 text-green-600" />
@@ -1752,8 +1752,8 @@ const BCDashboard = () => {
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-xs text-gray-500 mb-1">AUM</div>
-                          <div className="text-sm font-semibold text-gray-800">
+                          <div className="text-xs text-[#9CA3AF] mb-1">AUM</div>
+                          <div className="text-sm font-semibold text-[#F9FAFB]">
                             {formatAUM(fund.AUM)}
                           </div>
                         </div>
@@ -1762,25 +1762,25 @@ const BCDashboard = () => {
 
                       <div className="grid grid-cols-4 gap-2 mb-4">
                         <div className="text-center">
-                          <div className="text-xs text-gray-500">1M</div>
+                          <div className="text-xs text-[#9CA3AF]">1M</div>
                           <div className={`text-xs font-semibold ${fund.Return1mth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                             {fund.Return1mth.toFixed(1)}%
                           </div>
                         </div>
                         <div className="text-center">
-                          <div className="text-xs text-gray-500">3M</div>
+                          <div className="text-xs text-[#9CA3AF]">3M</div>
                           <div className={`text-xs font-semibold ${fund.Return3mth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                             {fund.Return3mth.toFixed(1)}%
                           </div>
                         </div>
                         <div className="text-center">
-                          <div className="text-xs text-gray-500">6M</div>
+                          <div className="text-xs text-[#9CA3AF]">6M</div>
                           <div className={`text-xs font-semibold ${fund.Return6mth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                             {fund.Return6mth.toFixed(1)}%
                           </div>
                         </div>
                         <div className="text-center">
-                          <div className="text-xs text-gray-500">YTD</div>
+                          <div className="text-xs text-[#9CA3AF]">YTD</div>
                           <div className={`text-xs font-semibold ${fund.ReturnYTD >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                             {fund.ReturnYTD.toFixed(1)}%
                           </div>
@@ -1796,17 +1796,17 @@ const BCDashboard = () => {
           )}
 
           {!topFundsLoading && topPerformingFunds.length === 0 && (
-            <div className="text-center py-6 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-              <TrendingUp className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-              <p className="text-gray-500 font-medium text-sm">No top performing funds</p>
-              <p className="text-gray-400 text-xs mt-1">Data will appear here soon</p>
+            <div className="text-center py-6 bg-[#1F1A1A] rounded-lg border border-dashed border-[#3A3A3A]">
+              <TrendingUp className="w-8 h-8 text-[#6B7280] mx-auto mb-2" />
+              <p className="text-[#9CA3AF] font-medium text-sm">No top performing funds</p>
+              <p className="text-[#6B7280] text-xs mt-1">Data will appear here soon</p>
             </div>
           )}
 
-          <div className="mt-4 pt-4 border-t border-gray-200">
+          <div className="mt-4 pt-4 border-t border-[#2A2A2A]">
             <button
               onClick={() => router.push('/mutual-fund')}
-              className="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg font-medium text-sm transition-all duration-200 flex items-center justify-center gap-2"
+              className="w-full bg-[#1F1A1A] hover:bg-[#2A2A2A] text-[#E5E7EB] py-2 rounded-lg font-medium text-sm transition-all duration-200 flex items-center justify-center gap-2"
             >
               <Search className="w-4 h-4" />
               Explore All Funds

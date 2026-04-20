@@ -104,16 +104,26 @@ function RoleForm({ data, isView, isEdit, toggleForm, usersType }: RoleFormProps
     });
   };
 
+  // Helper function to get error message as string
+  const getErrorMessage = (error: any): string | undefined => {
+    if (!error) return undefined;
+    if (typeof error === 'string') return error;
+    if (error.message) return error.message;
+    return undefined;
+  };
+
   return (
     <>
-      <div className="w-full p-6 bg-white border-t border-gray-200">
+      <div className="w-full p-6 bg-[#111111] border-t border-[#2A2A2A] rounded-xl">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid lg:grid-cols-4 xl:grid-cols-4 gap-5">
             <div>
+              <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                User Type <span className="text-[#F59E0B]">*</span>
+              </label>
               <CustomReactSelect
                 items={usersType}
                 required
-                label="User Type"
                 placeholder="Select User Type"
                 bindName="userType"
                 bindValue="id"
@@ -122,17 +132,26 @@ function RoleForm({ data, isView, isEdit, toggleForm, usersType }: RoleFormProps
                 onChange={handleUserTypeChange}
                 error={errors?.userType?.message}
                 disabled={isView ? true : false}
+                className="z-50"
               />
+              {errors?.userType && (
+                <p className="mt-1 text-xs text-red-400">{getErrorMessage(errors.userType)}</p>
+              )}
             </div>
             <div>
-              <CustomInput
-                label="Role"
+              <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                Role <span className="text-[#F59E0B]">*</span>
+              </label>
+              <input
+                type="text"
                 {...register("roleName")}
-                required
                 placeholder="Enter Role"
                 disabled={isView ? true : false}
-                error={errors.roleName?.message}
+                className="w-full px-4 py-2.5 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-50 disabled:cursor-not-allowed"
               />
+              {errors.roleName && (
+                <p className="mt-1 text-xs text-red-400">{getErrorMessage(errors.roleName)}</p>
+              )}
             </div>
 
             <div className="flex flex-col space-x-2 py-2 justify-center mt-5">
@@ -146,7 +165,7 @@ function RoleForm({ data, isView, isEdit, toggleForm, usersType }: RoleFormProps
                       id="isActive"
                       {...field}
                       checked={field.value}
-                      className="checked:bg-green"
+                      className="checked:bg-[#10B981]"
                       onChange={() => field.onChange(!field.value)}
                       color="green"
                       disabled={isView ? true : false}
@@ -155,24 +174,24 @@ function RoleForm({ data, isView, isEdit, toggleForm, usersType }: RoleFormProps
                 )}
               />
             </div>
-            {/* ) : null} */}
           </div>
-          <div className="flex justify-end text-end gap-4 mt-4">
+          <div className="flex justify-end text-end gap-4 mt-6">
             {!isView ? (
-              <CustomButton
+              <button
                 type="submit"
-                className="flex normal-case"
-                loading={loading}
+                disabled={loading}
+                className="px-6 py-2.5 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white font-semibold rounded-lg hover:opacity-90 transition-all disabled:opacity-50"
               >
-                {data ? "Update" : "Submit"}
-              </CustomButton>
+                {loading ? "Processing..." : (data ? "Update" : "Submit")}
+              </button>
             ) : null}
-            <CustomButton
-              className="flex text-proses-secondary normal-case"
+            <button
+              type="button"
               onClick={() => goToList()}
+              className="px-6 py-2.5 bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] rounded-lg hover:bg-[#2A2A2A] transition-colors"
             >
               Cancel
-            </CustomButton>
+            </button>
           </div>
         </form>
       </div>

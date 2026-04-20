@@ -37,7 +37,7 @@ const Otp: React.FC<{ open: any; onClose: () => void }> = ({
   return (
     <>
       <dialog open className="modal modal-open">
-        <div className="modal-box w-lg max-w-lg bg-white rounded-3xl shadow-2xl border-0">
+        <div className="modal-box w-lg max-w-lg bg-[#111111] rounded-3xl shadow-2xl border-0">
           {/* Investment Details Section */}
           <div className="mb-8">
             <h2 className="text-sm font-bold text-base-content mb-2">
@@ -84,7 +84,7 @@ const Otp: React.FC<{ open: any; onClose: () => void }> = ({
             <h3 className="text-2xl font-bold text-gray-950 mb-4 tracking-wider">
               OTP
             </h3>
-            <p className="text-gray-700 mb-6 text-sm leading-relaxed">
+            <p className="text-[#E5E7EB] mb-6 text-sm leading-relaxed">
               We have sent the verification code to your email address and
               mobile number
             </p>
@@ -141,7 +141,7 @@ const Otp: React.FC<{ open: any; onClose: () => void }> = ({
           {/* Close Button */}
           <div className="modal-action mt-0">
             <button
-              className="btn btn-sm btn-circle btn-ghost absolute right-4 top-4 text-gray-400 text-2xl hover:text-base-content"
+              className="btn btn-sm btn-circle btn-ghost absolute right-4 top-4 text-[#6B7280] text-2xl hover:text-base-content"
               onClick={handleClose}
             >
               <MdClose />

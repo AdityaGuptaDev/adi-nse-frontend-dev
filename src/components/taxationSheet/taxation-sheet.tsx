@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { FileText, Download, Calendar, Shield, ArrowLeft } from 'lucide-react';
 import { getTaxationSummaryData, TaxationSummary } from '@/services/clientService';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import { PROD_DATA, USER_DATA } from '@/utils/constants';
 import { getLS } from '@/utils/helpers';
 
@@ -19,6 +19,7 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
   clientName: propClientName,
   clientPan: propClientPan 
 }: TaxSheetProps) => {
+  const router = useRouter();
   const [reportOption, setReportOption] = useState<'detailed' | 'summary'>('detailed');
   const [reportFormat, setReportFormat] = useState<string>('HTML Format');
   const [investor, setInvestor] = useState<string>('');
@@ -321,11 +322,11 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
     if (data.length > 0) {
       const headers = Object.keys(data[0]);
 
-      const headerRow = `<tr>${headers.map(h => `<th style="border:1px solid #ddd;padding:8px;background:#f4f4f4">${h}</th>`).join('')}</tr>`;
+      const headerRow = `<tr>${headers.map(h => `<th style="border:1px solid #2A2A2A;padding:8px;background:#1F1A1A;color:#F59E0B">${h}</th>`).join('')}</tr>`;
       const rows = data.map(item =>
         `<tr>${Object.values(item)
-          .map(val => `<td style="border:1px solid #ddd;padding:8px">${val ?? ""}</td>`)
-          .join('')}</tr>`
+          .map(val => `<td style="border:1px solid #2A2A2A;padding:8px;color:#F9FAFB">${val ?? ""}</td>`)
+          .join('')} </tr>`
       ).join('');
 
       return `
@@ -333,30 +334,33 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
           <head>
             <title>Tax Report</title>
             <style>
+              body { background-color: #0A0A0A; color: #F9FAFB; font-family: Arial, sans-serif; }
               table { border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; font-size: 12px; }
-              th, td { text-align: left; padding: 8px; border: 1px solid #ddd; }
-              th { background-color: #e6f0ff; font-weight: bold; }
-              tr:nth-child(even) { background-color: #f9f9f9; }
-              .header { background-color: #f0f0f0; padding: 20px; margin-bottom: 20px; border-radius: 5px; }
+              th, td { text-align: left; padding: 8px; border: 1px solid #2A2A2A; }
+              th { background-color: #1F1A1A; color: #F59E0B; font-weight: bold; }
+              tr:nth-child(even) { background-color: #111111; }
+              .header { background-color: #1F1A1A; padding: 20px; margin-bottom: 20px; border-radius: 5px; border: 1px solid #2A2A2A; }
               .summary { margin-bottom: 20px; }
+              h2 { color: #F59E0B; }
+              p { color: #9CA3AF; }
             </style>
           </head>
           <body>
             <div class="header">
               <h2>Tax Report for ${investor}</h2>
-              <p><strong>PAN:</strong> ${selectedPan}</p>
-              <p><strong>Report Type:</strong> ${reportOption === 'detailed' ? 'Detailed' : 'Summary'}</p>
-              <p><strong>Format:</strong> ${reportFormat}</p>
-              <p><strong>Period:</strong> ${formatDate(fromDate)} to ${formatDate(toDate)}</p>
-              <p><strong>Generated On:</strong> ${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
-              <p><strong>Total Records:</strong> ${data.length}</p>
+              <p><strong style="color:#F9FAFB">PAN:</strong> ${selectedPan}</p>
+              <p><strong style="color:#F9FAFB">Report Type:</strong> ${reportOption === 'detailed' ? 'Detailed' : 'Summary'}</p>
+              <p><strong style="color:#F9FAFB">Format:</strong> ${reportFormat}</p>
+              <p><strong style="color:#F9FAFB">Period:</strong> ${formatDate(fromDate)} to ${formatDate(toDate)}</p>
+              <p><strong style="color:#F9FAFB">Generated On:</strong> ${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+              <p><strong style="color:#F9FAFB">Total Records:</strong> ${data.length}</p>
             </div>
-            <table>${headerRow}${rows}</table>
+            <table>${headerRow}${rows} </>
           </body>
         </html>
       `;
     }
-    return "<p>No Taxation Data Found</p>";
+    return "<p style='color:#9CA3AF'>No Taxation Data Found</p>";
   };
 
   const handleShowReport = async () => {
@@ -440,25 +444,25 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
 
   // PAN Input Modal
   const PanInputModal = () => (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+      <div className="bg-[#111111] rounded-xl shadow-2xl max-w-md w-full p-6 border border-[#2A2A2A]">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-gray-800">PAN Required</h2>
+          <h2 className="text-xl font-bold text-[#F9FAFB]">PAN Required</h2>
           <button 
             onClick={() => setShowPanInput(false)}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-[#9CA3AF] hover:text-[#F59E0B] transition-colors"
           >
             ✕
           </button>
         </div>
         
-        <p className="text-gray-600 mb-4">
+        <p className="text-[#9CA3AF] mb-4">
           Could not automatically detect the PAN number. Please enter it manually:
         </p>
         
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-[#F9FAFB] mb-1">
               PAN Number
             </label>
             <input
@@ -466,11 +470,11 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
               value={manualPan}
               onChange={(e) => setManualPan(e.target.value.toUpperCase())}
               placeholder="e.g., ABCDE1234F"
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
               maxLength={10}
               pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-[#9CA3AF] mt-1">
               Format: 5 letters, 4 digits, 1 letter (e.g., ABCDE1234F)
             </p>
           </div>
@@ -478,7 +482,7 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
           <div className="flex justify-end space-x-3 pt-4">
             <button
               onClick={() => setShowPanInput(false)}
-              className="px-4 py-2 text-gray-600 hover:text-gray-800"
+              className="px-4 py-2 text-[#9CA3AF] hover:text-[#F59E0B] transition-colors"
             >
               Cancel
             </button>
@@ -493,7 +497,7 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
                   alert('Please enter a valid PAN number (format: ABCDE1234F)');
                 }
               }}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+              className="bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white px-6 py-2 rounded-lg hover:opacity-90 transition-all"
             >
               Use This PAN
             </button>
@@ -506,12 +510,11 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-orange-50 to-white">
+      <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-400 mx-auto"></div>
-          <p className="mt-4 text-lg font-medium text-gray-700">Loading taxation data...</p>
-          <p className="text-sm text-gray-500 mt-1">PAN: <span className="font-semibold">{selectedPan || "Not available"}</span></p>
-       
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#F59E0B] mx-auto"></div>
+          <p className="mt-4 text-lg font-medium text-[#9CA3AF]">Loading taxation data...</p>
+          <p className="text-sm text-[#9CA3AF] mt-1">PAN: <span className="font-semibold text-[#F9FAFB]">{selectedPan || "Not available"}</span></p>
         </div>
         {showPanInput && <PanInputModal />}
       </div>
@@ -520,33 +523,33 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-orange-50 to-white p-4">
-        <div className="bg-white rounded-xl shadow-lg max-w-4xl w-full border border-red-100">
+      <div className="min-h-screen flex items-center justify-center bg-[#0A0A0A] p-4">
+        <div className="bg-[#111111] rounded-xl shadow-lg max-w-4xl w-full border border-[#2A2A2A]">
           <div className="p-6">
-            <div className="text-red-500 mb-4 flex justify-center">
+            <div className="text-red-400 mb-4 flex justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h2 className="text-xl font-bold text-gray-800 mb-2 text-center">Error Loading Data</h2>
-            <p className="text-gray-600 mb-6 text-center">{error}</p>
+            <h2 className="text-xl font-bold text-[#F9FAFB] mb-2 text-center">Error Loading Data</h2>
+            <p className="text-[#9CA3AF] mb-6 text-center">{error}</p>
             
-            <div className="bg-gray-50 p-4 rounded-lg mb-6">
+            <div className="bg-[#1F1A1A] p-4 rounded-lg mb-6 border border-[#2A2A2A]">
               <div className="flex justify-between items-center mb-3">
-                <h3 className="font-semibold text-gray-700">Debug Information:</h3>
+                <h3 className="font-semibold text-[#F59E0B]">Debug Information:</h3>
               </div>
               
               <div className="space-y-4">
                 <div>
-                  <h4 className="text-sm font-medium text-gray-600 mb-2">PAN Sources Analysis:</h4>
+                  <h4 className="text-sm font-medium text-[#9CA3AF] mb-2">PAN Sources Analysis:</h4>
                   <div className="space-y-2">
                     {Object.entries(panSources).map(([key, data]: [string, any]) => (
                       <div key={key} className="flex items-center justify-between">
                         <div className="text-sm">
-                          <span className="font-medium">{key}:</span>
-                          <span className="ml-2 text-gray-500">{data.source}</span>
+                          <span className="font-medium text-[#F9FAFB]">{key}:</span>
+                          <span className="ml-2 text-[#9CA3AF]">{data.source}</span>
                         </div>
-                        <div className={`text-sm font-mono ${data.value ? 'text-green-600' : 'text-red-500'}`}>
+                        <div className={`text-sm font-mono ${data.value ? 'text-[#10B981]' : 'text-red-400'}`}>
                           {data.value || "EMPTY"}
                         </div>
                       </div>
@@ -554,21 +557,21 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
                   </div>
                 </div>
                 
-                <div className="border-t pt-3">
-                  <h4 className="text-sm font-medium text-gray-600 mb-2">Selected Values:</h4>
+                <div className="border-t border-[#2A2A2A] pt-3">
+                  <h4 className="text-sm font-medium text-[#9CA3AF] mb-2">Selected Values:</h4>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <span className="text-sm font-medium text-gray-600">Selected PAN:</span>
+                      <span className="text-sm font-medium text-[#9CA3AF]">Selected PAN:</span>
                       <div className="mt-1">
-                        <code className={`px-2 py-1 rounded ${selectedPan ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                        <code className={`px-2 py-1 rounded ${selectedPan ? 'bg-[#10B981]/20 text-[#10B981]' : 'bg-red-500/20 text-red-400'}`}>
                           {selectedPan || "EMPTY"}
                         </code>
                       </div>
                     </div>
                     <div>
-                      <span className="text-sm font-medium text-gray-600">Selected Name:</span>
+                      <span className="text-sm font-medium text-[#9CA3AF]">Selected Name:</span>
                       <div className="mt-1">
-                        <code className="bg-gray-100 px-2 py-1 rounded text-gray-800">
+                        <code className="bg-[#1F1A1A] px-2 py-1 rounded text-[#F9FAFB]">
                           {selectedName || "EMPTY"}
                         </code>
                       </div>
@@ -576,9 +579,9 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
                   </div>
                 </div>
                 
-                <div className="border-t pt-3">
-                  <h4 className="text-sm font-medium text-gray-600 mb-2">Props Received:</h4>
-                  <pre className="text-xs bg-gray-100 p-3 rounded overflow-auto max-h-32">
+                <div className="border-t border-[#2A2A2A] pt-3">
+                  <h4 className="text-sm font-medium text-[#9CA3AF] mb-2">Props Received:</h4>
+                  <pre className="text-xs bg-[#1F1A1A] p-3 rounded overflow-auto max-h-32 text-[#F9FAFB]">
                     {JSON.stringify({
                       clientName: propClientName || "NOT PROVIDED",
                       clientPan: propClientPan || "NOT PROVIDED",
@@ -592,19 +595,19 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
             <div className="flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4 mt-6">
               <button
                 onClick={handleBack}
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                className="bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white px-6 py-2 rounded-lg hover:opacity-90 transition-all"
               >
                 Go Back
               </button>
               <button
                 onClick={() => setShowPanInput(true)}
-                className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+                className="bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] px-6 py-2 rounded-lg hover:bg-[#2A2A2A] transition-all"
               >
                 Enter PAN Manually
               </button>
               <button
                 onClick={() => window.location.reload()}
-                className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+                className="bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] px-6 py-2 rounded-lg hover:bg-[#2A2A2A] transition-all"
               >
                 Reload Page
               </button>
@@ -617,22 +620,21 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
+    <div className="min-h-screen bg-[#0A0A0A]">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-gray-200">
+      <header className="bg-[#111111] shadow-sm border-b border-[#2A2A2A]">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           <button 
             onClick={handleBack} 
-            className="flex items-center space-x-2 text-blue-400 hover:text-blue-600 transition-colors"
+            className="flex items-center space-x-2 text-[#F59E0B] hover:text-[#FBBF24] transition-colors group"
           >
-            <ArrowLeft size={20} />
+            <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
             <span className="font-medium">Back</span>
           </button>
           <div className="flex items-center space-x-4">
-            <div className="text-sm text-gray-600">
-              <span className="font-semibold">PAN:</span> {selectedPan}
+            <div className="text-sm text-[#9CA3AF]">
+              <span className="font-semibold text-[#F9FAFB]">PAN:</span> {selectedPan}
             </div>
-          
           </div>
         </div>
       </header>
@@ -642,12 +644,12 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
         <div className="grid gap-8 lg:grid-cols-3">
           {/* Investor Panel */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-md border overflow-hidden">
+            <div className="bg-[#111111] rounded-xl shadow-lg border border-[#2A2A2A] overflow-hidden">
               {/* Investor Info Header */}
-              <div className="px-6 py-4">
+              <div className="px-6 py-4 border-b border-[#2A2A2A]">
                 <div className="flex justify-between items-center">
-                  <h2 className="text-lg font-semibold text-black">Investor Information</h2>
-                  <span className="text-xs text-gray-500">
+                  <h2 className="text-lg font-semibold text-[#F9FAFB]">Investor Information</h2>
+                  <span className="text-xs text-[#9CA3AF]">
                     Source: {panSources.propClientPan.value ? 'Props' : 
                             panSources.manualPan.value ? 'Manual' :
                             panSources.globalClientPan.value ? panSources.globalClientPan.source :
@@ -659,15 +661,15 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
               {/* Investor Info Content */}
               <div className="p-6 space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Investor Name</label>
-                  <div className="bg-orange-50 px-4 py-3 rounded-lg border border-orange-100">
-                    <p className="text-gray-800 font-medium">{investor || selectedName || "Not available"}</p>
+                  <label className="block text-sm font-medium text-[#9CA3AF]">Investor Name</label>
+                  <div className="bg-[#1F1A1A] px-4 py-3 rounded-lg border border-[#2A2A2A] mt-1">
+                    <p className="text-[#F9FAFB] font-medium">{investor || selectedName || "Not available"}</p>
                   </div>
                   <div className="mt-3">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">PAN Number</label>
-                    <div className="bg-orange-50 px-4 py-3 rounded-lg border border-orange-100">
-                      <p className="text-gray-800 font-mono font-bold tracking-wider">{selectedPan || "Not available"}</p>
-                      <p className="text-xs text-gray-500 mt-1">
+                    <label className="block text-sm font-medium text-[#9CA3AF] mb-1">PAN Number</label>
+                    <div className="bg-[#1F1A1A] px-4 py-3 rounded-lg border border-[#2A2A2A]">
+                      <p className="text-[#F9FAFB] font-mono font-bold tracking-wider">{selectedPan || "Not available"}</p>
+                      <p className="text-xs text-[#9CA3AF] mt-1">
                         Source: {panSources.propClientPan.value ? 'Props' : 
                                 panSources.manualPan.value ? 'Manual' :
                                 panSources.globalClientPan.value ? panSources.globalClientPan.source :
@@ -679,12 +681,12 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
                 </div>
 
                 {/* Report Date */}
-                <div className="border-t pt-4">
+                <div className="border-t border-[#2A2A2A] pt-4">
                   <div className="flex items-center space-x-3">
-                    <Calendar className="w-5 h-5 text-orange-400" />
+                    <Calendar className="w-5 h-5 text-[#F59E0B]" />
                     <div>
-                      <p className="text-sm font-medium text-gray-700">Report Date</p>
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm font-medium text-[#9CA3AF]">Report Date</p>
+                      <p className="text-sm text-[#F9FAFB]">
                         {new Date().toLocaleDateString('en-IN', {
                           day: 'numeric',
                           month: 'long',
@@ -697,7 +699,7 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
               </div>
 
               {/* Button neatly placed inside card */}
-              <div className="bg-gray-50 px-6 py-4 border-t">
+              <div className="bg-[#1F1A1A] px-6 py-4 border-t border-[#2A2A2A]">
                 <button
                   onClick={handleShowReport}
                   disabled={!selectedPan}
@@ -705,8 +707,8 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
                    text-white font-semibold rounded-lg shadow-md 
                    transition-all duration-300
                    ${selectedPan 
-                     ? 'bg-gradient-to-r from-orange-400 to-orange-500 hover:from-orange-500 hover:to-orange-600' 
-                     : 'bg-gray-400 cursor-not-allowed'}`}
+                     ? 'bg-gradient-to-r from-[#F59E0B] to-[#B45309] hover:opacity-90' 
+                     : 'bg-[#2A2A2A] cursor-not-allowed text-[#9CA3AF]'}`}
                 >
                   <Download className="w-5 h-5 mr-2" />
                   {selectedPan ? 'Generate Tax Report' : 'PAN Required'}
@@ -714,7 +716,7 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
                 {!selectedPan && (
                   <button
                     onClick={() => setShowPanInput(true)}
-                    className="w-full mt-2 text-sm text-blue-600 hover:text-blue-800"
+                    className="w-full mt-2 text-sm text-[#F59E0B] hover:text-[#FBBF24] transition-colors"
                   >
                     Enter PAN manually
                   </button>
@@ -725,50 +727,50 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
 
           {/* Report Configuration */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl shadow-md border overflow-hidden">
-              <div className="px-6 py-4">
-                <h2 className="text-lg font-semibold text-black">Tax Report Configuration</h2>
+            <div className="bg-[#111111] rounded-xl shadow-lg border border-[#2A2A2A] overflow-hidden">
+              <div className="px-6 py-4 border-b border-[#2A2A2A]">
+                <h2 className="text-lg font-semibold text-[#F9FAFB]">Tax Report Configuration</h2>
               </div>
               <div className="p-6 space-y-8">
                 {/* Report Type */}
                 <div className="space-y-4">
-                  <h3 className="text-md font-semibold text-gray-800">1. Select Report Type</h3>
+                  <h3 className="text-md font-semibold text-[#F59E0B]">1. Select Report Type</h3>
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-3">
                       <div className="space-y-3">
                         <label className={`flex items-center space-x-3 p-4 rounded-lg border cursor-pointer 
                           transition-colors duration-200 
-                          hover:border-orange-200 
-                          ${reportOption === 'detailed' ? 'border-orange-300 bg-orange-50' : 'border-gray-200'}`}>
+                          hover:border-[#F59E0B] 
+                          ${reportOption === 'detailed' ? 'border-[#F59E0B] bg-[#F59E0B]/10' : 'border-[#2A2A2A]'}`}>
                           <input
                             type="radio"
                             name="reportOption"
                             value="detailed"
                             checked={reportOption === 'detailed'}
                             onChange={() => setReportOption('detailed')}
-                            className="h-4 w-4 text-orange-400 border-gray-300 focus:ring-orange-400"
+                            className="h-4 w-4 text-[#F59E0B] border-[#2A2A2A] focus:ring-[#F59E0B]"
                           />
                           <div>
-                            <p className="font-medium text-gray-800">Detailed Report</p>
-                            <p className="text-xs text-gray-500">Transaction-wise breakdown</p>
+                            <p className="font-medium text-[#F9FAFB]">Detailed Report</p>
+                            <p className="text-xs text-[#9CA3AF]">Transaction-wise breakdown</p>
                           </div>
                         </label>
 
                         <label className={`flex items-center space-x-3 p-4 rounded-lg border cursor-pointer 
                           transition-colors duration-200 
-                          hover:border-orange-200 
-                          ${reportOption === 'summary' ? 'border-orange-300 bg-orange-50' : 'border-gray-200'}`}>
+                          hover:border-[#F59E0B] 
+                          ${reportOption === 'summary' ? 'border-[#F59E0B] bg-[#F59E0B]/10' : 'border-[#2A2A2A]'}`}>
                           <input
                             type="radio"
                             name="reportOption"
                             value="summary"
                             checked={reportOption === 'summary'}
                             onChange={() => setReportOption('summary')}
-                            className="h-4 w-4 text-orange-400 border-gray-300 focus:ring-orange-300"
+                            className="h-4 w-4 text-[#F59E0B] border-[#2A2A2A] focus:ring-[#F59E0B]"
                           />
                           <div>
-                            <p className="font-medium text-gray-800">Summary Report</p>
-                            <p className="text-xs text-gray-500">Consolidated overview</p>
+                            <p className="font-medium text-[#F9FAFB]">Summary Report</p>
+                            <p className="text-xs text-[#9CA3AF]">Consolidated overview</p>
                           </div>
                         </label>
                       </div>
@@ -776,21 +778,21 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
                     <div className="space-y-3">
                       <div className="space-y-4">
                         <div>
-                          <label className="block text-sm text-gray-700 mb-1">From Date</label>
+                          <label className="block text-sm font-medium text-[#9CA3AF] mb-1">From Date</label>
                           <input 
                             type="date" 
                             value={fromDate} 
                             onChange={(e) => setFromDate(e.target.value)} 
-                            className="w-full border px-3 py-2 rounded-md" 
+                            className="w-full border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] px-3 py-2 rounded-lg focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm text-gray-700 mb-1">To Date</label>
+                          <label className="block text-sm font-medium text-[#9CA3AF] mb-1">To Date</label>
                           <input 
                             type="date" 
                             value={toDate} 
                             onChange={(e) => setToDate(e.target.value)} 
-                            className="w-full border px-3 py-2 rounded-md" 
+                            className="w-full border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] px-3 py-2 rounded-lg focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                           />
                         </div>
                       </div>
@@ -800,20 +802,20 @@ const TaxSheet: React.FC<TaxSheetProps> = ({
 
                 {/* Export Options */}
                 <div className="space-y-4">
-                  <h3 className="text-md font-semibold text-gray-800">2. Export Options</h3>
+                  <h3 className="text-md font-semibold text-[#F59E0B]">2. Export Options</h3>
                   <div className="flex flex-col md:flex-row md:items-end space-y-4 md:space-y-0 md:space-x-4">
                     <div className="flex-1">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Select Format</label>
+                      <label className="block text-sm font-medium text-[#9CA3AF] mb-1">Select Format</label>
                       <select 
                         value={reportFormat} 
                         onChange={(e) => setReportFormat(e.target.value)} 
-                        className="w-full border px-4 py-3 rounded-lg"
+                        className="w-full border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] px-4 py-3 rounded-lg focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                       >
                         {formatOptions.map((option, index) => (
                           <option key={index} value={option}>{option}</option>
                         ))}
                       </select>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-[#9CA3AF] mt-1">
                         {reportFormat === 'HTML Format' || reportFormat === 'Complete Report - Computax Format (CSV)'
                           ? "This format will include full detailed records"
                           : "Standard format"}

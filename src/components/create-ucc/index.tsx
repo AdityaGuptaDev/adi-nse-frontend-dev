@@ -12,7 +12,9 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { FiCheck, FiCheckCircle, FiEdit2 } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 import OTPInput from "react-otp-input";
+import { Lock, AlertCircle } from "lucide-react";
 
 // ── Dropdown Options ──
 
@@ -466,7 +468,7 @@ const STEP_LABELS = [
 
 function SectionTitle({ title }: { title: string }) {
   return (
-    <div className="col-span-full border-b border-gray-200 pb-1 mt-4 mb-1">
+    <div className="col-span-full border-b border-[#2A2A2A] pb-1 mt-4 mb-1">
       <h3 className="font-semibold text-sm text-secondary">{title}</h3>
     </div>
   );
@@ -488,7 +490,7 @@ function CollapsibleSection({
       <button
         type="button"
         onClick={onToggle}
-        className="flex items-center gap-2 w-full border-b border-gray-200 pb-1 mt-4 mb-1 cursor-pointer"
+        className="flex items-center gap-2 w-full border-b border-[#2A2A2A] pb-1 mt-4 mb-1 cursor-pointer"
       >
         <h3 className="font-semibold text-sm text-secondary">{title}</h3>
         {open ? <IoIosArrowUp size={16} /> : <IoIosArrowDown size={16} />}
@@ -554,6 +556,27 @@ function CreateUCC() {
   // through the 4-step form.
   const [existingUccRecord, setExistingUccRecord] = useState<any>(null);
   const [uccViewMode, setUccViewMode] = useState<"summary" | "form">("form");
+
+  // CAN gate — if the investor already has a registered MFU CAN, UCC creation
+  // is blocked (regulators: an investor transacts via exactly one lane).
+  const [canBlocked, setCanBlocked] = useState<{ blocked: boolean; canNo?: string }>({ blocked: false });
+  const router = useRouter();
+
+  useEffect(() => {
+    const userData: any = getLS(USER_DATA);
+    const inv = userData?.InvestorRegistration;
+    // Flag comes either from InvestorRegistration.is_CAN_registered (boolean)
+    // or from a stored CAN id in InvestorAccountHolding[0].CAN_Id.
+    const hasCan =
+      inv?.is_CAN_registered === true ||
+      !!inv?.InvestorAccountHolding?.[0]?.CAN_Id;
+    if (hasCan) {
+      setCanBlocked({
+        blocked: true,
+        canNo: inv?.InvestorAccountHolding?.[0]?.CAN_Id,
+      });
+    }
+  }, []);
 
   // Aadhaar verification state
   const [aadhaarCheckLoader, setAadhaarCheckLoader] = useState(false);
@@ -1741,12 +1764,12 @@ const onSubmit = async (data: any) => {
                 className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${
                   active
                     ? "bg-[var(--color-primary)] border-[var(--color-primary)]"
-                    : "bg-white border-gray-400"
+                    : "bg-[#111111] border-gray-400"
                 }`}
               >
                 {active && <FiCheck size={14} className="text-white" />}
               </span>
-              <span className="text-gray-700">{opt.label}</span>
+              <span className="text-[#E5E7EB]">{opt.label}</span>
             </label>
           );
         })}
@@ -1957,7 +1980,7 @@ const onSubmit = async (data: any) => {
         {/* ── Additional Holders (shown when Joint / Anyone or Survivor) ── */}
         {isJointOrSurvivor && (
           <div className="col-span-full mt-4">
-            <div className="rounded-xl bg-white shadow-md border-l-4 border-indigo-500 overflow-hidden">
+            <div className="rounded-xl bg-[#111111] shadow-md border-l-4 border-indigo-500 overflow-hidden">
               <div className="px-5 py-3 bg-gradient-to-r from-indigo-50 to-transparent">
                 <div className="text-sm font-bold text-indigo-700 tracking-wide uppercase">Holder 2</div>
               </div>
@@ -2040,7 +2063,7 @@ const onSubmit = async (data: any) => {
             )}
 
             {showThirdHolder && (
-              <div className="rounded-xl bg-white shadow-md border-l-4 border-indigo-500 overflow-hidden mt-4">
+              <div className="rounded-xl bg-[#111111] shadow-md border-l-4 border-indigo-500 overflow-hidden mt-4">
                 <div className="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-indigo-50 to-transparent">
                   <div className="text-sm font-bold text-indigo-700 tracking-wide uppercase">Holder 3</div>
                   <button
@@ -2145,7 +2168,7 @@ const onSubmit = async (data: any) => {
     };
     return (
       <div key={idx} className="col-span-full mt-3">
-        <div className="rounded-xl bg-white shadow-md border-l-4 border-emerald-500 overflow-hidden">
+        <div className="rounded-xl bg-[#111111] shadow-md border-l-4 border-emerald-500 overflow-hidden">
           <div className="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-emerald-50 to-transparent">
             <div className="text-sm font-bold text-emerald-700 tracking-wide uppercase">Nominee {idx}</div>
             {idx > 1 && (
@@ -2392,7 +2415,7 @@ const onSubmit = async (data: any) => {
     const setVerified = idx === 1 ? setBankVerified1 : setBankVerified2;
     return (
       <div key={idx} className="col-span-full mt-3">
-        <div className="rounded-xl bg-white shadow-md border-l-4 border-[var(--color-primary)] overflow-hidden">
+        <div className="rounded-xl bg-[#111111] shadow-md border-l-4 border-[var(--color-primary)] overflow-hidden">
           <div className="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-[var(--color-primary)]/10 to-transparent">
             <div className="text-sm font-bold text-[var(--color-primary)] tracking-wide uppercase">Bank {idx}</div>
             {idx === 2 && (
@@ -2534,14 +2557,14 @@ const onSubmit = async (data: any) => {
 
     const Field = ({ label, value }: { label: string; value: any }) => (
       <div>
-        <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">{label}</div>
-        <div className="font-semibold text-gray-800 break-words">{value && `${value}`.trim() !== "" ? value : "—"}</div>
+        <div className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold">{label}</div>
+        <div className="font-semibold text-[#F9FAFB] break-words">{value && `${value}`.trim() !== "" ? value : "—"}</div>
       </div>
     );
 
     const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
-      <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
-        <h3 className="text-sm font-semibold text-gray-700 mb-3 pb-2 border-b border-gray-100">{title}</h3>
+      <div className="bg-[#111111] rounded-xl border border-[#2A2A2A] p-4 shadow-sm">
+        <h3 className="text-sm font-semibold text-[#E5E7EB] mb-3 pb-2 border-b border-[#2A2A2A]">{title}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">{children}</div>
       </div>
     );
@@ -2558,7 +2581,7 @@ const onSubmit = async (data: any) => {
             <div className="text-2xl font-bold font-mono text-green-800 tracking-wide">
               {r.clientCode || "Created"}
             </div>
-            <div className="text-xs text-gray-600 mt-1">
+            <div className="text-xs text-[#9CA3AF] mt-1">
               UCC is registered — the fields below are read-only. Use Edit to modify.
             </div>
           </div>
@@ -2638,6 +2661,66 @@ const onSubmit = async (data: any) => {
     );
   };
 
+  // Block UCC creation for investors who already have an MFU CAN. A single
+  // investor is not allowed to hold both a CAN and a UCC (regulatory: one
+  // execution lane per investor). Render a friendly gate with a link back to
+  // their profile / MFU flows instead of silently letting them fill the form.
+  if (canBlocked.blocked) {
+    return (
+      <div className="nse-module p-6 min-h-[70vh] flex items-center justify-center">
+        <div className="w-full max-w-lg rounded-2xl bg-gradient-to-br from-[#0a0c10] to-[#121418] border-2 border-[#F59E0B]/30 shadow-2xl shadow-[#F59E0B]/10 p-8 text-center relative">
+          <div className="absolute top-3 left-3 w-10 h-10 border-t-2 border-l-2 border-[#F59E0B]/40"></div>
+          <div className="absolute top-3 right-3 w-10 h-10 border-t-2 border-r-2 border-[#F59E0B]/40"></div>
+          <div className="absolute bottom-3 left-3 w-10 h-10 border-b-2 border-l-2 border-[#F59E0B]/40"></div>
+          <div className="absolute bottom-3 right-3 w-10 h-10 border-b-2 border-r-2 border-[#F59E0B]/40"></div>
+
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-r from-[#F59E0B]/20 to-[#B45309]/20 border border-[#F59E0B]/30 mb-4">
+            <Lock className="w-8 h-8 text-[#F59E0B]" />
+          </div>
+
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-[#F59E0B] via-[#FBBF24] to-[#F59E0B] bg-clip-text text-transparent mb-2">
+            UCC Creation Not Allowed
+          </h2>
+
+          <p className="text-sm text-[#9CA3AF] mb-5">
+            You already have a registered MFU CAN
+            {canBlocked.canNo ? (
+              <>
+                {" "}(<span className="font-mono font-semibold text-[#F59E0B]">{canBlocked.canNo}</span>)
+              </>
+            ) : null}
+            . An investor can transact through only one lane — MFU (CAN) or NSE (UCC).
+            Please continue using your existing CAN for all transactions.
+          </p>
+
+          <div className="flex items-center justify-center gap-2 text-xs text-amber-400 bg-amber-400/10 border border-amber-400/20 rounded-lg p-3 mb-6">
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            <span className="text-left">
+              If you genuinely need a UCC in addition to your CAN, contact support.
+            </span>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <button
+              type="button"
+              onClick={() => router.push("/my-profile")}
+              className="px-6 py-2.5 rounded-full bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white text-sm font-semibold hover:opacity-90 transition"
+            >
+              Go to My Profile
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push("/kyc-quick-summary")}
+              className="px-6 py-2.5 rounded-full border border-[#F59E0B] text-[#F59E0B] text-sm font-semibold hover:bg-[#F59E0B]/10 transition"
+            >
+              View CAN Details
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (uccViewMode === "summary" && existingUccRecord) {
     return renderUccSummary();
   }
@@ -2660,7 +2743,7 @@ const onSubmit = async (data: any) => {
                     ? "bg-green-500 border-green-500 text-white"
                     : i === currentStep
                     ? "bg-[var(--color-primary)] border-[var(--color-primary)] text-white"
-                    : "bg-white border-gray-300 text-gray-400"
+                    : "bg-[#111111] border-[#3A3A3A] text-[#6B7280]"
                 }`}
               >
                 {i < currentStep ? <FiCheck size={18} /> : i + 1}
@@ -2671,7 +2754,7 @@ const onSubmit = async (data: any) => {
                     ? "text-[var(--color-primary)] font-semibold"
                     : i < currentStep
                     ? "text-green-600 font-medium"
-                    : "text-gray-400"
+                    : "text-[#6B7280]"
                 }`}
               >
                 {label}
@@ -2762,15 +2845,15 @@ const onSubmit = async (data: any) => {
       {/* ── PAN Alert Modal ── */}
       {showPanAlert && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowPanAlert(false)}>
-          <div className="bg-white rounded-lg p-6 max-w-sm mx-4" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-[#111111] rounded-lg p-6 max-w-sm mx-4" onClick={(e) => e.stopPropagation()}>
             <div className="text-center">
               <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Invalid PAN</h3>
-              <p className="text-gray-600 mb-4">{panAlertMessage}</p>
+              <h3 className="text-lg font-semibold text-[#F9FAFB] mb-2">Invalid PAN</h3>
+              <p className="text-[#9CA3AF] mb-4">{panAlertMessage}</p>
               <button onClick={() => setShowPanAlert(false)} className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">
                 OK
               </button>
@@ -2786,7 +2869,7 @@ const onSubmit = async (data: any) => {
           onClick={() => setUccResultModal((p) => ({ ...p, open: false }))}
         >
           <div
-            className="bg-white rounded-2xl shadow-2xl p-7 max-w-md w-full mx-4 border border-gray-100"
+            className="bg-[#111111] rounded-2xl shadow-2xl p-7 max-w-md w-full mx-4 border border-[#2A2A2A]"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="text-center">
@@ -2820,7 +2903,7 @@ const onSubmit = async (data: any) => {
                     : "bg-red-50 border-red-500"
                 }`}
               >
-                <div className="text-[11px] uppercase tracking-wider font-semibold text-gray-500 mb-1">
+                <div className="text-[11px] uppercase tracking-wider font-semibold text-[#9CA3AF] mb-1">
                   NSE Response
                 </div>
                 <p

@@ -54,13 +54,13 @@ const TopFundManagerList = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div onClick={onBack} className="p-1 cursor-pointer">
-                <IoArrowBack className="w-5 h-5 text-gray-600" />
+                <IoArrowBack className="w-5 h-5 text-[#9CA3AF]" />
               </div>
-              <CustomText className="text-lg font-semibold text-gray-900">
+              <CustomText className="text-lg font-semibold text-[#F9FAFB]">
                 All Fund Managers
               </CustomText>
             </div>
-            <CustomText className="text-sm text-gray-500">
+            <CustomText className="text-sm text-[#9CA3AF]">
               Showing 12 fund managers
             </CustomText>
           </div>
@@ -76,7 +76,7 @@ const TopFundManagerList = () => {
                 onClick={() => setActiveTab(tab)}
                 className={`px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-all ${activeTab === tab
                   ? "bg-primary text-white"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  : "bg-[#1F1A1A] text-[#9CA3AF] hover:bg-[#2A2A2A]"
                   }`}
               >
                 {tab}
@@ -91,7 +91,7 @@ const TopFundManagerList = () => {
         <div className="shadow-sm overflow-hidden mt-4">
           <div className="overflow-auto ">
             <table className="table table-pin-rows">
-              <thead className="thead border-b border-gray-200">
+              <thead className="thead border-b border-[#2A2A2A]">
                 <tr className="mt-4">
                   <th className="px-4 py-3 text-left text-sm font-semibold tracking-wider">
                     Fund Manager
@@ -119,7 +119,7 @@ const TopFundManagerList = () => {
                 </th> */}
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-[#111111] divide-y divide-[#2A2A2A]">
                 {loading ? (
                   <tr>
                     <td colSpan={4} className="text-center justify-center py-4">
@@ -130,7 +130,7 @@ const TopFundManagerList = () => {
                   <>
                     {managersList.length > 0 ? (
                       managersList.map((manager: any, index: number) => (
-                        <tr key={index} className="hover:bg-gray-50">
+                        <tr key={index} className="hover:bg-[#1F1A1A]">
                           <td className="px-4 py-4">
                             <div className="flex items-center gap-3">
                               <div className={`w-10 h-10 ${schemeColors[index % schemeColors.length].bg} ${schemeColors[index % schemeColors.length].text} rounded-full flex items-center justify-center font-semibold`}>

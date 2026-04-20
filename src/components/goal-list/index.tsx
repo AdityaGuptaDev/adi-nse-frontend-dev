@@ -112,7 +112,7 @@ function GoalList() {
                   return (
                     <div key={index}>
                       <div
-                        className="group border border-gray-200 rounded-lg p-2 h-36 flex flex-col items-center  justify-center relative hover:shadow-xl transition"
+                        className="group border border-[#2A2A2A] rounded-lg p-2 h-36 flex flex-col items-center  justify-center relative hover:shadow-xl transition"
                       //   onClick={() => handleNewGoal(item)}
                       >
                         <img
@@ -123,14 +123,14 @@ function GoalList() {
                         />
 
                         <span
-                          className="absolute bottom-0 left-0 bg-primary text-white text-xs px-3 py-1 rounded-bl-lg rounded-tr-lg opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:cursor-pointer"
+                          className="absolute bottom-0 left-0 bg-primary text-[#F9FAFB] text-xs px-3 py-1 rounded-bl-lg rounded-tr-lg opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:cursor-pointer"
                           onClick={() => onEditGoalChange(item)}
                         >
                           Edit
                         </span>
                         {item.goal_name !== "Custom" ? (
                           <span
-                            className="absolute bottom-0 right-0 bg-primary text-white text-xs px-3 py-1 rounded-br-lg rounded-tl-lg opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:cursor-pointer"
+                            className="absolute bottom-0 right-0 bg-primary text-[#F9FAFB] text-xs px-3 py-1 rounded-br-lg rounded-tl-lg opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:cursor-pointer"
                             onClick={() => { handleOpen(), setDeleteGoalId(item.id) }}
                           >
                             Delete
@@ -158,13 +158,13 @@ function GoalList() {
                             <div className="modal-action justify-center">
                               <form method="dialog flex">
                                 <button
-                                  className="btn btn-primary text-white mr-4"
+                                  className="btn btn-primary text-[#F9FAFB] mr-4"
                                   onClick={() => onDeleteGoalChange(item)}
                                 >
                                   Yes
                                 </button>
                                 <button
-                                  className="btn bg-white"
+                                  className="btn bg-[#111111]"
                                   type="button"
                                   onClick={handleClose}
                                 >

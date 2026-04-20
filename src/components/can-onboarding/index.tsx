@@ -120,8 +120,8 @@ export default function CANSuccessComponent() {
     return (
       <div className=" p-6 bg-gradient-to-br min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading CAN details...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#F59E0B] mx-auto mb-4"></div>
+          <p className="text-[#9CA3AF]">Loading CAN details...</p>
         </div>
       </div>
     );
@@ -132,10 +132,10 @@ export default function CANSuccessComponent() {
       <div className="max-w-4xl mx-auto p-6 bg-gradient-to-br from-green-50 to-blue-50 min-h-screen flex items-center justify-center">
         <div className="text-center bg-red-50 p-6 rounded-lg">
           <h2 className="text-xl font-semibold text-red-600 mb-2">Error Loading CAN Details</h2>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <p className="text-[#9CA3AF] mb-4">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
+            className="bg-[#F59E0B] text-[#F9FAFB] px-4 py-2 rounded-md hover:bg-[#B45309] transition-colors"
           >
             Retry
           </button>
@@ -148,7 +148,7 @@ export default function CANSuccessComponent() {
     return (
       <div className="max-w-4xl mx-auto p-6 bg-gradient-to-br from-green-50 to-blue-50 min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-600">No CAN data available</p>
+          <p className="text-[#9CA3AF]">No CAN data available</p>
         </div>
       </div>
     );
@@ -161,10 +161,10 @@ export default function CANSuccessComponent() {
         <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
           <CheckCircle className="h-10 w-10 text-green-600" />
         </div>
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">
+        <h1 className="text-3xl font-bold text-[#F9FAFB] mb-2">
           CAN Created Successfully!
         </h1>
-        <p className="text-gray-600 text-lg">
+        <p className="text-[#9CA3AF] text-lg">
           Your Customer Application Number has been generated
         </p>
       </div>
@@ -175,7 +175,7 @@ export default function CANSuccessComponent() {
 
         <div >
           <div className="text-center mb-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-3">
+            <h2 className="text-xl font-semibold text-[#F9FAFB] mb-3">
               Your Customer Account Number
             </h2>
             <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4 inline-block">
@@ -184,7 +184,7 @@ export default function CANSuccessComponent() {
               </div>
               <button
                 onClick={copyCANNumber}
-                className="flex items-center justify-center mx-auto bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors text-sm"
+                className="flex items-center justify-center mx-auto bg-green-600 text-[#F9FAFB] px-4 py-2 rounded-md hover:bg-green-700 transition-colors text-sm"
               >
                 <Copy className="h-4 w-4 mr-2" />
                 {copiedCAN ? 'Copied!' : 'Copy CAN Number'}
@@ -196,35 +196,35 @@ export default function CANSuccessComponent() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 w-full">
             <div className="space-y-3">
               <div className="flex items-center">
-                <User className="h-5 w-5 text-gray-500 mr-2" />
-                <span className="text-gray-600 text-sm">Customer Name:</span>
+                <User className="h-5 w-5 text-[#9CA3AF] mr-2" />
+                <span className="text-[#9CA3AF] text-sm">Customer Name:</span>
                 <span className="ml-2 font-medium">{canData.customerName}</span>
               </div>
               <div className="flex items-center">
-                <Mail className="h-5 w-5 text-gray-500 mr-2" />
-                <span className="text-gray-600 text-sm">Email:</span>
+                <Mail className="h-5 w-5 text-[#9CA3AF] mr-2" />
+                <span className="text-[#9CA3AF] text-sm">Email:</span>
                 <span className="ml-2 font-medium">{canData.email}</span>
               </div>
               <div className="flex items-center">
-                <Phone className="h-5 w-5 text-gray-500 mr-2" />
-                <span className="text-gray-600 text-sm">Phone:</span>
+                <Phone className="h-5 w-5 text-[#9CA3AF] mr-2" />
+                <span className="text-[#9CA3AF] text-sm">Phone:</span>
                 <span className="ml-2 font-medium">{canData.phone}</span>
               </div>
             </div>
             <div className="space-y-3">
               <div className="flex items-center">
-                <Hash className="h-5 w-5 text-gray-500 mr-2" />
-                <span className="text-gray-600 text-sm">PAN Number:</span>
+                <Hash className="h-5 w-5 text-[#9CA3AF] mr-2" />
+                <span className="text-[#9CA3AF] text-sm">PAN Number:</span>
                 <span className="ml-2 font-medium">{canData.panNumber}</span>
               </div>
               <div className="flex items-center">
-                <Calendar className="h-5 w-5 text-gray-500 mr-2" />
-                <span className="text-gray-600 text-sm">Registration Date:</span>
+                <Calendar className="h-5 w-5 text-[#9CA3AF] mr-2" />
+                <span className="text-[#9CA3AF] text-sm">Registration Date:</span>
                 <span className="ml-2 font-medium">{canData.createdDate}</span>
               </div>
               <div className="flex items-center">
-                <FileText className="h-5 w-5 text-gray-500 mr-2" />
-                <span className="text-gray-600 text-sm">Application ID:</span>
+                <FileText className="h-5 w-5 text-[#9CA3AF] mr-2" />
+                <span className="text-[#9CA3AF] text-sm">Application ID:</span>
                 <span className="ml-2 font-medium">{canData.applicationId}</span>
               </div>
             </div>
@@ -232,7 +232,7 @@ export default function CANSuccessComponent() {
 
           {/* Download Confirmation */}
           <div className="text-center">
-            <div className="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 inline-block mb-4">
+            <div className="bg-[#1F1A1A] border-2 border-blue-200 rounded-lg p-4 inline-block mb-4">
               <div className="flex items-center justify-center text-red-700">
 
                 <span className="font-medium">Check email and update documents accordingly to complete your onboarding</span>
@@ -240,7 +240,7 @@ export default function CANSuccessComponent() {
             </div>
             {/*<button
               onClick={handleCommplete}
-              className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center mx-auto"
+              className="bg-[#F59E0B] text-[#F9FAFB] px-6 py-2 rounded-md hover:bg-[#B45309] transition-colors flex items-center mx-auto"
             >
              
             </button>*/}

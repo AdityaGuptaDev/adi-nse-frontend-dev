@@ -3,24 +3,23 @@
 import React, { useMemo, useState } from 'react'
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import CustomInput from '@/commonUI/Input';
 import CustomButton from '@/commonUI/Button';
 import { handleServerError, toastAlert } from '@/utils/helpers';
 import api from '@/utils/api';
 import { useForm } from 'react-hook-form';
-import CustomReactSelect from '@/commonUI/ReactSelect';
 import { CredentialsAccountType, ExternalEntity, ExternalEntityList } from '@/utils/constants';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { Save, X, Database } from 'lucide-react';
 
 const schema: any = yup.object().shape({
     external_source: yup.string().trim().required("External Entity is required"),
     account_type: yup.string().trim().when("external_source", {
-        is: (value: string) => value !== ExternalEntity.MORNINGSTAR && value !== ExternalEntity.SMS  && value !== ExternalEntity.Email,
+        is: (value: string) => value !== ExternalEntity.MORNINGSTAR && value !== ExternalEntity.SMS && value !== ExternalEntity.Email,
         then: (schema) => schema.required("Live / UAT is required"),
         otherwise: (schema) => schema.notRequired(),
     }),
     membercode: yup.string().trim().when("external_source", {
-        is: (value: string) => value === ExternalEntity.CVLKRA && value === ExternalEntity.Email,
+        is: (value: string) => value === ExternalEntity.CVLKRA || value === ExternalEntity.Email,
         then: (schema) => schema.required("This field is required"),
         otherwise: (schema) => schema.notRequired(),
     }),
@@ -61,12 +60,9 @@ type SettingFormProps = {
     toggleForm: (pageType: any) => void;
 };
 
-
 function SettingForm({ data, isView, isEdit, toggleForm }: SettingFormProps) {
 
-    const [passwordType, setpasswordType] = useState<"text" | "password">(
-        "password"
-    );
+    const [passwordType, setpasswordType] = useState<"text" | "password">("password");
     const [loading, setLoading] = useState<boolean>(false);
 
     const {
@@ -97,7 +93,6 @@ function SettingForm({ data, isView, isEdit, toggleForm }: SettingFormProps) {
         }, [data]),
     });
 
-
     const onSubmit = async (values: any) => {
         try {
             setLoading(true);
@@ -116,7 +111,6 @@ function SettingForm({ data, isView, isEdit, toggleForm }: SettingFormProps) {
                     goToList();
                 }
             } else {
-
                 const apiRes = await api.post("external-account/addExternalAccount", payload);
                 const result = apiRes?.data?.data;
                 if (result) {
@@ -141,7 +135,6 @@ function SettingForm({ data, isView, isEdit, toggleForm }: SettingFormProps) {
         setValue("account_type", accountTypeId, { shouldValidate: true });
     }
 
-
     const goToList = () => {
         toggleForm("list");
         reset({
@@ -161,189 +154,343 @@ function SettingForm({ data, isView, isEdit, toggleForm }: SettingFormProps) {
 
     const externalEnitityId: any = watch("external_source");
 
+    // Helper function to get dynamic label
+    const getUsernameLabel = () => {
+        if (externalEnitityId === ExternalEntity.MFU || externalEnitityId === ExternalEntity.Cashfree) {
+            return "Client ID";
+        }
+        if (externalEnitityId === ExternalEntity.Email) {
+            return "Email Id";
+        }
+        return "User Name";
+    };
+
+    const getApiUrlLabel = () => {
+        if (externalEnitityId === ExternalEntity.Email) {
+            return "Email Host";
+        }
+        return "API URL";
+    };
+
+    // Custom React Select Styles for Dark Mode
+    const customSelectStyles = {
+        control: (base: any, state: any) => ({
+            ...base,
+            backgroundColor: '#1F1A1A',
+            borderColor: state.isFocused ? '#F59E0B' : '#2A2A2A',
+            color: '#F9FAFB',
+            boxShadow: state.isFocused ? '0 0 0 1px #F59E0B' : 'none',
+            '&:hover': {
+                borderColor: '#F59E0B'
+            }
+        }),
+        menu: (base: any) => ({
+            ...base,
+            backgroundColor: '#1F1A1A',
+            border: '1px solid #2A2A2A',
+            zIndex: 9999
+        }),
+        option: (base: any, state: any) => ({
+            ...base,
+            backgroundColor: state.isFocused ? '#2A2A2A' : '#1F1A1A',
+            color: '#F9FAFB',
+            cursor: 'pointer',
+            '&:active': {
+                backgroundColor: '#F59E0B'
+            }
+        }),
+        singleValue: (base: any) => ({
+            ...base,
+            color: '#F9FAFB'
+        }),
+        input: (base: any) => ({
+            ...base,
+            color: '#F9FAFB'
+        }),
+        placeholder: (base: any) => ({
+            ...base,
+            color: '#9CA3AF'
+        }),
+        dropdownIndicator: (base: any) => ({
+            ...base,
+            color: '#9CA3AF',
+            '&:hover': {
+                color: '#F59E0B'
+            }
+        }),
+        indicatorSeparator: (base: any) => ({
+            ...base,
+            backgroundColor: '#2A2A2A'
+        })
+    };
 
     return (
-        <div className="w-full p-6 bg-white border-t border-gray-200">
+        <div className="w-full bg-[#111111] rounded-xl">
             <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="grid lg:grid-cols-4 xl:grid-cols-4 gap-5">
-                    <div>
-                        <CustomReactSelect
-                            items={ExternalEntityList}
-                            required
-                            label="External Entity"
-                            placeholder="--Select--"
-                            bindName="label"
-                            bindValue="value"
-                            value={getValues("external_source")}
-                            {...register("external_source")}
-                            onChange={handleExternalEnitityChange}
-                            error={errors?.external_source?.message}
-                            disabled={isView ? true : false}
-                        />
-                    </div>
-                    {(externalEnitityId !== ExternalEntity.MORNINGSTAR && externalEnitityId !== ExternalEntity.SMS && externalEnitityId !== ExternalEntity.Email) && (
+                {/* Form Header */}
+                <div className="mb-6 pb-4 border-b border-[#2A2A2A]">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-[#F59E0B]/20 rounded-lg">
+                            <Database className="w-5 h-5 text-[#F59E0B]" />
+                        </div>
                         <div>
-                            <CustomReactSelect
-                                items={CredentialsAccountType}
-                                required
-                                label="Live / UAT"
-                                placeholder="--Select--"
-                                bindName="label"
-                                bindValue="value"
-                                value={getValues("account_type")}
+                            <h3 className="text-lg font-semibold text-[#F9FAFB]">
+                                {data?.id ? 'Edit External Configuration' : 'Add New External Configuration'}
+                            </h3>
+                            <p className="text-sm text-[#9CA3AF] mt-1">
+                                Configure external service credentials and API settings
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="grid lg:grid-cols-4 xl:grid-cols-4 gap-5">
+                    {/* External Entity Select */}
+                    <div>
+                        <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                            External Entity <span className="text-[#EF4444]">*</span>
+                        </label>
+                        <select
+                            {...register("external_source")}
+                            value={getValues("external_source") || ""}
+                            onChange={(e) => {
+                                const selectedValue = e.target.value;
+                                const selectedItem = ExternalEntityList.find(item => item.value === selectedValue);
+                                if (selectedItem) {
+                                    handleExternalEnitityChange(selectedItem);
+                                }
+                            }}
+                            disabled={isView}
+                            className="w-full px-4 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed"
+                        >
+                            <option value="" className="bg-[#1F1A1A] text-[#9CA3AF]">--Select--</option>
+                            {ExternalEntityList.map((item) => (
+                                <option key={item.value} value={item.value} className="bg-[#1F1A1A] text-[#F9FAFB]">
+                                    {item.label}
+                                </option>
+                            ))}
+                        </select>
+                        {errors?.external_source?.message && (
+                            <p className="mt-1 text-xs text-[#EF4444]">{errors.external_source.message}</p>
+                        )}
+                    </div>
+
+                    {/* Live / UAT Select - Conditional */}
+                    {(externalEnitityId !== ExternalEntity.MORNINGSTAR && externalEnitityId !== ExternalEntity.SMS && externalEnitityId !== ExternalEntity.Email && externalEnitityId) && (
+                        <div>
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Live / UAT <span className="text-[#EF4444]">*</span>
+                            </label>
+                            <select
                                 {...register("account_type")}
-                                onChange={handleAccountTypeChange}
-                                error={errors?.account_type?.message}
-                                disabled={isView ? true : false}
-                            />
+                                value={getValues("account_type") || ""}
+                                onChange={(e) => {
+                                    const selectedValue = e.target.value;
+                                    const selectedItem = CredentialsAccountType.find(item => item.value === selectedValue);
+                                    if (selectedItem) {
+                                        handleAccountTypeChange(selectedItem);
+                                    }
+                                }}
+                                disabled={isView}
+                                className="w-full px-4 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed"
+                            >
+                                <option value="" className="bg-[#1F1A1A] text-[#9CA3AF]">--Select--</option>
+                                {CredentialsAccountType.map((item) => (
+                                    <option key={item.value} value={item.value} className="bg-[#1F1A1A] text-[#F9FAFB]">
+                                        {item.label}
+                                    </option>
+                                ))}
+                            </select>
+                            {errors?.account_type?.message && (
+                                <p className="mt-1 text-xs text-[#EF4444]">{errors.account_type.message}</p>
+                            )}
                         </div>
                     )}
+
+                    {/* Member Code / POS Code / Email Port - Conditional */}
                     {(externalEnitityId === ExternalEntity.CVLKRA || externalEnitityId === ExternalEntity.Email) && (
                         <div>
-                            <CustomInput
-                                // label="POS Code"
-                                label={externalEnitityId === ExternalEntity.Email ? "Email Port" : "POS Code"}
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                {externalEnitityId === ExternalEntity.Email ? "Email Port" : "POS Code"} <span className="text-[#EF4444]">*</span>
+                            </label>
+                            <input
+                                type="text"
                                 {...register("membercode")}
-                                required
                                 placeholder="Enter code"
-                                disabled={isView ? true : false}
-                                error={errors.membercode?.message}
+                                disabled={isView}
+                                className="w-full px-4 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed"
                             />
+                            {errors.membercode?.message && (
+                                <p className="mt-1 text-xs text-[#EF4444]">{errors.membercode.message}</p>
+                            )}
                         </div>
                     )}
+
+                    {/* Username / Client ID / Email ID */}
                     <div>
-                        <CustomInput
-                            label={externalEnitityId === ExternalEntity.MFU || externalEnitityId === ExternalEntity.Cashfree ? "Client ID" : externalEnitityId === ExternalEntity.Email ? "Email Id" : "User Name"}
+                        <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                            {getUsernameLabel()} <span className="text-[#EF4444]">*</span>
+                        </label>
+                        <input
+                            type="text"
                             {...register("username")}
-                            required
                             placeholder="Enter Value"
-                            disabled={isView ? true : false}
-                            error={errors.username?.message}
+                            disabled={isView}
+                            className="w-full px-4 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed"
                         />
+                        {errors.username?.message && (
+                            <p className="mt-1 text-xs text-[#EF4444]">{errors.username.message}</p>
+                        )}
                     </div>
-                    {externalEnitityId === ExternalEntity.MFU || externalEnitityId === ExternalEntity.Cashfree ? (
-                        <div>
-                            <CustomInput
-                                label="Client Secret"
-                                {...register("password")}
-                                required
-                                placeholder="Enter Value"
-                                disabled={isView ? true : false}
-                                error={errors.password?.message}
-                            />
-                        </div>
-                    ) : (
-                        <div>
-                            <CustomInput
-                                type={passwordType}
-                                label="Password"
-                                required
-                                placeholder="Password"
-                                {...register("password")}
-                                error={errors.password?.message}
-                                icon={
-                                    passwordType === "password" ? (
-                                        <FaEyeSlash
-                                            className="w-4 h-4"
-                                            onClick={() => setpasswordType("text")}
-                                        />
-                                    ) : (
-                                        <FaEye
-                                            className="w-4 h-4"
-                                            onClick={() => setpasswordType("password")}
-                                        />
-                                    )
-                                }
-                                disabled={isView ? true : false}
-                            />
-                        </div>
-                    )}
 
+                    {/* Password / Client Secret */}
                     <div>
-                        <CustomInput
-                            // label="API URL"
-                            label={externalEnitityId === ExternalEntity.Email ? "Email Host" : "API URL"}
-                            {...register("api_base_url")}
-                            required
-                            placeholder="Enter url"
-                            disabled={isView ? true : false}
-                            error={errors.api_base_url?.message}
-                        />
+                        <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                            {externalEnitityId === ExternalEntity.MFU || externalEnitityId === ExternalEntity.Cashfree ? "Client Secret" : "Password"} <span className="text-[#EF4444]">*</span>
+                        </label>
+                        <div className="relative">
+                            <input
+                                type={passwordType}
+                                {...register("password")}
+                                placeholder="Enter Value"
+                                disabled={isView}
+                                className="w-full px-4 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed pr-10"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setpasswordType(passwordType === "password" ? "text" : "password")}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] hover:text-[#F59E0B] transition-colors"
+                            >
+                                {passwordType === "password" ? <FaEyeSlash className="w-4 h-4" /> : <FaEye className="w-4 h-4" />}
+                            </button>
+                        </div>
+                        {errors.password?.message && (
+                            <p className="mt-1 text-xs text-[#EF4444]">{errors.password.message}</p>
+                        )}
                     </div>
 
+                    {/* API URL / Email Host */}
+                    <div>
+                        <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                            {getApiUrlLabel()} <span className="text-[#EF4444]">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            {...register("api_base_url")}
+                            placeholder="Enter url"
+                            disabled={isView}
+                            className="w-full px-4 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed"
+                        />
+                        {errors.api_base_url?.message && (
+                            <p className="mt-1 text-xs text-[#EF4444]">{errors.api_base_url.message}</p>
+                        )}
+                    </div>
+
+                    {/* MFU Specific Fields */}
                     {externalEnitityId === ExternalEntity.MFU && (
                         <>
                             <div>
-                                <CustomInput
-                                    label="MFU Secret"
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    MFU Secret <span className="text-[#EF4444]">*</span>
+                                </label>
+                                <input
+                                    type="text"
                                     {...register("mfu_secret")}
-                                    required
                                     placeholder="Enter value"
-                                    disabled={isView ? true : false}
-                                    error={errors.mfu_secret?.message}
+                                    disabled={isView}
+                                    className="w-full px-4 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed"
                                 />
+                                {errors.mfu_secret?.message && (
+                                    <p className="mt-1 text-xs text-[#EF4444]">{errors.mfu_secret.message}</p>
+                                )}
                             </div>
                             <div>
-                                <CustomInput
-                                    label="MFU IV"
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    MFU IV <span className="text-[#EF4444]">*</span>
+                                </label>
+                                <input
+                                    type="text"
                                     {...register("mfu_iv")}
-                                    required
                                     placeholder="Enter value"
-                                    disabled={isView ? true : false}
-                                    error={errors.mfu_iv?.message}
+                                    disabled={isView}
+                                    className="w-full px-4 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed"
                                 />
+                                {errors.mfu_iv?.message && (
+                                    <p className="mt-1 text-xs text-[#EF4444]">{errors.mfu_iv.message}</p>
+                                )}
                             </div>
-                        </>)}
+                        </>
+                    )}
 
+                    {/* SMS Specific Fields */}
                     {externalEnitityId === ExternalEntity.SMS && (
                         <>
                             <div>
-                                <CustomInput
-                                    label="Sender Id"
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    Sender Id <span className="text-[#EF4444]">*</span>
+                                </label>
+                                <input
+                                    type="text"
                                     {...register("sender_id")}
-                                    required
                                     placeholder="Enter value"
-                                    disabled={isView ? true : false}
-                                    error={errors.sender_id?.message}
+                                    disabled={isView}
+                                    className="w-full px-4 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed"
                                 />
+                                {errors.sender_id?.message && (
+                                    <p className="mt-1 text-xs text-[#EF4444]">{errors.sender_id.message}</p>
+                                )}
                             </div>
                             <div>
-                                <CustomInput
-                                    label="Entity Id"
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    Entity Id <span className="text-[#EF4444]">*</span>
+                                </label>
+                                <input
+                                    type="text"
                                     {...register("entity_id")}
-                                    required
                                     placeholder="Enter value"
-                                    disabled={isView ? true : false}
-                                    error={errors.entity_id?.message}
+                                    disabled={isView}
+                                    className="w-full px-4 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed"
                                 />
+                                {errors.entity_id?.message && (
+                                    <p className="mt-1 text-xs text-[#EF4444]">{errors.entity_id.message}</p>
+                                )}
                             </div>
                             <div>
-                                <CustomInput
-                                    label="Template Id"
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    Template Id <span className="text-[#EF4444]">*</span>
+                                </label>
+                                <input
+                                    type="text"
                                     {...register("template_id")}
-                                    required
                                     placeholder="Enter value"
-                                    disabled={isView ? true : false}
-                                    error={errors.template_id?.message}
+                                    disabled={isView}
+                                    className="w-full px-4 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-60 disabled:cursor-not-allowed"
                                 />
+                                {errors.template_id?.message && (
+                                    <p className="mt-1 text-xs text-[#EF4444]">{errors.template_id.message}</p>
+                                )}
                             </div>
-                        </>)}
-
+                        </>
+                    )}
                 </div>
-                <div className="flex justify-end text-end gap-4 mt-4">
-                    {!isView ? (
+
+                {/* Form Actions */}
+                <div className="flex justify-end gap-4 mt-8 pt-6 border-t border-[#2A2A2A]">
+                    {!isView && (
                         <CustomButton
                             type="submit"
-                            className="flex normal-case"
+                            className="flex items-center gap-2 px-6 py-2.5 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg hover:opacity-90 transition-all duration-200 font-semibold shadow-lg"
                             loading={loading}
                         >
-                            {data ? "Update" : "Submit"}
+                            <Save className="w-4 h-4" />
+                            {data?.id ? "Update" : "Submit"}
                         </CustomButton>
-                    ) : null}
+                    )}
                     <CustomButton
-                        className="flex text-proses-secondary normal-case"
+                        className="flex items-center gap-2 px-6 py-2.5 border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] rounded-lg hover:bg-[#2A2A2A] transition-colors duration-200"
                         onClick={() => goToList()}
                     >
+                        <X className="w-4 h-4" />
                         Cancel
                     </CustomButton>
                 </div>

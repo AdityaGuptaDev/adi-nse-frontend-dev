@@ -20,6 +20,24 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { IoCartOutline, IoTriangle } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
 
+// Golden Black Theme Constants
+const theme = {
+  primary: "#F59E0B",
+  secondary: "#FBBF24",
+  accent: "#1F1A1A",
+  success: "#10B981",
+  warning: "#F59E0B",
+  danger: "#EF4444",
+  background: "#0A0A0A",
+  cardBg: "#111111",
+  textWhite: "#FFFFFF",
+  textGray: "#9CA3AF",
+  textLight: "#E5E5E5",
+  border: "#2A2A2A",
+  gradient: "linear-gradient(135deg, #F59E0B 0%, #B45309 100%)",
+  hoverBg: "#1F1A1A",
+};
+
 type Props = {
   data: any;
   onSchemeClick: (scheme: any) => void;
@@ -102,20 +120,35 @@ function TopPerformingSchemes({ data, onSchemeClick }: Props) {
     }
   };
 
-  const getPerformanceColor = (returnValue: number) => {
-    if (returnValue >= 20) return "text-green-600";
-    if (returnValue >= 15) return "text-green-500";
-    if (returnValue >= 10) return "text-yellow-600";
-    if (returnValue >= 5) return "text-orange-500";
-    return "text-red-500";
+  const getPerformanceColor = (returnValue: number): React.CSSProperties => {
+    if (returnValue >= 20) return { color: "#10B981" };
+    if (returnValue >= 15) return { color: "#22C55E" };
+    if (returnValue >= 10) return { color: "#F59E0B" };
+    if (returnValue >= 5) return { color: "#F97316" };
+    return { color: "#EF4444" };
   };
 
-  const getPerformanceBgColor = (returnValue: number) => {
-    if (returnValue >= 20) return "bg-green-50 border-green-100";
-    if (returnValue >= 15) return "bg-green-50/50 border-green-50";
-    if (returnValue >= 10) return "bg-yellow-50/50 border-yellow-50";
-    if (returnValue >= 5) return "bg-orange-50/50 border-orange-50";
-    return "bg-red-50/50 border-red-50";
+  const getPerformanceBgColor = (returnValue: number): React.CSSProperties => {
+    if (returnValue >= 20) return { background: `${theme.success}20`, border: `1px solid ${theme.border}` };
+    if (returnValue >= 15) return { background: `${theme.success}15`, border: `1px solid ${theme.border}` };
+    if (returnValue >= 10) return { background: `${theme.primary}20`, border: `1px solid ${theme.border}` };
+    if (returnValue >= 5) return { background: `${theme.warning}20`, border: `1px solid ${theme.border}` };
+    return { background: `${theme.danger}20`, border: `1px solid ${theme.border}` };
+  };
+
+  const getTabStyle = (isActive: boolean): React.CSSProperties => {
+    if (isActive) {
+      return {
+        background: theme.gradient,
+        color: theme.textWhite,
+        border: "none"
+      };
+    }
+    return {
+      background: theme.hoverBg,
+      color: theme.textGray,
+      border: `1px solid ${theme.border}`
+    };
   };
 
   const handleInvestorAction = (scheme: any) => {
@@ -123,11 +156,21 @@ function TopPerformingSchemes({ data, onSchemeClick }: Props) {
     onSchemeClick(scheme?.SchemeMaster);
   };
 
+  const riskColorStyle = (risk: string): React.CSSProperties => {
+    const riskMap: Record<string, React.CSSProperties> = {
+      'Low': { background: '#10B98120', color: '#10B981' },
+      'Moderate': { background: '#F59E0B20', color: '#F59E0B' },
+      'High': { background: '#EF444420', color: '#EF4444' },
+      'Very High': { background: '#EF444440', color: '#EF4444' },
+    };
+    return riskMap[risk] || { background: '#9CA3AF20', color: '#9CA3AF' };
+  };
+
   return (
     <>
       <FullPageLoader isVisible={navigateLoader} message="Processing..." />
       
-      <div className="bg-white p-4 md:p-5 rounded-xl">
+      <div className="p-4 md:p-5 rounded-xl" style={{ background: theme.cardBg }}>
         {/* Header Section with Title and Description */}
         <div className="mb-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
@@ -142,12 +185,12 @@ function TopPerformingSchemes({ data, onSchemeClick }: Props) {
                 <FaMedal className="h-5 w-5 text-white" />
               </motion.div>
               <div>
-                <CustomText className="text-xl font-bold text-gray-900">
+                <div className="text-xl font-bold" style={{ color: theme.textWhite }}>
                   Top Performing Schemes
-                </CustomText>
-                <CustomText className="text-sm text-gray-600">
+                </div>
+                <div className="text-sm" style={{ color: theme.textGray }}>
                   Best performing mutual funds in {activeTab}
-                </CustomText>
+                </div>
               </div>
             </div>
 
@@ -157,15 +200,16 @@ function TopPerformingSchemes({ data, onSchemeClick }: Props) {
               whileTap={{ scale: 0.98 }}
               className="md:self-start"
             >
-              <CustomButton
-                className="px-4 py-2.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors flex-shrink-0"
+              <button
+                className="px-4 py-2.5 text-white text-sm font-medium rounded-lg transition-colors flex-shrink-0"
+                style={{ background: theme.gradient }}
                 onClick={onChangeViewAll}
               >
                 <span className="flex items-center gap-1.5">
                   View All
                   <FaAngleRight className="h-3.5 w-3.5" />
                 </span>
-              </CustomButton>
+              </button>
             </motion.div>
           </div>
 
@@ -183,11 +227,8 @@ function TopPerformingSchemes({ data, onSchemeClick }: Props) {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setActiveTab(fundClass.categoryName)}
-                      className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-                        activeTab === fundClass.categoryName
-                          ? "bg-primary text-white shadow-sm"
-                          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-                      }`}
+                      className="px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all"
+                      style={getTabStyle(activeTab === fundClass.categoryName)}
                     >
                       {fundClass.categoryName}
                     </motion.button>
@@ -220,13 +261,18 @@ function TopPerformingSchemes({ data, onSchemeClick }: Props) {
                     whileHover="hover"
                     onMouseEnter={() => setHoveredCard(index)}
                     onMouseLeave={() => setHoveredCard(null)}
-                    className="bg-white rounded-lg border border-gray-200 hover:border-primary/30 hover:shadow-md transition-all duration-200 overflow-hidden"
+                    className="rounded-lg transition-all duration-200 overflow-hidden"
+                    style={{
+                      background: theme.hoverBg,
+                      border: `1px solid ${theme.border}`,
+                    }}
                   >
                     <div className="p-4">
                       {/* Scheme Header */}
                       <div className="flex items-start gap-3 mb-3">
                         <div 
-                          className={`relative p-2 rounded-lg ${schemeColors[index % schemeColors.length]?.bg || 'bg-blue-500'} cursor-pointer`}
+                          className="relative p-2 rounded-lg cursor-pointer"
+                          style={{ background: schemeColors[index % schemeColors.length]?.bg || theme.primary }}
                           onClick={() => handleNavigateFundDetail(scheme)}
                         >
                           <div className="text-white font-bold text-base w-6 h-6 flex items-center justify-center">
@@ -234,59 +280,65 @@ function TopPerformingSchemes({ data, onSchemeClick }: Props) {
                           </div>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <CustomText 
-                            className="font-semibold text-gray-900 text-sm leading-tight line-clamp-2 cursor-pointer hover:text-primary transition-colors mb-0.5"
+                          <div 
+                            className="font-semibold text-sm leading-tight line-clamp-2 cursor-pointer transition-colors mb-0.5"
+                            style={{ color: theme.textWhite }}
                             onClick={() => handleNavigateFundDetail(scheme)}
+                            onMouseEnter={(e) => e.currentTarget.style.color = theme.primary}
+                            onMouseLeave={(e) => e.currentTarget.style.color = theme.textWhite}
                           >
                             {scheme?.SchemeMaster?.ms_fullname || 'Fund Name'}
-                          </CustomText>
-                          <CustomText className="text-xs text-gray-500 truncate">
+                          </div>
+                          <div className="text-xs truncate" style={{ color: theme.textGray }}>
                             {scheme?.SchemeMaster?.SchemeCategory?.Name || 'Category'}
-                          </CustomText>
+                          </div>
                         </div>
                       </div>
 
                       {/* Returns Section */}
-                      <div className={`mb-3 p-3 rounded-lg border ${getPerformanceBgColor(returnValue)}`}>
+                      <div className="mb-3 p-3 rounded-lg" style={getPerformanceBgColor(returnValue)}>
                         <div className="flex justify-between items-center mb-1.5">
-                          <CustomText className="text-xs font-medium text-gray-700">
+                          <div className="text-xs font-medium" style={{ color: theme.textGray }}>
                             1Y Returns
-                          </CustomText>
+                          </div>
                           {isTopReturn && (
                             <FaFire className="h-3 w-3 text-orange-500" />
                           )}
                         </div>
                         <div className="flex items-baseline gap-1.5">
                           <IoTriangle className="text-green-600 w-3 h-3" />
-                          <CustomText className={`text-lg font-bold ${getPerformanceColor(returnValue)}`}>
+                          <div className="text-lg font-bold" style={getPerformanceColor(returnValue)}>
                             {toFixedDataForReturn(returnValue)}
-                          </CustomText>
-                          <CustomText className="text-xs text-gray-500">
+                          </div>
+                          <div className="text-xs" style={{ color: theme.textGray }}>
                             p.a
-                          </CustomText>
+                          </div>
                         </div>
                         <div className="mt-1.5">
-                          <CustomText className="text-xs text-gray-500">
+                          <div className="text-xs" style={{ color: theme.textGray }}>
                             Avg: {toFixedDataForReturn(scheme.categoryReturnAvg || 0)}
-                          </CustomText>
+                          </div>
                         </div>
                       </div>
 
                       {/* Details Section */}
                       <div className="flex justify-between items-center mb-4">
                         <div>
-                          <CustomText className="text-xs text-gray-500 mb-0.5">
+                          <div className="text-xs mb-0.5" style={{ color: theme.textGray }}>
                             Min. Invest
-                          </CustomText>
-                          <CustomText className="text-sm font-semibold text-gray-900">
+                          </div>
+                          <div className="text-sm font-semibold" style={{ color: theme.textWhite }}>
                             ₹{scheme.minAmount ? convertNumberIndian(scheme.minAmount) : "5,000"}
-                          </CustomText>
+                          </div>
                         </div>
                         <div className="text-right">
-                          <CustomText className="text-xs text-gray-500 mb-0.5">
+                          <div className="text-xs mb-0.5" style={{ color: theme.textGray }}>
                             Risk
-                          </CustomText>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${RISK_COLOR(scheme?.SchemeMaster?.riskLevel || 'Medium')}`}>
+                          </div>
+                          <span 
+                            className="px-2 py-1 rounded-full text-xs font-medium"
+                            style={riskColorStyle(scheme?.SchemeMaster?.riskLevel || 'Medium')}
+                          >
                             {scheme?.SchemeMaster?.riskLevel || 'Medium'}
                           </span>
                         </div>
@@ -298,13 +350,12 @@ function TopPerformingSchemes({ data, onSchemeClick }: Props) {
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => handleInvestorAction(scheme)}
-                          className="flex-1 bg-primary text-white py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-1.5 hover:bg-primary/90 transition-colors"
+                          className="flex-1 text-white py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-1.5 transition-all duration-300 hover:shadow-lg"
+                          style={{ background: theme.gradient }}
                         >
                           <GrTransaction className="h-3.5 w-3.5" />
                           Invest
                         </motion.button>
-                        
-                       
                       </div>
                     </div>
                   </motion.div>
@@ -316,17 +367,16 @@ function TopPerformingSchemes({ data, onSchemeClick }: Props) {
                 animate={{ opacity: 1 }}
                 className="col-span-full text-center py-8"
               >
-                <div className="inline-block p-4 bg-gray-100 rounded-lg mb-3">
-                  <FaChartLine className="h-8 w-8 text-gray-400 mx-auto" />
+                <div className="inline-block p-4 rounded-lg mb-3" style={{ background: theme.hoverBg }}>
+                  <FaChartLine className="h-8 w-8 mx-auto" style={{ color: theme.textGray }} />
                 </div>
-                <CustomText className="text-base text-gray-600">
+                <div className="text-base" style={{ color: theme.textWhite }}>
                   No schemes found for this category
-                </CustomText>
+                </div>
               </motion.div>
             )}
           </motion.div>
         </AnimatePresence>
-
 
         {/* Investor Popup */}
         {showInvestorPopup && selectedInvestor && (

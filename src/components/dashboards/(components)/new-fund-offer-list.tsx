@@ -57,34 +57,34 @@ function NewFundOfferList() {
   return (
     <div className="">
       {/* Header */}
-      <div className="border-b border-gray-200 px-4 py-3">
+      <div className="border-b border-[#2A2A2A] px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div onClick={onBack} className="p-1 cursor-pointer">
-              <IoArrowBack className="w-5 h-5 text-gray-600" />
+              <IoArrowBack className="w-5 h-5 text-[#9CA3AF]" />
             </div>
-            <CustomText className="text-lg font-semibold text-gray-900">
+            <CustomText className="text-lg font-semibold text-[#F9FAFB]">
               NFO
             </CustomText>
           </div>
           {/* <div className="p-2 cursor-pointer">
-            <FiShare2 className="w-5 h-5 text-gray-600" />
+            <FiShare2 className="w-5 h-5 text-[#9CA3AF]" />
           </div> */}
         </div>
       </div>
 
       {/* Search Bar */}
-      <div className=" py-3 border-b border-gray-200">
+      <div className=" py-3 border-b border-[#2A2A2A]">
         <div className="relative w-full px-4 mb-4">
-          {/* <IoSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" /> */}
+          {/* <IoSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#6B7280] w-4 h-4" /> */}
           <CustomInput
-            icon={<IoSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />}
+            icon={<IoSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#6B7280] w-4 h-4" />}
             type="text"
             placeholder="Search For Top Performing Schemes"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
-          // className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
+          // className="pl-10 pr-4 py-2 w-full border border-[#3A3A3A] rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none"
           />
         </div>
         {/* </div> */}
@@ -94,8 +94,8 @@ function NewFundOfferList() {
         {newFundOfferList.length > 0 ? (
           newFundOfferList.map((scheme: any, index: number) => (
             <Fragment key={index}>
-              {/* // <div key={scheme.id} className="bg-white rounded-lg my-3 p-4 shadow-sm"> */}
-              <div className="hover:bg-gray-50 cursor-pointer" onClick={() =>
+              {/* // <div key={scheme.id} className="bg-[#111111] rounded-lg my-3 p-4 shadow-sm"> */}
+              <div className="hover:bg-[#1F1A1A] cursor-pointer" onClick={() =>
                 handleNavigateFundDetail(scheme)
               }>
                 <div className="px-4">
@@ -169,7 +169,7 @@ function NewFundOfferList() {
             </Fragment>
           ))) : (
           <div className="px-4 py-6 text-center">
-            <CustomText className="text-lg font-medium text-gray-900">
+            <CustomText className="text-lg font-medium text-[#F9FAFB]">
               No Data Found
             </CustomText>
           </div>

@@ -346,21 +346,21 @@ function QuickSummary() {
                     <div className="space-y-4">
 
                         {/* Personal Detail Accordion */}
-                        <div className="border border-gray-200 rounded-lg">
+                        <div className="border border-[#2A2A2A] rounded-lg">
                             <div
-                                className={`flex items-center justify-between p-2 cursor-pointer transition-colors ${openAccordions.includes(1) ? 'bg-blue-50' : 'bg-gray-50 hover:bg-gray-100'
+                                className={`flex items-center justify-between p-2 cursor-pointer transition-colors ${openAccordions.includes(1) ? 'bg-[#1F1A1A]' : 'bg-[#0A0A0A] hover:bg-[#111111]'
                                     }`}
                                 onClick={() => toggleAccordion(1)}
                             >
                                 <div className="flex items-center space-x-3">
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${openAccordions.includes(1) ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-600'
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${openAccordions.includes(1) ? 'bg-[#F59E0B] text-[#F9FAFB]' : 'bg-gray-300 text-[#9CA3AF]'
                                         }`}>
                                         1
                                     </div>
-                                    <h3 className="text-lg font-medium text-gray-900">Personal and Proof of Identity</h3>
+                                    <h3 className="text-lg font-medium text-[#F9FAFB]">Personal and Proof of Identity</h3>
                                 </div>
                                 <svg
-                                    className={`w-5 h-5 text-gray-500 transition-transform ${openAccordions.includes(1) ? 'rotate-180' : ''
+                                    className={`w-5 h-5 text-[#9CA3AF] transition-transform ${openAccordions.includes(1) ? 'rotate-180' : ''
                                         }`}
                                     fill="none"
                                     stroke="currentColor"
@@ -370,27 +370,27 @@ function QuickSummary() {
                                 </svg>
                             </div>
                             {openAccordions.includes(1) && (
-                                <div className="border-t border-gray-200">
+                                <div className="border-t border-[#2A2A2A]">
                                     <PersonalDetail nextTabs={() => nextTabs(1)} backTabs={() => backTabs(1)} summarydata={summarydata} />
                                 </div>
                             )}
                         </div>
 
                         {/* Address Detail Accordion */}
-                        <div className="border border-gray-200 rounded-lg">
+                        <div className="border border-[#2A2A2A] rounded-lg">
                             <div
-                                className={`flex items-center justify-between p-2 cursor-pointer transition-colors ${openAccordions.includes(2) ? 'bg-blue-50' : 'bg-gray-50 hover:bg-gray-100'
+                                className={`flex items-center justify-between p-2 cursor-pointer transition-colors ${openAccordions.includes(2) ? 'bg-[#1F1A1A]' : 'bg-[#0A0A0A] hover:bg-[#111111]'
                                     }`}
                                 onClick={() => toggleAccordion(2)}
                             >
                                 <div className="flex items-center space-x-3">
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${openAccordions.includes(2) ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-600'
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${openAccordions.includes(2) ? 'bg-[#F59E0B] text-[#F9FAFB]' : 'bg-gray-300 text-[#9CA3AF]'
                                         }`}>
                                         2                                    </div>
-                                    <h3 className="text-lg font-medium text-gray-900">Proof of Address</h3>
+                                    <h3 className="text-lg font-medium text-[#F9FAFB]">Proof of Address</h3>
                                 </div>
                                 <svg
-                                    className={`w-5 h-5 text-gray-500 transition-transform ${openAccordions.includes(2) ? 'rotate-180' : ''
+                                    className={`w-5 h-5 text-[#9CA3AF] transition-transform ${openAccordions.includes(2) ? 'rotate-180' : ''
                                         }`}
                                     fill="none"
                                     stroke="currentColor"
@@ -400,28 +400,28 @@ function QuickSummary() {
                                 </svg>
                             </div>
                             {openAccordions.includes(2) && (
-                                <div className="border-t border-gray-200">
+                                <div className="border-t border-[#2A2A2A]">
                                     <AddressDetail nextTabs={() => nextTabs(2)} backTabs={() => backTabs(2)} summarydata={summarydata} />
                                 </div>
                             )}
                         </div>
 
                         {/* FATCA Detail Accordion */}
-                        <div className="border border-gray-200 rounded-lg">
+                        <div className="border border-[#2A2A2A] rounded-lg">
                             <div
-                                className={`flex items-center justify-between p-2 cursor-pointer transition-colors ${openAccordions.includes(3) ? 'bg-blue-50' : 'bg-gray-50 hover:bg-gray-100'
+                                className={`flex items-center justify-between p-2 cursor-pointer transition-colors ${openAccordions.includes(3) ? 'bg-[#1F1A1A]' : 'bg-[#0A0A0A] hover:bg-[#111111]'
                                     }`}
                                 onClick={() => toggleAccordion(3)}
                             >
                                 <div className="flex items-center space-x-3">
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${openAccordions.includes(3) ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-600'
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${openAccordions.includes(3) ? 'bg-[#F59E0B] text-[#F9FAFB]' : 'bg-gray-300 text-[#9CA3AF]'
                                         }`}>
                                         3
                                     </div>
-                                    <h3 className="text-lg font-medium text-gray-900">FATCA</h3>
+                                    <h3 className="text-lg font-medium text-[#F9FAFB]">FATCA</h3>
                                 </div>
                                 <svg
-                                    className={`w-5 h-5 text-gray-500 transition-transform ${openAccordions.includes(3) ? 'rotate-180' : ''
+                                    className={`w-5 h-5 text-[#9CA3AF] transition-transform ${openAccordions.includes(3) ? 'rotate-180' : ''
                                         }`}
                                     fill="none"
                                     stroke="currentColor"
@@ -431,28 +431,28 @@ function QuickSummary() {
                                 </svg>
                             </div>
                             {openAccordions.includes(3) && (
-                                <div className="border-t border-gray-200">
+                                <div className="border-t border-[#2A2A2A]">
                                     <FATCADetail nextTabs={() => nextTabs(3)} backTabs={() => backTabs(3)} summarydata={summarydata} />
                                 </div>
                             )}
                         </div>
 
                         {/* Bank Detail Accordion */}
-                        <div className="border border-gray-200 rounded-lg">
+                        <div className="border border-[#2A2A2A] rounded-lg">
                             <div
-                                className={`flex items-center justify-between p-2 cursor-pointer transition-colors ${openAccordions.includes(4) ? 'bg-blue-50' : 'bg-gray-50 hover:bg-gray-100'
+                                className={`flex items-center justify-between p-2 cursor-pointer transition-colors ${openAccordions.includes(4) ? 'bg-[#1F1A1A]' : 'bg-[#0A0A0A] hover:bg-[#111111]'
                                     }`}
                                 onClick={() => toggleAccordion(4)}
                             >
                                 <div className="flex items-center space-x-3">
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${openAccordions.includes(4) ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-600'
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${openAccordions.includes(4) ? 'bg-[#F59E0B] text-[#F9FAFB]' : 'bg-gray-300 text-[#9CA3AF]'
                                         }`}>
                                         4
                                     </div>
-                                    <h3 className="text-lg font-medium text-gray-900">Bank Account</h3>
+                                    <h3 className="text-lg font-medium text-[#F9FAFB]">Bank Account</h3>
                                 </div>
                                 <svg
-                                    className={`w-5 h-5 text-gray-500 transition-transform ${openAccordions.includes(4) ? 'rotate-180' : ''
+                                    className={`w-5 h-5 text-[#9CA3AF] transition-transform ${openAccordions.includes(4) ? 'rotate-180' : ''
                                         }`}
                                     fill="none"
                                     stroke="currentColor"
@@ -462,28 +462,28 @@ function QuickSummary() {
                                 </svg>
                             </div>
                             {openAccordions.includes(4) && (
-                                <div className="border-t border-gray-200">
+                                <div className="border-t border-[#2A2A2A]">
                                     <BankDetail nextTabs={() => nextTabs(4)} backTabs={() => backTabs(4)} summarydata={summarydata} />
                                 </div>
                             )}
                         </div>
 
                         {/* Nominee Detail Accordion */}
-                        <div className="border border-gray-200 rounded-lg">
+                        <div className="border border-[#2A2A2A] rounded-lg">
                             <div
-                                className={`flex items-center justify-between p-2 cursor-pointer transition-colors ${openAccordions.includes(5) ? 'bg-blue-50' : 'bg-gray-50 hover:bg-gray-100'
+                                className={`flex items-center justify-between p-2 cursor-pointer transition-colors ${openAccordions.includes(5) ? 'bg-[#1F1A1A]' : 'bg-[#0A0A0A] hover:bg-[#111111]'
                                     }`}
                                 onClick={() => toggleAccordion(5)}
                             >
                                 <div className="flex items-center space-x-3">
-                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${openAccordions.includes(5) ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-600'
+                                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${openAccordions.includes(5) ? 'bg-[#F59E0B] text-[#F9FAFB]' : 'bg-gray-300 text-[#9CA3AF]'
                                         }`}>
                                         5
                                     </div>
-                                    <h3 className="text-lg font-medium text-gray-900">Nominee Detail</h3>
+                                    <h3 className="text-lg font-medium text-[#F9FAFB]">Nominee Detail</h3>
                                 </div>
                                 <svg
-                                    className={`w-5 h-5 text-gray-500 transition-transform ${openAccordions.includes(5) ? 'rotate-180' : ''
+                                    className={`w-5 h-5 text-[#9CA3AF] transition-transform ${openAccordions.includes(5) ? 'rotate-180' : ''
                                         }`}
                                     fill="none"
                                     stroke="currentColor"
@@ -493,7 +493,7 @@ function QuickSummary() {
                                 </svg>
                             </div>
                             {openAccordions.includes(5) && (
-                                <div className="border-t border-gray-200">
+                                <div className="border-t border-[#2A2A2A]">
                                     <NomineeDetail nextTabs={() => nextTabs(5)} backTabs={() => backTabs(5)} summarydata={summarydata} isKYCDone={isKYCDone} isKYCComplete={isKYCComplete} />
                                 </div>
                             )}
@@ -501,21 +501,21 @@ function QuickSummary() {
 
                         {/* Person Verification Accordion (only if KYC not done) */}
                         {!isKYCDone && (
-                            <div className="border border-gray-200 rounded-lg">
+                            <div className="border border-[#2A2A2A] rounded-lg">
                                 <div
-                                    className={`flex items-center justify-between p-2 cursor-pointer transition-colors ${openAccordions.includes(6) ? 'bg-blue-50' : 'bg-gray-50 hover:bg-gray-100'
+                                    className={`flex items-center justify-between p-2 cursor-pointer transition-colors ${openAccordions.includes(6) ? 'bg-[#1F1A1A]' : 'bg-[#0A0A0A] hover:bg-[#111111]'
                                         }`}
                                     onClick={() => toggleAccordion(6)}
                                 >
                                     <div className="flex items-center space-x-3">
-                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${openAccordions.includes(6) ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-600'
+                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${openAccordions.includes(6) ? 'bg-[#F59E0B] text-[#F9FAFB]' : 'bg-gray-300 text-[#9CA3AF]'
                                             }`}>
                                             6
                                         </div>
-                                        <h3 className="text-lg font-medium text-gray-900">Person Verification</h3>
+                                        <h3 className="text-lg font-medium text-[#F9FAFB]">Person Verification</h3>
                                     </div>
                                     <svg
-                                        className={`w-5 h-5 text-gray-500 transition-transform ${openAccordions.includes(6) ? 'rotate-180' : ''
+                                        className={`w-5 h-5 text-[#9CA3AF] transition-transform ${openAccordions.includes(6) ? 'rotate-180' : ''
                                             }`}
                                         fill="none"
                                         stroke="currentColor"
@@ -525,7 +525,7 @@ function QuickSummary() {
                                     </svg>
                                 </div>
                                 {openAccordions.includes(6) && (
-                                    <div className="border-t border-gray-200">
+                                    <div className="border-t border-[#2A2A2A]">
                                         <PersonVerification nextTabs={() => nextTabs(6)} backTabs={() => backTabs(6)} summarydata={summarydata} isKYCComplete={isKYCComplete} />
                                     </div>
                                 )}
@@ -552,7 +552,7 @@ function QuickSummary() {
                                                 }
                                             }}
                                             label={"I agreed that the details are reviewed and verified."}
-                                            className="w-4 h-4 min-w-4 min-h-4 rounded-md border-gray-900/20 bg-gray-900/10 transition-all hover:scale-105 hover:before:opacity-0"
+                                            className="w-4 h-4 min-w-4 min-h-4 rounded-md border-gray-900/20 bg-[#0A0A0A]/10 transition-all hover:scale-105 hover:before:opacity-0"
                                         />
                                         <div>
 
@@ -564,7 +564,7 @@ function QuickSummary() {
                                     <div className="flex items-center justify-end gap-3">
                                         <CustomButton
                                             onClick={() => handleEditKYC()}
-                                            className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 text-gray-700 border border-gray-300 px-6 py-2.5 font-medium"
+                                            className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 text-[#F9FAFB] border border-[#2A2A2A] px-6 py-2.5 font-medium"
                                         >
                                             <FaEdit size={14} />
                                             Edit
@@ -576,7 +576,7 @@ function QuickSummary() {
                                             }}
                                             loading={submitLoader}
                                             disabled={!isChecked}
-                                            className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 text-white px-6 py-2.5 font-medium"
+                                            className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 text-[#F9FAFB] px-6 py-2.5 font-medium"
                                         >
                                             Submit
                                             <FaArrowRight size={14} />
@@ -588,7 +588,7 @@ function QuickSummary() {
                                         <div className="flex items-center justify-end gap-3">
                                             <CustomButton
                                                 onClick={() => handleEditKYC()}
-                                                className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 text-gray-700 border border-gray-300 px-6 py-2.5 font-medium"
+                                                className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 text-[#F9FAFB] border border-[#2A2A2A] px-6 py-2.5 font-medium"
                                             >
                                                 <FaEdit size={14} />
                                                 Edit
@@ -597,7 +597,7 @@ function QuickSummary() {
                                                 onClick={() => handleSubmit()}
                                                 loading={submitLoader}
                                                 disabled={!isChecked}
-                                                className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 text-white px-6 py-2.5 font-medium"
+                                                className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 text-[#F9FAFB] px-6 py-2.5 font-medium"
                                             >
                                                 Complete KYC
                                                 <FaArrowRight size={14} />
@@ -611,7 +611,7 @@ function QuickSummary() {
 
                                             <CustomButton
                                                 onClick={() => backtoProfile()}
-                                                className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 text-gray-700 border border-gray-300 px-6 py-2.5 font-medium"
+                                                className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 text-[#F9FAFB] border border-[#2A2A2A] px-6 py-2.5 font-medium"
                                             >
                                                 <FaArrowLeft size={14} />
                                                 Back to Profile
@@ -620,7 +620,7 @@ function QuickSummary() {
                                                 isKYCDone && (
                                                     <CustomButton
                                                         onClick={() => handleEditKYC()}
-                                                        className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 text-gray-700 border border-gray-300 px-6 py-2.5 font-medium"
+                                                        className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 text-[#F9FAFB] border border-[#2A2A2A] px-6 py-2.5 font-medium"
                                                     >
                                                         <FaEdit size={14} />
                                                         Edit
@@ -638,7 +638,7 @@ function QuickSummary() {
 
                                     <CustomButton
                                         onClick={() => backtoProfile()}
-                                        className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 text-gray-700 border border-gray-300 px-6 py-2.5 font-medium"
+                                        className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 text-[#F9FAFB] border border-[#2A2A2A] px-6 py-2.5 font-medium"
                                     >
                                         <FaArrowLeft size={14} />
                                         Back to Profile
@@ -647,7 +647,7 @@ function QuickSummary() {
                                         isKYCDone && (
                                             <CustomButton
                                                 onClick={() => handleEditKYC()}
-                                                className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 text-gray-700 border border-gray-300 px-6 py-2.5 font-medium"
+                                                className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 text-[#F9FAFB] border border-[#2A2A2A] px-6 py-2.5 font-medium"
                                             >
                                                 <FaEdit size={14} />
                                                 Edit

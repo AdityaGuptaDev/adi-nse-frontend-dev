@@ -126,7 +126,7 @@ function TopPerformingSchemes({ data, onSchemeClick }: Props) {
         isVisible={navegateLoader}
         message="Processing..."
       />
-      <div className="bg-white">
+      <div className="bg-[#111111]">
         {/* <div className="flex justify-between px-3">
           <div className="justify-center mt-3">
             <CustomButton
@@ -151,27 +151,27 @@ function TopPerformingSchemes({ data, onSchemeClick }: Props) {
                
               </CustomBackButton>
             </div>
-             <CustomText className="text-lg font-montserrat font-semibold text-gray-900">
+             <CustomText className="text-lg font-montserrat font-semibold text-[#F9FAFB]">
             Top Performing Schemes
           </CustomText>
           </div>
           
          
           <CustomButton
-            className="p-0 h-auto min-h-0 !text-secondary-content !bg-white"
+            className="p-0 h-auto min-h-0 !text-secondary-content !bg-[#111111]"
             onClick={() => onChangeViewAll()}
           >
             View All <span><FaAngleRight /></span>
           </CustomButton>
         </div>
 
-        <div className="flex gap-0 mb-4 border-b border-gray-200">
+        <div className="flex gap-0 mb-4 border-b border-[#2A2A2A]">
           <div role="tablist" className="tabs tabs-border">
             {schemes.map((fundClass: any, index: number) => (
               <a role="tab" key={index}
                 className={`tab transition-all ${activeTab === fundClass.categoryName
                   ? " tab-active font-bold text-primary border-primary"
-                  : "text-gray-600 hover:text-gray-800 border-transparent"
+                  : "text-[#9CA3AF] hover:text-[#F9FAFB] border-transparent"
                   }`} onClick={() => setActiveTab(fundClass.categoryName)}>{fundClass.categoryName}</a>
             ))}
           </div>
@@ -186,7 +186,7 @@ function TopPerformingSchemes({ data, onSchemeClick }: Props) {
                   // <div className="keen-slider__slide" key={scheme.id}>
                   <div key={index}>
                     <div
-                      className="bg-white border border-gray-200 rounded-xl p-4 h-full hover:shadow-lg transition-all duration-200 flex flex-col justify-between"
+                      className="bg-[#111111] border border-[#2A2A2A] rounded-xl p-4 h-full hover:shadow-lg transition-all duration-200 flex flex-col justify-between"
                     >
                       <div>
                       {/* Scheme Header with Icon */}
@@ -215,23 +215,23 @@ function TopPerformingSchemes({ data, onSchemeClick }: Props) {
                           <CustomText className="text-base font-bold text-green-600">
                             {toFixedDataForReturn(scheme?.Return1yr)}
                           </CustomText>
-                          <CustomText className="text-xs text-gray-500">
+                          <CustomText className="text-xs text-[#9CA3AF]">
                             p.a
                           </CustomText>
                         </div>
-                        <CustomText className="text-xs text-gray-500">
+                        <CustomText className="text-xs text-[#9CA3AF]">
                           (1Year)
                         </CustomText>
                       </div>
 
                       {/* Benchmark Section */}
                       <div className="mb-3">
-                        <CustomText className="text-xs text-gray-500 mb-1">
+                        <CustomText className="text-xs text-[#9CA3AF] mb-1">
                           {/* Benchmark - Category */}
                           Category
                         </CustomText>
                         <div className="flex justify-between items-center">
-                          <CustomText className="text-base text-gray-800 font-medium leading-tight pr-1.5">
+                          <CustomText className="text-base text-[#F9FAFB] font-medium leading-tight pr-1.5">
                             {scheme?.SchemeMaster?.SchemeCategory?.Name} - {scheme?.SchemeMaster?.SchemeSubcategory?.Name}
                           </CustomText>
                           <div className="flex items-center gap-1">
@@ -248,16 +248,16 @@ function TopPerformingSchemes({ data, onSchemeClick }: Props) {
                       {/* Risk Rating and Investment */}
                       <div className="flex items-center justify-between">
                         <div>
-                          <CustomText className="text-xs text-gray-500 mb-1">
+                          <CustomText className="text-xs text-[#9CA3AF] mb-1">
                             Min. investment
                           </CustomText>
-                          <CustomText className="text-sm font-bold text-gray-900">
+                          <CustomText className="text-sm font-bold text-[#F9FAFB]">
                             {/* {convertNumberIndian(20000)} */}
                             {scheme.minAmount ? convertNumberIndian(scheme.minAmount) : 0}
                           </CustomText>
                         </div>
                         <div className="text-right">
-                          <CustomText className="text-xs text-gray-500 mb-1">
+                          <CustomText className="text-xs text-[#9CA3AF] mb-1">
                             Risk Rating
                           </CustomText>
                           {/* <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRiskColor(scheme.riskRating)}`}> */}
@@ -301,7 +301,7 @@ function TopPerformingSchemes({ data, onSchemeClick }: Props) {
                   </div>
                 ))) : (
                 <div className="col-span-5">
-                  <CustomText className="text-center text-gray-500">
+                  <CustomText className="text-center text-[#9CA3AF]">
                     No Data Found
                   </CustomText>
                 </div>

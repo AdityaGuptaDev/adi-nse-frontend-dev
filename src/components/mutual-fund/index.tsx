@@ -22,7 +22,6 @@ import { Investor } from "@/services/searchReportService";
 import OrderPopup from "./new-order";
 import { searchByISIN } from "@/api/transaction";
 import { useFundStore } from "@/store/useFundStore";
-import { routeInvestorToOrderForm } from "@/utils/investorOrderRouting";
 import TopPerformingSchemes from "./(components)/top-performing-schemes";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -41,6 +40,23 @@ import {
 } from "react-icons/fa6";
 import { GiTakeMyMoney, GiMoneyStack, GiCash } from "react-icons/gi";
 import { RiMoneyDollarCircleFill } from "react-icons/ri";
+
+// Golden Black Theme Constants
+const theme = {
+  primary: "#F59E0B",
+  secondary: "#FBBF24",
+  accent: "#1F1A1A",
+  success: "#10B981",
+  warning: "#F59E0B",
+  danger: "#EF4444",
+  background: "#0A0A0A",
+  cardBg: "#111111",
+  textWhite: "#FFFFFF",
+  textGray: "#9CA3AF",
+  border: "#2A2A2A",
+  gradient: "linear-gradient(135deg, #F59E0B 0%, #B45309 100%)",
+  hoverBg: "#1F1A1A",
+};
 
 interface Investors {
   first_applicant?: string;
@@ -70,7 +86,7 @@ function MutualFund() {
   const [showInvestorPicker, setshowInvestorPicker] = useState(false);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('all');
-  const { setSchemeData, setInvestors, setDataSource } = useFundStore();
+  const { setSchemeData, setInvestors } = useFundStore();
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [showInvestmentHelper, setShowInvestmentHelper] = useState(true);
   const [helperAnimation, setHelperAnimation] = useState<'idle' | 'bounce' | 'wave' | 'jump'>('bounce');
@@ -165,28 +181,26 @@ function MutualFund() {
 
     if (investorList.length > 1) {
       setshowInvestorPopup(true);
-      return;
+    } else {
+      if (investorList.length === 1) {
+        setSchemeData(scheme);
+        setInvestors(investorList);
+
+        // Store in localStorage for persistence across refreshes
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('newOrder_schemeData', JSON.stringify(scheme));
+          localStorage.setItem('newOrder_investorList', JSON.stringify(investorList));
+        }
+        router.push("/mutual-fund/new-order");
+      }
     }
-    if (investorList.length === 1) {
-      // Centralized routing — picks MFU (/mutual-fund/new-order) for CAN
-      // investors and NSE (/nse-order-form) for UCC investors. The helper
-      // also falls back to /nse/ucc/search-by-mobile if the investor object
-      // doesn't carry inline UCC fields.
-      routeInvestorToOrderForm({
-        router,
-        scheme,
-        investorList,
-        store: { setSchemeData, setInvestors, setDataSource },
-        onStart: () => setLoading(true),
-        onFinish: () => setLoading(false),
-      });
-    }
-  }, [fetchByISIN, investorList, router, setSchemeData, setInvestors, setDataSource]);
+  }, [fetchByISIN, investorList, router, setSchemeData, setInvestors]);
 
   const getComponents = useCallback(() => {
     return [
       {
         id: 'top-schemes',
+
         component: TopPerformingSchemes,
         data: mutualFundData.topPerformingSchemes,
         props: {
@@ -196,15 +210,16 @@ function MutualFund() {
       },
       {
         id: 'new-offers',
+
         component: NewFundOffers,
         data: mutualFundData.newFundData,
-
         props: {
           data: mutualFundData.newFundData
         }
       },
       {
         id: 'amcs',
+
         component: TopAMCs,
         data: mutualFundData.topAMCs,
         props: {
@@ -213,6 +228,7 @@ function MutualFund() {
       },
       {
         id: 'managers',
+
         component: TopFundManagers,
         data: mutualFundData.topFundManagers,
         props: {
@@ -302,7 +318,7 @@ function MutualFund() {
     <>
       <FullPageLoader isVisible={loading} message="Loading..." />
 
-      <div className="bg-mainbackground min-h-screen relative">
+      <div className="min-h-screen" style={{ background: theme.background }}>
 
         {showInvestmentHelper && (
           <motion.div
@@ -334,9 +350,7 @@ function MutualFund() {
             onMouseEnter={() => setHelperAnimation('wave')}
             onMouseLeave={() => setHelperAnimation('bounce')}
           >
-
             <div className="relative">
-
               <motion.div
                 animate={{
                   scale: [1, 1.1, 1],
@@ -351,21 +365,17 @@ function MutualFund() {
               />
 
               <div className="relative bg-gradient-to-br from-yellow-400 via-orange-400 to-pink-500 rounded-2xl p-4 shadow-2xl border-2 border-white">
-
                 <div className="relative">
-
                   <div className="absolute top-1 left-1/2 transform -translate-x-1/2 z-10">
                     <div className="flex items-center justify-center gap-1">
-                      <div className="h-2 w-2 bg-white rounded-full animate-pulse"></div>
-                      <div className="h-2 w-2 bg-white rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
+                      <div className="h-2 w-2 bg-[#111111] rounded-full animate-pulse"></div>
+                      <div className="h-2 w-2 bg-[#111111] rounded-full animate-pulse" style={{ animationDelay: '0.2s' }}></div>
                     </div>
                     <div className="h-1 w-4 bg-pink-300 rounded-full mt-1 mx-auto"></div>
                   </div>
 
-                  {/* Money Bag Body */}
                   <div className="relative">
-                    <GiTakeMyMoney className="h-12 w-12 text-white" />
-                    {/* Sparkles */}
+                    <GiTakeMyMoney className="h-12 w-12 text-[#F9FAFB]" />
                     <motion.div
                       animate={{ rotate: 360 }}
                       transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
@@ -383,12 +393,12 @@ function MutualFund() {
                   </div>
                 </div>
 
-                {/* Speech Bubble */}
                 <motion.div
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: 0.5 }}
-                  className="absolute -top-16 -right-4 bg-white rounded-xl p-3 shadow-lg border border-gray-200 min-w-[180px]"
+                  className="absolute -top-16 -right-4 bg-[#111111] rounded-xl p-3 shadow-lg min-w-[180px]"
+                  style={{ border: `1px solid ${theme.border}` }}
                 >
                   <div className="flex items-center gap-2">
                     <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -397,18 +407,16 @@ function MutualFund() {
                     </span>
                     <FaArrowRight className="h-3 w-3 text-green-500 animate-bounce ml-1" />
                   </div>
-                  {/* Speech bubble tail */}
                   <div className="absolute -bottom-2 right-6">
-                    <div className="h-4 w-4 bg-white transform rotate-45 border-r border-b border-gray-200"></div>
+                    <div className="h-4 w-4 bg-[#111111] transform rotate-45 border-r border-b" style={{ borderColor: theme.border }}></div>
                   </div>
                 </motion.div>
               </div>
 
-              {/* Click Me Badge */}
               <motion.div
                 animate={{ scale: [1, 1.1, 1] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
-                className="absolute -top-2 -left-2 bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full whitespace-nowrap"
+                className="absolute -top-2 -left-2 bg-red-500 text-[#F9FAFB] text-[10px] font-bold px-2 py-1 rounded-full whitespace-nowrap"
               >
                 CLICK ME!
               </motion.div>
@@ -419,11 +427,11 @@ function MutualFund() {
         <div className="container mx-auto px-4 py-6">
           {/* Single Compact Header with Menu in One Line */}
           <div className="mb-8">
-            <div className="bg-white rounded-xl shadow-sm p-3 mb-6 border border-gray-100 relative">
+            <div className="rounded-xl shadow-sm p-3 mb-6 relative transition-all duration-300" style={{ background: theme.cardBg, border: `1px solid ${theme.border}` }}>
               {/* Investment Helper Toggle */}
               <button
                 onClick={() => setShowInvestmentHelper(!showInvestmentHelper)}
-                className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white p-1.5 rounded-full z-10 shadow-md hover:shadow-lg transition-shadow"
+                className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-[#F9FAFB] p-1.5 rounded-full z-10 shadow-md hover:shadow-lg transition-shadow"
                 title={showInvestmentHelper ? "Hide Helper" : "Show Helper"}
               >
                 {showInvestmentHelper ? "👋" : "💰"}
@@ -434,13 +442,14 @@ function MutualFund() {
                   {/* Back Button */}
                   <button
                     onClick={handleBackClick}
-                    className="flex items-center justify-center h-9 w-9 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 transition-all duration-200 flex-shrink-0"
+                    className="flex items-center justify-center h-9 w-9 rounded-lg transition-all duration-200 flex-shrink-0"
+                    style={{ background: theme.hoverBg, border: `1px solid ${theme.border}` }}
                   >
-                    <IoMdArrowRoundBack className="text-base text-gray-600" />
+                    <IoMdArrowRoundBack className="text-base" style={{ color: theme.textWhite }} />
                   </button>
 
                   {/* Divider */}
-                  <div className="h-6 w-px bg-gray-200"></div>
+                  <div className="h-6 w-px" style={{ background: theme.border }}></div>
 
                   {/* All Menu Items in Single Line */}
                   <div className="flex items-center gap-1.5 overflow-x-auto pb-1 flex-1">
@@ -453,9 +462,10 @@ function MutualFund() {
                           key={tab.id}
                           onClick={() => setActiveTab(tab.id)}
                           className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 whitespace-nowrap ${isActive
-                            ? `bg-gradient-to-r ${tab.color} text-white shadow-sm`
-                            : 'bg-gray-50 text-gray-600 hover:bg-gray-100 border border-gray-200'
+                            ? `bg-gradient-to-r ${tab.color} text-[#F9FAFB] shadow-sm`
+                            : ''
                             }`}
+                          style={!isActive ? { background: theme.hoverBg, color: theme.textGray, border: `1px solid ${theme.border}` } : {}}
                           whileHover={{ scale: 1.03 }}
                           whileTap={{ scale: 0.97 }}
                         >
@@ -491,7 +501,8 @@ function MutualFund() {
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100 relative"
+                    className="rounded-xl shadow-sm overflow-hidden relative transition-all duration-300 hover:shadow-md"
+                    style={{ background: theme.cardBg, border: `1px solid ${theme.border}` }}
                   >
                     {/* Highlight for top schemes when helper is clicked */}
                     {comp.id === 'top-schemes' && activeTab === 'top-schemes' && (
@@ -507,15 +518,13 @@ function MutualFund() {
                       {activeTab === 'all' && (
                         <div className="mb-5 flex items-center justify-between">
                           <div>
-                            <CustomText className="text-lg font-semibold text-gray-900">
+                            <div className="text-lg font-semibold" style={{ color: theme.textWhite }}>
                               {comp.title}
-                            </CustomText>
-                            <CustomText className="text-sm text-gray-600 mt-1">
+                            </div>
+                            <div className="text-sm mt-1" style={{ color: theme.textGray }}>
                               {comp.description}
-                            </CustomText>
+                            </div>
                           </div>
-
-
                         </div>
                       )}
 
@@ -524,14 +533,14 @@ function MutualFund() {
                         <Component {...comp.props} />
                       ) : (
                         <div className="text-center py-10">
-                          <div className="inline-block p-3 bg-gray-100 rounded-full mb-3">
-                            <div className="h-10 w-10 bg-gray-200 rounded-full flex items-center justify-center">
-                              <CustomText className="text-gray-400 text-xl">?</CustomText>
+                          <div className="inline-block p-3 rounded-full mb-3" style={{ background: theme.hoverBg }}>
+                            <div className="h-10 w-10 rounded-full flex items-center justify-center" style={{ background: `${theme.primary}20` }}>
+                              <span className="text-xl" style={{ color: theme.primary }}>?</span>
                             </div>
                           </div>
-                          <CustomText className="text-base text-gray-600 mb-2">
+                          <div className="text-base mb-2" style={{ color: theme.textGray }}>
                             No data available
-                          </CustomText>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -546,20 +555,22 @@ function MutualFund() {
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-6 p-4 bg-gradient-to-r from-primary/5 to-blue-50 rounded-xl border border-primary/20"
+              className="mt-6 p-4 rounded-xl border"
+              style={{ background: `${theme.primary}10`, borderColor: `${theme.primary}30` }}
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <CustomText className="text-sm font-medium text-gray-800">
+                  <div className="text-sm font-medium" style={{ color: theme.textWhite }}>
                     Viewing 1 category
-                  </CustomText>
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setActiveTab('all')}
-                    className="px-4 py-2 bg-primary text-white text-sm rounded-lg font-medium hover:bg-primary/90 transition-colors"
+                    className="px-4 py-2 text-[#F9FAFB] text-sm rounded-lg font-medium transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                    style={{ background: theme.gradient }}
                   >
                     View All
                   </motion.button>

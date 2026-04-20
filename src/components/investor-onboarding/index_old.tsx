@@ -418,7 +418,7 @@ export default function EcanRegistration() {
 
     // Show registration form
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-[#1F1A1A]">
 
 
             {/* MAIN CONTENT */}
@@ -438,7 +438,7 @@ export default function EcanRegistration() {
 
                     {/* Content Card */}
                     <div className="flex-1">
-                        <div className=" bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg border border-gray-200 p-4 sm:p-6">
+                        <div className=" bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg border border-[#2A2A2A] p-4 sm:p-6">
                             {renderStep}
                         </div>
                     </div>

@@ -22,6 +22,7 @@ import {
 import api from "@/utils/api";
 import { cookieStorageKeys, setCookieToken, storeCookieData } from "@/services/cookieStorageService";
 import { useRouter } from "next/navigation";
+import { Shield, Clock, X } from "lucide-react";
 
 function OTPScreen({
   userData,
@@ -390,191 +391,177 @@ useEffect(() => {
   }
 
   return (
-    <div className="myContainer !px-0">
-      {/* <div className="mt-10 mb-2 md:w-[400px] max-w-screen-lg sm:w-96 mx-auto bg-white/80 p-8 rounded-xl backdrop-blur-lg border-8 border-white shadow-2xl"> */}
-      <div className="mt-5 mb-2 rounded-3xl">
-        <div>
+    <div className="w-full">
+      <div className="w-full">
+        <div className="flex justify-center mb-6">
           <img
             src={`${publicPathName}/logo_light.png`}
-            className="h-16 mx-auto"
+            className="h-14 w-auto"
+            alt="Logo"
           />
         </div>
         <div>
-          <CustomText className="text-center mb-5 mt-3.5 text-xl font-bold">
-            OTP
+          <CustomText className="text-center mb-3 text-2xl font-bold bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent">
+            OTP Verification
           </CustomText>
-          <CustomText className="text-center mb-5 text-sm font-base">
-            We have sent the verification code to your entered mobile number
+          <CustomText className="text-center mb-8 text-sm text-[#9CA3AF]">
+            We have sent the verification code to your mobile number
           </CustomText>
         </div>
 
         <div>
           <form
             onSubmit={(e) => {
-              e.preventDefault(); // ✅ prevent default form submit
-              onSubmit(); // ✅ call your async function manually
+              e.preventDefault();
+              onSubmit();
             }}
+            className="space-y-8"
           >
             {isRegister ? (
-              <>
-                <div className="mb-1">
-                  {/* <div>We have sent the verification code to your</div> */}
-                  {/* <div>
-                    <div className="text-center">Email address</div>
-                    <div className="my-5 flex justify-center">
-                      <OtpInput
-                        value={emailOTP}
-                        onChange={(otp: any) => setEmailOTP(otp)}
-                        numInputs={6}
-                        renderSeparator={<span className="otpInputGap"></span>}
-                        renderInput={(props) => (
-                          <input {...props} className="otpInput" />
-                        )}
-                        inputType={"text"}
-                        shouldAutoFocus={true}
-                      // inputStyle={{
-                      // border: "1px solid",
-                      // borderRadius: "8px",
-                      // width: "54px",
-                      // height: "54px",
-                      // fontSize: "12px",
-                      // color: "#000",
-                      // fontWeight: "400",
-                      // caretColor: "blue",
-                      // }}
-                      //   focusStyle={{
-                      //     border: "1px solid #CFD3DB",
-                      //     outline: "none",
-                      //   }}
+              <div className="mb-2">
+                <div className="flex justify-center">
+                  <OtpInput
+                    value={mobileOTP}
+                    onChange={(otp: any) => setMobileOTP(otp)}
+                    numInputs={6}
+                    renderSeparator={<span className="mx-1 sm:mx-2"></span>}
+                    renderInput={(props) => (
+                      <input
+                        {...props}
+                        className="otp-input-field"
+                        style={{
+                          width: "48px",
+                          height: "56px",
+                          fontSize: "24px",
+                          fontWeight: 600,
+                          borderRadius: "12px",
+                          border: "2px solid #2A2A2A",
+                          backgroundColor: "#1F1A1A",
+                          color: "#F9FAFB",
+                          textAlign: "center",
+                          outline: "none",
+                          transition: "all 0.3s ease",
+                          margin: "0 6px",
+                        }}
+                        onFocus={(e) => {
+                          e.target.style.borderColor = "#F59E0B";
+                          e.target.style.boxShadow = "0 0 0 3px rgba(245, 158, 11, 0.2)";
+                        }}
+                        onBlur={(e) => {
+                          e.target.style.borderColor = "#2A2A2A";
+                          e.target.style.boxShadow = "none";
+                        }}
                       />
-                    </div>
-                  </div> */}
-
-                  <div>
-                    
-                    <div className="my-5 flex justify-center">
-                      {/* <OtpInput
-                        value={mobileOTP}
-                        onChange={(otp: any) => setMobileOTP(otp)}
-                        numInputs={6}
-                        renderSeparator={<span className="otpInputGap"></span>}
-                        renderInput={(props) => (
-                          <input {...props} className="otpInput" />
-                        )}
-                        inputType={"text"}
-                        shouldAutoFocus={true}
-                      // inputStyle={{
-                      // border: "1px solid",
-                      // borderRadius: "8px",
-                      // width: "54px",
-                      // height: "54px",
-                      // fontSize: "12px",
-                      // color: "#000",
-                      // fontWeight: "400",
-                      // caretColor: "blue",
-                      // }}
-                      //   focusStyle={{
-                      //     border: "1px solid #CFD3DB",
-                      //     outline: "none",
-                      //   }}
-                      /> */}
-                      <OtpInput
-  value={mobileOTP}
-  onChange={(otp: any) => setMobileOTP(otp)}
-  numInputs={6}
-  renderSeparator={<span className="otpInputGap"></span>}
-  renderInput={(props) => <input {...props} className="otpInput" />}
-  inputType={"text"}
-  shouldAutoFocus={true}
-/>
-                    </div>
-                  </div>
+                    )}
+                    inputType={"tel"}
+                    shouldAutoFocus={true}
+                  />
                 </div>
-                {/*<div className="mt-4 flex justify-center">
-                  Email OTP - {userData?.emailOTP} ,&nbsp;&nbsp;&nbsp; Mobile
-                  OTP - {userData?.mobileOTP}{" "}
-                </div>*/}
-              </>
+              </div>
             ) : (
-              <>
-                <div className="mb-1 ">
-                  <div className="flex justify-center">
-                    {/* <OtpInput
-                      value={loginOTP}
-                      onChange={(otp: any) => setLoginOTP(otp)}
-                      numInputs={6}
-                      renderSeparator={<span className="otpInputGap"></span>}
-                      renderInput={(props) => (
-                        <input {...props} className="otpInput" />
-                      )}
-                      inputType={"text"}
-                      shouldAutoFocus={true}
-                    /> */}
-                    {/* <OtpInput
-  value={loginOTP}
-  onChange={handleLoginOtpChange}
-  numInputs={6}
-  renderSeparator={<span className="otpInputGap"></span>}
-  renderInput={(props) => <input {...props} className="otpInput" />}
-  inputType={"text"}
-  shouldAutoFocus={true}
-/> */}
-<OtpInput
-  value={loginOTP}
-  onChange={(otp: any) => setLoginOTP(otp)}
-  numInputs={6}
-  renderSeparator={<span className="otpInputGap"></span>}
-  renderInput={(props) => <input {...props} className="otpInput" />}
-  inputType={"text"}
-  shouldAutoFocus={true}
-/>
-
-                  </div>
+              <div className="mb-2">
+                <div className="flex justify-center">
+                  <OtpInput
+                    value={loginOTP}
+                    onChange={(otp: any) => setLoginOTP(otp)}
+                    numInputs={6}
+                    renderSeparator={<span className="mx-1 sm:mx-2"></span>}
+                    renderInput={(props) => (
+                      <input
+                        {...props}
+                        className="otp-input-field"
+                        style={{
+                          width: "48px",
+                          height: "56px",
+                          fontSize: "24px",
+                          fontWeight: 600,
+                          borderRadius: "12px",
+                          border: "2px solid #2A2A2A",
+                          backgroundColor: "#1F1A1A",
+                          color: "#F9FAFB",
+                          textAlign: "center",
+                          outline: "none",
+                          transition: "all 0.3s ease",
+                          margin: "0 6px",
+                        }}
+                        onFocus={(e) => {
+                          e.target.style.borderColor = "#F59E0B";
+                          e.target.style.boxShadow = "0 0 0 3px rgba(245, 158, 11, 0.2)";
+                        }}
+                        onBlur={(e) => {
+                          e.target.style.borderColor = "#2A2A2A";
+                          e.target.style.boxShadow = "none";
+                        }}
+                      />
+                    )}
+                    inputType={"tel"}
+                    shouldAutoFocus={true}
+                  />
                 </div>
-                {/*<div className="mt-4 flex justify-center">
-                  OTP - {userData?.loginOTP}
-                </div>*/}
-              </>
+              </div>
             )}
 
-            <div className="flex gap-5 justify-center text-center mt-6 ">
-              <div onClick={(e) => e.stopPropagation()}>
-                <CustomButton
-                  className="w-28 bg-primary"
-                  type="submit"
-                  loading={loading}
-                >
-                  Submit
-                </CustomButton>
-              </div>
-              <div>
-                <CustomButton
-                  className="bg-white !text-black !border !border-gray-300 w-28"
-                  onClick={handleCloseOtpModel}
-                  type="button"
-                >
-                  Cancel
-                </CustomButton>
-              </div>
-            </div>
-            <div className="text-red-600 text-center mt-4 cursor-pointer">
-              Time Remaining: {formatTime(timer)}s
-            </div>
-            {timer === 0 && (
-              <div
-                className="text-other text-center mt-4 cursor-pointer"
-                onClick={handleResendOTP}
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full sm:w-auto min-w-[120px] px-6 py-3 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white font-semibold rounded-lg hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Resend OTP
+                {loading ? (
+                  <span className="flex items-center justify-center">
+                    <svg className="animate-spin h-5 w-5 mr-2" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Processing...
+                  </span>
+                ) : (
+                  "Submit"
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleCloseOtpModel}
+                className="w-full sm:w-auto min-w-[120px] px-6 py-3 bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] rounded-lg hover:border-[#F59E0B] transition-all"
+              >
+                Cancel
+              </button>
+            </div>
+
+            <div className="flex items-center justify-center gap-2 text-center pt-4">
+              <Clock className="w-4 h-4 text-[#F59E0B]" />
+              <span className="text-sm text-[#9CA3AF]">Time Remaining:</span>
+              <span className="text-sm font-bold text-[#F59E0B]">{formatTime(timer)}s</span>
+            </div>
+
+            {timer === 0 && (
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={handleResendOTP}
+                  className="text-[#F59E0B] hover:text-[#FBBF24] transition-colors font-medium text-sm"
+                >
+                  Resend OTP
+                </button>
               </div>
             )}
 
             {showUserTypeSelection && (
-              <div className="modal modal-open !bg-white">
-                <div className="modal-box shadow-none rounded-3xl bg-white sm:w-96 md:w-[400px] max-w-screen-lg" onClick={(e) => e.stopPropagation()}>
-                  <div className="text-center">
-                    <h3 className="font-bold text-lg mb-4">Select User Type</h3>
-                    <p className="text-sm text-gray-600 mb-6">
+              <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+                <div className="bg-[#111111] border border-[#2A2A2A] rounded-xl shadow-2xl max-w-md w-full mx-4">
+                  <div className="p-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="font-bold text-xl text-[#F9FAFB]">Select User Type</h3>
+                      <button
+                        type="button"
+                        onClick={() => setShowUserTypeSelection(false)}
+                        className="text-[#9CA3AF] hover:text-[#F59E0B] transition-colors"
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                    <p className="text-sm text-[#9CA3AF] mb-6">
                       Multiple user types found for this account. Please select how you want to login:
                     </p>
 
@@ -582,26 +569,20 @@ useEffect(() => {
                       {userTypes.map((userType: any, index: number) => (
                         <button
                           key={index}
+                          type="button"
                           onClick={() => handleUserTypeSelection(userType)}
-                          className="w-full p-4 border-2 border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-all duration-200 text-left"
+                          className="w-full p-4 border-2 border-[#2A2A2A] rounded-lg hover:border-[#F59E0B] hover:bg-[#1F1A1A] transition-all duration-200 text-left"
                           disabled={loading}
                         >
-                          <div className="font-medium text-gray-800">
+                          <div className="font-medium text-[#F9FAFB]">
                             {userType.userType}
+                          </div>
+                          <div className="text-xs text-[#9CA3AF] mt-1">
+                            Login as {userType.userType}
                           </div>
                         </button>
                       ))}
                     </div>
-
-                    <button
-                      onClick={() => {
-                        setShowUserTypeSelection(false);
-                      }}
-                      className="mt-4 text-gray-500 hover:text-gray-700 text-sm"
-                      disabled={loading}
-                    >
-                      Cancel
-                    </button>
                   </div>
                 </div>
               </div>
@@ -609,6 +590,25 @@ useEffect(() => {
           </form>
         </div>
       </div>
+
+      <style jsx>{`
+        @media (max-width: 640px) {
+          .otp-input-field {
+            width: 42px !important;
+            height: 48px !important;
+            font-size: 20px !important;
+            margin: 0 4px !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .otp-input-field {
+            width: 38px !important;
+            height: 44px !important;
+            font-size: 18px !important;
+            margin: 0 3px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

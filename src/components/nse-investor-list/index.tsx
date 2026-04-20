@@ -164,15 +164,15 @@ function ActionMenu({
       <button
         ref={btnRef}
         onClick={() => (open ? setOpen(false) : openMenu())}
-        className="p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+        className="p-1.5 rounded-lg hover:bg-[#1F1A1A] transition-colors"
       >
-        <FiMoreVertical className="w-4 h-4 text-gray-500" />
+        <FiMoreVertical className="w-4 h-4 text-[#9CA3AF]" />
       </button>
       {open && menuPos && (
         <div
           ref={ref}
           style={{ position: "fixed", top: menuPos.top, left: menuPos.left, width: MENU_WIDTH }}
-          className="bg-white border border-gray-200 rounded-xl shadow-lg z-[1000] py-1.5"
+          className="bg-[#111111] border border-[#2A2A2A] rounded-xl shadow-lg z-[1000] py-1.5"
         >
           {items.map((item, i) => (
             <button
@@ -184,10 +184,10 @@ function ActionMenu({
               disabled={item.disabled}
               className={`w-full flex items-center gap-2.5 px-4 py-2 text-sm text-left transition-colors ${
                 item.disabled
-                  ? "opacity-40 cursor-not-allowed text-gray-400"
+                  ? "opacity-40 cursor-not-allowed text-[#6B7280]"
                   : item.danger
                   ? "text-red-600 hover:bg-red-50"
-                  : "text-gray-700 hover:bg-gray-50"
+                  : "text-[#E5E7EB] hover:bg-[#1F1A1A]"
               }`}
             >
               {item.icon}
@@ -300,7 +300,7 @@ function MandateModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
       <div
-        className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto mx-4 shadow-2xl"
+        className="bg-[#111111] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto mx-4 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -311,26 +311,26 @@ function MandateModal({
 
         <div className="p-6 space-y-5">
           {/* Investor Details */}
-          <div className="border border-gray-200 rounded-xl p-4">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3 border-b border-gray-100 pb-2">
+          <div className="border border-[#2A2A2A] rounded-xl p-4">
+            <h3 className="text-sm font-semibold text-[#E5E7EB] mb-3 border-b border-[#2A2A2A] pb-2">
               Investor Details
             </h3>
             <div className="grid grid-cols-2 gap-y-2 text-sm">
               <div>
-                <span className="text-gray-400 text-xs">Investor Name</span>
-                <div className="font-medium text-gray-800">{investor.name}</div>
+                <span className="text-[#6B7280] text-xs">Investor Name</span>
+                <div className="font-medium text-[#F9FAFB]">{investor.name}</div>
               </div>
               <div className="text-right">
-                <span className="text-gray-400 text-xs">PAN</span>
-                <div className="font-medium text-gray-800 font-mono">{investor.pan || "--"}</div>
+                <span className="text-[#6B7280] text-xs">PAN</span>
+                <div className="font-medium text-[#F9FAFB] font-mono">{investor.pan || "--"}</div>
               </div>
               <div>
-                <span className="text-gray-400 text-xs">UCC</span>
-                <div className="font-medium text-gray-800 font-mono">{investor.client_code || investor.pan || "--"}</div>
+                <span className="text-[#6B7280] text-xs">UCC</span>
+                <div className="font-medium text-[#F9FAFB] font-mono">{investor.client_code || investor.pan || "--"}</div>
               </div>
               <div className="text-right">
-                <span className="text-gray-400 text-xs">Tax Status</span>
-                <div className="font-medium text-gray-800">
+                <span className="text-[#6B7280] text-xs">Tax Status</span>
+                <div className="font-medium text-[#F9FAFB]">
                   {investor.tax_status ? TAX_STATUS_MAP[investor.tax_status] || investor.tax_status : "--"}
                 </div>
               </div>
@@ -338,16 +338,16 @@ function MandateModal({
           </div>
 
           {/* Bank Details */}
-          <div className="border border-gray-200 rounded-xl p-4">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3 border-b border-gray-100 pb-2">
+          <div className="border border-[#2A2A2A] rounded-xl p-4">
+            <h3 className="text-sm font-semibold text-[#E5E7EB] mb-3 border-b border-[#2A2A2A] pb-2">
               Bank Details
             </h3>
             {banks.length === 0 ? (
-              <p className="text-sm text-gray-400 py-4 text-center">No bank accounts found for this investor</p>
+              <p className="text-sm text-[#6B7280] py-4 text-center">No bank accounts found for this investor</p>
             ) : (
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="text-xs text-gray-400 uppercase">
+                  <tr className="text-xs text-[#6B7280] uppercase">
                     <th className="text-left py-2 w-8"></th>
                     <th className="text-left py-2">Bank Name</th>
                     <th className="text-left py-2">Account No</th>
@@ -365,23 +365,23 @@ function MandateModal({
                           value={bank.account_no}
                           checked={selectedBank === bank.account_no}
                           onChange={() => setSelectedBank(bank.account_no)}
-                          className="w-4 h-4 text-[#4bc5c1] border-gray-300 focus:ring-[#4bc5c1] cursor-pointer"
+                          className="w-4 h-4 text-[#4bc5c1] border-[#3A3A3A] focus:ring-[#4bc5c1] cursor-pointer"
                         />
                       </td>
                       <td className="py-2.5">
-                        <div className="text-gray-700 text-sm">{bank.bank_name || "—"}</div>
+                        <div className="text-[#E5E7EB] text-sm">{bank.bank_name || "—"}</div>
                         {bank.branch_name && (
-                          <div className="text-[10px] text-gray-400">{bank.branch_name}</div>
+                          <div className="text-[10px] text-[#6B7280]">{bank.branch_name}</div>
                         )}
                       </td>
-                      <td className="py-2.5 text-gray-700 font-mono text-xs">{bank.account_no}</td>
+                      <td className="py-2.5 text-[#E5E7EB] font-mono text-xs">{bank.account_no}</td>
                       <td className="py-2.5">
-                        <div className="text-gray-700 font-mono text-xs">{bank.ifsc_code || "—"}</div>
+                        <div className="text-[#E5E7EB] font-mono text-xs">{bank.ifsc_code || "—"}</div>
                         {bank.micr_no && (
-                          <div className="text-[10px] text-gray-400">MICR: {bank.micr_no}</div>
+                          <div className="text-[10px] text-[#6B7280]">MICR: {bank.micr_no}</div>
                         )}
                       </td>
-                      <td className="py-2.5 text-gray-500 text-xs">
+                      <td className="py-2.5 text-[#9CA3AF] text-xs">
                         {ACCOUNT_TYPE_MAP[bank.account_type] || bank.account_type}
                         {bank.default_bank_flag === "Y" && (
                           <span className="ml-1 text-[9px] bg-green-50 text-green-600 px-1.5 py-0.5 rounded-full font-medium">Default</span>
@@ -395,14 +395,14 @@ function MandateModal({
           </div>
 
           {/* Mandate Details */}
-          <div className="border border-gray-200 rounded-xl p-4">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3 border-b border-gray-100 pb-2">
+          <div className="border border-[#2A2A2A] rounded-xl p-4">
+            <h3 className="text-sm font-semibold text-[#E5E7EB] mb-3 border-b border-[#2A2A2A] pb-2">
               Mandate Details
             </h3>
             <div className="space-y-4">
               {/* Mandate Type */}
               <div>
-                <label className="text-xs text-gray-500 font-medium mb-1.5 block">Mandate Type</label>
+                <label className="text-xs text-[#9CA3AF] font-medium mb-1.5 block">Mandate Type</label>
                 <div className="flex items-center gap-4">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -411,9 +411,9 @@ function MandateModal({
                       value="X"
                       checked={mandateType === "X"}
                       onChange={() => setMandateType("X")}
-                      className="w-4 h-4 text-[#4bc5c1] border-gray-300 focus:ring-[#4bc5c1]"
+                      className="w-4 h-4 text-[#4bc5c1] border-[#3A3A3A] focus:ring-[#4bc5c1]"
                     />
-                    <span className="text-sm text-gray-700">Physical</span>
+                    <span className="text-sm text-[#E5E7EB]">Physical</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -422,9 +422,9 @@ function MandateModal({
                       value="E"
                       checked={mandateType === "E"}
                       onChange={() => setMandateType("E")}
-                      className="w-4 h-4 text-[#4bc5c1] border-gray-300 focus:ring-[#4bc5c1]"
+                      className="w-4 h-4 text-[#4bc5c1] border-[#3A3A3A] focus:ring-[#4bc5c1]"
                     />
-                    <span className="text-sm text-gray-700">eNACH</span>
+                    <span className="text-sm text-[#E5E7EB]">eNACH</span>
                   </label>
                 </div>
               </div>
@@ -432,33 +432,33 @@ function MandateModal({
               {/* Dates + Amount */}
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="text-xs text-gray-500 font-medium mb-1.5 block">Start Date :</label>
+                  <label className="text-xs text-[#9CA3AF] font-medium mb-1.5 block">Start Date :</label>
                   <input
                     type="date"
                     value={startDate}
                     min={todayISO}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1] focus:border-transparent"
+                    className="w-full px-3 py-2 border border-[#2A2A2A] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1] focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-500 font-medium mb-1.5 block">End Date :</label>
+                  <label className="text-xs text-[#9CA3AF] font-medium mb-1.5 block">End Date :</label>
                   <input
                     type="date"
                     value={endDate}
                     min={startDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1] focus:border-transparent"
+                    className="w-full px-3 py-2 border border-[#2A2A2A] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1] focus:border-transparent"
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-500 font-medium mb-1.5 block">Amount</label>
+                  <label className="text-xs text-[#9CA3AF] font-medium mb-1.5 block">Amount</label>
                   <input
                     type="number"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="Enter amount"
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1] focus:border-transparent"
+                    className="w-full px-3 py-2 border border-[#2A2A2A] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4bc5c1] focus:border-transparent"
                   />
                 </div>
               </div>
@@ -467,7 +467,7 @@ function MandateModal({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-center gap-3">
+        <div className="px-6 py-4 border-t border-[#2A2A2A] flex items-center justify-center gap-3">
           <button
             onClick={handleSubmit}
             disabled={submitting || banks.length === 0}
@@ -477,7 +477,7 @@ function MandateModal({
           </button>
           <button
             onClick={onClose}
-            className="px-8 py-2.5 border border-gray-300 text-gray-600 rounded-full text-sm font-semibold hover:bg-gray-50 transition-colors"
+            className="px-8 py-2.5 border border-[#3A3A3A] text-[#9CA3AF] rounded-full text-sm font-semibold hover:bg-[#1F1A1A] transition-colors"
           >
             Exit
           </button>
@@ -500,7 +500,7 @@ function MandateSuccessModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
       <div
-        className="bg-white rounded-2xl w-full max-w-md mx-4 shadow-2xl p-8 text-center"
+        className="bg-[#111111] rounded-2xl w-full max-w-md mx-4 shadow-2xl p-8 text-center"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Check Icon */}
@@ -512,16 +512,16 @@ function MandateSuccessModal({
           </div>
         </div>
 
-        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+        <h3 className="text-lg font-semibold text-[#F9FAFB] mb-2">
           Your Mandate has been created Successfully.
         </h3>
-        <p className="text-sm text-gray-500 mb-6">
+        <p className="text-sm text-[#9CA3AF] mb-6">
           To approve the mandate login to your Net Banking portal and enter your Debit Card details.
         </p>
 
         {mandateData?.reg_id && (
-          <p className="text-xs text-gray-400 mb-4">
-            Mandate ID: <span className="font-mono font-medium text-gray-600">{mandateData.reg_id}</span>
+          <p className="text-xs text-[#6B7280] mb-4">
+            Mandate ID: <span className="font-mono font-medium text-[#9CA3AF]">{mandateData.reg_id}</span>
           </p>
         )}
 
@@ -646,7 +646,7 @@ export default function NseInvestorList(_props: any) {
         {/* Search */}
         <div className="relative flex-1 max-w-md">
           <svg
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6B7280]"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -654,7 +654,7 @@ export default function NseInvestorList(_props: any) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input
-            className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
+            className="w-full pl-10 pr-4 py-2 border border-[#2A2A2A] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent"
             placeholder="Search by name, PAN, mobile, email, client code..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -664,7 +664,7 @@ export default function NseInvestorList(_props: any) {
         <div className="flex items-center gap-3">
           {/* UCC Status Filter */}
           <select
-            className="border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+            className="border border-[#2A2A2A] rounded-lg px-3 py-2 text-sm bg-[#111111] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
             value={uccFilter}
             onChange={(e) => setUccFilter(e.target.value as any)}
           >
@@ -676,7 +676,7 @@ export default function NseInvestorList(_props: any) {
           {/* Refresh */}
           <button
             onClick={fetchInvestors}
-            className="px-3 py-2 border border-gray-200 rounded-lg text-sm hover:bg-gray-50 transition-colors"
+            className="px-3 py-2 border border-[#2A2A2A] rounded-lg text-sm hover:bg-[#1F1A1A] transition-colors"
             title="Refresh"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -687,16 +687,16 @@ export default function NseInvestorList(_props: any) {
       </div>
 
       {/* ── Stats row ── */}
-      <div className="flex items-center gap-4 mb-4 text-xs text-gray-500">
-        <span>Total: <strong className="text-gray-800">{pagination.total}</strong></span>
-        <span>Page <strong className="text-gray-800">{pagination.page}</strong> of <strong className="text-gray-800">{pagination.total_pages || 1}</strong></span>
+      <div className="flex items-center gap-4 mb-4 text-xs text-[#9CA3AF]">
+        <span>Total: <strong className="text-[#F9FAFB]">{pagination.total}</strong></span>
+        <span>Page <strong className="text-[#F9FAFB]">{pagination.page}</strong> of <strong className="text-[#F9FAFB]">{pagination.total_pages || 1}</strong></span>
       </div>
 
       {/* ── Table ── */}
-      <div className="overflow-x-auto border border-gray-100 rounded-xl">
+      <div className="overflow-x-auto border border-[#2A2A2A] rounded-xl">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            <tr className="bg-[#1F1A1A] text-left text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">
               <th className="px-4 py-3">#</th>
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">PAN</th>
@@ -714,7 +714,7 @@ export default function NseInvestorList(_props: any) {
           <tbody className="divide-y divide-gray-50">
             {loading ? (
               <tr>
-                <td colSpan={12} className="text-center py-16 text-gray-400">
+                <td colSpan={12} className="text-center py-16 text-[#6B7280]">
                   <div className="flex flex-col items-center gap-2">
                     <svg className="animate-spin h-6 w-6 text-[var(--color-primary)]" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
@@ -726,7 +726,7 @@ export default function NseInvestorList(_props: any) {
               </tr>
             ) : investors.length === 0 ? (
               <tr>
-                <td colSpan={12} className="text-center py-16 text-gray-400">
+                <td colSpan={12} className="text-center py-16 text-[#6B7280]">
                   No investors found
                 </td>
               </tr>
@@ -741,18 +741,18 @@ export default function NseInvestorList(_props: any) {
                   "--";
 
                 return (
-                  <tr key={inv.id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="px-4 py-3 text-gray-400 font-mono text-xs">{serial}</td>
+                  <tr key={inv.id} className="hover:bg-[#1F1A1A]/50 transition-colors">
+                    <td className="px-4 py-3 text-[#6B7280] font-mono text-xs">{serial}</td>
                     <td className="px-4 py-3">
-                      <div className="font-medium text-gray-800">{inv.name || "--"}</div>
+                      <div className="font-medium text-[#F9FAFB]">{inv.name || "--"}</div>
                       {inv.gender && (
-                        <span className="text-[10px] text-gray-400 uppercase">{inv.gender === "M" ? "Male" : inv.gender === "F" ? "Female" : inv.gender}</span>
+                        <span className="text-[10px] text-[#6B7280] uppercase">{inv.gender === "M" ? "Male" : inv.gender === "F" ? "Female" : inv.gender}</span>
                       )}
                     </td>
-                    <td className="px-4 py-3 font-mono text-xs text-gray-600">{inv.pan || "--"}</td>
-                    <td className="px-4 py-3 text-gray-600">{inv.mobile || "--"}</td>
-                    <td className="px-4 py-3 text-gray-600 max-w-[180px] truncate" title={inv.email || ""}>{inv.email || "--"}</td>
-                    <td className="px-4 py-3 text-gray-600 text-xs">
+                    <td className="px-4 py-3 font-mono text-xs text-[#9CA3AF]">{inv.pan || "--"}</td>
+                    <td className="px-4 py-3 text-[#9CA3AF]">{inv.mobile || "--"}</td>
+                    <td className="px-4 py-3 text-[#9CA3AF] max-w-[180px] truncate" title={inv.email || ""}>{inv.email || "--"}</td>
+                    <td className="px-4 py-3 text-[#9CA3AF] text-xs">
                       {inv.tax_status ? TAX_STATUS_MAP[inv.tax_status] || inv.tax_status : "--"}
                     </td>
                     <td className="px-4 py-3">
@@ -772,9 +772,9 @@ export default function NseInvestorList(_props: any) {
                         {inv.ucc_status}
                       </span>
                     </td>
-                    <td className="px-4 py-3 font-mono text-xs text-gray-700">{inv.client_code || "--"}</td>
+                    <td className="px-4 py-3 font-mono text-xs text-[#E5E7EB]">{inv.client_code || "--"}</td>
                     <td className="px-4 py-3 max-w-[200px]">
-                      <div className="text-xs text-gray-500 truncate" title={nseRemark}>{nseRemark}</div>
+                      <div className="text-xs text-[#9CA3AF] truncate" title={nseRemark}>{nseRemark}</div>
                       {inv.latest_nse_log?.reg_status && (
                         <span
                           className={`text-[10px] font-medium ${
@@ -785,7 +785,7 @@ export default function NseInvestorList(_props: any) {
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3 text-xs text-gray-400">{formatDate(inv.updated_at)}</td>
+                    <td className="px-4 py-3 text-xs text-[#6B7280]">{formatDate(inv.updated_at)}</td>
                     <td className="px-4 py-3">
                       <ActionMenu
                         investor={inv}
@@ -807,7 +807,7 @@ export default function NseInvestorList(_props: any) {
       {/* ── Pagination ── */}
       {pagination.total_pages > 1 && (
         <div className="flex items-center justify-between mt-4 text-sm">
-          <div className="text-gray-500 text-xs">
+          <div className="text-[#9CA3AF] text-xs">
             Showing {(pagination.page - 1) * pagination.limit + 1}
             {" "}-{" "}
             {Math.min(pagination.page * pagination.limit, pagination.total)}
@@ -817,7 +817,7 @@ export default function NseInvestorList(_props: any) {
             <button
               disabled={!canPrev}
               onClick={() => setPage((p) => p - 1)}
-              className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+              className="px-3 py-1.5 rounded-lg border border-[#2A2A2A] text-xs font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#1F1A1A] transition-colors"
             >
               Previous
             </button>
@@ -841,7 +841,7 @@ export default function NseInvestorList(_props: any) {
                   className={`w-8 h-8 rounded-lg text-xs font-medium transition-colors ${
                     p === page
                       ? "bg-[var(--color-primary)] text-white"
-                      : "border border-gray-200 hover:bg-gray-50"
+                      : "border border-[#2A2A2A] hover:bg-[#1F1A1A]"
                   }`}
                 >
                   {p}
@@ -852,7 +852,7 @@ export default function NseInvestorList(_props: any) {
             <button
               disabled={!canNext}
               onClick={() => setPage((p) => p + 1)}
-              className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+              className="px-3 py-1.5 rounded-lg border border-[#2A2A2A] text-xs font-medium disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#1F1A1A] transition-colors"
             >
               Next
             </button>

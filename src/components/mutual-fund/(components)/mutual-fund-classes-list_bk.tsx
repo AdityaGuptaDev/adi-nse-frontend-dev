@@ -331,18 +331,18 @@ const MutualFundClassesList: React.FC<MutualFundClassesListProps> = ({
   return (
     <div className="">
       {/* Header */}
-      <div className=" border-b border-gray-200 px-4 py-3">
+      <div className=" border-b border-[#2A2A2A] px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div onClick={onBack} className="p-1 cursor-pointer">
-              <IoArrowBack className="w-5 h-5 text-gray-600" />
+              <IoArrowBack className="w-5 h-5 text-[#9CA3AF]" />
             </div>
-            <CustomText className="text-lg font-semibold text-gray-900">
+            <CustomText className="text-lg font-semibold text-[#F9FAFB]">
               Mutual Fund Classes
             </CustomText>
           </div>
           {/* <div className="p-2 cursor-pointer">
-            <FiShare2 className="w-5 h-5 text-gray-600" />
+            <FiShare2 className="w-5 h-5 text-[#9CA3AF]" />
           </div> */}
         </div>
 
@@ -358,7 +358,7 @@ const MutualFundClassesList: React.FC<MutualFundClassesListProps> = ({
                 onClick={() => onActiveTabHandle(tab.categoryName)}
                 className={`px-4 py-3 text-sm font-semibold border-b-2 transition-all cursor-pointer ${activeTab === tab.categoryName
                   ? "text-primary border-primary"
-                  : "text-gray-600 hover:text-gray-800 border-transparent"
+                  : "text-[#9CA3AF] hover:text-[#F9FAFB] border-transparent"
                   }`}
               >
                 <div className="flex gap-4 items-center">
@@ -394,7 +394,7 @@ const MutualFundClassesList: React.FC<MutualFundClassesListProps> = ({
                           aria-label="close sidebar"
                           className="drawer-overlay"
                         ></label>
-                        <ul className="menu rounded-l-2xl bg-white text-base-content min-h-full w-96 ">
+                        <ul className="menu rounded-l-2xl bg-[#111111] text-base-content min-h-full w-96 ">
                           <div className="flex justify-between items-center px-4">
                             <h3 className="text-lg font-medium font-montserrat">{activeTab}</h3>
                             <button
@@ -495,7 +495,7 @@ const MutualFundClassesList: React.FC<MutualFundClassesListProps> = ({
             <div className="modalFooter">
               <div className="text-center">
                 <CustomButton
-                  className="bg-white !text-black !border !border-gray-300 w-28"
+                  className="bg-[#111111] !text-black !border !border-[#3A3A3A] w-28"
                   onClick={() => setSelectedCatIds([])}
                   disabled={!selectedCatIds.length}
                 >
@@ -516,14 +516,14 @@ const MutualFundClassesList: React.FC<MutualFundClassesListProps> = ({
 
       </div>
 
-      {/* <div className="bg-white px-4 border-b border-gray-200">
+      {/* <div className="bg-[#111111] px-4 border-b border-[#2A2A2A]">
       </div> */}
 
       {/* Table */}
       <div className="shadow-sm overflow-hidden rounded-lg">
         <div className="overflow-auto h-[calc(100vh-230px)] 2xl:h-[calc(100vh-280px)]">
           <table className="table table-pin-rows">
-            <thead className="thead border-b border-gray-200">
+            <thead className="thead border-b border-[#2A2A2A]">
               <tr>
                 <th rowSpan={2} className="px-4 py-3 text-left text-sm font-semibold  tracking-wider">
                   Fund Name
@@ -568,10 +568,10 @@ const MutualFundClassesList: React.FC<MutualFundClassesListProps> = ({
                 <th className="colTh px-4 py-3">10Y</th>
               </tr>
             </thead>
-            <tbody className="bg-white mb-4">
+            <tbody className="bg-[#111111] mb-4">
               {activeClass?.schemeList?.rows ? (
                 activeClass?.schemeList?.rows?.map((fund: any, index: number) => (
-                  <tr key={index} className="hover:bg-gray-50">
+                  <tr key={index} className="hover:bg-[#1F1A1A]">
                     <td className="px-4 py-4">
                       <div>
                         <CustomText className="text-base font-medium text-secondary-content cursor-pointer" onClick={() => router.push(`/scheme-detail`)}>

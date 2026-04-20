@@ -35,14 +35,14 @@ function GoalDetail(props: any) {
   };
 
   return (
-    <>
-        <div className="pageTitle">
-          <CustomText className="text-xl font-montserrat font-semibold mt-1">
+    <div className="min-h-screen bg-[#0A0A0A]">
+        <div className="pageTitle bg-[#111111] border-b border-[#2A2A2A]">
+          <CustomText className="text-xl font-montserrat font-semibold mt-1 text-[#F59E0B]">
             My Goal
           </CustomText>
         </div>
 
-      <div className="p-4">
+      <div className="p-4 bg-[#0A0A0A]">
         <div className="flex min-h-[calc(100vh-300px)]">
           <div className="w-1/4 px-4">
             <div className="">
@@ -107,7 +107,7 @@ function GoalDetail(props: any) {
               </CustomText>
             </div>
           </div>
-          <div className="border-r border-accent h-auto mx-2" />
+          <div className="border-r border-[#2A2A2A] h-auto mx-2" />
           <div className="w-3/4 px-2">
             <div>
               <CustomText className="font-montserrat text-lg font-semibold">
@@ -198,13 +198,14 @@ function GoalDetail(props: any) {
       </div>
 
        {/* Border line */}
-       <div className="border-b border-accent"></div>
+       <div className="border-b border-[#2A2A2A]"></div>
 
-       <div className="mt-5 px-5">
-        <CustomButton className="w-36 bg-white !text-black !border !border-gray-300 shadow-none" onClick={() => router.push(`/goal-planning`)}>Back</CustomButton>
+       <div className="mt-5 px-5 bg-[#0A0A0A]">
+        <CustomButton className="w-36 bg-[#F59E0B] !text-white !border !border-[#2A2A2A] shadow-none hover:bg-[#B45309]" onClick={() => router.push(`/goal-planning`)}>Back</CustomButton>
        </div>
-    </>
+    </div>
   );
 }
 
 export default GoalDetail;
+

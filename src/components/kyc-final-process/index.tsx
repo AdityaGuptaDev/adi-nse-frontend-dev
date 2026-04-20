@@ -203,16 +203,16 @@ function KYCFinalProcess() {
 
             {/* Main Content */}
             <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <div className="bg-white rounded-2xl shadow-xl border overflow-hidden">
+                <div className="bg-[#111111] rounded-2xl shadow-xl border overflow-hidden">
 
                     {/* Success Header */}
                     <div className="bg-gradient-to-r from-green-500 to-emerald-600 px-8 py-12 text-center">
                         <div className="flex justify-center mb-6">
-                            <div className="bg-white rounded-full p-4 shadow-lg">
+                            <div className="bg-[#111111] rounded-full p-4 shadow-lg">
                                 <FaCheckCircle className="text-green-500 text-6xl" />
                             </div>
                         </div>
-                        <CustomText className="text-3xl font-bold text-white mb-4">
+                        <CustomText className="text-3xl font-bold text-[#F9FAFB] mb-4">
                             Verification Successful!
                         </CustomText>
                         <CustomText className="text-green-100 text-lg leading-relaxed max-w-2xl mx-auto">
@@ -227,25 +227,25 @@ function KYCFinalProcess() {
                         {/* Verification Steps */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
                             <div className="text-center">
-                                <div className="bg-blue-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                                    <FaUserCheck className="text-blue-600 text-2xl" />
+                                <div className="bg-[#1F1A1A] rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                                    <FaUserCheck className="text-[#F59E0B] text-2xl" />
                                 </div>
-                                <CustomText className="font-semibold text-gray-900 mb-2">
+                                <CustomText className="font-semibold text-[#F9FAFB] mb-2">
                                     Identity Verified
                                 </CustomText>
-                                <CustomText className="text-sm text-gray-600">
+                                <CustomText className="text-sm text-[#9CA3AF]">
                                     Your identity documents have been successfully verified
                                 </CustomText>
                             </div>
 
                             <div className="text-center">
-                                <div className="bg-purple-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                                    <FaShieldAlt className="text-purple-600 text-2xl" />
+                                <div className="bg-[#2A1F0A] rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                                    <FaShieldAlt className="text-[#F59E0B] text-2xl" />
                                 </div>
-                                <CustomText className="font-semibold text-gray-900 mb-2">
+                                <CustomText className="font-semibold text-[#F9FAFB] mb-2">
                                     Aadhaar eSign
                                 </CustomText>
-                                <CustomText className="text-sm text-gray-600">
+                                <CustomText className="text-sm text-[#9CA3AF]">
                                     Digital signature process completed successfully
                                 </CustomText>
                             </div>
@@ -254,10 +254,10 @@ function KYCFinalProcess() {
                                 <div className="bg-green-100 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
                                     <FaFileAlt className="text-green-600 text-2xl" />
                                 </div>
-                                <CustomText className="font-semibold text-gray-900 mb-2">
+                                <CustomText className="font-semibold text-[#F9FAFB] mb-2">
                                     Documents Ready
                                 </CustomText>
-                                <CustomText className="text-sm text-gray-600">
+                                <CustomText className="text-sm text-[#9CA3AF]">
                                     All your KYC documents are processed and ready
                                 </CustomText>
                             </div>
@@ -273,7 +273,7 @@ function KYCFinalProcess() {
                                     <CustomButton
                                         onClick={() => createContract()}
                                         loading={submitLoader}
-                                        className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 text-white px-6 py-2.5 font-medium"
+                                        className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 text-[#F9FAFB] px-6 py-2.5 font-medium"
                                     >
                                         Create Contract again
                                     </CustomButton>
@@ -283,7 +283,7 @@ function KYCFinalProcess() {
                                     <CustomButton
                                         onClick={handleDownload}
                                         disabled={isDownloading}
-                                        className="flex items-center justify-center gap-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white px-8 py-4 font-semibold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 min-w-[200px]"
+                                        className="flex items-center justify-center gap-3 bg-[#F59E0B] hover:bg-[#B45309] disabled:bg-blue-400 text-[#F9FAFB] px-8 py-4 font-semibold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 min-w-[200px]"
                                     >
                                         <FaDownload className={`text-xl ${isDownloading ? 'animate-bounce' : ''}`} />
                                         {isDownloading ? 'Downloading...' : 'Download Documents'}
@@ -292,7 +292,7 @@ function KYCFinalProcess() {
                                     <CustomButton
                                         onClick={handleFinalSubmit}
                                         disabled={isSubmitting}
-                                        className="flex items-center justify-center gap-3 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white px-8 py-4 font-semibold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 min-w-[200px]"
+                                        className="flex items-center justify-center gap-3 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-[#F9FAFB] px-8 py-4 font-semibold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 min-w-[200px]"
                                     >
                                         <FaCheckCircle className={`text-xl ${isSubmitting ? 'animate-spin' : ''}`} />
                                         {isSubmitting ? 'Submitting...' : 'Final Submit'}

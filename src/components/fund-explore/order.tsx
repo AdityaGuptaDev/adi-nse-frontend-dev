@@ -464,10 +464,10 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
         <>
             <dialog ref={modalRef} className="modal" id={modalId}>
                 <div className="modal-box max-w-6xl w-full  rounded-xl">
-                    <ArrowLeft className="w-5 h-5 cursor-pointer text-gray-600 hover:text-gray-800 transition-colors" onClick={onClose} />
+                    <ArrowLeft className="w-5 h-5 cursor-pointer text-[#9CA3AF] hover:text-[#F9FAFB] transition-colors" onClick={onClose} />
 
                     <div className="text-center pb-4 mb-0">
-                        <h3 className="font-semibold text-lg text-gray-900">Order Application Form</h3>
+                        <h3 className="font-semibold text-lg text-[#F9FAFB]">Order Application Form</h3>
                     </div>
 
                     {/*<div className="flex justify-between items-start gap-8">*/}
@@ -475,37 +475,37 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                         {/* Info Block */}
                         <div className="ml-5 ">
                             <div className="grid grid-cols-2 gap-4 text-sm">
-                                <div className="text-gray-600 font-medium space-y-4">
+                                <div className="text-[#9CA3AF] font-medium space-y-4">
                                     <p>Scheme</p>
                                     <p>CAN</p>
                                     <p>Folio</p>
                                     <p>First Holder</p>
                                     <p>KYC Status</p>
                                 </div>
-                                <div className="text-gray-800 space-y-4 ">
+                                <div className="text-[#F9FAFB] space-y-4 ">
                                     <p className="font-medium">{schemeData?.ms_fullname}</p>
 
                                     {/* Enhanced CAN Selection */}
                                     <div className="flex items-center relative">
                                         <span className="text-sm font-mono">{selectedCan}</span>
                                         <button
-                                            className="ml-2 p-1 rounded hover:bg-gray-100 transition-colors"
+                                            className="ml-2 p-1 rounded hover:bg-[#1F1A1A] transition-colors"
                                             onClick={() => {
                                                 setShowCanList(!showCanList)
 
                                             }}
                                         >
-                                            <Pencil className="w-3 h-3 text-gray-500" />
+                                            <Pencil className="w-3 h-3 text-[#9CA3AF]" />
                                         </button>
                                         {showCanList && (
-                                            <div className="absolute  top-8 left-0 z-50 min-w-[600px] bg-white border border-gray-200 rounded-lg shadow-lg ">
-                                                <div className="p-3 border-b border-gray-100">
-                                                    <h4 className="font-medium text-gray-900 text-sm">Select CAN</h4>
+                                            <div className="absolute  top-8 left-0 z-50 min-w-[600px] bg-[#111111] border border-[#2A2A2A] rounded-lg shadow-lg ">
+                                                <div className="p-3 border-b border-[#2A2A2A]">
+                                                    <h4 className="font-medium text-[#F9FAFB] text-sm">Select CAN</h4>
                                                 </div>
                                                 <div className="max-h-60 overflow-auto">
                                                     <table className="w-full text-xs ">
-                                                        <thead className="bg-gray-50">
-                                                            <tr className="border-b border-gray-200">
+                                                        <thead className="bg-[#1F1A1A]">
+                                                            <tr className="border-b border-[#2A2A2A]">
                                                                 <th className="py-2 px-3 text-left">Select</th>
                                                                 <th className="py-2 px-3 text-left">CAN</th>
                                                                 <th className="py-2 px-3 text-left">Primary Holder</th>
@@ -516,7 +516,7 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                                         </thead>
                                                         <tbody>
                                                             {investorList?.map((inv: any) => (
-                                                                <tr key={inv?.id} className="hover:bg-gray-50 border-b border-gray-100">
+                                                                <tr key={inv?.id} className="hover:bg-[#1F1A1A] border-b border-[#2A2A2A]">
                                                                     <td className="py-2 px-3">
                                                                         <input
                                                                             type="radio"
@@ -557,21 +557,21 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                                 )}
                                             </div>
                                             <button
-                                                className="ml-2 p-1 rounded hover:bg-gray-100 transition-colors"
+                                                className="ml-2 p-1 rounded hover:bg-[#1F1A1A] transition-colors"
                                                 onClick={() => setShowFolioDropdown(!showFolioDropdown)}
                                             >
-                                                <ChevronDown className="w-4 h-4 text-gray-500" />
+                                                <ChevronDown className="w-4 h-4 text-[#9CA3AF]" />
                                             </button>
                                         </div>
 
                                         {showFolioDropdown && (
-                                            <div className="absolute top-8 left-0 z-50 w-[500px] bg-white border border-gray-200 rounded-lg shadow-lg">
-                                                <div className="p-3 border-b border-gray-100">
-                                                    <h4 className="font-medium text-gray-900 text-sm">Folio Selection</h4>
+                                            <div className="absolute top-8 left-0 z-50 w-[500px] bg-[#111111] border border-[#2A2A2A] rounded-lg shadow-lg">
+                                                <div className="p-3 border-b border-[#2A2A2A]">
+                                                    <h4 className="font-medium text-[#F9FAFB] text-sm">Folio Selection</h4>
                                                 </div>
 
                                                 {/* Action Buttons */}
-                                                <div className="p-3 border-b border-gray-100 flex gap-2">
+                                                <div className="p-3 border-b border-[#2A2A2A] flex gap-2">
                                                     <button
                                                         onClick={() => handleFolio("New")}
                                                         className="flex items-center gap-2 px-3 py-2 text-sm bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors"
@@ -581,7 +581,7 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                                     </button>
                                                     <button
                                                         onClick={() => handleFolio("Existing")}
-                                                        className="flex items-center gap-2 px-3 py-2 text-sm bg-gray-50 text-gray-700 rounded-md hover:bg-gray-100 transition-colors"
+                                                        className="flex items-center gap-2 px-3 py-2 text-sm bg-[#1F1A1A] text-[#E5E7EB] rounded-md hover:bg-[#1F1A1A] transition-colors"
                                                     >
                                                         <List className="w-4 h-4" />
                                                         Select from List
@@ -592,8 +592,8 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                                 {folioSelectionMode === 'existing' && (
                                                     <div className="max-h-60 overflow-y-auto">
                                                         <table className="w-full text-xs">
-                                                            <thead className="bg-gray-50 sticky top-0">
-                                                                <tr className="border-b border-gray-200">
+                                                            <thead className="bg-[#1F1A1A] sticky top-0">
+                                                                <tr className="border-b border-[#2A2A2A]">
                                                                     <th className="py-2 px-3 text-left">Select</th>
                                                                     <th className="py-2 px-3 text-left">Folio Number</th>
                                                                     <th className="py-2 px-3 text-left">Primary Holder</th>
@@ -603,7 +603,7 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                                             <tbody>
 
                                                                 {investorData.map((opt: any) => (
-                                                                    <tr key={opt.folio_no} className="hover:bg-gray-50 border-b border-gray-100">
+                                                                    <tr key={opt.folio_no} className="hover:bg-[#1F1A1A] border-b border-[#2A2A2A]">
                                                                         <td className="py-2 px-3">
                                                                             <input
                                                                                 type="radio"
@@ -647,8 +647,8 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                 <div className="max-h-64 overflow-y-auto mt-5">
 
                                     <table className="w-full text-xs ">
-                                        <thead className="bg-gray-50 sticky top-0">
-                                            <tr className="border-b border-gray-200">
+                                        <thead className="bg-[#1F1A1A] sticky top-0">
+                                            <tr className="border-b border-[#2A2A2A]">
                                                 <td></td>
                                                 <th className="py-2 px-3 text-left">Bank</th>
                                                 <th className="py-2 px-3 text-left">Account Type</th>
@@ -660,7 +660,7 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                         <tbody>
 
                                             {bankList.map((opt: any) => (
-                                                <tr key={opt?.account_no} className="hover:bg-gray-50 border-b border-gray-100">
+                                                <tr key={opt?.account_no} className="hover:bg-[#1F1A1A] border-b border-[#2A2A2A]">
                                                     <td className="py-2 px-3">
                                                         <input
                                                             type="radio"
@@ -735,7 +735,7 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                             {transactionType !== 'R' &&
 
                                 <div>
-                                    <label className="block text-xs font-semibold text-gray-700 mb-2 ">Scheme Type:</label>
+                                    <label className="block text-xs font-semibold text-[#E5E7EB] mb-2 ">Scheme Type:</label>
                                     <div className="flex items-center gap-2">
                                         {['Growth', 'IDCW-P', 'IDCW-R'].map(type => (
                                             <label key={type} className="flex items-center gap-2">
@@ -756,7 +756,7 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
                             {['R', 'O'].includes(transactionType) &&
                                 <div>
-                                    <label className="block text-xs font-semibold font-medium text-gray-700 mb-2">{transactionType === 'R' ? 'Redeem' : 'Switch'} Type:</label>
+                                    <label className="block text-xs font-semibold font-medium text-[#E5E7EB] mb-2">{transactionType === 'R' ? 'Redeem' : 'Switch'} Type:</label>
                                     <div className="flex items-center gap-2">
                                         {['Amount', 'Unit', 'All Unit'].map(type => (
                                             <div key={type} className="flex items-center gap-2">
@@ -782,8 +782,8 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                 <div className="space-y-4">
                                     {isDividend && (
                                         <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">Dividend Frequency:</label>
-                                            <select className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            <label className="block text-sm font-medium text-[#E5E7EB] mb-2">Dividend Frequency:</label>
+                                            <select className="w-full p-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                                                 <option value="">Select Frequency</option>
                                                 {dividendFrequency.map(freq => (
                                                     <option key={freq.value} value={freq.value}>{freq.label}</option>
@@ -795,7 +795,7 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
                                     {["V", "Y", "J"].includes(transactionType) &&
                                         <div className="flex items-center gap-2">
                                             <div>
-                                                {/* <label className="block text-sm font-medium text-gray-700 mb-2">Select Frequency:</label>*/}
+                                                {/* <label className="block text-sm font-medium text-[#E5E7EB] mb-2">Select Frequency:</label>*/}
 
                                                 <CustomSelect
                                                     items={frequencies}
@@ -903,7 +903,7 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
 
                                         {amount !== "" && !isNaN(parseInt(amount, 10)) && (
-                                            <label className="block text-xs font-medium text-gray-700 mt-2">
+                                            <label className="block text-xs font-medium text-[#E5E7EB] mt-2">
                                                 {numberToWords(parseInt(amount, 10))}
                                             </label>
                                         )}
@@ -950,7 +950,7 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
 
                                             <div className="flex gap-3 pt-4">
-                                                <CustomButton onClick={handleTransact}>{isLoading ? <><Loader size="w-4 h-4" color="text-white" thickness="border-2" borderColor='border-gray-300' />  wait...</> : 'Order Now'}
+                                                <CustomButton onClick={handleTransact}>{isLoading ? <><Loader size="w-4 h-4" color="text-white" thickness="border-2" borderColor='border-[#3A3A3A]' />  wait...</> : 'Order Now'}
                                                 </CustomButton>
                                                 <CustomButton className="bg-gray-300 hover:bg-gray-400 text-black" onClick={() => setIsTransact(false)}>Cancel</CustomButton>
 

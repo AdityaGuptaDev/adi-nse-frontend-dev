@@ -133,7 +133,7 @@ function Holdings({ schemeData }: any) {
                                     <div className='flex justify-between items-center'>
                                         <div className='flex-1'>
                                             <CustomText className='text-base font-semibold'>{item?.name}</CustomText>
-                                            <CustomText className='text-sm text-gray-600'>{item?.sector || 'Banking'}</CustomText>
+                                            <CustomText className='text-sm text-[#9CA3AF]'>{item?.sector || 'Banking'}</CustomText>
                                         </div>
                                         <div className='flex items-center gap-4 min-w-fit'>
                                             <CustomText className='text-sm font-semibold min-w-[60px] text-right'>
@@ -203,7 +203,7 @@ function Holdings({ schemeData }: any) {
                                 <div className='sm:flex justify-between items-center'>
                                     <div className='flex-1'>
                                         <CustomText className='text-base font-semibold'>{item?.name}</CustomText>
-                                        <CustomText className='text-sm text-gray-600'>{item?.sector || 'Banking'}</CustomText>
+                                        <CustomText className='text-sm text-[#9CA3AF]'>{item?.sector || 'Banking'}</CustomText>
                                     </div>
                                     <div className='flex justify-center items-center gap-4 min-w-fit'>
                                         <CustomText className='text-sm font-semibold sm:min-w-[60px] text-right'>

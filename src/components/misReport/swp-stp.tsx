@@ -163,7 +163,7 @@ console.log("pan----"+pan)
 
   if (loading) {
     return (
-      <div className="w-full bg-white">
+      <div className="w-full bg-[#111111]">
         <div className="p-4 flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
           <p className="ml-4">Loading SIP/STP data...</p>
@@ -174,7 +174,7 @@ console.log("pan----"+pan)
 
   if (error) {
     return (
-      <div className="w-full bg-white">
+      <div className="w-full bg-[#111111]">
         <div className="p-4 bg-red-100 border-l-4 border-red-500 text-red-700">
           <p className="font-bold">Error loading data:</p>
           <p>{error}</p>
@@ -184,7 +184,7 @@ console.log("pan----"+pan)
   }
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-[#111111]">
       {/* Header */}
       <div className="px-4 py-2 flex justify-between items-center bg-blue-800">
         <div className="flex items-center">
@@ -214,7 +214,7 @@ console.log("pan----"+pan)
             <h2 className="text-lg font-semibold">SIP/STP Report</h2>
             <button 
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100"
+              className="flex items-center gap-2 px-3 py-1 bg-[#1F1A1A] text-[#F59E0B] rounded-md hover:bg-[#2A2A2A]"
             >
               <Filter size={16} />
               <span>Filters</span>
@@ -228,13 +228,13 @@ console.log("pan----"+pan)
           </div>
 
           {showFilters && (
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+            <div className="mt-4 p-4 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A]">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Status Filter */}
                 <div>
                   <label className="block text-sm font-medium mb-1">Status</label>
                   <select
-                    className="w-full p-2 border border-gray-300 rounded text-sm"
+                    className="w-full p-2 border border-[#3A3A3A] rounded text-sm"
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
                   >
@@ -248,7 +248,7 @@ console.log("pan----"+pan)
                 <div>
                   <label className="block text-sm font-medium mb-1">AMC</label>
                   <select
-                    className="w-full p-2 border border-gray-300 rounded text-sm"
+                    className="w-full p-2 border border-[#3A3A3A] rounded text-sm"
                     value={amcFilter}
                     onChange={(e) => setAmcFilter(e.target.value)}
                   >
@@ -263,7 +263,7 @@ console.log("pan----"+pan)
                 <div>
                   <label className="block text-sm font-medium mb-1">Scheme Type</label>
                   <select
-                    className="w-full p-2 border border-gray-300 rounded text-sm"
+                    className="w-full p-2 border border-[#3A3A3A] rounded text-sm"
                     value={schemeTypeFilter}
                     onChange={(e) => setSchemeTypeFilter(e.target.value)}
                   >
@@ -281,14 +281,14 @@ console.log("pan----"+pan)
                     <input
                       type="number"
                       placeholder="Min"
-                      className="w-1/2 p-2 border border-gray-300 rounded text-sm"
+                      className="w-1/2 p-2 border border-[#3A3A3A] rounded text-sm"
                       value={minAmountFilter}
                       onChange={(e) => setMinAmountFilter(e.target.value)}
                     />
                     <input
                       type="number"
                       placeholder="Max"
-                      className="w-1/2 p-2 border border-gray-300 rounded text-sm"
+                      className="w-1/2 p-2 border border-[#3A3A3A] rounded text-sm"
                       value={maxAmountFilter}
                       onChange={(e) => setMaxAmountFilter(e.target.value)}
                     />
@@ -299,7 +299,7 @@ console.log("pan----"+pan)
               <div className="mt-4 flex justify-end gap-2">
                 <button
                   onClick={resetFilters}
-                  className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 flex items-center gap-1"
+                  className="px-4 py-2 text-sm text-[#9CA3AF] hover:text-[#F9FAFB] flex items-center gap-1"
                 >
                   <X size={14} />
                   Reset Filters
@@ -316,7 +316,7 @@ console.log("pan----"+pan)
                   Status: {statusFilter === 'active' ? 'Active' : 'Inactive'}
                   <button 
                     onClick={() => setStatusFilter('all')}
-                    className="ml-1 text-blue-600 hover:text-blue-800"
+                    className="ml-1 text-[#F59E0B] hover:text-blue-800"
                   >
                     <X size={12} />
                   </button>
@@ -327,7 +327,7 @@ console.log("pan----"+pan)
                   AMC: {amcFilter}
                   <button 
                     onClick={() => setAmcFilter('all')}
-                    className="ml-1 text-blue-600 hover:text-blue-800"
+                    className="ml-1 text-[#F59E0B] hover:text-blue-800"
                   >
                     <X size={12} />
                   </button>
@@ -338,7 +338,7 @@ console.log("pan----"+pan)
                   Type: {schemeTypeFilter}
                   <button 
                     onClick={() => setSchemeTypeFilter('all')}
-                    className="ml-1 text-blue-600 hover:text-blue-800"
+                    className="ml-1 text-[#F59E0B] hover:text-blue-800"
                   >
                     <X size={12} />
                   </button>
@@ -352,7 +352,7 @@ console.log("pan----"+pan)
                       setMinAmountFilter('');
                       setMaxAmountFilter('');
                     }}
-                    className="ml-1 text-blue-600 hover:text-blue-800"
+                    className="ml-1 text-[#F59E0B] hover:text-blue-800"
                   >
                     <X size={12} />
                   </button>
@@ -363,7 +363,7 @@ console.log("pan----"+pan)
         </div>
 
         {/* Results Count */}
-        <div className="mb-2 text-sm text-gray-600">
+        <div className="mb-2 text-sm text-[#9CA3AF]">
           Showing {filteredData.length} of {portfolioData.length} SWP/STP
         </div>
 
@@ -371,7 +371,7 @@ console.log("pan----"+pan)
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
-              <tr className="bg-gray-200">
+              <tr className="bg-[#2A2A2A]">
                 <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">Sno</th>
                 <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">Investor</th>
                 <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">AMC</th>
@@ -393,17 +393,17 @@ console.log("pan----"+pan)
             </thead>
             <tbody>
               {filteredData.map((item, index) => (
-                <tr key={index} className="hover:bg-gray-50">
+                <tr key={index} className="hover:bg-[#1F1A1A]">
                   <td className="border border-gray-400 px-2 py-1 text-xs">{index + 1}</td>
                   <td className="border border-gray-400 px-2 py-1 text-xs">{item.inv_name}</td>
                   <td className="border border-gray-400 px-2 py-1 text-xs">{getAMCName(item.amc_code)}</td>
                   <td className="border border-gray-400 px-2 py-1 text-xs">
-                    <span className="text-blue-600 underline cursor-pointer">
+                    <span className="text-[#F59E0B] underline cursor-pointer">
                       {item.scheme}
                     </span>
                   </td>
                   <td className="border border-gray-400 px-2 py-1 text-xs">
-                    <span className="text-blue-600 underline cursor-pointer">
+                    <span className="text-[#F59E0B] underline cursor-pointer">
                       {item.folio_no}
                     </span>
                   </td>
@@ -437,7 +437,7 @@ console.log("pan----"+pan)
             </p>
             <button 
               onClick={resetFilters}
-              className="mt-2 text-blue-600 hover:text-blue-800 text-sm"
+              className="mt-2 text-[#F59E0B] hover:text-blue-800 text-sm"
             >
               Reset all filters
             </button>
@@ -446,7 +446,7 @@ console.log("pan----"+pan)
 
         {/* Summary */}
         {filteredData.length > 0 && (
-          <div className="mt-4 p-4 bg-gray-50 rounded">
+          <div className="mt-4 p-4 bg-[#1F1A1A] rounded">
             <div className="text-sm font-medium mb-2">Summary:</div>
             <div className="grid grid-cols-4 gap-4 text-xs">
               <div>

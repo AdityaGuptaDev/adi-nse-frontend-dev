@@ -15,7 +15,7 @@ export default function NseCart() {
     <div className="nse-module p-6 max-w-[700px] mx-auto">
       <h1 className="text-2xl font-bold text-[#D97706] mb-6">My Cart</h1>
 
-      <div className="bg-white rounded-xl shadow-sm border p-12 text-center">
+      <div className="bg-[#111111] rounded-xl shadow-sm border p-12 text-center">
         {/* Empty cart icon */}
         <div className="mx-auto mb-6 w-20 h-20 rounded-full flex items-center justify-center" style={{ backgroundColor: "#e6f9f8" }}>
           <svg
@@ -34,10 +34,10 @@ export default function NseCart() {
           </svg>
         </div>
 
-        <h2 className="text-xl font-semibold text-gray-700 mb-2">
+        <h2 className="text-xl font-semibold text-[#E5E7EB] mb-2">
           Your cart is empty
         </h2>
-        <p className="text-gray-400 text-sm mb-8 max-w-sm mx-auto">
+        <p className="text-[#6B7280] text-sm mb-8 max-w-sm mx-auto">
           Add schemes from New Investment page to your cart before placing orders
         </p>
 

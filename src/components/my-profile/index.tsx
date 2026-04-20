@@ -543,7 +543,7 @@ function MyProfile() {
             {(
                 <div className="p-6">
                     <div className="max-w-7xl mx-auto">
-                        <div className='flex flex-col gap-2 justify-end fixed bottom-1/2 right-0 z-50 bg-white rounded-tl-2xl rounded-bl-2xl shadow p-2'>
+                        <div className='flex flex-col gap-2 justify-end fixed bottom-1/2 right-0 z-50 bg-[#111111] rounded-tl-2xl rounded-bl-2xl shadow p-2'>
                             <div onClick={() => router.push(`/risk-profile`)} className='flex flex-col justify-center items-center cursor-pointer bg-primary text-white p-2 rounded-lg'>
                                 <BiTachometer className='text-2xl' />
                                 <div className='text-xs font-bold'>Risk Profile</div>
@@ -566,7 +566,7 @@ function MyProfile() {
                                 
                                 {/* Investor Profile Section (userType === 2) */}
                                 {userType === 2 && (
-                                    <div className="bg-white rounded-2xl p-6 mb-6">
+                                    <div className="bg-[#111111] rounded-2xl p-6 mb-6">
                                         <CustomText tag="h2" className="text-2xl font-semibold text-secondary mb-4">
                                             Investor Profile
                                         </CustomText>
@@ -575,23 +575,23 @@ function MyProfile() {
                                             {/* Left Column */}
                                             <div className="space-y-4">
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">Investor Name:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">Investor Name:</span>
                                                     <span className="font-semibold">{profileView.name || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">PAN Number:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">PAN Number:</span>
                                                     <span className="font-semibold">{profileView.pan || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">Mobile Number:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">Mobile Number:</span>
                                                     <span className="font-semibold">{profileView.mobile || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">Email ID:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">Email ID:</span>
                                                     <span className="font-semibold">{profileView.email || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">Date of Birth:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">Date of Birth:</span>
                                                     <span className="font-semibold">{profileView.dob ? formatDates(profileView.dob) : 'N/A'}</span>
                                                 </div>
                                             </div>
@@ -599,23 +599,23 @@ function MyProfile() {
                                             {/* Right Column */}
                                             <div className="space-y-4">
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">Gender:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">Gender:</span>
                                                     <span className="font-semibold">{profileView.gender || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">Bank Name:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">Bank Name:</span>
                                                     <span className="font-semibold">{profileView.bankName || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">Account Number:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">Account Number:</span>
                                                     <span className="font-semibold">{profileView.bankAccountNo || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">IFSC Code:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">IFSC Code:</span>
                                                     <span className="font-semibold">{profileView.bankIfsc || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">Address:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">Address:</span>
                                                     <span className="font-semibold">{profileView.address || 'N/A'}</span>
                                                 </div>
                                             </div>
@@ -638,7 +638,7 @@ function MyProfile() {
                                         )}
 
                                         {/* Status badges */}
-                                        <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-100">
+                                        <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-[#2A2A2A]">
                                             {profileView.isCanRegistered && (
                                                 <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-green-50 text-green-700 border border-green-200">
                                                     <FiCheckCircle className="w-3 h-3" /> CAN Registered
@@ -664,7 +664,7 @@ function MyProfile() {
 
                                 {/* Partner Profile Section (userType === 4) */}
                                 {userType === 4 && (
-                                    <div className="bg-white rounded-2xl p-6 mb-6">
+                                    <div className="bg-[#111111] rounded-2xl p-6 mb-6">
                                         <CustomText tag="h2" className="text-2xl font-semibold text-secondary mb-4">
                                             Partner Profile
                                         </CustomText>
@@ -673,19 +673,19 @@ function MyProfile() {
                                             {/* Left Column */}
                                             <div className="space-y-4">
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">Partner Name:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">Partner Name:</span>
                                                     <span className="font-semibold">{userData?.partner?.adhaarName || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">PAN Number:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">PAN Number:</span>
                                                     <span className="font-semibold">{userData?.partner?.pan || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">Mobile Number:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">Mobile Number:</span>
                                                     <span className="font-semibold">{userData?.partner?.mobile || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">Email ID:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">Email ID:</span>
                                                     <span className="font-semibold">{userData?.partner?.email || 'N/A'}</span>
                                                 </div>
                                             </div>
@@ -693,19 +693,19 @@ function MyProfile() {
                                             {/* Right Column */}
                                             <div className="space-y-4">
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">Aadhaar Number:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">Aadhaar Number:</span>
                                                     <span className="font-semibold">{userData?.partner?.aadhaar || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">Bank Name:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">Bank Name:</span>
                                                     <span className="font-semibold">{userData?.partner?.bankAcBankName || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">Account Number:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">Account Number:</span>
                                                     <span className="font-semibold">{userData?.partner?.bankAcNo || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">IFSC Code:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">IFSC Code:</span>
                                                     <span className="font-semibold">{userData?.partner?.bankAcIfsc || 'N/A'}</span>
                                                 </div>
                                             </div>
@@ -715,15 +715,15 @@ function MyProfile() {
 
                                 {/* Partner's Investors Section (userType === 4) */}
                                 {userType === 4 && (
-                                    <div className="bg-white rounded-2xl p-6 mb-6">
-                                        <div className="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-xl">
+                                    <div className="bg-[#111111] rounded-2xl p-6 mb-6">
+                                        <div className="flex justify-between items-center mb-4 bg-[#1F1A1A] p-3 rounded-xl">
                                             <CustomText tag="h3" className="text-lg font-semibold text-secondary">
                                                 Investor Clients ({partnerInvestors.length})
                                             </CustomText>
                                         </div>
 
                                         {partnerInvestors.length === 0 ? (
-                                            <div className="text-center py-10 text-gray-400">
+                                            <div className="text-center py-10 text-[#6B7280]">
                                                 <FiUser className="w-12 h-12 mx-auto mb-3 opacity-50" />
                                                 <p className="text-lg font-medium">No investors found</p>
                                                 <p className="text-sm mt-1">Investors mapped to your account will appear here.</p>
@@ -732,7 +732,7 @@ function MyProfile() {
                                             <div className="overflow-x-auto">
                                                 <table className="min-w-full text-sm">
                                                     <thead>
-                                                        <tr className="border-b border-gray-200 text-gray-600">
+                                                        <tr className="border-b border-[#2A2A2A] text-[#9CA3AF]">
                                                             <th className="py-3 px-4 text-left font-semibold">#</th>
                                                             <th className="py-3 px-4 text-left font-semibold">Investor Name</th>
                                                             <th className="py-3 px-4 text-left font-semibold">PAN</th>
@@ -746,20 +746,20 @@ function MyProfile() {
                                                     <tbody>
                                                         {partnerInvestors.map((inv: any, idx: number) => (
                                                             <Fragment key={inv.id}>
-                                                                <tr className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                                                                    <td className="py-3 px-4 text-gray-500">{idx + 1}</td>
+                                                                <tr className="border-b border-[#2A2A2A] hover:bg-[#1F1A1A] transition-colors">
+                                                                    <td className="py-3 px-4 text-[#9CA3AF]">{idx + 1}</td>
                                                                     <td className="py-3 px-4">
                                                                         <button
-                                                                            className="inline-block align-middle mr-2 cursor-pointer hover:text-blue-600 transition-colors text-gray-400"
+                                                                            className="inline-block align-middle mr-2 cursor-pointer hover:text-blue-600 transition-colors text-[#6B7280]"
                                                                             onClick={() => setExpandedPartnerInvestor(prev => ({ ...prev, [inv.id]: !prev[inv.id] }))}
                                                                         >
                                                                             {expandedPartnerInvestor[inv.id] ? <span className="inline-block text-xs">&#9660;</span> : <span className="inline-block text-xs">&#9654;</span>}
                                                                         </button>
-                                                                        <span className="font-medium text-gray-800">{inv.name || '—'}</span>
+                                                                        <span className="font-medium text-[#F9FAFB]">{inv.name || '—'}</span>
                                                                     </td>
-                                                                    <td className="py-3 px-4 font-mono text-gray-700">{inv.pan_no || '—'}</td>
-                                                                    <td className="py-3 px-4 text-gray-700">{inv.reg_mobile || '—'}</td>
-                                                                    <td className="py-3 px-4 text-gray-700 max-w-[180px] truncate" title={inv.reg_email}>{inv.reg_email || '—'}</td>
+                                                                    <td className="py-3 px-4 font-mono text-[#E5E7EB]">{inv.pan_no || '—'}</td>
+                                                                    <td className="py-3 px-4 text-[#E5E7EB]">{inv.reg_mobile || '—'}</td>
+                                                                    <td className="py-3 px-4 text-[#E5E7EB] max-w-[180px] truncate" title={inv.reg_email}>{inv.reg_email || '—'}</td>
                                                                     <td className="py-3 px-4">
                                                                         <div className="flex flex-col gap-1">
                                                                             {(inv.isKYCDone || inv.has_ucc) ? (
@@ -772,12 +772,12 @@ function MyProfile() {
                                                                                 </span>
                                                                             )}
                                                                             {inv.has_ucc && inv.ucc_client_code && (
-                                                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-white text-green-700 border border-green-300 w-fit font-mono">
+                                                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#111111] text-green-700 border border-green-300 w-fit font-mono">
                                                                                     UCC {inv.ucc_client_code}
                                                                                 </span>
                                                                             )}
                                                                             {inv.is_CAN_registered && (
-                                                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-white text-[#D97706] border border-[#F59E0B]/50 w-fit">
+                                                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#111111] text-[#D97706] border border-[#F59E0B]/50 w-fit">
                                                                                     CAN Registered
                                                                                 </span>
                                                                             )}
@@ -851,15 +851,15 @@ function MyProfile() {
                                                                 {expandedPartnerInvestor[inv.id] && (
                                                                     <tr>
                                                                         <td colSpan={8} className="pb-4 px-4">
-                                                                            <div className="bg-gray-50 p-4 rounded-xl mt-1">
-                                                                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700">
+                                                                            <div className="bg-[#1F1A1A] p-4 rounded-xl mt-1">
+                                                                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-[#E5E7EB]">
                                                                                     <div className="flex items-start gap-3">
                                                                                         <div className="w-7 h-7 rounded-lg bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center flex-shrink-0">
                                                                                             <FiCalendar className="w-3.5 h-3.5" />
                                                                                         </div>
                                                                                         <div>
-                                                                                            <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Date of Birth</div>
-                                                                                            <div className="font-semibold text-gray-800">{inv.dob ? formatDates(inv.dob) : '—'}</div>
+                                                                                            <div className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold">Date of Birth</div>
+                                                                                            <div className="font-semibold text-[#F9FAFB]">{inv.dob ? formatDates(inv.dob) : '—'}</div>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div className="flex items-start gap-3">
@@ -867,8 +867,8 @@ function MyProfile() {
                                                                                             <FiUser className="w-3.5 h-3.5" />
                                                                                         </div>
                                                                                         <div>
-                                                                                            <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Account Holding</div>
-                                                                                            <div className="font-semibold text-gray-800">{inv.accountHolding || 'Not Linked'}</div>
+                                                                                            <div className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold">Account Holding</div>
+                                                                                            <div className="font-semibold text-[#F9FAFB]">{inv.accountHolding || 'Not Linked'}</div>
                                                                                         </div>
                                                                                     </div>
                                                                                     <div className="flex items-start gap-3">
@@ -876,8 +876,8 @@ function MyProfile() {
                                                                                             <FiMapPin className="w-3.5 h-3.5" />
                                                                                         </div>
                                                                                         <div>
-                                                                                            <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Address</div>
-                                                                                            <div className="font-semibold text-gray-800">
+                                                                                            <div className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold">Address</div>
+                                                                                            <div className="font-semibold text-[#F9FAFB]">
                                                                                                 {[inv.AddressDetail?.address1, inv.AddressDetail?.city, inv.AddressDetail?.pincode]
                                                                                                     .filter(Boolean)
                                                                                                     .join(', ') || '—'}
@@ -900,7 +900,7 @@ function MyProfile() {
 
                                 {/* BC Member Profile Section (userType === 6) */}
                                 {userType === 6 && (
-                                    <div className="bg-white rounded-2xl p-6 mb-6">
+                                    <div className="bg-[#111111] rounded-2xl p-6 mb-6">
                                         <CustomText tag="h2" className="text-2xl font-semibold text-secondary mb-4">
                                             BC Member Profile
                                         </CustomText>
@@ -909,19 +909,19 @@ function MyProfile() {
                                             {/* Left Column */}
                                             <div className="space-y-4">
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">BC Member Name:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">BC Member Name:</span>
                                                     <span className="font-semibold">{userData?.name || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">PAN Number:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">PAN Number:</span>
                                                     <span className="font-semibold">{userData?.BC?.pan || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">Mobile Number:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">Mobile Number:</span>
                                                     <span className="font-semibold">{userData?.mobile || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">Email ID:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">Email ID:</span>
                                                     <span className="font-semibold">{userData?.BC?.email || 'N/A'}</span>
                                                 </div>
                                             </div>
@@ -929,19 +929,19 @@ function MyProfile() {
                                             {/* Right Column */}
                                             <div className="space-y-4">
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">Aadhaar Number:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">Aadhaar Number:</span>
                                                     <span className="font-semibold">{userData?.BC?.aadhaar || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">Bank Name:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">Bank Name:</span>
                                                     <span className="font-semibold">{userData?.BC?.bankAcBankName || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">Account Number:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">Account Number:</span>
                                                     <span className="font-semibold">{userData?.BC?.bankAcNo || 'N/A'}</span>
                                                 </div>
                                                 <div className="flex">
-                                                    <span className="text-gray-600 w-1/3">IFSC Code:</span>
+                                                    <span className="text-[#9CA3AF] w-1/3">IFSC Code:</span>
                                                     <span className="font-semibold">{userData?.BC?.bankAcIfsc || 'N/A'}</span>
                                                 </div>
                                             </div>
@@ -951,7 +951,7 @@ function MyProfile() {
 
                                 {/* Profile Header - Only show for userType 2 (investor) and 6 (BC) */}
                                 {(userType === 2 || userType === 6) && (
-                                    <div className="bg-white rounded-2xl shadow-sm overflow-hidden mb-4 border border-gray-100">
+                                    <div className="bg-[#111111] rounded-2xl shadow-sm overflow-hidden mb-4 border border-[#2A2A2A]">
                                         {/* Gradient banner with avatar + name */}
                                         <div className="bg-gradient-to-r from-[#F59E0B] to-[#D97706] px-6 py-6">
                                             <div className="flex items-start gap-4">
@@ -979,7 +979,7 @@ function MyProfile() {
                                                             </span>
                                                         )}
                                                         {hasUcc && (
-                                                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-white text-green-700 border-2 border-green-400 shadow-sm">
+                                                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-[#111111] text-green-700 border-2 border-green-400 shadow-sm">
                                                                 <FiCheckCircle className="w-3.5 h-3.5 text-green-600" />
                                                                 <span>NSE UCC</span>
                                                                 <span className="font-mono font-bold text-green-800 tracking-wide">{profileView.uccClientCode || "Created"}</span>
@@ -1000,7 +1000,7 @@ function MyProfile() {
                                         </div>
 
                                         {/* Action row */}
-                                        <div className="flex flex-wrap items-center gap-2 px-6 py-3 border-b border-gray-100 bg-gray-50">
+                                        <div className="flex flex-wrap items-center gap-2 px-6 py-3 border-b border-[#2A2A2A] bg-[#1F1A1A]">
                                             {profileView.isKycComplete && !profileView.isKycDone && (
                                                 <button
                                                     onClick={() => checkPANStatus(investorList)}
@@ -1067,8 +1067,8 @@ function MyProfile() {
                                                     <FiCreditCard className="w-4 h-4" />
                                                 </div>
                                                 <div className="min-w-0 flex-1">
-                                                    <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">PAN</div>
-                                                    <div className="font-mono font-semibold text-gray-800 truncate">{profileView.pan || "—"}</div>
+                                                    <div className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold">PAN</div>
+                                                    <div className="font-mono font-semibold text-[#F9FAFB] truncate">{profileView.pan || "—"}</div>
                                                 </div>
                                             </div>
                                             <div className="flex items-start gap-3">
@@ -1076,8 +1076,8 @@ function MyProfile() {
                                                     <FiCalendar className="w-4 h-4" />
                                                 </div>
                                                 <div className="min-w-0 flex-1">
-                                                    <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Date of Birth</div>
-                                                    <div className="font-semibold text-gray-800">{profileView.dob ? formatDates(profileView.dob) : "—"}</div>
+                                                    <div className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold">Date of Birth</div>
+                                                    <div className="font-semibold text-[#F9FAFB]">{profileView.dob ? formatDates(profileView.dob) : "—"}</div>
                                                 </div>
                                             </div>
                                             <div className="flex items-start gap-3">
@@ -1085,8 +1085,8 @@ function MyProfile() {
                                                     <FiPhone className="w-4 h-4" />
                                                 </div>
                                                 <div className="min-w-0 flex-1">
-                                                    <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Mobile</div>
-                                                    <div className="font-semibold text-gray-800 truncate">{profileView.mobile || "—"}</div>
+                                                    <div className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold">Mobile</div>
+                                                    <div className="font-semibold text-[#F9FAFB] truncate">{profileView.mobile || "—"}</div>
                                                 </div>
                                             </div>
                                             <div className="flex items-start gap-3">
@@ -1094,8 +1094,8 @@ function MyProfile() {
                                                     <FiMail className="w-4 h-4" />
                                                 </div>
                                                 <div className="min-w-0 flex-1">
-                                                    <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Email</div>
-                                                    <div className="font-semibold text-gray-800 truncate" title={profileView.email}>{profileView.email || "—"}</div>
+                                                    <div className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold">Email</div>
+                                                    <div className="font-semibold text-[#F9FAFB] truncate" title={profileView.email}>{profileView.email || "—"}</div>
                                                 </div>
                                             </div>
                                             {profileView.gender && (
@@ -1104,8 +1104,8 @@ function MyProfile() {
                                                         <FiUser className="w-4 h-4" />
                                                     </div>
                                                     <div className="min-w-0 flex-1">
-                                                        <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Gender</div>
-                                                        <div className="font-semibold text-gray-800">{profileView.gender}</div>
+                                                        <div className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold">Gender</div>
+                                                        <div className="font-semibold text-[#F9FAFB]">{profileView.gender}</div>
                                                     </div>
                                                 </div>
                                             )}
@@ -1115,8 +1115,8 @@ function MyProfile() {
                                                         <FiUser className="w-4 h-4" />
                                                     </div>
                                                     <div className="min-w-0 flex-1">
-                                                        <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Marital Status</div>
-                                                        <div className="font-semibold text-gray-800">{profileView.maritalStatus}</div>
+                                                        <div className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold">Marital Status</div>
+                                                        <div className="font-semibold text-[#F9FAFB]">{profileView.maritalStatus}</div>
                                                     </div>
                                                 </div>
                                             )}
@@ -1126,8 +1126,8 @@ function MyProfile() {
                                                         <FiCreditCard className="w-4 h-4" />
                                                     </div>
                                                     <div className="min-w-0 flex-1">
-                                                        <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Occupation</div>
-                                                        <div className="font-semibold text-gray-800">{profileView.occupation}</div>
+                                                        <div className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold">Occupation</div>
+                                                        <div className="font-semibold text-[#F9FAFB]">{profileView.occupation}</div>
                                                     </div>
                                                 </div>
                                             )}
@@ -1137,8 +1137,8 @@ function MyProfile() {
                                                         <FiCreditCard className="w-4 h-4" />
                                                     </div>
                                                     <div className="min-w-0 flex-1">
-                                                        <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Aadhaar</div>
-                                                        <div className="font-mono font-semibold text-gray-800">
+                                                        <div className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold">Aadhaar</div>
+                                                        <div className="font-mono font-semibold text-[#F9FAFB]">
                                                             {`XXXX-XXXX-${profileView.aadhaarNo.slice(-4)}`}
                                                         </div>
                                                     </div>
@@ -1149,8 +1149,8 @@ function MyProfile() {
                                                     <FiMapPin className="w-4 h-4" />
                                                 </div>
                                                 <div className="min-w-0 flex-1">
-                                                    <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Address</div>
-                                                    <div className="font-semibold text-gray-800 break-words">{profileView.address || "—"}</div>
+                                                    <div className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold">Address</div>
+                                                    <div className="font-semibold text-[#F9FAFB] break-words">{profileView.address || "—"}</div>
                                                 </div>
                                             </div>
                                             {(profileView.bankName || profileView.bankAccountNo) && (
@@ -1160,23 +1160,23 @@ function MyProfile() {
                                                     </div>
                                                     <div className="min-w-0 flex-1 grid grid-cols-1 sm:grid-cols-4 gap-3">
                                                         <div>
-                                                            <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Bank</div>
-                                                            <div className="font-semibold text-gray-800 truncate" title={profileView.bankName}>{profileView.bankName || "—"}</div>
+                                                            <div className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold">Bank</div>
+                                                            <div className="font-semibold text-[#F9FAFB] truncate" title={profileView.bankName}>{profileView.bankName || "—"}</div>
                                                         </div>
                                                         <div>
-                                                            <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Account No</div>
-                                                            <div className="font-mono font-semibold text-gray-800">
+                                                            <div className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold">Account No</div>
+                                                            <div className="font-mono font-semibold text-[#F9FAFB]">
                                                                 {profileView.bankAccountNo ? `****${profileView.bankAccountNo.slice(-4)}` : "—"}
                                                             </div>
                                                         </div>
                                                         <div>
-                                                            <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">IFSC</div>
-                                                            <div className="font-mono font-semibold text-gray-800">{profileView.bankIfsc || "—"}</div>
+                                                            <div className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold">IFSC</div>
+                                                            <div className="font-mono font-semibold text-[#F9FAFB]">{profileView.bankIfsc || "—"}</div>
                                                         </div>
                                                         {profileView.bankBranch && (
                                                             <div>
-                                                                <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Branch</div>
-                                                                <div className="font-semibold text-gray-800 truncate" title={profileView.bankBranch}>{profileView.bankBranch}</div>
+                                                                <div className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold">Branch</div>
+                                                                <div className="font-semibold text-[#F9FAFB] truncate" title={profileView.bankBranch}>{profileView.bankBranch}</div>
                                                             </div>
                                                         )}
                                                     </div>
@@ -1187,8 +1187,8 @@ function MyProfile() {
                                                     <FiUser className="w-4 h-4" />
                                                 </div>
                                                 <div className="min-w-0 flex-1">
-                                                    <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Account Holding</div>
-                                                    <div className="font-semibold text-gray-800">{profileView.accountHolding || "Not Linked"}</div>
+                                                    <div className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold">Account Holding</div>
+                                                    <div className="font-semibold text-[#F9FAFB]">{profileView.accountHolding || "Not Linked"}</div>
                                                 </div>
                                             </div>
                                             {profileView.holdingNature && (
@@ -1197,8 +1197,8 @@ function MyProfile() {
                                                         <FiUser className="w-4 h-4" />
                                                     </div>
                                                     <div className="min-w-0 flex-1">
-                                                        <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Holding Nature</div>
-                                                        <div className="font-semibold text-gray-800">{profileView.holdingNature}</div>
+                                                        <div className="text-[10px] uppercase tracking-wider text-[#6B7280] font-semibold">Holding Nature</div>
+                                                        <div className="font-semibold text-[#F9FAFB]">{profileView.holdingNature}</div>
                                                     </div>
                                                 </div>
                                             )}
@@ -1210,8 +1210,8 @@ function MyProfile() {
                             {/* Family Members Table - Only show for userType 2 */}
                             {
                                 userType === 2 && investorList?.group_leader_id == 0 && (
-                                    <div className="bg-white rounded-2xl p-6 ">
-                                        <div className='flex justify-between items-center mb-4 bg-gray-50 p-2 rounded-xl'>
+                                    <div className="bg-[#111111] rounded-2xl p-6 ">
+                                        <div className='flex justify-between items-center mb-4 bg-[#1F1A1A] p-2 rounded-xl'>
                                             <div>
                                                 <CustomText tag="h3" className="text-lg font-semibold text-secondary">Family Members</CustomText>
                                             </div>
@@ -1229,7 +1229,7 @@ function MyProfile() {
                                         <div className="overflow-x-auto border-b border-accent ">
                                             <table className="min-w-full text-sm">
                                                 <thead>
-                                                    <tr className="border-0 border-accent text-gray-600">
+                                                    <tr className="border-0 border-accent text-[#9CA3AF]">
                                                         <th className="w-1/3 py-2 px-4 text-left font-semibold">Member Name</th>
                                                         <th className="w-1/4 py-2 px-4 text-left font-semibold">PAN</th>
                                                         <th className="w-1/4 py-2 px-4 text-left font-semibold">KYC Status</th>
@@ -1250,7 +1250,7 @@ function MyProfile() {
                                                                     {item?.name}
                                                                 </td>
                                                                 <td className="py-2 px-4">{item?.pan_no}</td>
-                                                                <td className={`py-2 px-4 capitalize ${item.annualFund == '<50K' ? 'text-gray-500' : item?.isKYCDone ? 'text-green-500' : 'text-red-500'}`}> {item.annualFund == '<50K' ? 'N/A' : item?.isKYCDone ? "Verified" : "Not Verified"}</td>
+                                                                <td className={`py-2 px-4 capitalize ${item.annualFund == '<50K' ? 'text-[#9CA3AF]' : item?.isKYCDone ? 'text-green-500' : 'text-red-500'}`}> {item.annualFund == '<50K' ? 'N/A' : item?.isKYCDone ? "Verified" : "Not Verified"}</td>
                                                                 <td className="py-2 px-4 flex gap-2 items-center justify-end">
                                                                     {item?.is_kyc_complete && !item?.isKYCDone ? (
                                                                         <CustomButton className="bg-gray-500 text-gray-600w-fit h-auto px-4  rounded text-xs font-normal py-1" onClick={() => {
@@ -1292,9 +1292,9 @@ function MyProfile() {
                                                             {expandedMembers[item?.id] && (
                                                                 <tr className="">
                                                                     <td colSpan={4} className="pb-4 px-4">
-                                                                        <div className='bg-gray-50 p-4 rounded-xl'>
+                                                                        <div className='bg-[#1F1A1A] p-4 rounded-xl'>
                                                                             <div className='flex justify-between'>
-                                                                                <div className="flex flex-col gap-2 text-sm text-gray-700 w-2/3">
+                                                                                <div className="flex flex-col gap-2 text-sm text-[#E5E7EB] w-2/3">
                                                                                     <div className='flex gap-6'>
                                                                                         <span className='inlineLabel'>Profile</span>:
                                                                                         <div>
@@ -1307,7 +1307,7 @@ function MyProfile() {
                                                                                     </div>
                                                                                 </div>
                                                                                 <div className="flex flex-col gap-2 items-center w-full">
-                                                                                    <div className="flex flex-col gap-2 text-sm text-gray-700">
+                                                                                    <div className="flex flex-col gap-2 text-sm text-[#E5E7EB]">
                                                                                         <div className='flex gap-6'>
                                                                                             <span className='inlineLabel'>Mobile No.</span>:
                                                                                             <span className='font-bold'>{item?.reg_mobile}</span>
@@ -1353,7 +1353,7 @@ function MyProfile() {
                             </span>{" "}
                             from the family members list?
                         </p>
-                        <p className="text-sm text-gray-600 text-center">
+                        <p className="text-sm text-[#9CA3AF] text-center">
                             This action cannot be undone.
                         </p>
                     </div>

@@ -18,37 +18,37 @@ const SIPAlertForm = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-[#1F1A1A]">
       {/* Header */}
-      {/* <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+      {/* <div className="bg-[#111111] border-b border-[#2A2A2A] px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
             <div className="w-4 h-4 bg-gray-400"></div>
-            <span className="text-sm text-gray-600">Manual - Set SIP Alerts - Google Chrome</span>
+            <span className="text-sm text-[#9CA3AF]">Manual - Set SIP Alerts - Google Chrome</span>
           </div>
         </div> */}
         {/* <div className="flex items-center space-x-2">
-          <button className="w-6 h-6 bg-gray-200 flex items-center justify-center text-xs">−</button>
-          <button className="w-6 h-6 bg-gray-200 flex items-center justify-center text-xs">□</button>
+          <button className="w-6 h-6 bg-[#2A2A2A] flex items-center justify-center text-xs">−</button>
+          <button className="w-6 h-6 bg-[#2A2A2A] flex items-center justify-center text-xs">□</button>
           <button className="w-6 h-6 bg-red-500 text-white flex items-center justify-center text-xs">×</button>
         </div>
       </div> */}
 
       {/* URL Bar */}
-      {/* <div className="bg-white border-b border-gray-200 px-4 py-2">
+      {/* <div className="bg-[#111111] border-b border-[#2A2A2A] px-4 py-2">
         <div className="flex items-center space-x-2">
           <div className="flex space-x-1">
             <div className="w-4 h-4 bg-gray-300"></div>
             <div className="w-4 h-4 bg-gray-300"></div>
           </div>
-          <div className="flex-1 bg-gray-50 px-3 py-1 rounded text-sm text-gray-600">
+          <div className="flex-1 bg-[#1F1A1A] px-3 py-1 rounded text-sm text-[#9CA3AF]">
             https://vedantasset.co.in/FinnSys/alerts/set/alerts.sip.asp?investor_id=981
           </div>
         </div>
       </div> */}
 
       {/* Top Action Buttons */}
-      <div className="bg-white border-b border-gray-200 px-4 py-2 flex justify-end space-x-2">
+      <div className="bg-[#111111] border-b border-[#2A2A2A] px-4 py-2 flex justify-end space-x-2">
         <button className="bg-blue-600 text-white px-4 py-1 text-sm flex items-center space-x-1 rounded">
           <Bell className="w-4 h-4" />
           <span>Manage Tickets</span>
@@ -60,20 +60,20 @@ const SIPAlertForm = () => {
       </div>
 
       {/* Main Content */}
-      <div className="bg-gray-200 px-4 py-6">
+      <div className="bg-[#2A2A2A] px-4 py-6">
         {/* Title */}
         <div className="bg-gray-300 px-4 py-2 mb-4">
-          <h1 className="text-lg font-semibold text-gray-800">
+          <h1 className="text-lg font-semibold text-[#F9FAFB]">
             Set SIP/STP Maturity Alert for LAKSHMI SINHA
           </h1>
         </div>
 
         {/* Form */}
-        <div className="bg-white rounded shadow">
+        <div className="bg-[#111111] rounded shadow">
           <div className="flex">
             {/* Left Column */}
             <div className="bg-gray-300 px-4 py-3 w-48">
-              <label className="text-sm font-medium text-gray-800">
+              <label className="text-sm font-medium text-[#F9FAFB]">
                 Select MF Scheme
               </label>
             </div>
@@ -82,7 +82,7 @@ const SIPAlertForm = () => {
             <div className="flex-1 p-4">
               <div className="flex items-center justify-between">
                 <select 
-                  className="w-96 px-3 py-2 border border-gray-300 rounded bg-white text-sm"
+                  className="w-96 px-3 py-2 border border-[#3A3A3A] rounded bg-[#111111] text-sm"
                   value={selectedScheme}
                   onChange={(e) => setSelectedScheme(e.target.value)}
                 >

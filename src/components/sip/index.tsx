@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+
 import { toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -41,12 +41,6 @@ const frequencies = [
 
 const fundIcons = ["🏛️", "🚀", "🌍", "⚡", "🎯", "📈", "📊", "💼", "💎", "⭐", "🔥", "💫", "🌟", "⚡", "💪"];
 
-const Stars = ({ n }: { n: number }) => (
-  <span style={{ fontSize: "11px", letterSpacing: "2px", color: "#FBBF24" }}>
-    {"★".repeat(n)}
-    <span style={{ color: "#374151" }}>{"★".repeat(5 - n)}</span>
-  </span>
-);
 
 // Golden Black Theme
 const goldenBlackTheme = {
@@ -64,233 +58,11 @@ const goldenBlackTheme = {
   gradient: "linear-gradient(135deg, #F59E0B 0%, #B45309 100%)"
 };
 
-// Fallback market data function
-const getFallbackMarketData = () => {
-  return [
-    {
-      index: "SENSEX",
-      value: "72,456.32",
-      change: "+0.45%",
-      changeType: "positive",
-      lastUpdate: new Date().toLocaleTimeString()
-    },
-    {
-      index: "NIFTY 50",
-      value: "21,852.45",
-      change: "+0.52%",
-      changeType: "positive",
-      lastUpdate: new Date().toLocaleTimeString()
-    },
-    {
-      index: "BANK NIFTY",
-      value: "46,123.78",
-      change: "-0.12%",
-      changeType: "negative",
-      lastUpdate: new Date().toLocaleTimeString()
-    },
-    {
-      index: "INDIA VIX",
-      value: "13.45",
-      change: "-2.3%",
-      changeType: "positive",
-      lastUpdate: new Date().toLocaleTimeString()
-    },
-  ];
-};
-
-// Market Data Service - Updated for TradingView
-const marketDataService = {
-  getIndices: async () => {
-    try {
-      const response = await fetch('https://scanner.tradingview.com/india/scan', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          symbols: {
-            tickers: [
-              'BSE:SENSEX',
-              'NSE:NIFTY',
-              'NSE:BANKNIFTY',
-              'NSE:INDIAVIX'
-            ],
-            query: {
-              types: []
-            }
-          },
-          columns: [
-            'name',
-            'close',
-            'change',
-            'change_abs',
-            'volume',
-            'high',
-            'low'
-          ]
-        })
-      });
-
-      const data = await response.json();
-
-      if (data && data.data) {
-        return data.data.map((item: any) => {
-          const change = item.d[2] || 0;
-          const changeType = change > 0 ? 'positive' : 'negative';
-          return {
-            index: item.d[0] || 'N/A',
-            value: item.d[1] ? item.d[1].toFixed(2) : '0.00',
-            change: `${change > 0 ? '+' : ''}${change.toFixed(2)}%`,
-            changeType: changeType,
-            high: item.d[5] || 0,
-            low: item.d[6] || 0,
-            volume: item.d[4] || 0
-          };
-        });
-      }
-      return getFallbackMarketData();
-    } catch (error) {
-      console.error("Error fetching from TradingView:", error);
-      return getFallbackMarketData();
-    }
-  },
-
-  getGlobalIndices: async () => {
-    try {
-      const response = await fetch('https://scanner.tradingview.com/global/scan', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          symbols: {
-            tickers: [
-              'DJI:DJI',
-              'NASDAQ:IXIC',
-              'SP:SPX',
-              'FX:USDCAD'
-            ],
-            query: {
-              types: []
-            }
-          },
-          columns: [
-            'name',
-            'close',
-            'change',
-            'change_abs'
-          ]
-        })
-      });
-
-      const data = await response.json();
-
-      if (data && data.data) {
-        return data.data.map((item: any) => ({
-          name: item.d[0] || 'N/A',
-          value: item.d[1] ? item.d[1].toFixed(2) : '0.00',
-          change: item.d[2] ? item.d[2].toFixed(2) : '0.00',
-          changeType: (item.d[2] || 0) > 0 ? 'positive' : 'negative'
-        }));
-      }
-      return [];
-    } catch (error) {
-      console.error("Error fetching global indices:", error);
-      return [];
-    }
-  },
-
-  getSectorPerformance: async () => {
-    try {
-      const response = await fetch('https://scanner.tradingview.com/india/scan', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          symbols: {
-            tickers: [
-              'NSE:NIFTYBANK',
-              'NSE:NIFTYIT',
-              'NSE:NIFTYPHARMA',
-              'NSE:NIFTYAUTO',
-              'NSE:NIFTYFMCG',
-              'NSE:NIFTYREALTY'
-            ],
-            query: {
-              types: []
-            }
-          },
-          columns: [
-            'name',
-            'close',
-            'change',
-            'change_abs'
-          ]
-        })
-      });
-
-      const data = await response.json();
-
-      if (data && data.data) {
-        return data.data.map((item: any) => ({
-          sector: (item.d[0] || '').replace('NIFTY', '').replace('NIFTY', '') || 'Unknown',
-          value: item.d[1] ? item.d[1].toFixed(2) : '0.00',
-          change: item.d[2] ? item.d[2].toFixed(2) : '0.00',
-          changeType: (item.d[2] || 0) > 0 ? 'positive' : 'negative'
-        }));
-      }
-      return [];
-    } catch (error) {
-      console.error("Error fetching sector data:", error);
-      return [];
-    }
-  }
-};
-
-// Tips Service
-const tipsService = {
-  getTips: async () => {
-    try {
-      const response = await api.get('/investment/tips');
-      return response.data?.data || [
-        { icon: "💡", tip: "Start early to maximize compounding", hindiTip: "जल्दी शुरू करें, ज्यादा कमाएं" },
-        { icon: "📊", tip: "Diversify across fund categories", hindiTip: "विविध फंड में निवेश करें" },
-        { icon: "⏰", tip: "Stay invested for long term", hindiTip: "लंबी अवधि निवेश करें" },
-        { icon: "🎯", tip: "SIP reduces market timing risk", hindiTip: "एसआईपी से बाजार जोखिम कम" },
-      ];
-    } catch (error) {
-      return [
-        { icon: "💡", tip: "Start early to maximize compounding", hindiTip: "जल्दी शुरू करें, ज्यादा कमाएं" },
-        { icon: "📊", tip: "Diversify across fund categories", hindiTip: "विविध फंड में निवेश करें" },
-        { icon: "⏰", tip: "Stay invested for long term", hindiTip: "लंबी अवधि निवेश करें" },
-        { icon: "🎯", tip: "SIP reduces market timing risk", hindiTip: "एसआईपी से बाजार जोखिम कम" },
-      ];
-    }
-  }
-};
-
-// FAQ Service
-const faqService = {
-  getFAQs: async () => {
-    try {
-      const response = await api.get('/faq/sip');
-      return response.data?.data || [
-        { question: "What is SIP?", answer: "Systematic Investment Plan allows you to invest fixed amounts regularly" },
-        { question: "What is minimum amount?", answer: "You can start SIP with just ₹100" },
-        { question: "SIP vs Lumpsum?", answer: "SIP helps reduce market timing risk through rupee cost averaging" },
-        { question: "Can I modify SIP?", answer: "Yes, you can modify or stop SIP anytime" },
-      ];
-    } catch (error) {
-      return [
-        { question: "What is SIP?", answer: "Systematic Investment Plan allows you to invest fixed amounts regularly" },
-        { question: "What is minimum amount?", answer: "You can start SIP with just ₹100" },
-        { question: "SIP vs Lumpsum?", answer: "SIP helps reduce market timing risk through rupee cost averaging" },
-        { question: "Can I modify SIP?", answer: "Yes, you can modify or stop SIP anytime" },
-      ];
-    }
-  }
-};
+const BLACKLISTED_ISINS = [
+  "INF846K013T8",
+  "INF846K01A66",
+  "INF209KA1K47",
+];
 
 export default function SipPage() {
   const router = useRouter();
@@ -333,8 +105,6 @@ export default function SipPage() {
   const [selectedFolio, setSelectedFolio] = useState<any>(null);
   const [showFolioDropdown, setShowFolioDropdown] = useState(false);
   const [folioSelectionMode, setFolioSelectionMode] = useState<'existing' | 'new'>('existing');
-  const [investorData, setInvestorData] = useState<any[]>([]);
-  const [newFolioNumber, setNewFolioNumber] = useState("");
 
   // State for bank and mandate
   const [bankList, setBankList] = useState<any[]>([]);
@@ -461,7 +231,6 @@ export default function SipPage() {
       return false;
     }
 
-    // Check if there's an entry for the selected frequency
     return fund.minAmountDetails.some((detail: any) => detail.sys_freq === frequency);
   };
 
@@ -489,19 +258,16 @@ export default function SipPage() {
       return [];
     }
 
-    // Parse the sys_date string
     const dateStr = freqDetail.sys_date.trim();
     if (!dateStr) return [];
 
     let dates: number[] = [];
 
-    // Split by various separators
     if (dateStr.includes('/')) {
       dates = dateStr.split('/').map((d: string) => parseInt(d.trim())).filter((d: number) => !isNaN(d));
     } else if (dateStr.includes(',')) {
       dates = dateStr.split(',').map((d: string) => parseInt(d.trim())).filter((d: number) => !isNaN(d));
     } else {
-      // Handle space-separated dates
       dates = dateStr.split(/\s+/).map((d: string) => parseInt(d.trim())).filter((d: number) => !isNaN(d));
     }
 
@@ -511,41 +277,25 @@ export default function SipPage() {
   // Filter funds based on amount, category, and frequency
   useEffect(() => {
     if (funds.length > 0) {
-      // First filter by frequency support - ONLY show funds that support the selected frequency
       let filtered = funds.filter(f => doesFundSupportFrequency(f, freq));
 
-      // Then filter by minimum amount for the selected frequency
       filtered = filtered.filter(f => {
         const minAmtForFreq = getMinAmountForFrequency(f, freq);
         return minAmtForFreq <= amount;
       });
 
-      // Calculate category counts based on filtered funds
       const counts: Record<string, number> = {};
       filtered.forEach(fund => {
         counts[fund.category] = (counts[fund.category] || 0) + 1;
       });
       setCategoryCounts(counts);
 
-      // Then filter by category if not "All"
       if (selectedCategory !== "All") {
         filtered = filtered.filter(f => f.category === selectedCategory);
       }
 
-      // If date is selected, filter funds that support that date
-      if (sipDate) {
-        const selectedDay = sipDate.getDate();
-        filtered = filtered.filter(f => {
-          const availableDates = getAvailableDatesForFund(f, freq);
-          // If no specific dates are specified, all dates are allowed
-          if (availableDates.length === 0) return true;
-          return availableDates.includes(selectedDay);
-        });
-      }
-
       setFilteredFunds(filtered);
 
-      // Clear selected fund if it doesn't match filters
       if (selectedFund) {
         const stillValid = doesFundSupportFrequency(selectedFund, freq) &&
           getMinAmountForFrequency(selectedFund, freq) <= amount &&
@@ -553,10 +303,11 @@ export default function SipPage() {
 
         if (!stillValid) {
           setSelectedFund(null);
+          setActiveStep(2);
         }
       }
     }
-  }, [amount, funds, selectedFund, selectedCategory, freq, sipDate]);
+  }, [amount, funds, selectedFund, selectedCategory, freq]);
 
   // Load user data from localStorage
   const loadUserData = () => {
@@ -585,7 +336,6 @@ export default function SipPage() {
     }
   };
 
-  // Fetch top performing funds from API
   const fetchTopPerformingFunds = async () => {
     setLoadingFunds(true);
     try {
@@ -602,9 +352,12 @@ export default function SipPage() {
         const transformedFunds = response.data.data.flatMap((category: any, catIndex: number) => {
           return (category.scheme || []).map((scheme: any, index: number) => {
             const schemeMaster = scheme.SchemeMaster || {};
-            const colorIndex = (catIndex + index) % schemeColors.length;
 
-            // Extract min amount details for different frequencies
+            const schemeISIN = schemeMaster.schemeISIN || scheme.ISIN || scheme.isin || scheme.scheme_isin;
+            if (BLACKLISTED_ISINS.includes(schemeISIN)) {
+              return null;
+            }
+
             const minAmountDetails = scheme.minAmount || [];
 
             return {
@@ -613,7 +366,7 @@ export default function SipPage() {
               category: category.categoryName || schemeMaster.SchemeCategory?.Name || "Equity",
               categoryId: category.id,
               minAmount: 100,
-              minAmountDetails: minAmountDetails, // Store all frequency details
+              minAmountDetails: minAmountDetails,
               returns1Y: parseFloat(scheme.Return1yr || scheme.returns_1yr || 0),
               returns3Y: parseFloat(scheme.Return3yr || scheme.returns_3yr || 0),
               risk: schemeMaster.riskLevel || scheme.risk_level || "Moderate",
@@ -622,15 +375,15 @@ export default function SipPage() {
               badge: scheme.is_popular ? "POPULAR" : (scheme.is_top_rated ? "TOP RATED" : null),
               badgeColor: scheme.is_popular ? theme.primary : (scheme.is_top_rated ? theme.primary : "#6B7280"),
               icon: fundIcons[(catIndex + index) % fundIcons.length],
-              schemeISIN: schemeMaster.schemeISIN || scheme.ISIN || scheme.isin || scheme.scheme_isin,
+              schemeISIN: schemeISIN,
               amc_id: schemeMaster.amc_id || scheme.amc_id,
               dividend_type: scheme.dividend_type || "Growth",
               categoryReturnAvg: scheme.categoryReturnAvg || 0,
               color: theme.primary,
               SchemeMaster: schemeMaster,
-              schemeData: scheme, // Store original scheme data for reference
+              schemeData: scheme,
             };
-          });
+          }).filter((fund: any) => fund !== null);
         });
         setFunds(transformedFunds);
       } else {
@@ -644,17 +397,11 @@ export default function SipPage() {
     }
   };
 
-  // Handle fund selection
+  // Handle fund selection - this sets active step to 3 (Date Selection)
   const handleFundSelect = async (fund: any) => {
     setSelectedFund(fund);
     setCommonError("");
-    setActiveStep(4);
-
-    // Reset date when fund changes to avoid date mismatch
-    setSipDate(null);
-    setSipDay("");
-    setSipMonth("");
-    setSipYear("");
+    setActiveStep(3); // Move to Date Selection step after fund is selected
 
     if (fund?.schemeISIN) {
       try {
@@ -670,7 +417,6 @@ export default function SipPage() {
           setDivOpt(firstTxn.div_opt || "");
           setMinAmount(firstTxn.min_amt || "500");
 
-          // Get allowed SIP days from the fund's minAmountDetails for selected frequency
           const freqDetail = fund.minAmountDetails?.find((d: any) => d.sys_freq === freq);
           if (freqDetail?.sys_date) {
             const dateStr = freqDetail.sys_date.trim();
@@ -702,13 +448,12 @@ export default function SipPage() {
 
   const handleFrequencyChange = (selectedValue: string) => {
     setFreq(selectedValue);
-    // Reset selected fund when frequency changes
     setSelectedFund(null);
-    // Reset date when frequency changes
     setSipDate(null);
     setSipDay("");
     setSipMonth("");
     setSipYear("");
+    setActiveStep(2);
   };
 
   // Check if a date is available for the selected fund and frequency
@@ -718,18 +463,15 @@ export default function SipPage() {
     const selectedDay = date.getDate();
     const availableDates = getAvailableDatesForFund(selectedFund, freq);
 
-    // If no specific dates are specified, all dates are allowed
     if (availableDates.length === 0) return true;
 
     return availableDates.includes(selectedDay);
   };
 
   const isDateAvailable = (date: Date): boolean => {
-    // Get today's date
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Calculate the earliest allowed date (7 days from today)
     const earliestAllowedDate = new Date(today);
     earliestAllowedDate.setDate(today.getDate() + 7);
     earliestAllowedDate.setHours(0, 0, 0, 0);
@@ -737,12 +479,10 @@ export default function SipPage() {
     const dateToCheck = new Date(date);
     dateToCheck.setHours(0, 0, 0, 0);
 
-    // Block all dates before the earliest allowed date (including today and next 6 days)
     if (dateToCheck < earliestAllowedDate) {
       return false;
     }
 
-    // If a fund is selected, check if date is available for that fund
     if (selectedFund) {
       return isDateAvailableForSelectedFund(date);
     }
@@ -753,11 +493,9 @@ export default function SipPage() {
   const handleDateChange = (date: Date | null) => {
     if (!date) return;
 
-    // Get today's date
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Calculate the earliest allowed date (7 days from today)
     const earliestAllowedDate = new Date(today);
     earliestAllowedDate.setDate(today.getDate() + 7);
     earliestAllowedDate.setHours(0, 0, 0, 0);
@@ -765,13 +503,11 @@ export default function SipPage() {
     const selectedDate = new Date(date);
     selectedDate.setHours(0, 0, 0, 0);
 
-    // Check if selected date is before the earliest allowed date
     if (selectedDate < earliestAllowedDate) {
       toastAlert("info", `SIP start date must be after ${earliestAllowedDate.toLocaleDateString('en-GB')} / एसआईपी शुरू करने की तारीख ${earliestAllowedDate.toLocaleDateString('en-GB')} के बाद होनी चाहिए`);
       return;
     }
 
-    // If fund is selected, check if date is available for this fund
     if (selectedFund) {
       const isAvailable = isDateAvailableForSelectedFund(date);
       if (!isAvailable) {
@@ -785,7 +521,7 @@ export default function SipPage() {
     setSipDay(date.getDate().toString().padStart(2, '0'));
     setSipMonth((date.getMonth() + 1).toString().padStart(2, '0'));
     setSipYear(date.getFullYear().toString());
-    setActiveStep(3);
+    setActiveStep(4); // Move to Payment step after date is selected
   };
 
   const getPerformanceColor = (returnValue: number) => {
@@ -802,7 +538,11 @@ export default function SipPage() {
       return;
     }
 
-    // Check if amount meets minimum for selected frequency
+    if (!sipDate) {
+      toastAlert("info", "Please select start date / कृपया शुरू करने की तारीख चुनें");
+      return;
+    }
+
     const minAmtForFreq = getMinAmountForFrequency(selectedFund, freq);
     if (amount < minAmtForFreq) {
       toastAlert("info", `Minimum amount for ${freq === 'D' ? 'Daily' : freq === 'W' ? 'Weekly' : 'Monthly'} SIP is ₹${minAmtForFreq} / ${freq === 'D' ? 'डेली' : freq === 'W' ? 'वीकली' : 'मंथली'} एसआईपी के लिए न्यूनतम राशि ₹${minAmtForFreq} है`);
@@ -852,7 +592,6 @@ export default function SipPage() {
       return;
     }
 
-    // Check if amount meets minimum for selected frequency
     const minAmtForFreq = getMinAmountForFrequency(selectedFund, freq);
     if (amount < minAmtForFreq) {
       toastAlert("info", `Minimum amount for ${freq === 'D' ? 'Daily' : freq === 'W' ? 'Weekly' : 'Monthly'} SIP is ₹${minAmtForFreq} / ${freq === 'D' ? 'डेली' : freq === 'W' ? 'वीकली' : 'मंथली'} एसआईपी के लिए न्यूनतम राशि ₹${minAmtForFreq} है`);
@@ -965,15 +704,45 @@ export default function SipPage() {
         result = response?.data?.data;
       }
 
-      if (result?.secWisErrorList && result.secWisErrorList.length > 0) {
-        const errors = result.secWisErrorList.map((err: any) => err.secErrorMsg).join(", ");
-        setTransactionError(errors);
-        toast.error(errors);
+      // Debug: dump the full MFU response to the browser console so the exact
+      // rejection payload is inspectable when order creation fails.
+      console.log("[SIP] MFU response:", result);
+
+      // MFU responses come in two layers:
+      //  • respHeader  → wire-level success/fail (respFlag S/F, errorCode)
+      //  • respBody    → business payload (ordCreatedFlag, secWisErrorList, ordDtl)
+      // On hard rejections MFU sometimes returns all the scheme-level error
+      // strings empty — we have to pick up whatever non-empty detail is
+      // available across both layers before deciding what to show.
+      const respBody: any = result?.respBody ?? result ?? {};
+      const respHeader: any = result?.respHeader ?? respBody?.respHeader ?? {};
+      const ordDtl: any = respBody?.ordDtl ?? {};
+      const errList: any[] = respBody?.secWisErrorList ?? result?.secWisErrorList ?? [];
+      const ordCreatedFlag: string = respBody?.ordCreatedFlag ?? result?.ordCreatedFlag ?? "";
+
+      const mfuErrors = errList
+        .map((err: any) =>
+          (err?.secErrorMsg || err?.secErrorCode || "").toString().trim()
+        )
+        .filter((m: string) => m);
+      const headerMsg = (respHeader?.errorMsg || respHeader?.errorDesc || "").toString().trim();
+      const headerCode = (respHeader?.errorCode || "").toString().trim();
+      const errorsText = [mfuErrors.join(", "), headerMsg || headerCode]
+        .filter(Boolean)
+        .join(" — ");
+
+      // Fast-fail when MFU clearly rejected the order.
+      if (ordCreatedFlag === "N" || errorsText) {
+        const msg =
+          errorsText ||
+          "MFU rejected this SIP order but did not return a specific reason. Common causes: (1) mandate not yet approved by the bank, (2) fund not registered for SIP under this CAN, (3) SIP day not supported for this scheme, (4) amount outside the scheme's min/max band. Please verify with the fund house and try again.";
+        setTransactionError(msg);
+        toast.error(msg);
         setProcessing(false);
         return;
       }
 
-      const appLink = result?.respBody?.ordDtl?.appLinkPri;
+      const appLink = ordDtl?.appLinkPri;
       if (appLink) {
         toast.success("SIP initiated successfully! Redirecting to UPI payment...");
         clearData();
@@ -981,15 +750,14 @@ export default function SipPage() {
         setTimeout(() => {
           window.location.href = appLink;
         }, 2000);
+      } else if (respBody?.status === "SUCCESS" || result?.status === "SUCCESS") {
+        setSuccess(true);
+        setProcessing(false);
       } else {
-        if (result?.respBody?.status === "SUCCESS" || result?.status === "SUCCESS") {
-          setSuccess(true);
-          setProcessing(false);
-        } else {
-          toast.error(JSON.stringify(result?.respBody || result));
-          setTransactionError(JSON.stringify(result?.respBody || result));
-          setProcessing(false);
-        }
+        const msg = "MFU did not return a payment link. Please retry — if this keeps happening, contact support.";
+        setTransactionError(msg);
+        toast.error(msg);
+        setProcessing(false);
       }
     } catch (error: any) {
       console.error("Transaction error:", error);
@@ -2049,7 +1817,7 @@ export default function SipPage() {
               )}
             </motion.div>
 
-            {/* Step 2 - SIP Schedule - Responsive */}
+            {/* Step 2 - Frequency Selection - Responsive */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -2197,54 +1965,6 @@ export default function SipPage() {
                     </motion.button>
                   );
                 })}
-              </div>
-
-              {/* Date Picker Section */}
-              <div style={{ marginBottom: "16px" }}>
-                <label style={{
-                  fontSize: isMobile ? "12px" : "13px",
-                  fontWeight: "600",
-                  color: theme.textSecondary,
-                  marginBottom: "8px",
-                  display: "block"
-                }}>
-                  Start Date / शुरू करने की तारीख
-                </label>
-                <div style={{
-                  border: `2px solid ${sipDate ? theme.primary : theme.border}`,
-                  borderRadius: "16px",
-                  overflow: "hidden",
-                  transition: "all 0.2s ease",
-                  background: sipDate ? `${theme.primary}10` : theme.accent
-                }}>
-                  <DatePicker
-                    selected={sipDate}
-                    onChange={handleDateChange}
-                    filterDate={isDateAvailable}
-                    placeholderText="Select date / तारीख चुनें"
-                    dateFormat="dd/MM/yyyy"
-                    minDate={(() => {
-                      const today = new Date();
-                      const minDate = new Date(today);
-                      minDate.setDate(today.getDate() + 8);
-                      return minDate;
-                    })()}
-                  />
-                </div>
-                {sipDate && selectedFund && getAvailableDatesForFund(selectedFund, freq).length > 0 && (
-                  <div style={{
-                    marginTop: "8px",
-                    fontSize: "11px",
-                    color: theme.textSecondary,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "4px",
-                    flexWrap: "wrap"
-                  }}>
-                    <Info size={12} />
-                    <span>Available dates for this fund: {getAvailableDatesForFund(selectedFund, freq).join(', ')}</span>
-                  </div>
-                )}
               </div>
             </motion.div>
 
@@ -2612,11 +2332,257 @@ export default function SipPage() {
               )}
             </motion.div>
 
-            {/* Step 4 - Payment - Responsive */}
+         
+
+            {/* Step 4 - Start Date Selection - Responsive */}
+            {selectedFund && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.25 }}
+                style={{
+                  background: theme.cardBg,
+                  borderRadius: isMobile ? "20px" : "24px",
+                  padding: isMobile ? "16px" : "20px",
+                  marginBottom: isMobile ? "12px" : "16px",
+                  border: `1px solid ${theme.border}`,
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.2)"
+                }}
+              >
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: isMobile ? "6px" : "8px",
+                  marginBottom: isMobile ? "12px" : "16px"
+                }}>
+                  <div style={{
+                    width: isMobile ? "28px" : "32px",
+                    height: isMobile ? "28px" : "32px",
+                    borderRadius: isMobile ? "8px" : "10px",
+                    background: `${theme.primary}20`,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: theme.primary
+                  }}>
+                    <Calendar size={isMobile ? 16 : 18} />
+                  </div>
+                  <div>
+                    <h3 style={{
+                      fontSize: isMobile ? "15px" : "16px",
+                      fontWeight: "600",
+                      margin: "0 0 2px",
+                      color: theme.textPrimary
+                    }}>
+                      Start Date / शुरू करने की तारीख
+                    </h3>
+                    <p style={{
+                      fontSize: isMobile ? "11px" : "12px",
+                      color: theme.textSecondary,
+                      margin: "0"
+                    }}>
+                      Select when to start your SIP / एसआईपी कब शुरू करनी है चुनें
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{
+                  position: "relative",
+                  width: "100%"
+                }}>
+                  <DatePicker
+                    selected={sipDate}
+                    onChange={handleDateChange}
+                    filterDate={isDateAvailable}
+                    placeholderText="Select date / तारीख चुनें"
+                    dateFormat="dd/MM/yyyy"
+                    minDate={(() => {
+                      const today = new Date();
+                      const minDate = new Date(today);
+                      minDate.setDate(today.getDate() + 8);
+                      return minDate;
+                    })()}
+                    inline={false}
+                    popperPlacement="bottom-start"
+                    calendarClassName="custom-calendar"
+                    className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none ${sipDate
+                        ? `border-[${theme.primary}] bg-[${theme.primary}10]`
+                        : `border-[${theme.border}] bg-[${theme.accent}]`
+                      } text-[${theme.textPrimary}] placeholder:text-[${theme.textSecondary}]`}
+                    wrapperClassName="w-full"
+                    popperClassName="custom-popper"
+                  />
+                </div>
+
+                {/* Custom CSS to fix calendar display */}
+                <style jsx>{`
+      :global(.custom-popper) {
+        z-index: 1000 !important;
+        width: auto !important;
+      }
+      :global(.custom-calendar) {
+        background-color: ${theme.cardBg} !important;
+        border: 1px solid ${theme.border} !important;
+        border-radius: 16px !important;
+        font-family: 'Inter', sans-serif !important;
+        width: 280px !important;
+      }
+      :global(.react-datepicker) {
+        background-color: ${theme.cardBg} !important;
+        border: 1px solid ${theme.border} !important;
+        border-radius: 16px !important;
+        font-family: 'Inter', sans-serif !important;
+        width: 280px !important;
+        display: block !important;
+      }
+      :global(.react-datepicker__header) {
+        background: linear-gradient(135deg, ${theme.primary}20, ${theme.secondary}20) !important;
+        border-bottom: 1px solid ${theme.border} !important;
+        border-radius: 16px 16px 0 0 !important;
+        padding-top: 12px !important;
+      }
+      :global(.react-datepicker__current-month) {
+        color: ${theme.textPrimary} !important;
+        font-weight: 600 !important;
+        font-size: 14px !important;
+      }
+      :global(.react-datepicker__day-name) {
+        color: ${theme.textSecondary} !important;
+        font-weight: 500 !important;
+        font-size: 12px !important;
+        width: 32px !important;
+        display: inline-block !important;
+        margin: 4px !important;
+      }
+      :global(.react-datepicker__day) {
+        color: ${theme.textPrimary} !important;
+        font-size: 12px !important;
+        width: 32px !important;
+        height: 32px !important;
+        line-height: 32px !important;
+        display: inline-block !important;
+        margin: 2px !important;
+        border-radius: 8px !important;
+        text-align: center !important;
+        vertical-align: middle !important;
+      }
+      :global(.react-datepicker__day:hover) {
+        background-color: ${theme.primary} !important;
+        color: #fff !important;
+        border-radius: 8px !important;
+      }
+      :global(.react-datepicker__day--selected) {
+        background: linear-gradient(135deg, ${theme.primary}, ${theme.secondary}) !important;
+        color: #fff !important;
+        border-radius: 8px !important;
+      }
+      :global(.react-datepicker__day--keyboard-selected) {
+        background-color: ${theme.primary}80 !important;
+        border-radius: 8px !important;
+      }
+      :global(.react-datepicker__day--disabled) {
+        color: ${theme.textSecondary} !important;
+        opacity: 0.5 !important;
+        cursor: not-allowed !important;
+      }
+      :global(.react-datepicker__week) {
+        display: flex !important;
+        justify-content: center !important;
+        margin: 4px 0 !important;
+      }
+      :global(.react-datepicker__month) {
+        margin: 8px !important;
+        text-align: center !important;
+      }
+      :global(.react-datepicker__day-names) {
+        display: flex !important;
+        justify-content: center !important;
+        margin: 8px 0 !important;
+      }
+      :global(.react-datepicker__navigation) {
+        top: 12px !important;
+      }
+      :global(.react-datepicker__navigation-icon::before) {
+        border-color: ${theme.primary} !important;
+      }
+      :global(.react-datepicker__year-dropdown),
+      :global(.react-datepicker__month-dropdown) {
+        background-color: ${theme.cardBg} !important;
+        border: 1px solid ${theme.border} !important;
+        border-radius: 8px !important;
+        color: ${theme.textPrimary} !important;
+      }
+      :global(.react-datepicker__year-dropdown-option),
+      :global(.react-datepicker__month-dropdown-option) {
+        color: ${theme.textPrimary} !important;
+      }
+      :global(.react-datepicker__year-dropdown-option:hover),
+      :global(.react-datepicker__month-dropdown-option:hover) {
+        background-color: ${theme.primary}20 !important;
+      }
+      @media (max-width: 768px) {
+        :global(.react-datepicker) {
+          width: 260px !important;
+        }
+        :global(.react-datepicker__day) {
+          width: 28px !important;
+          height: 28px !important;
+          line-height: 28px !important;
+          font-size: 11px !important;
+        }
+        :global(.react-datepicker__day-name) {
+          width: 28px !important;
+          font-size: 11px !important;
+        }
+      }
+    `}</style>
+
+                {allowedSipDays.length > 0 && (
+                  <div style={{
+                    marginTop: "12px",
+                    fontSize: "11px",
+                    color: theme.textSecondary,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    flexWrap: "wrap",
+                    background: `${theme.accent}80`,
+                    padding: "8px 12px",
+                    borderRadius: "12px"
+                  }}>
+                    <Info size={14} color={theme.primary} />
+                    <span>Available dates for this fund: {allowedSipDays.join(', ')}</span>
+                  </div>
+                )}
+
+                {sipDate && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    style={{
+                      marginTop: "12px",
+                      padding: "10px 12px",
+                      background: `${theme.success}20`,
+                      borderRadius: "12px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px"
+                    }}
+                  >
+                    <CheckCircleIcon size={16} color={theme.success} />
+                    <span style={{ fontSize: "13px", color: theme.textPrimary }}>
+                      Selected Date: {sipDate.toLocaleDateString('en-GB')}
+                    </span>
+                  </motion.div>
+                )}
+              </motion.div>
+            )}
+
+            {/* Step 5 - Payment - Responsive */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+              transition={{ delay: 0.35 }}
               style={{
                 background: theme.cardBg,
                 borderRadius: isMobile ? "20px" : "24px",

@@ -87,12 +87,12 @@ export default function FundManager({ schemeData }: any) {
   }
 
   return (
-    <div className="p-2 sm:p-6 bg-white min-h-screen">
+    <div className="p-2 sm:p-6 bg-[#111111] min-h-screen">
       <div className="grid sm:grid-cols-2 gap-5 max-w-full">
         {/* {profiles.map((profile, i) => (
           <div
             key={i}
-            className="bg-white p-6 border border-field-border rounded-sm hover:shadow-sm flex justify-between items-center"
+            className="bg-[#111111] p-6 border border-field-border rounded-sm hover:shadow-sm flex justify-between items-center"
           >
             <div>
               <h3
@@ -114,7 +114,7 @@ export default function FundManager({ schemeData }: any) {
         {fundManagereData.length > 0 && fundManagereData.map((profile: any, i: any) => (
           <div
             key={i}
-            className="bg-white p-3 sm:p-6 border border-field-border rounded-sm hover:shadow-sm flex justify-between items-center"
+            className="bg-[#111111] p-3 sm:p-6 border border-field-border rounded-sm hover:shadow-sm flex justify-between items-center"
           >
             <div>
               <h3

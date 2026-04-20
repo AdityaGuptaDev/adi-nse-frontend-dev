@@ -104,8 +104,8 @@ const RMList = () => {
 
   const getStatusBadge = (status: 'Active' | 'Inactive') => {
     const styles = {
-      'Active': 'bg-gradient-to-r from-emerald-400 to-emerald-600 text-white',
-      'Inactive': 'bg-gradient-to-r from-red-400 to-red-600 text-white'
+      'Active': 'bg-gradient-to-r from-emerald-400 to-emerald-600 text-[#F9FAFB]',
+      'Inactive': 'bg-gradient-to-r from-red-400 to-red-600 text-[#F9FAFB]'
     };
     return <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${styles[status]}`}>{status}</span>;
   };
@@ -161,13 +161,13 @@ const RMList = () => {
       <button onClick={() => window.history.back()} className="flex items-center text-orange-600 mb-4"><ChevronLeft className="w-5 h-5 mr-2" /> Back</button>
 
       {/* Controls */}
-      <div className="bg-white p-4 rounded-lg shadow mb-4 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+      <div className="bg-[#111111] p-4 rounded-lg shadow mb-4 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
         <div className="flex gap-2">
-          <button onClick={() => setShowFilter(!showFilter)} className="px-4 py-2 bg-orange-500 text-white rounded-lg">Toggle Filter</button>
-          <button onClick={() => { setSearchTerm(''); setStatusFilter('all'); }} className="px-4 py-2 bg-orange-500 text-white rounded-lg">Clear Filter</button>
+          <button onClick={() => setShowFilter(!showFilter)} className="px-4 py-2 bg-orange-500 text-[#F9FAFB] rounded-lg">Toggle Filter</button>
+          <button onClick={() => { setSearchTerm(''); setStatusFilter('all'); }} className="px-4 py-2 bg-orange-500 text-[#F9FAFB] rounded-lg">Clear Filter</button>
         </div>
         <div className="flex gap-2">
-          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={exportToExcel} className="px-4 py-2 bg-orange-500 text-white rounded-lg flex items-center gap-2">
+          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={exportToExcel} className="px-4 py-2 bg-orange-500 text-[#F9FAFB] rounded-lg flex items-center gap-2">
             {exportLoading ? 'Exporting...' : <><Download className="w-4 h-4" /> Export</>}
           </motion.button>
         </div>
@@ -175,9 +175,9 @@ const RMList = () => {
 
       {/* Filters */}
       {showFilter && (
-        <div className="bg-white p-4 rounded-lg shadow mb-4 flex gap-4 items-center">
+        <div className="bg-[#111111] p-4 rounded-lg shadow mb-4 flex gap-4 items-center">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] w-5 h-5" />
             <input type="text" value={searchTerm} onChange={e => setSearchTerm(e.target.value)} placeholder="Search RMs..." className="w-full pl-10 pr-4 py-2 border rounded-lg" />
           </div>
           <div className="relative">
@@ -186,13 +186,13 @@ const RMList = () => {
               <option value="Active">Active</option>
               <option value="Inactive">Inactive</option>
             </select>
-            <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[#9CA3AF]" />
           </div>
         </div>
       )}
 
       {/* Table */}
-      <div className="bg-white p-4 rounded-lg shadow overflow-x-auto">
+      <div className="bg-[#111111] p-4 rounded-lg shadow overflow-x-auto">
         <table className="w-full text-left">
           <thead className="bg-orange-100">
             <tr>
@@ -218,7 +218,7 @@ const RMList = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => handleAction('login', rm)}
-                        className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:from-orange-600 hover:to-orange-700 shadow-sm hover:shadow-lg transition-all duration-300"
+                        className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-orange-500 to-orange-600 text-[#F9FAFB] rounded-xl hover:from-orange-600 hover:to-orange-700 shadow-sm hover:shadow-lg transition-all duration-300"
                         title="Login as RM"
                       >
                         <LogIn className="w-4 h-4" />
@@ -229,7 +229,7 @@ const RMList = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => handleAction('view', rm)}
-                        className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:from-orange-600 hover:to-orange-700 shadow-sm hover:shadow-lg transition-all duration-300"
+                        className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-orange-500 to-orange-600 text-[#F9FAFB] rounded-xl hover:from-orange-600 hover:to-orange-700 shadow-sm hover:shadow-lg transition-all duration-300"
                         title="View RM"
                       >
                         <Eye className="w-4 h-4" />
@@ -240,7 +240,7 @@ const RMList = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => handleAction('edit', rm)}
-                        className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl hover:from-orange-600 hover:to-orange-700 shadow-sm hover:shadow-lg transition-all duration-300"
+                        className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-orange-500 to-orange-600 text-[#F9FAFB] rounded-xl hover:from-orange-600 hover:to-orange-700 shadow-sm hover:shadow-lg transition-all duration-300"
                         title="Edit RM"
                       >
                         <Edit className="w-4 h-4" />
@@ -251,7 +251,7 @@ const RMList = () => {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => handleAction('delete', rm)}
-                        className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-xl hover:from-red-600 hover:to-red-700 shadow-sm hover:shadow-lg transition-all duration-300"
+                        className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-red-500 to-red-600 text-[#F9FAFB] rounded-xl hover:from-red-600 hover:to-red-700 shadow-sm hover:shadow-lg transition-all duration-300"
                         title="Delete RM"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -262,7 +262,7 @@ const RMList = () => {
                 </motion.tr>
               )) : (
                 <motion.tr initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                  <td colSpan={5} className="px-4 py-2 text-center text-gray-500">No RMs found</td>
+                  <td colSpan={5} className="px-4 py-2 text-center text-[#9CA3AF]">No RMs found</td>
                 </motion.tr>
               )}
             </AnimatePresence>

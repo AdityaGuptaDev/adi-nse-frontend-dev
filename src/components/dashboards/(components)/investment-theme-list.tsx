@@ -128,7 +128,7 @@ const InvestmentThemeList: React.FC<InvestmentThemeListProps> = ({
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <div className="border-b border-gray-200 px-4 py-3">
+      <div className="border-b border-[#2A2A2A] px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div onClick={handleBack} className="p-1 cursor-pointer">
@@ -151,12 +151,12 @@ const InvestmentThemeList: React.FC<InvestmentThemeListProps> = ({
             <div
               key={theme.id}
               onClick={() => handleThemeClick(theme)}
-              // className={`bg-white rounded-lg p-4 shadow-sm border border-gray-200 transition-all duration-200 ${
+              // className={`bg-[#111111] rounded-lg p-4 shadow-sm border border-[#2A2A2A] transition-all duration-200 ${
               //   theme.isLocked 
               //     ? 'opacity-75 cursor-not-allowed' 
               //     : 'hover:shadow-md cursor-pointer hover:border-blue-300'
               // }`}
-              className={`bg-white rounded-lg p-4 shadow-sm border border-gray-200 transition-all duration-200 hover:shadow-md hover:border-blue-300`}
+              className={`bg-[#111111] rounded-lg p-4 shadow-sm border border-[#2A2A2A] transition-all duration-200 hover:shadow-md hover:border-blue-300`}
             >
               <div className="flex items-center gap-4">
                 {/* Theme Icon */}
@@ -173,18 +173,18 @@ const InvestmentThemeList: React.FC<InvestmentThemeListProps> = ({
                 <div className="flex-1">
                   <div className="flex justify-between items-center">
                     <div className="flex-1">
-                      <CustomText className="text-base font-semibold text-gray-900 mb-1">
+                      <CustomText className="text-base font-semibold text-[#F9FAFB] mb-1">
                         {theme.name}
                       </CustomText>
-                      <CustomText className="text-sm text-gray-600 mb-2">
+                      <CustomText className="text-sm text-[#9CA3AF] mb-2">
                         {theme.description}
                       </CustomText>
                       <div className="flex gap-3 items-center">
-                        <CustomText className="text-xs text-gray-500">
+                        <CustomText className="text-xs text-[#9CA3AF]">
                           {theme.date}
                         </CustomText>
                         <div>
-                          <FaLock className="text-gray-500" />
+                          <FaLock className="text-[#9CA3AF]" />
                           {/* <span className="text-white text-lg">🔒</span> */}
                         </div>
                       </div>
@@ -208,7 +208,7 @@ const InvestmentThemeList: React.FC<InvestmentThemeListProps> = ({
                             {theme.returnRange.min.toFixed(1)}% p.a
                           </CustomText>
                         </div>
-                        <div className="text-gray-400 text-xs">-</div>
+                        <div className="text-[#6B7280] text-xs">-</div>
                         <div className="flex items-center gap-2 justify-end">
                           <span className="text-green-600 text-sm">▲</span>
                           <CustomText className={`text-sm font-semibold ${getReturnColor(theme.returnRange.max)}`}>

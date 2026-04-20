@@ -14,6 +14,7 @@ import DataGrid from '../commonGrid/DataGrid';
 import { RxDashboard } from 'react-icons/rx';
 import { RiEdit2Line, RiUserUnfollowFill } from 'react-icons/ri';
 import { GoPlusCircle } from 'react-icons/go';
+import { AlertCircle, X } from 'lucide-react';
 
 const partnerHeader = [
     {
@@ -124,44 +125,46 @@ function PartnerList(props: any) {
     }
   };
 
-  let actionButtons: any[] = [
-    {
-      icon: <RiEdit2Line />,
-      title: "Edit",
-      tooltip: "edit",
-      className: "p-2 bg-primary text-white rounded-lg",
-      // show: props.permission.edit,
-      show: true,
-    },
-    {
-      icon: <TbSitemap />,
-      title: "Mapping",
-      tooltip: "mapping",
-      show: true,
-      className: "p-2 bg-primary text-white rounded-lg",
-    },
-    {
-      icon: <RiUserUnfollowFill />,
-      title: "DeActive",
-      tooltip: "DeActive",
-      show: true,
-      className: "p-2 bg-primary text-white rounded-lg",
-    },
-    {
-      icon: <RxDashboard />,
-      title: "Dashboard",
-      tooltip: "Dashboard",
-      show: true,
-      className: "p-2 bg-primary text-white rounded-lg",
-    },
-     {
-        icon: <GoPlusCircle />, 
-        title: "Create Investor",
-        tooltip: "create Investor",
-        show: true,
-        className: "p-2 bg-primary text-white rounded-lg",
-    },
-  ];
+    let actionButtons: any[] = [
+          {
+            icon: <RxDashboard />,
+            title: "Dashboard",
+            tooltip: "Dashboard",
+            show: true,
+            className: "p-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg hover:opacity-90 transition-all",
+        },
+           {
+            icon: <GoPlusCircle />,
+            title: "Create Investor",
+            tooltip: "create Investor",
+            show: true,
+            className: "p-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg hover:opacity-90 transition-all",
+        },
+        {
+            icon: <RiEdit2Line />,
+            title: "Edit",
+            tooltip: "edit",
+            className: "p-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg hover:opacity-90 transition-all",
+            show: true,
+        },
+       
+        {
+            icon: <TbSitemap />,
+            title: "Mapping",
+            tooltip: "mapping",
+            show: true,
+            className: "p-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg hover:opacity-90 transition-all",
+        },
+        {
+            icon: <RiUserUnfollowFill />,
+            title: "DeActive",
+            tooltip: "DeActive",
+            show: true,
+            className: "p-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg hover:opacity-90 transition-all",
+        },
+      
+      
+    ];
 
   // toggleform
   const toggleForm = (
@@ -340,155 +343,318 @@ const handleDelete = async () => {
   }
 };
 
-  
-
-  return (
-    <>
-      {pageType !== "list" ? (
+    return (
         <>
-          <div className="p-3">
-            <CustomButton
-              className="flex !text-secondary normal-case bg-transparent p-0 shadow-none"
-              onClick={(e) => {
-                toggleForm("list");
-              }}
-            >
-              <IoIosArrowBack className="h-6 w-6" /> Back
-            </CustomButton>
-          </div>
-        </>
-      ) : null}
-
-      {pageType == "list" ? (
-        <>
-          <div>
-            <DataGrid
-              refreshKey={refreshKey}
-              headerList={partnerHeader}
-              apiEndPoint={endPoint}
-              actionButtons={actionButtons}
-              clickOnAction={clickOnAction}
-              permission={props.permission}
-              // permission={false}
-              toggleForm={toggleForm}
-              pageName={"Investor"}
-              backButton={true}
-            />
-          </div>
-        </>
-      ) : (
-        <></>
-      )}
-
-      {/* mapping model */}
-
-      {mappingModal && (
-        <div id="my_modal_1" className="modal modal-open" ref={mappingModalRef}>
-          <div className="modal-box">
-            <form method="dialog" className="modalHeader">
-              <div className="flex-1 sm:flex justify-between">
-                <h3 className="modalTitle">Mapping</h3>
-              </div>
-              <div className="">
-                <button
-                  className="btn btn-md btn-circle btn-ghost"
-                  onClick={handleCloseModal}
-                >
-                  <MdClose size={25} />
-                </button>
-              </div>
-            </form>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="modalBody">
-                <div className="py-4">
-                  <div className="">
-                    <div>
-                      <CustomReactSelect
-                        items={RMList}
-                        required
-                        label="Select RM"
-                        placeholder="Select RM"
-                        bindName="Name"
-                        bindValue="id"
-                        value={getValues("rm_id")}
-                        {...register("rm_id")}
-                        isClearable={true}
-                        onChange={(e: any) => handleChange(e, "rm")}
-                        error={errors?.rm_id?.message}
-                      />
+            {pageType !== "list" ? (
+                <>
+                    <div className="p-3 bg-[#0A0A0A]">
+                        <CustomButton
+                            className="flex !text-[#F59E0B] normal-case bg-transparent p-0 shadow-none hover:!text-[#FBBF24] transition-colors"
+                            onClick={(e) => {
+                                toggleForm("list");
+                            }}
+                        >
+                            <IoIosArrowBack className="h-6 w-6 mr-2" /> Back
+                        </CustomButton>
                     </div>
-                  </div>
-                </div>
-              </div>
-              <div className="modalFooter modal-action flex justify-center">
-                <div className="flex gap-5 mt-4 text-center">
-                  <div>
-                    <CustomButton
-                      className="w-28"
-                      type="submit"
-                      loading={loading}
-                    >
-                      Submit
-                    </CustomButton>
-                  </div>
-                  <div>
-                    <CustomButton
-                      className="bg-white !text-black !border !border-gray-300 w-28"
-                      onClick={handleCloseModal}
-                    >
-                      Cancel
-                    </CustomButton>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+                </>
+            ) : null}
 
-      {deactivateModal && (
-        <div id="my_modal_2" className="modal modal-open" ref={deleteModalRef}>
-          <div className="modal-box text-center">
-            <div className="flex justify-center text-center my-2">
-              <MdError className="text-red-600 w-14 h-14" />
-            </div>
-            <h3 className="text-xl font-bold">Deactivate Partner</h3>
-            <p className="py-4">
-              Are you sure you want to deactivate this Partner?
-            </p>
-            <div className="modal-action flex gap-5 justify-center items-center text-center">
-              <form
-                method="dialog"
-                className="flex gap-5 justify-center items-center text-center"
-              >
-                <div className="mt-4 text-center">
-                  <CustomButton
-                    className="bg-white !text-black !border !border-gray-300 w-28"
-                    onClick={() => {
-                      deleteCloseModal();
-                    }}
-                  >
-                    Cancel
-                  </CustomButton>
-                </div>
+            {pageType == "list" ? (
+                <>
+                    <div className="bg-[#0A0A0A] min-h-screen">
+                        <DataGrid
+                            refreshKey={refreshKey}
+                            headerList={partnerHeader}
+                            apiEndPoint={endPoint}
+                            actionButtons={actionButtons}
+                            clickOnAction={clickOnAction}
+                            permission={props.permission}
+                            toggleForm={toggleForm}
+                            pageName={"Investor"}
+                            backButton={true}
+                        />
+                    </div>
+                </>
+            ) : (
+                <></>
+            )}
 
-                <div className="mt-4 text-center">
-                  <CustomButton
-                    className="w-28"
-                    loading={deleteLoader}
-                    onClick={() => handleDelete()}
-                  >
-                    Yes
-                  </CustomButton>
+            {/* Mapping Modal */}
+            {mappingModal && (
+                <div id="my_modal_1" className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" ref={mappingModalRef}>
+                    <div className="bg-[#111111] rounded-xl shadow-2xl max-w-md w-full border border-[#2A2A2A]">
+                        <div className="flex justify-between items-center p-5 border-b border-[#2A2A2A]">
+                            <h3 className="text-lg font-bold text-[#F59E0B]">Mapping</h3>
+                            <button
+                                className="text-[#9CA3AF] hover:text-[#F59E0B] transition-colors"
+                                onClick={handleCloseModal}
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <div className="p-5">
+                                <div className="py-2">
+                                    <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                        Select RM <span className="text-[#F59E0B]">*</span>
+                                    </label>
+                                    <CustomReactSelect
+                                        items={RMList}
+                                        required
+                                        placeholder="Select RM"
+                                        bindName="Name"
+                                        bindValue="id"
+                                        value={getValues("rm_id")}
+                                        {...register("rm_id")}
+                                        isClearable={true}
+                                        onChange={(e: any) => handleChange(e, "rm")}
+                                        error={errors?.rm_id?.message}
+                                    />
+                                </div>
+                            </div>
+                            <div className="flex gap-4 justify-center p-5 border-t border-[#2A2A2A]">
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="px-6 py-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white font-semibold rounded-lg hover:opacity-90 transition-all disabled:opacity-50"
+                                >
+                                    {loading ? "Submitting..." : "Submit"}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleCloseModal}
+                                    className="px-6 py-2 bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] rounded-lg hover:bg-[#2A2A2A] transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                {/* <button className="btn" onClick={handleMFAllocation}>Close</button> */}
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
-    </>
-  );
+            )}
+
+            {/* Deactivate Modal */}
+            {deactivateModal && (
+                <div id="my_modal_2" className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" ref={deleteModalRef}>
+                    <div className="bg-[#111111] rounded-xl shadow-2xl max-w-md w-full border border-[#2A2A2A]">
+                        <div className="p-6 text-center">
+                            <div className="flex justify-center mb-4">
+                                <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center">
+                                    <AlertCircle className="w-8 h-8 text-red-400" />
+                                </div>
+                            </div>
+                            <h3 className="text-xl font-bold text-[#F9FAFB] mb-3">Deactivate Partner</h3>
+                            <p className="text-[#9CA3AF] mb-6">
+                                Are you sure you want to deactivate this Partner?
+                            </p>
+                            <div className="flex gap-4 justify-center">
+                                <button
+                                    onClick={() => deleteCloseModal()}
+                                    className="px-6 py-2 bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] rounded-lg hover:bg-[#2A2A2A] transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={() => handleDelete()}
+                                    disabled={deleteLoader}
+                                    className="px-6 py-2 bg-gradient-to-r from-[#EF4444] to-[#DC2626] text-white font-semibold rounded-lg hover:opacity-90 transition-all disabled:opacity-50"
+                                >
+                                    {deleteLoader ? "Processing..." : "Yes, Deactivate"}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <style jsx>{`
+                :global(.activeClass) {
+                    color: #10B981;
+                    background-color: rgba(16, 185, 129, 0.1);
+                    padding: 4px 12px;
+                    border-radius: 20px;
+                    font-weight: 500;
+                    display: inline-block;
+                }
+                
+                :global(.inActiveClass) {
+                    color: #EF4444;
+                    background-color: rgba(239, 68, 68, 0.1);
+                    padding: 4px 12px;
+                    border-radius: 20px;
+                    font-weight: 500;
+                    display: inline-block;
+                }
+                
+                :global(.data-grid-container) {
+                    background-color: #0A0A0A;
+                }
+                
+                :global(.data-grid-table) {
+                    background-color: #111111;
+                    border-color: #2A2A2A;
+                }
+                
+                :global(.data-grid-table th) {
+                    background-color: #1F1A1A;
+                    color: #F59E0B;
+                    border-bottom-color: #2A2A2A;
+                }
+                
+                :global(.data-grid-table td) {
+                    color: #F9FAFB;
+                    border-bottom-color: #2A2A2A;
+                }
+                
+                :global(.data-grid-table tr:hover) {
+                    background-color: #1F1A1A;
+                }
+                
+                :global(.data-grid-pagination button) {
+                    background-color: #111111;
+                    border-color: #2A2A2A;
+                    color: #F9FAFB;
+                }
+                
+                :global(.data-grid-pagination button:hover:not(:disabled)) {
+                    background-color: #1F1A1A;
+                    border-color: #F59E0B;
+                    color: #F59E0B;
+                }
+                
+                :global(.data-grid-pagination button.active) {
+                    background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
+                    color: white;
+                    border-color: transparent;
+                }
+                
+                :global(.data-grid-search input) {
+                    background-color: #111111;
+                    border-color: #2A2A2A;
+                    color: #F9FAFB;
+                }
+                
+                :global(.data-grid-search input::placeholder) {
+                    color: #9CA3AF;
+                }
+                
+                :global(.data-grid-search input:focus) {
+                    border-color: #F59E0B;
+                    ring-color: #F59E0B;
+                }
+                
+                :global(.data-grid-filter select) {
+                    background-color: #111111;
+                    border-color: #2A2A2A;
+                    color: #F9FAFB;
+                }
+                
+                :global(.data-grid-filter select:focus) {
+                    border-color: #F59E0B;
+                    ring-color: #F59E0B;
+                }
+                
+                :global(.data-grid-filter select option) {
+                    background-color: #111111;
+                    color: #F9FAFB;
+                }
+                
+                :global(.data-grid-header) {
+                    background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
+                }
+                
+                :global(.data-grid-header h2) {
+                    color: white;
+                }
+                
+                :global(.data-grid-header button) {
+                    background-color: rgba(255, 255, 255, 0.2);
+                    color: white;
+                }
+                
+                :global(.data-grid-header button:hover) {
+                    background-color: rgba(255, 255, 255, 0.3);
+                }
+                
+                /* Custom React Select Styles */
+                :global(.custom-react-select-container) {
+                    width: 100%;
+                }
+                
+                :global(.custom-react-select__control) {
+                    background-color: #1F1A1A !important;
+                    border-color: #2A2A2A !important;
+                    min-height: 42px;
+                }
+                
+                :global(.custom-react-select__control:hover) {
+                    border-color: #F59E0B !important;
+                }
+                
+                :global(.custom-react-select__control--is-focused) {
+                    border-color: #F59E0B !important;
+                    box-shadow: 0 0 0 1px #F59E0B !important;
+                }
+                
+                :global(.custom-react-select__value-container) {
+                    color: #F9FAFB !important;
+                }
+                
+                :global(.custom-react-select__input-container) {
+                    color: #F9FAFB !important;
+                }
+                
+                :global(.custom-react-select__single-value) {
+                    color: #F9FAFB !important;
+                }
+                
+                :global(.custom-react-select__placeholder) {
+                    color: #9CA3AF !important;
+                }
+                
+                :global(.custom-react-select__menu) {
+                    background-color: #1F1A1A !important;
+                    border: 1px solid #2A2A2A !important;
+                }
+                
+                :global(.custom-react-select__option) {
+                    color: #F9FAFB !important;
+                    background-color: #1F1A1A !important;
+                }
+                
+                :global(.custom-react-select__option--is-focused) {
+                    background-color: #2A2A2A !important;
+                    color: #F59E0B !important;
+                }
+                
+                :global(.custom-react-select__option--is-selected) {
+                    background-color: #F59E0B !important;
+                    color: white !important;
+                }
+                
+                :global(.custom-react-select__indicator-separator) {
+                    background-color: #2A2A2A !important;
+                }
+                
+                :global(.custom-react-select__dropdown-indicator) {
+                    color: #9CA3AF !important;
+                }
+                
+                :global(.custom-react-select__dropdown-indicator:hover) {
+                    color: #F59E0B !important;
+                }
+                
+                :global(.custom-react-select__clear-indicator) {
+                    color: #9CA3AF !important;
+                }
+                
+                :global(.custom-react-select__clear-indicator:hover) {
+                    color: #F59E0B !important;
+                }
+            `}</style>
+        </>
+    );
 }
 
 export default PartnerList;

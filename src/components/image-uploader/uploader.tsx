@@ -114,7 +114,7 @@ function Uploader({ setImageUrl, imageUrl, multiple, folder, icon, size, title, 
     <div key={file.name}>
       <div>
         <img
-          className="inline-flex border-2 border-gray-100 w-24 max-h-24"
+          className="inline-flex border-2 border-[#2A2A2A] w-24 max-h-24"
           src={file.preview}
           alt={file.name}
         />
@@ -161,7 +161,7 @@ function Uploader({ setImageUrl, imageUrl, multiple, folder, icon, size, title, 
 
       <div className="w-full text-center">
         <div
-          className="relative border border-gray-300 border-dashed rounded-md cursor-pointer px-0 py-0 mt-3 h-52"
+          className="relative border border-[#3A3A3A] border-dashed rounded-md cursor-pointer px-0 py-0 mt-3 h-52"
           {...getRootProps()}
         >
           <input {...getInputProps()} />
@@ -170,14 +170,14 @@ function Uploader({ setImageUrl, imageUrl, multiple, folder, icon, size, title, 
           {!multiple && imageUrl ? (
             <div className="relative">
               <img
-                className="mx-auto border-0 rounded-md border-gray-300 max-h-50 mb-4 object-contain"
+                className="mx-auto border-0 rounded-md border-[#3A3A3A] max-h-50 mb-4 object-contain"
                 src={`${NODE_API_URL}/static/${folder}/${imageUrl}`}
                 width="800px"
                 alt="product"
               />
               <button
                 type="button"
-                className="absolute top-2 right-2 text-red-500 bg-white rounded-full p-1 focus:outline-none cursor-pointer shadow-md"
+                className="absolute top-2 right-2 text-red-500 bg-[#111111] rounded-full p-1 focus:outline-none cursor-pointer shadow-md"
                 onClick={(e) => {
                   e.stopPropagation(); // Prevent dropzone click
                   handleRemoveImage(imageUrl);
@@ -194,11 +194,11 @@ function Uploader({ setImageUrl, imageUrl, multiple, folder, icon, size, title, 
             // Show upload UI when no image
             <>
               {/* <span className="mx-auto flex justify-center">{icon}</span> */}
-              <div className="text-sm mt-2 text-gray-400 h-52 flex items-center justify-center"><div className="bg-secondary rounded-lg p-2 text-white">Upload Image</div></div>
+              <div className="text-sm mt-2 text-[#6B7280] h-52 flex items-center justify-center"><div className="bg-secondary rounded-lg p-2 text-white">Upload Image</div></div>
             </>
           )}
 
-          {/* <em className="text-xs text-gray-400">
+          {/* <em className="text-xs text-[#6B7280]">
           (Only *.jpeg, *.webp and *.png images will be accepted)
         </em> */}
         </div>

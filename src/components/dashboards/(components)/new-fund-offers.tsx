@@ -77,13 +77,13 @@ function NewFundOffers({ data }: any) {
                 isVisible={navegateLoader}
                 message="Processing..."
             />
-            <div className="bg-white">
+            <div className="bg-[#111111]">
                 <div className="flex items-center justify-between mb-4">
-                    <CustomText className="text-lg font-montserrat font-semibold text-gray-900">
+                    <CustomText className="text-lg font-montserrat font-semibold text-[#F9FAFB]">
                         New Fund Offers (NFO)
                     </CustomText>
                     <CustomButton
-                        className="p-0 h-auto min-h-0 !text-secondary-content !bg-white"
+                        className="p-0 h-auto min-h-0 !text-secondary-content !bg-[#111111]"
                         onClick={() => onChangeViewAll()}
                     >
                         View All <span><FaAngleRight /></span>
@@ -98,7 +98,7 @@ function NewFundOffers({ data }: any) {
                                     //   <div className="keen-slider__slide" key={fund.id}>
                                     <div key={index}>
                                         <div
-                                            className="bg-white border border-gray-200 rounded-xl p-4 h-full hover:shadow-lg transition-all duration-200"
+                                            className="bg-[#111111] border border-[#2A2A2A] rounded-xl p-4 h-full hover:shadow-lg transition-all duration-200"
                                         >
                                             {/* fund Header with Icon */}
                                             <div className="flex items-start justify-between gap-3 mb-3">
@@ -129,7 +129,7 @@ function NewFundOffers({ data }: any) {
                                             </div> */}
 
                                             <div className="mt-4 flex justify-between items-center">
-                                                <CustomText className="font-medium text-xs text-gray-500 line-clamp-2">
+                                                <CustomText className="font-medium text-xs text-[#9CA3AF] line-clamp-2">
                                                     NFO Period
                                                 </CustomText>
                                                 <CustomText className="font-semibold text-sm line-clamp-2">
@@ -141,15 +141,15 @@ function NewFundOffers({ data }: any) {
                                             {/* Risk Rating and Investment */}
                                             <div className="flex items-center justify-between mt-4">
                                                 <div>
-                                                    <CustomText className="text-xs text-gray-500 mb-1">
+                                                    <CustomText className="text-xs text-[#9CA3AF] mb-1">
                                                         Min. investment
                                                     </CustomText>
-                                                    <CustomText className="text-sm font-bold text-gray-900">
+                                                    <CustomText className="text-sm font-bold text-[#F9FAFB]">
                                                         {fund.min_amount ? convertNumberIndian(fund.min_amount): 0}
                                                     </CustomText>
                                                 </div>
                                                 <div className="text-right">
-                                                    <CustomText className="text-xs text-gray-500 mb-1">
+                                                    <CustomText className="text-xs text-[#9CA3AF] mb-1">
                                                         Risk Rating
                                                     </CustomText>
                                                     {/* <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRiskColor(fund.riskRating)}`}> */}
@@ -192,7 +192,7 @@ function NewFundOffers({ data }: any) {
                                     </div>
                                 ))) : (
                                 <div className="col-span-4">
-                                    <CustomText className="text-center text-gray-500">
+                                    <CustomText className="text-center text-[#9CA3AF]">
                                         No Data Found
                                     </CustomText>
                                 </div>

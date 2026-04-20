@@ -314,7 +314,7 @@ function LandingPage() {
     <div className={`min-h-screen transition-all duration-500 overflow-hidden ${
       isDarkMode 
         ? 'bg-gray-900 text-white' 
-        : 'bg-gradient-to-br from-slate-50 via-white to-blue-50 text-gray-900'
+        : 'bg-gradient-to-br from-slate-50 via-white to-blue-50 text-[#F9FAFB]'
     }`}>
       
       {/* Enhanced Background */}
@@ -357,7 +357,7 @@ function LandingPage() {
       <nav className={`fixed w-full py-4 px-4 sm:px-6 lg:px-8 backdrop-blur-lg z-50 border-b transition-colors duration-300 ${
         isDarkMode 
           ? 'border-gray-800/50 bg-gray-900/80' 
-          : 'border-blue-100/50 bg-white/90 shadow-sm'
+          : 'border-blue-100/50 bg-[#111111]/90 shadow-sm'
       }`}>
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div 
@@ -401,7 +401,7 @@ function LandingPage() {
                 <div className={`absolute right-0 mt-2 w-56 rounded-xl shadow-2xl border backdrop-blur-md z-50 transition-colors duration-300 ${
                   isDarkMode 
                     ? 'bg-gray-800 border-gray-700' 
-                    : 'bg-white border-blue-100 shadow-xl'
+                    : 'bg-[#111111] border-blue-100 shadow-xl'
                 }`}>
                   <div className="p-2">
                     <button
@@ -412,13 +412,13 @@ function LandingPage() {
                       className={`w-full flex items-center space-x-3 px-3 py-3 rounded-lg transition-all duration-300 ${
                         isDarkMode 
                           ? 'hover:bg-gray-700 text-gray-200' 
-                          : 'hover:bg-blue-50 text-gray-700 border border-transparent hover:border-blue-200'
+                          : 'hover:bg-blue-50 text-[#E5E7EB] border border-transparent hover:border-blue-200'
                       }`}
                     >
                       <Users className="h-5 w-5 text-purple-600" />
                       <div className="text-left">
                         <div className="font-semibold">Become a Partner</div>
-                        <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                        <div className={`text-sm ${isDarkMode ? 'text-[#6B7280]' : 'text-[#9CA3AF]'}`}>
                           Join as financial advisor
                         </div>
                       </div>
@@ -432,13 +432,13 @@ function LandingPage() {
                       className={`w-full flex items-center space-x-3 px-3 py-3 rounded-lg transition-all duration-300 ${
                         isDarkMode 
                           ? 'hover:bg-gray-700 text-gray-200' 
-                          : 'hover:bg-blue-50 text-gray-700 border border-transparent hover:border-blue-200'
+                          : 'hover:bg-blue-50 text-[#E5E7EB] border border-transparent hover:border-blue-200'
                       }`}
                     >
                       <Globe className="h-5 w-5 text-green-600" />
                       <div className="text-left">
                         <div className="font-semibold">Become a BC</div>
-                        <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                        <div className={`text-sm ${isDarkMode ? 'text-[#6B7280]' : 'text-[#9CA3AF]'}`}>
                           Business correspondent
                         </div>
                       </div>
@@ -452,13 +452,13 @@ function LandingPage() {
                       className={`w-full flex items-center space-x-3 px-3 py-3 rounded-lg transition-all duration-300 ${
                         isDarkMode 
                           ? 'hover:bg-gray-700 text-gray-200' 
-                          : 'hover:bg-blue-50 text-gray-700 border border-transparent hover:border-blue-200'
+                          : 'hover:bg-blue-50 text-[#E5E7EB] border border-transparent hover:border-blue-200'
                       }`}
                     >
                       <TrendingUp className="h-5 w-5 text-blue-600" />
                       <div className="text-left">
                         <div className="font-semibold">Continue as Investor</div>
-                        <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                        <div className={`text-sm ${isDarkMode ? 'text-[#6B7280]' : 'text-[#9CA3AF]'}`}>
                           Start investing
                         </div>
                       </div>
@@ -520,7 +520,7 @@ function LandingPage() {
               activeSlide === 0 ? 'opacity-100' : 'opacity-0'
             }`}>
               <div className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-6">
-                <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <span className={`block ${isDarkMode ? 'text-white' : 'text-[#F9FAFB]'}`}>
                   Start Small
                 </span>
                 <span className="bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
@@ -528,7 +528,7 @@ function LandingPage() {
                 </span>
               </div>
               <p className={`text-xl sm:text-2xl max-w-2xl mx-auto leading-relaxed ${
-                isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                isDarkMode ? 'text-gray-300' : 'text-[#9CA3AF]'
               }`}>
                 Begin with just <span className="font-semibold text-green-600">₹500</span>. 
                 No big money needed to start.
@@ -540,7 +540,7 @@ function LandingPage() {
               activeSlide === 1 ? 'opacity-100' : 'opacity-0'
             }`}>
               <div className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-6">
-                <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <span className={`block ${isDarkMode ? 'text-white' : 'text-[#F9FAFB]'}`}>
                   Very Easy
                 </span>
                 <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
@@ -548,7 +548,7 @@ function LandingPage() {
                 </span>
               </div>
               <p className={`text-xl sm:text-2xl max-w-2xl mx-auto leading-relaxed ${
-                isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                isDarkMode ? 'text-gray-300' : 'text-[#9CA3AF]'
               }`}>
                 Simple steps. Easy to understand. No confusion.
               </p>
@@ -559,7 +559,7 @@ function LandingPage() {
               activeSlide === 2 ? 'opacity-100' : 'opacity-0'
             }`}>
               <div className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-6">
-                <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <span className={`block ${isDarkMode ? 'text-white' : 'text-[#F9FAFB]'}`}>
                   Local Help
                 </span>
                 <span className="bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
@@ -567,7 +567,7 @@ function LandingPage() {
                 </span>
               </div>
               <p className={`text-xl sm:text-2xl max-w-2xl mx-auto leading-relaxed ${
-                isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                isDarkMode ? 'text-gray-300' : 'text-[#9CA3AF]'
               }`}>
                 Talk to advisors near you. They speak your language.
               </p>
@@ -578,7 +578,7 @@ function LandingPage() {
               activeSlide === 3 ? 'opacity-100' : 'opacity-0'
             }`}>
               <div className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-6">
-                <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <span className={`block ${isDarkMode ? 'text-white' : 'text-[#F9FAFB]'}`}>
                   Government
                 </span>
                 <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">
@@ -586,7 +586,7 @@ function LandingPage() {
                 </span>
               </div>
               <p className={`text-xl sm:text-2xl max-w-2xl mx-auto leading-relaxed ${
-                isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                isDarkMode ? 'text-gray-300' : 'text-[#9CA3AF]'
               }`}>
                 SEBI registered. Your money is safe with us.
               </p>
@@ -597,7 +597,7 @@ function LandingPage() {
               activeSlide === 4 ? 'opacity-100' : 'opacity-0'
             }`}>
               <div className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-6">
-                <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <span className={`block ${isDarkMode ? 'text-white' : 'text-[#F9FAFB]'}`}>
                   More Money
                 </span>
                 <span className="bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent">
@@ -605,7 +605,7 @@ function LandingPage() {
                 </span>
               </div>
               <p className={`text-xl sm:text-2xl max-w-2xl mx-auto leading-relaxed ${
-                isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                isDarkMode ? 'text-gray-300' : 'text-[#9CA3AF]'
               }`}>
                 Earn more than bank FD. Grow your money faster.
               </p>
@@ -616,7 +616,7 @@ function LandingPage() {
               activeSlide === 5 ? 'opacity-100' : 'opacity-0'
             }`}>
               <div className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-6">
-                <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <span className={`block ${isDarkMode ? 'text-white' : 'text-[#F9FAFB]'}`}>
                   Monthly
                 </span>
                 <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
@@ -624,7 +624,7 @@ function LandingPage() {
                 </span>
               </div>
               <p className={`text-xl sm:text-2xl max-w-2xl mx-auto leading-relaxed ${
-                isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                isDarkMode ? 'text-gray-300' : 'text-[#9CA3AF]'
               }`}>
                 Get regular monthly payments. Good for extra money.
               </p>
@@ -635,7 +635,7 @@ function LandingPage() {
               activeSlide === 6 ? 'opacity-100' : 'opacity-0'
             }`}>
               <div className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-6">
-                <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <span className={`block ${isDarkMode ? 'text-white' : 'text-[#F9FAFB]'}`}>
                   Pay Less
                 </span>
                 <span className="bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
@@ -643,7 +643,7 @@ function LandingPage() {
                 </span>
               </div>
               <p className={`text-xl sm:text-2xl max-w-2xl mx-auto leading-relaxed ${
-                isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                isDarkMode ? 'text-gray-300' : 'text-[#9CA3AF]'
               }`}>
                 Save up to ₹1.5 Lakh tax. Keep more of your money.
               </p>
@@ -654,7 +654,7 @@ function LandingPage() {
               activeSlide === 7 ? 'opacity-100' : 'opacity-0'
             }`}>
               <div className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-6">
-                <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <span className={`block ${isDarkMode ? 'text-white' : 'text-[#F9FAFB]'}`}>
                   Use Phone
                 </span>
                 <span className="bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">
@@ -662,7 +662,7 @@ function LandingPage() {
                 </span>
               </div>
               <p className={`text-xl sm:text-2xl max-w-2xl mx-auto leading-relaxed ${
-                isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                isDarkMode ? 'text-gray-300' : 'text-[#9CA3AF]'
               }`}>
                 Works on mobile. Works on computer. Easy for all.
               </p>
@@ -673,7 +673,7 @@ function LandingPage() {
               activeSlide === 8 ? 'opacity-100' : 'opacity-0'
             }`}>
               <div className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-6">
-                <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <span className={`block ${isDarkMode ? 'text-white' : 'text-[#F9FAFB]'}`}>
                   Slow Internet
                 </span>
                 <span className="bg-gradient-to-r from-teal-600 to-green-600 bg-clip-text text-transparent">
@@ -681,7 +681,7 @@ function LandingPage() {
                 </span>
               </div>
               <p className={`text-xl sm:text-2xl max-w-2xl mx-auto leading-relaxed ${
-                isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                isDarkMode ? 'text-gray-300' : 'text-[#9CA3AF]'
               }`}>
                 Works with slow network. Good for village areas.
               </p>
@@ -692,7 +692,7 @@ function LandingPage() {
               activeSlide === 9 ? 'opacity-100' : 'opacity-0'
             }`}>
               <div className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-6">
-                <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <span className={`block ${isDarkMode ? 'text-white' : 'text-[#F9FAFB]'}`}>
                   No Hidden
                 </span>
                 <span className="bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent">
@@ -700,7 +700,7 @@ function LandingPage() {
                 </span>
               </div>
               <p className={`text-xl sm:text-2xl max-w-2xl mx-auto leading-relaxed ${
-                isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                isDarkMode ? 'text-gray-300' : 'text-[#9CA3AF]'
               }`}>
                 Clear fees. No surprise costs. You know everything.
               </p>
@@ -711,7 +711,7 @@ function LandingPage() {
               activeSlide === 10 ? 'opacity-100' : 'opacity-0'
             }`}>
               <div className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-6">
-                <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <span className={`block ${isDarkMode ? 'text-white' : 'text-[#F9FAFB]'}`}>
                   Secure Your
                 </span>
                 <span className="bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">
@@ -719,7 +719,7 @@ function LandingPage() {
                 </span>
               </div>
               <p className={`text-xl sm:text-2xl max-w-2xl mx-auto leading-relaxed ${
-                isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                isDarkMode ? 'text-gray-300' : 'text-[#9CA3AF]'
               }`}>
                 Plan for children's education. Plan for retirement.
               </p>
@@ -730,7 +730,7 @@ function LandingPage() {
               activeSlide === 11 ? 'opacity-100' : 'opacity-0'
             }`}>
               <div className="text-4xl sm:text-6xl lg:text-7xl font-bold mb-6">
-                <span className={`block ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                <span className={`block ${isDarkMode ? 'text-white' : 'text-[#F9FAFB]'}`}>
                   Start Today
                 </span>
                 <span className="bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
@@ -738,7 +738,7 @@ function LandingPage() {
                 </span>
               </div>
               <p className={`text-xl sm:text-2xl max-w-2xl mx-auto leading-relaxed ${
-                isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                isDarkMode ? 'text-gray-300' : 'text-[#9CA3AF]'
               }`}>
                 Don't wait. Begin now. Your future self will thank you.
               </p>
@@ -768,8 +768,8 @@ function LandingPage() {
           onClick={() => setActiveSlide((prev) => (prev === 0 ? 11 : prev - 1))}
           className={`absolute left-4 top-1/2 transform -translate-y-1/2 p-3 rounded-2xl transition-all duration-300 ${
             isDarkMode 
-              ? 'bg-gray-800/50 hover:bg-gray-700 text-gray-400 hover:text-white' 
-              : 'bg-white/60 hover:bg-white text-gray-600 hover:text-gray-900 shadow-lg'
+              ? 'bg-gray-800/50 hover:bg-gray-700 text-[#6B7280] hover:text-white' 
+              : 'bg-[#111111]/60 hover:bg-[#111111] text-[#9CA3AF] hover:text-[#F9FAFB] shadow-lg'
           }`}
         >
           <ChevronLeft className="h-6 w-6" />
@@ -779,8 +779,8 @@ function LandingPage() {
           onClick={() => setActiveSlide((prev) => (prev === 11 ? 0 : prev + 1))}
           className={`absolute right-4 top-1/2 transform -translate-y-1/2 p-3 rounded-2xl transition-all duration-300 ${
             isDarkMode 
-              ? 'bg-gray-800/50 hover:bg-gray-700 text-gray-400 hover:text-white' 
-              : 'bg-white/60 hover:bg-white text-gray-600 hover:text-gray-900 shadow-lg'
+              ? 'bg-gray-800/50 hover:bg-gray-700 text-[#6B7280] hover:text-white' 
+              : 'bg-[#111111]/60 hover:bg-[#111111] text-[#9CA3AF] hover:text-[#F9FAFB] shadow-lg'
           }`}
         >
           <ChevronRight className="h-6 w-6" />
@@ -811,7 +811,7 @@ function LandingPage() {
                 className={`group relative rounded-2xl p-6 transition-all duration-500 border backdrop-blur-md cursor-pointer ${
                   isDarkMode 
                     ? 'bg-gray-800/30 border-gray-700 hover:border-cyan-500/50' 
-                    : 'bg-white/60 border-blue-100 hover:border-blue-300 shadow-lg hover:shadow-xl'
+                    : 'bg-[#111111]/60 border-blue-100 hover:border-blue-300 shadow-lg hover:shadow-xl'
                 } hover:shadow-2xl transform hover:-translate-y-2`}
                 onClick={handleBecomeInvestor}
               >
@@ -839,7 +839,7 @@ function LandingPage() {
                 </CustomText>
                 
                 <div className={`text-sm mb-4 ${
-                  isDarkMode ? 'text-gray-400' : 'text-slate-600'
+                  isDarkMode ? 'text-[#6B7280]' : 'text-slate-600'
                 }`}>
                   {fund.category} • {fund.risk} Risk
                 </div>
@@ -847,7 +847,7 @@ function LandingPage() {
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div>
                     <div className={`text-xs ${
-                      isDarkMode ? 'text-gray-400' : 'text-slate-500'
+                      isDarkMode ? 'text-[#6B7280]' : 'text-slate-500'
                     }`}>
                       Annual Returns
                     </div>
@@ -857,7 +857,7 @@ function LandingPage() {
                   </div>
                   <div>
                     <div className={`text-xs ${
-                      isDarkMode ? 'text-gray-400' : 'text-slate-500'
+                      isDarkMode ? 'text-[#6B7280]' : 'text-slate-500'
                     }`}>
                       Fund Size
                     </div>
@@ -869,7 +869,7 @@ function LandingPage() {
 
                 <div className="flex justify-between items-center">
                   <span className={`text-xs ${
-                    isDarkMode ? 'text-gray-400' : 'text-slate-500'
+                    isDarkMode ? 'text-[#6B7280]' : 'text-slate-500'
                   }`}>
                     Min. Investment: {fund.minInvestment}
                   </span>
@@ -914,7 +914,7 @@ function LandingPage() {
                 className={`group relative rounded-3xl p-8 transition-all duration-500 border backdrop-blur-md cursor-pointer ${
                   isDarkMode 
                     ? 'bg-gray-800/30 border-gray-700 hover:border-cyan-500/50' 
-                    : 'bg-white/60 border-blue-100 hover:border-blue-300 shadow-lg hover:shadow-xl'
+                    : 'bg-[#111111]/60 border-blue-100 hover:border-blue-300 shadow-lg hover:shadow-xl'
                 } hover:shadow-2xl transform hover:-translate-y-2`}
                 onClick={role.onClick}
               >
@@ -1005,7 +1005,7 @@ function LandingPage() {
             <div className={`rounded-2xl p-6 backdrop-blur-md border transition-colors duration-300 flex flex-col ${
               isDarkMode 
                 ? 'bg-gray-800/30 border-gray-700' 
-                : 'bg-white/60 border-blue-100 shadow-lg'
+                : 'bg-[#111111]/60 border-blue-100 shadow-lg'
             }`}>
               {/* Calculator Type Toggle */}
               <div className="flex items-center justify-between mb-6">
@@ -1116,7 +1116,7 @@ function LandingPage() {
               </div>
 
               {/* Quick Presets - Fixed at bottom */}
-              <div className="grid grid-cols-2 gap-2 mt-6 pt-4 border-t border-gray-200 dark:border-gray-600">
+              <div className="grid grid-cols-2 gap-2 mt-6 pt-4 border-t border-[#2A2A2A] dark:border-gray-600">
                 <button
                   onClick={() => {
                     setCalculatorType('sip');
@@ -1186,7 +1186,7 @@ function LandingPage() {
               <div className={`rounded-2xl p-6 backdrop-blur-md border transition-colors duration-300 flex-1 flex flex-col ${
                 isDarkMode 
                   ? 'bg-gray-800/30 border-gray-700' 
-                  : 'bg-white/60 border-blue-100 shadow-lg'
+                  : 'bg-[#111111]/60 border-blue-100 shadow-lg'
               }`}>
                 <CustomText className="text-lg font-black mb-4">
                   Investment Summary
@@ -1196,7 +1196,7 @@ function LandingPage() {
                   {/* Progress Visualization */}
                   <div className="space-y-3">
                     <div className="flex justify-between items-center text-sm">
-                      <span className={isDarkMode ? 'text-gray-400' : 'text-slate-600'}>
+                      <span className={isDarkMode ? 'text-[#6B7280]' : 'text-slate-600'}>
                         Amount Invested
                       </span>
                       <span className="font-semibold">
@@ -1207,7 +1207,7 @@ function LandingPage() {
                       </span>
                     </div>
                     
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-2 bg-[#2A2A2A] rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full transition-all duration-500"
                         style={{
@@ -1220,7 +1220,7 @@ function LandingPage() {
                     </div>
                     
                     <div className="flex justify-between items-center text-sm">
-                      <span className={isDarkMode ? 'text-gray-400' : 'text-slate-600'}>
+                      <span className={isDarkMode ? 'text-[#6B7280]' : 'text-slate-600'}>
                         Wealth Created
                       </span>
                       <span className="font-semibold text-green-600">
@@ -1232,7 +1232,7 @@ function LandingPage() {
                       </span>
                     </div>
                     
-                    <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div className="h-2 bg-[#2A2A2A] rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-gradient-to-r from-green-500 to-emerald-500 rounded-full transition-all duration-500"
                         style={{
@@ -1247,14 +1247,14 @@ function LandingPage() {
                   </div>
 
                   {/* Final Amount Display */}
-                  <div className="text-center mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
-                    <div className={`text-sm mb-1 ${isDarkMode ? 'text-gray-400' : 'text-slate-600'}`}>
+                  <div className="text-center mt-4 pt-4 border-t border-[#2A2A2A] dark:border-gray-600">
+                    <div className={`text-sm mb-1 ${isDarkMode ? 'text-[#6B7280]' : 'text-slate-600'}`}>
                       Future Value in {timePeriod} years
                     </div>
                     <div className="text-2xl font-black text-green-600 mb-2">
                       {formatCurrency(calculatedValue)}
                     </div>
-                    <div className={`text-xs ${isDarkMode ? 'text-gray-500' : 'text-slate-500'}`}>
+                    <div className={`text-xs ${isDarkMode ? 'text-[#9CA3AF]' : 'text-slate-500'}`}>
                       {((calculatedValue / (
                         calculatorType === 'sip' 
                           ? sipAmount * timePeriod * 12 
@@ -1384,7 +1384,7 @@ function LandingPage() {
                     className={`p-3 rounded-lg transition-all duration-300 transform hover:scale-110 ${
                       isDarkMode 
                         ? 'bg-gray-800 hover:bg-blue-500 text-gray-300 hover:text-white' 
-                        : 'bg-white hover:bg-blue-500 text-slate-600 hover:text-white shadow-sm border border-blue-100'
+                        : 'bg-[#111111] hover:bg-blue-500 text-slate-600 hover:text-white shadow-sm border border-blue-100'
                     }`}
                   >
                     <Icon className="h-5 w-5" />
@@ -1445,19 +1445,19 @@ function LandingPage() {
           {/* Bottom Bar */}
           <div className={`py-6 border-t ${isDarkMode ? 'border-gray-700' : 'border-blue-100'}`}>
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-              <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-slate-500'}`}>
+              <span className={`text-sm ${isDarkMode ? 'text-[#6B7280]' : 'text-slate-500'}`}>
                 © 2025 Vedant Asset. All rights reserved.
               </span>
               <div className="flex space-x-6">
-                <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-slate-500'}`}>
+                <span className={`text-sm ${isDarkMode ? 'text-[#6B7280]' : 'text-slate-500'}`}>
                   <Award className="h-4 w-4 inline mr-1" />
                   SEBI Registered
                 </span>
-                <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-slate-500'}`}>
+                <span className={`text-sm ${isDarkMode ? 'text-[#6B7280]' : 'text-slate-500'}`}>
                   <Shield className="h-4 w-4 inline mr-1" />
                   ISO 27001 Certified
                 </span>
-                <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-slate-500'}`}>
+                <span className={`text-sm ${isDarkMode ? 'text-[#6B7280]' : 'text-slate-500'}`}>
                   <PieChart className="h-4 w-4 inline mr-1" />
                   Building Financial Futures
                 </span>

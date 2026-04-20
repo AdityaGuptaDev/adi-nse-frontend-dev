@@ -20,8 +20,6 @@ import AccountContext from "@/context/AccountContext/Account.context";
 import CustomReactSelect from "@/commonUI/ReactSelect";
 import { fetchDecentroByMobile } from "@/api/kyc";
 import CustomTextarea from "@/commonUI/TextArea";
-import { m } from "framer-motion";
-import { get } from "http";
 import { getInvestor, getUserByInvestorId } from "@/api/holder";
 
 // ---------------------
@@ -44,7 +42,7 @@ const schema = yup.object().shape({
         .string()
         .trim()
         .required("PAN No. is required")
-        .matches(PAN_NO_REGEX, "Invalid PAN Number")
+        .matches(/^[A-Z]{5}[0-9]{4}[A-Z]$/, "Invalid PAN Number")
         .transform((value) => (value ? value.toUpperCase().replace(/\s/g, "") : value)),
     pincode: yup
         .string()
@@ -78,7 +76,6 @@ const schema = yup.object().shape({
             ? schema.required("Password is required for members").min(6, "Password must be at least 6 characters")
             : schema.notRequired()
     ),
-
 });
 
 // ---------------------
@@ -124,6 +121,7 @@ export default function InitialScreen({ setKYCSFlow, setKYCFlowScreen }: Props) 
     const [countryList, setCountryList] = useState<any>([]);
     const [stateList, setStateList] = useState<any>([]);
     const [investorData, setInvestorData] = useState<any>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const { setKycDetails, kyc_details, setListings, listings } = useContext<any>(AccountContext);
 
@@ -150,7 +148,7 @@ export default function InitialScreen({ setKYCSFlow, setKYCFlowScreen }: Props) 
             dob: "",
             tax_status: "",
             aadhaar_no: "",
-            email: "itvedant@vedantasset.com",
+            email: "",
             mobile: "",
             passwd: "",
             ismember: isMember,
@@ -172,7 +170,7 @@ export default function InitialScreen({ setKYCSFlow, setKYCFlowScreen }: Props) 
 
         const getMemeber = getLS("INVESTOR_USER_ID");
         if (getMemeber) setInvestorData(getMemeber);
-        getCountry()
+        getCountry();
 
         if (!getMemeber) {
 
@@ -433,7 +431,7 @@ export default function InitialScreen({ setKYCSFlow, setKYCFlowScreen }: Props) 
             const data = await api.post(`/cashfree/initiate-aadhaar-verification`, payload);
             if (data?.data) {
                 setAadhaarOtpResponse(data.data.data);
-                openModal();
+                setIsModalOpen(true); // Open modal only after successful OTP send
                 toastAlert("success", data.data.msg || "OTP sent to Aadhaar linked mobile");
             }
         } catch (err) {
@@ -456,8 +454,10 @@ export default function InitialScreen({ setKYCSFlow, setKYCFlowScreen }: Props) 
         }
     };
 
-    const openModal = () => modalRef.current?.showModal();
-    const closeModal = () => modalRef.current?.close();
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setAadhaarOTP(null);
+    };
 
     const onhandleOtpSubmit = async () => {
         if (!aadhaarOTP) {
@@ -511,11 +511,6 @@ export default function InitialScreen({ setKYCSFlow, setKYCFlowScreen }: Props) 
 
             if (data?.data) {
                 closeModal();
-                setAadhaarOTP(null);
-                // const d = data.data.data;
-                // setDob(d?.dob || "");
-                // setPanStatusVerified(true);
-
                 toastAlert("success", data.data.msg || "Aadhaar verified");
             }
         } catch (err) {
@@ -526,13 +521,13 @@ export default function InitialScreen({ setKYCSFlow, setKYCFlowScreen }: Props) 
     };
 
     return (
-        <div className="max-w-4xl mx-auto bg-white p-6 md:p-8">
+        <div className="max-w-4xl mx-auto bg-[#111111] p-6 md:p-8 rounded-xl border border-[#2A2A2A] shadow-xl">
             <div className="text-center p-6">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-secondary rounded-full mb-4">
+                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-[#F59E0B] to-[#B45309] rounded-full mb-4">
                     <Shield className="w-8 h-8 text-white" />
                 </div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Identity Verification</h1>
-                <p className="text-sm text-gray-500">Securely verify your PAN or Aadhaar to continue</p>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent mb-2">Identity Verification</h1>
+                <p className="text-sm text-[#9CA3AF]">Securely verify your PAN or Aadhaar to continue</p>
             </div>
 
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -541,44 +536,49 @@ export default function InitialScreen({ setKYCSFlow, setKYCFlowScreen }: Props) 
                 <div>
 
                     {isMember &&
-                        <div className="flex flex-col md:flex-row gap-4 w-full">
+                        <div className="flex flex-col md:flex-row gap-4 w-full mb-4">
                             <div className="w-full md:w-1/3">
-                                <CustomInput
-                                    label="Email Address"
-                                    placeholder="Your email address"
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    Email Address <span className="text-[#F59E0B]">*</span>
+                                </label>
+                                <input
                                     type="email"
-                                    required
+                                    placeholder="Your email address"
                                     {...register("email")}
                                     value={watch("email") || ""}
-                                    error={errors.email?.message}
+                                    className="w-full px-4 py-2.5 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                                 />
+                                {errors.email && <p className="mt-1 text-xs text-red-400">{errors.email.message}</p>}
                             </div>
                             <div className="w-full md:w-1/3">
-                                <CustomInput
-                                    label="Mobile Number"
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    Mobile Number <span className="text-[#F59E0B]">*</span>
+                                </label>
+                                <input
+                                    type="tel"
                                     placeholder="Your mobile number"
-                                    type="number"
-                                    required
                                     {...register("mobile")}
                                     value={watch("mobile") || ""}
-                                    error={errors.mobile?.message}
+                                    className="w-full px-4 py-2.5 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                                 />
+                                {errors.mobile && <p className="mt-1 text-xs text-red-400">{errors.mobile.message}</p>}
                             </div>
                             <div className="w-full md:w-1/3">
-                                <CustomInput
-                                    label="Password"
-                                    placeholder="Password"
+                                <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                    Password <span className="text-[#F59E0B]">*</span>
+                                </label>
+                                <input
                                     type="password"
-                                    required
+                                    placeholder="Password"
                                     {...register("passwd")}
                                     value={watch("passwd") || ""}
-                                    error={errors.passwd?.message}
+                                    className="w-full px-4 py-2.5 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                                 />
+                                {errors.passwd && <p className="mt-1 text-xs text-red-400">{errors.passwd.message}</p>}
                             </div>
-
                         </div>
                     }
-                    <div className="flex flex-col md:flex-row gap-4 w-full">
+                    <div className="flex flex-col md:flex-row gap-4 w-full mb-4">
                         <div className="w-full md:w-1/4">
                             <CustomReactSelect
                                 label="Tax Status"
@@ -596,99 +596,112 @@ export default function InitialScreen({ setKYCSFlow, setKYCFlowScreen }: Props) 
                             />
                         </div>
                         <div className="w-full md:w-1/2">
-                            <CustomInput
-                                label="Aadhaar Number"
-                                placeholder="Enter 12-digit Aadhaar Number"
-                                {...register("aadhaar_no")}
-                                maxLength={12}
-                                required
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue("aadhaar_no", e.target.value.replace(/\D/g, ""))}
-                                error={errors.aadhaar_no?.message}
-                                button={
-                                    <CustomButton type="button" className="px-3 py-2 text-sm h-8" onClick={handleCheckAadhaar} loading={aadhaarCheckLoader} disabled={aadhaarCheckLoader}>
-                                        Verify
-                                    </CustomButton>
-                                }
-                            />
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Aadhaar Number <span className="text-[#F59E0B]">*</span>
+                            </label>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    placeholder="Enter 12-digit Aadhaar Number"
+                                    {...register("aadhaar_no")}
+                                    maxLength={12}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue("aadhaar_no", e.target.value.replace(/\D/g, ""))}
+                                    className="flex-1 px-4 py-2.5 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleCheckAadhaar}
+                                    disabled={aadhaarCheckLoader}
+                                    className="px-4 py-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white font-semibold rounded-lg hover:opacity-90 transition-all disabled:opacity-50 whitespace-nowrap"
+                                >
+                                    {aadhaarCheckLoader ? "Verifying..." : "Verify"}
+                                </button>
+                            </div>
+                            {errors.aadhaar_no && <p className="mt-1 text-xs text-red-400">{errors.aadhaar_no.message}</p>}
                         </div>
                         <div className="w-full md:w-1/3">
-                            <CustomInput
-                                label="Date of Birth"
-                                placeholder="Enter DOB"
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Date of Birth <span className="text-[#F59E0B]">*</span>
+                            </label>
+                            <input
                                 type="date"
-                                required
                                 {...register("dob")}
                                 value={watch("dob") || ""}
-                                error={errors.dob?.message}
+                                className="w-full px-4 py-2.5 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             />
+                            {errors.dob && <p className="mt-1 text-xs text-red-400">{errors.dob.message}</p>}
                         </div>
-
-
                     </div>
 
-                    <div className="flex flex-col md:flex-row gap-4 w-full">
-
-                        {/* PAN Input */}
+                    <div className="flex flex-col md:flex-row gap-4 w-full mb-4">
                         <div className="w-full md:w-1/2">
-                            <CustomInput
-                                label="PAN"
-                                placeholder="Enter PAN (e.g., ABCDE1234F)"
-                                {...register("pan_no")}
-                                required
-                                onChange={handlePanChange}
-                                error={errors.pan_no?.message}
-                                disabled={panDisabled}
-                                maxLength={10}
-                                button={
-                                    !panDisabled ? (
-                                        <CustomButton
-                                            type="button"
-                                            className="px-3 py-2 text-sm h-8"
-                                            onClick={handleCheckPanStatus}
-                                            loading={panCheckLoader}
-                                            disabled={panCheckLoader || panDisabled || !!errors.pan_no}
-                                        >
-                                            Check
-                                        </CustomButton>
-                                    ) : (
-                                        <CustomButton
-                                            type="button"
-                                            className="px-3 py-2 text-sm h-8"
-                                            onClick={handleEditPan}
-                                        >
-                                            Edit
-                                        </CustomButton>
-                                    )
-                                }
-                            />
-
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                PAN <span className="text-[#F59E0B]">*</span>
+                            </label>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    placeholder="Enter PAN (e.g., ABCDE1234F)"
+                                    {...register("pan_no")}
+                                    onChange={handlePanChange}
+                                    disabled={panDisabled}
+                                    maxLength={10}
+                                    className="flex-1 px-4 py-2.5 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-50"
+                                />
+                                {!panDisabled ? (
+                                    <button
+                                        type="button"
+                                        onClick={handleCheckPanStatus}
+                                        disabled={panCheckLoader || panDisabled || !!errors.pan_no}
+                                        className="px-4 py-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white font-semibold rounded-lg hover:opacity-90 transition-all disabled:opacity-50 whitespace-nowrap"
+                                    >
+                                        {panCheckLoader ? "Checking..." : "Check"}
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        onClick={handleEditPan}
+                                        className="px-4 py-2 bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] rounded-lg hover:bg-[#2A2A2A] transition-colors whitespace-nowrap"
+                                    >
+                                        Edit
+                                    </button>
+                                )}
+                            </div>
+                            {errors.pan_no && <p className="mt-1 text-xs text-red-400">{errors.pan_no.message}</p>}
                             {panValue && !errors.pan_no && (
-                                <p className="text-xs text-green-600 mt-1">✓ Valid PAN format</p>
+                                <p className="text-xs text-[#10B981] mt-1">✓ Valid PAN format</p>
                             )}
                         </div>
 
-                        {/* Name as Per PAN */}
                         <div className="w-full md:w-1/2">
-                            <CustomInput
-                                label="Name As PAN"
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Name As PAN <span className="text-[#F59E0B]">*</span>
+                            </label>
+                            <input
+                                type="text"
                                 placeholder="Enter Name"
                                 {...register("nameAsPan")}
-                                required
-                                error={errors.nameAsPan?.message}
                                 disabled={nameDisable}
+                                className="w-full px-4 py-2.5 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent disabled:opacity-50"
                             />
+                            {errors.nameAsPan && <p className="mt-1 text-xs text-red-400">{errors.nameAsPan.message}</p>}
                         </div>
-
                     </div>
 
-
-                    <div className="w-full">
-
-                        <CustomTextarea label="Address" className="w-full" placeholder="Input address" {...register("address")}></CustomTextarea>
-
+                    <div className="w-full mb-4">
+                        <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                            Address <span className="text-[#F59E0B]">*</span>
+                        </label>
+                        <textarea
+                            placeholder="Input address"
+                            {...register("address")}
+                            rows={3}
+                            className="w-full px-4 py-2.5 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                        />
+                        {errors.address && <p className="mt-1 text-xs text-red-400">{errors.address.message}</p>}
                     </div>
 
-                    <div className="flex flex-col md:flex-row gap-4 w-full">
+                    <div className="flex flex-col md:flex-row gap-4 w-full mb-4">
                         <div className="w-full md:w-1/4">
                             <CustomReactSelect
                                 label="Country"
@@ -699,10 +712,7 @@ export default function InitialScreen({ setKYCSFlow, setKYCFlowScreen }: Props) 
                                 value={watch("country_id")}
                                 {...register("country_id")}
                                 onChange={async (e: any) => {
-                                    setValue("country_id", e.id, {
-                                        shouldValidate: true,
-                                    });
-
+                                    setValue("country_id", e.id, { shouldValidate: true });
                                 }}
                                 error={errors.country_id?.message}
                             />
@@ -717,85 +727,114 @@ export default function InitialScreen({ setKYCSFlow, setKYCFlowScreen }: Props) 
                                 bindName="name"
                                 value={watch("state_id")}
                                 onChange={(e: any) => {
-                                    setValue("state_id", e.id, {
-                                        shouldValidate: true,
-                                    });
+                                    setValue("state_id", e.id, { shouldValidate: true });
                                 }}
                                 error={errors.state_id?.message}
                             />
                         </div>
                         <div className="w-full md:w-1/5">
-                            <CustomInput
-                                label="Pin Code"
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Pin Code <span className="text-[#F59E0B]">*</span>
+                            </label>
+                            <input
+                                type="tel"
                                 placeholder="Pin Code"
-                                type="number"
                                 {...register("pincode")}
-                                required error={errors.pincode?.message} maxLength={6} />
+                                maxLength={6}
+                                className="w-full px-4 py-2.5 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                            />
+                            {errors.pincode && <p className="mt-1 text-xs text-red-400">{errors.pincode.message}</p>}
                         </div>
                         <div className="w-full md:w-1/3">
-                            <CustomInput
-                                label="District"
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                District <span className="text-[#F59E0B]">*</span>
+                            </label>
+                            <input
+                                type="text"
                                 placeholder="District"
                                 {...register("district")}
-                                required error={errors.district?.message} />
+                                className="w-full px-4 py-2.5 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                            />
+                            {errors.district && <p className="mt-1 text-xs text-red-400">{errors.district.message}</p>}
                         </div>
                     </div>
                     <div className="sm:mt-6 md:col-span-2 flex gap-4">
-                        {/* <CustomButton className="w-32" type="submit" loading={kycVerifyLoader} disabled={!panStatusVerified || kycVerifyLoader}>
-                            Initiate
-                        </CustomButton>*/}
-
-                        {/*<CustomButton className="w-32" type="button" onClick={handleKYCVerify}>
-                            {KYCValidated ? "Edit" : "Back"}
-                        </CustomButton>*/}
-
                         <div className="ml-auto">
-                            <CustomButton className="w-32" onClick={handleNexttab} loading={kycVerifyLoader} disabled={!panStatusVerified || kycVerifyLoader}>
-                                Next
-                            </CustomButton>
+                            <button
+                                type="button"
+                                onClick={handleNexttab}
+                                disabled={!panStatusVerified || kycVerifyLoader}
+                                className="px-6 py-2.5 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white font-semibold rounded-lg hover:opacity-90 transition-all disabled:opacity-50"
+                            >
+                                {kycVerifyLoader ? "Processing..." : "Next"}
+                            </button>
                         </div>
                     </div>
                 </div>
             </form>
 
-            {/* Aadhaar OTP modal */}
-            <dialog className="modal" ref={modalRef} onClick={() => modalRef.current?.close()}>
-                <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-                    <form
-                        onSubmit={(e) => {
+            {/* Aadhaar OTP modal - Only shows when isModalOpen is true */}
+            {isModalOpen && (
+                <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+                    <div className="bg-[#111111] rounded-xl shadow-2xl max-w-md w-full border border-[#2A2A2A] p-6">
+                        <form onSubmit={(e) => {
                             e.preventDefault();
                             onhandleOtpSubmit();
-                        }}
-                    >
-                        <div className="text-center mb-4">Enter OTP</div>
-                        <div className="my-5 flex justify-center">
-                            <OTPInput value={aadhaarOTP || ""} onChange={(otp: string) => setAadhaarOTP(otp)} numInputs={6} renderSeparator={<span className="otpInputGap" />} renderInput={(props) => <input {...props} className="otpInput" />} inputType="text" shouldAutoFocus />
-                        </div>
-
-                        <CustomButton className="mt-6 w-full bg-primary" type="submit" loading={otpVerifyLoader}>
-                            Submit
-                        </CustomButton>
-
-                        <div className="text-other text-center mt-4 cursor-pointer" onClick={reSendOtp}>
-                            Resend OTP
-                        </div>
-                    </form>
+                        }}>
+                            <div className="text-center mb-6">
+                                <h3 className="text-xl font-bold text-[#F9FAFB]">Enter OTP</h3>
+                                <p className="text-sm text-[#9CA3AF] mt-1">Please enter the OTP sent to your Aadhaar linked mobile</p>
+                            </div>
+                            <div className="my-5 flex justify-center">
+                                <OTPInput
+                                    value={aadhaarOTP || ""}
+                                    onChange={(otp: string) => setAadhaarOTP(otp)}
+                                    numInputs={6}
+                                    renderSeparator={<span className="mx-2" />}
+                                    renderInput={(props) => (
+                                        <input
+                                            {...props}
+                                            className="w-12 h-12 text-center text-xl font-semibold border border-[#2A2A2A] rounded-lg bg-[#1F1A1A] text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                                        />
+                                    )}
+                                    inputType="text"
+                                    shouldAutoFocus
+                                />
+                            </div>
+                            <button
+                                type="submit"
+                                disabled={otpVerifyLoader}
+                                className="w-full py-2.5 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white font-semibold rounded-lg hover:opacity-90 transition-all disabled:opacity-50"
+                            >
+                                {otpVerifyLoader ? "Verifying..." : "Submit"}
+                            </button>
+                            <div className="text-center mt-4">
+                                <button
+                                    type="button"
+                                    onClick={reSendOtp}
+                                    className="text-[#F59E0B] hover:text-[#FBBF24] text-sm transition-colors"
+                                >
+                                    Resend OTP
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </dialog>
+            )}
 
-            {/* Simple PAN alert (inline) */}
+            {/* PAN alert modal */}
             {showPanAlert && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowPanAlert(false)}>
-                    <div className="bg-white rounded-lg p-6 max-w-sm mx-4" onClick={(e) => e.stopPropagation()}>
+                <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50" onClick={() => setShowPanAlert(false)}>
+                    <div className="bg-[#111111] rounded-xl p-6 max-w-sm mx-4 border border-[#2A2A2A]" onClick={(e) => e.stopPropagation()}>
                         <div className="text-center">
-                            <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg className="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Invalid PAN</h3>
-                            <p className="text-gray-600 mb-4">{panAlertMessage}</p>
-                            <button onClick={() => setShowPanAlert(false)} className="w-full bg-red-600 text-white py-2 px-4 rounded-lg hover:bg-red-700 transition-colors">
+                            <h3 className="text-lg font-semibold text-[#F9FAFB] mb-2">Invalid PAN</h3>
+                            <p className="text-[#9CA3AF] mb-4">{panAlertMessage}</p>
+                            <button onClick={() => setShowPanAlert(false)} className="w-full bg-gradient-to-r from-[#EF4444] to-[#DC2626] text-white py-2 px-4 rounded-lg hover:opacity-90 transition-colors">
                                 OK
                             </button>
                         </div>

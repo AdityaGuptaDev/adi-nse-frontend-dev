@@ -111,7 +111,7 @@ const InvestorPopup: React.FC<InvestorPopupProps> = ({
 
                     <div className="overflow-auto max-h-[400px] border rounded-lg">
                         <table className="table-auto w-full text-sm">
-                            <thead className="bg-gray-100 text-gray-700">
+                            <thead className="bg-[#1F1A1A] text-[#E5E7EB]">
                                 <tr>
                                     <th className="px-3 py-2 text-left">Select</th>
                                     {/*<th className="px-3 py-2">ARN</th>*/}

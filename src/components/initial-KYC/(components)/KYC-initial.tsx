@@ -68,16 +68,16 @@ function KYCInitial({ KYCFlowScreen, setKYCFlowScreen,panNumber,
               {/* Welcome Header */}
 
               <div className="mb-8">
-                <CustomText className="text-4xl font-bold text-gray-800 mb-4">
+                <CustomText className="text-4xl font-bold text-[#F9FAFB] mb-4">
                   Welcome!
                 </CustomText>
-                <CustomText className="text-lg text-gray-600 mb-2">
+                <CustomText className="text-lg text-[#9CA3AF] mb-2">
                   Thank you for choosing Digital KYC.
                 </CustomText>
-                <CustomText className="text-lg text-gray-600 mb-2">
+                <CustomText className="text-lg text-[#9CA3AF] mb-2">
                   To make sure the KYC process goes smoothly,
                 </CustomText>
-                <CustomText className="text-lg text-gray-600">
+                <CustomText className="text-lg text-[#9CA3AF]">
                   we request you to keep the following documents handy.
                 </CustomText>
               </div>
@@ -85,16 +85,16 @@ function KYCInitial({ KYCFlowScreen, setKYCFlowScreen,panNumber,
               {/* Document Requirements Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                 {/* Identity Proof */}
-                <div className="bg-white p-6 rounded-lg shadow-md border">
+                <div className="bg-[#111111] p-6 rounded-lg shadow-md border">
                   <div className="flex justify-center mb-4">
                     <div className="w-20 h-20 bg-blue-100 rounded-lg flex items-center justify-center">
                       <FaIdCard className="text-3xl text-blue-600" />
                     </div>
                   </div>
-                  <CustomText className="text-xl font-semibold text-gray-800 mb-4">
+                  <CustomText className="text-xl font-semibold text-[#F9FAFB] mb-4">
                     IDENTITY PROOF
                   </CustomText>
-                  <div className="text-gray-600 space-y-2">
+                  <div className="text-[#9CA3AF] space-y-2">
                     <CustomText className="font-medium">Accepted Documents are</CustomText>
                     <CustomText className="text-sm">
                       <strong>PAN Card</strong> (Front side)
@@ -106,16 +106,16 @@ function KYCInitial({ KYCFlowScreen, setKYCFlowScreen,panNumber,
                 </div>
 
                 {/* Address Proof */}
-                <div className="bg-white p-6 rounded-lg shadow-md border">
+                <div className="bg-[#111111] p-6 rounded-lg shadow-md border">
                   <div className="flex justify-center mb-4">
                     <div className="w-20 h-20 bg-green-100 rounded-lg flex items-center justify-center">
                       <FaMapMarkerAlt className="text-3xl text-green-600" />
                     </div>
                   </div>
-                  <CustomText className="text-xl font-semibold text-gray-800 mb-4">
+                  <CustomText className="text-xl font-semibold text-[#F9FAFB] mb-4">
                     ADDRESS PROOF
                   </CustomText>
-                  <div className="text-gray-600 space-y-2">
+                  <div className="text-[#9CA3AF] space-y-2">
                     <CustomText className="font-medium">Accepted Documents are</CustomText>
 
                     <CustomText className="text-sm">
@@ -125,16 +125,16 @@ function KYCInitial({ KYCFlowScreen, setKYCFlowScreen,panNumber,
                 </div>
 
                 {/* Signature Scan */}
-                <div className="bg-white p-6 rounded-lg shadow-md border">
+                <div className="bg-[#111111] p-6 rounded-lg shadow-md border">
                   <div className="flex justify-center mb-4">
                     <div className="w-20 h-20 bg-purple-100 rounded-lg flex items-center justify-center">
                       <FaSignature className="text-3xl text-purple-600" />
                     </div>
                   </div>
-                  <CustomText className="text-xl font-semibold text-gray-800 mb-4">
+                  <CustomText className="text-xl font-semibold text-[#F9FAFB] mb-4">
                     SIGNATURE SCAN
                   </CustomText>
-                  <div className="text-gray-600 space-y-2">
+                  <div className="text-[#9CA3AF] space-y-2">
                     <CustomText className="font-medium">Required for verification</CustomText>
                     <CustomText className="text-sm">
                       Clear signature on white paper
@@ -143,16 +143,16 @@ function KYCInitial({ KYCFlowScreen, setKYCFlowScreen,panNumber,
                 </div>
 
                 {/* Video Verification */}
-                <div className="bg-white p-6 rounded-lg shadow-md border">
+                <div className="bg-[#111111] p-6 rounded-lg shadow-md border">
                   <div className="flex justify-center mb-4">
                     <div className="w-20 h-20 bg-red-100 rounded-lg flex items-center justify-center">
                       <MdOutlineAddAPhoto className="text-3xl text-red-600" />
                     </div>
                   </div>
-                  <CustomText className="text-xl font-semibold text-gray-800 mb-4">
+                  <CustomText className="text-xl font-semibold text-[#F9FAFB] mb-4">
                     PHOTO VERIFICATION
                   </CustomText>
-                  <div className="text-gray-600 space-y-2">
+                  <div className="text-[#9CA3AF] space-y-2">
                     <CustomText className="font-medium">Live Photo required</CustomText>
                     <CustomText className="text-sm">
                       Ensure good lighting and clear audio

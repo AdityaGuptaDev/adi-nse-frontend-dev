@@ -61,13 +61,13 @@ export default function PreciousMetalPage({ onBack }: PreciousMetalProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <div className="max-w-6xl mx-auto bg-white shadow-sm">
+    <div className="min-h-screen bg-[#1F1A1A] p-4">
+      <div className="max-w-6xl mx-auto bg-[#111111] shadow-sm">
         {/* Header */}
         <div className="bg-blue-600 text-white p-3 flex justify-between items-center">
            <button
               onClick={handleBack}
-              className="flex items-center bg-indigo-300 text-white hover:bg-indigo-400 transition-colors px-4 py-2 rounded"
+              className="flex items-center bg-[#F59E0B] text-white hover:bg-[#B45309] transition-colors px-4 py-2 rounded"
             >
               <ArrowLeft size={20} className="mr-2" />
               Back
@@ -85,14 +85,14 @@ export default function PreciousMetalPage({ onBack }: PreciousMetalProps) {
           <div className="border-b">
             <table className="w-full">
               <tbody>
-                <tr className="bg-gray-200">
-                  <td className="px-4 py-2 font-medium text-sm border-r border-gray-300 w-48">Select Investor:</td>
-                  <td className="px-4 py-2 border-r border-gray-300">
+                <tr className="bg-[#2A2A2A]">
+                  <td className="px-4 py-2 font-medium text-sm border-r border-[#3A3A3A] w-48">Select Investor:</td>
+                  <td className="px-4 py-2 border-r border-[#3A3A3A]">
                     <div className="flex items-center">
                       <select 
                         value={formData.investor}
                         onChange={(e) => handleChange("investor", e.target.value)}
-                        className="w-full border border-gray-300 px-2 py-1 text-sm"
+                        className="w-full border border-[#3A3A3A] px-2 py-1 text-sm"
                       >
                         {investors.map((investor, i) => (
                           <option key={i} value={investor}>{investor}</option>
@@ -102,14 +102,14 @@ export default function PreciousMetalPage({ onBack }: PreciousMetalProps) {
                     </div>
                   </td>
                 </tr>
-                <tr className="bg-gray-200">
-                  <td className="px-4 py-2 font-medium text-sm border-r border-gray-300">Select Distributor:</td>
-                  <td className="px-4 py-2 border-r border-gray-300">
+                <tr className="bg-[#2A2A2A]">
+                  <td className="px-4 py-2 font-medium text-sm border-r border-[#3A3A3A]">Select Distributor:</td>
+                  <td className="px-4 py-2 border-r border-[#3A3A3A]">
                     <div className="flex items-center">
                       <select 
                         value={formData.distributor}
                         onChange={(e) => handleChange("distributor", e.target.value)}
-                        className="w-full border border-gray-300 px-2 py-1 text-sm"
+                        className="w-full border border-[#3A3A3A] px-2 py-1 text-sm"
                       >
                         {distributors.map((dist, i) => (
                           <option key={i} value={dist}>{dist}</option>
@@ -119,14 +119,14 @@ export default function PreciousMetalPage({ onBack }: PreciousMetalProps) {
                     </div>
                   </td>
                 </tr>
-                <tr className="bg-gray-200">
-                  <td className="px-4 py-2 font-medium text-sm border-r border-gray-300">Select Asset Type:</td>
-                  <td className="px-4 py-2 border-r border-gray-300">
+                <tr className="bg-[#2A2A2A]">
+                  <td className="px-4 py-2 font-medium text-sm border-r border-[#3A3A3A]">Select Asset Type:</td>
+                  <td className="px-4 py-2 border-r border-[#3A3A3A]">
                     <div className="flex items-center">
                       <select 
                         value={formData.assetType}
                         onChange={(e) => handleChange("assetType", e.target.value)}
-                        className="w-full border border-gray-300 px-2 py-1 text-sm"
+                        className="w-full border border-[#3A3A3A] px-2 py-1 text-sm"
                       >
                         {assetTypes.map((type, i) => (
                           <option key={i} value={type}>{type}</option>
@@ -136,16 +136,16 @@ export default function PreciousMetalPage({ onBack }: PreciousMetalProps) {
                     </div>
                   </td>
                 </tr>
-                <tr className="bg-gray-200">
-                  <td className="px-4 py-2 font-medium text-sm border-r border-gray-300">
+                <tr className="bg-[#2A2A2A]">
+                  <td className="px-4 py-2 font-medium text-sm border-r border-[#3A3A3A]">
                     Select Product Type: <span className="text-blue-600 underline cursor-pointer">[ Help ]</span>
                   </td>
-                  <td className="px-4 py-2 border-r border-gray-300">
+                  <td className="px-4 py-2 border-r border-[#3A3A3A]">
                     <div className="flex items-center">
                       <select 
                         value={formData.productType}
                         onChange={(e) => handleProductTypeChange(e.target.value)}
-                        className="w-full border border-gray-300 px-2 py-1 text-sm"
+                        className="w-full border border-[#3A3A3A] px-2 py-1 text-sm"
                       >
                         <option value="">Select Product Type...</option>
                         {productTypes.map((type, i) => (
@@ -164,40 +164,40 @@ export default function PreciousMetalPage({ onBack }: PreciousMetalProps) {
           {showProductDetails && (
             <>
               <div className="border-b">
-                <div className="bg-white px-4 py-2 border-b border-gray-300">
+                <div className="bg-[#111111] px-4 py-2 border-b border-[#3A3A3A]">
                   <h2 className="text-sm font-bold">Product Details:</h2>
                 </div>
                 
                 <table className="w-full">
                   <tbody>
                     <tr>
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50 w-48">Type of Gold:</td>
-                      <td className="px-4 py-3 border-r border-gray-300">
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#3A3A3A] bg-[#1F1A1A] w-48">Type of Gold:</td>
+                      <td className="px-4 py-3 border-r border-[#3A3A3A]">
                         <select 
                           value={formData.typeOfGold}
                           onChange={(e) => handleChange("typeOfGold", e.target.value)}
-                          className="w-full border border-gray-300 px-2 py-1 text-sm"
+                          className="w-full border border-[#3A3A3A] px-2 py-1 text-sm"
                         >
                           {goldTypes.map((type, i) => (
                             <option key={i} value={type}>{type}</option>
                           ))}
                         </select>
                       </td>
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50">Purchase Date:</td>
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#3A3A3A] bg-[#1F1A1A]">Purchase Date:</td>
                       <td className="px-4 py-3">
                         <div className="flex space-x-1">
                           <input 
                             type="text"
                             value={formData.purchaseDate.day}
                             onChange={(e) => handleChange("purchaseDate", {...formData.purchaseDate, day: e.target.value})}
-                            className="w-12 border border-gray-300 px-2 py-1 text-sm"
+                            className="w-12 border border-[#3A3A3A] px-2 py-1 text-sm"
                             placeholder="DD"
                             maxLength={2}
                           />
                           <select 
                             value={formData.purchaseDate.month}
                             onChange={(e) => handleChange("purchaseDate", {...formData.purchaseDate, month: e.target.value})}
-                            className="border border-gray-300 px-2 py-1 text-sm"
+                            className="border border-[#3A3A3A] px-2 py-1 text-sm"
                           >
                             {months.map(month => (
                               <option key={month} value={month}>{month}</option>
@@ -207,7 +207,7 @@ export default function PreciousMetalPage({ onBack }: PreciousMetalProps) {
                             type="text"
                             value={formData.purchaseDate.year}
                             onChange={(e) => handleChange("purchaseDate", {...formData.purchaseDate, year: e.target.value})}
-                            className="w-16 border border-gray-300 px-2 py-1 text-sm"
+                            className="w-16 border border-[#3A3A3A] px-2 py-1 text-sm"
                             placeholder="YYYY"
                             maxLength={4}
                           />
@@ -216,24 +216,24 @@ export default function PreciousMetalPage({ onBack }: PreciousMetalProps) {
                     </tr>
 
                     <tr className="border-t">
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50">Vendor / Purchase Point:</td>
-                      <td className="px-4 py-3 border-r border-gray-300">
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#3A3A3A] bg-[#1F1A1A]">Vendor / Purchase Point:</td>
+                      <td className="px-4 py-3 border-r border-[#3A3A3A]">
                         <input 
                           type="text"
                           value={formData.vendor}
                           onChange={(e) => handleChange("vendor", e.target.value)}
-                          className="w-full border border-gray-300 px-2 py-1 text-sm"
+                          className="w-full border border-[#3A3A3A] px-2 py-1 text-sm"
                         />
                       </td>
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50">
-                        Folio Number: <span className="text-xs text-gray-600">(Optional)</span>
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#3A3A3A] bg-[#1F1A1A]">
+                        Folio Number: <span className="text-xs text-[#9CA3AF]">(Optional)</span>
                       </td>
                       <td className="px-4 py-3">
                         <input 
                           type="text"
                           value={formData.folioNumber}
                           onChange={(e) => handleChange("folioNumber", e.target.value)}
-                          className="w-full border border-gray-300 px-2 py-1 text-sm"
+                          className="w-full border border-[#3A3A3A] px-2 py-1 text-sm"
                         />
                       </td>
                     </tr>
@@ -243,45 +243,45 @@ export default function PreciousMetalPage({ onBack }: PreciousMetalProps) {
 
               {/* Investment Section */}
               <div className="border-b">
-                <div className="bg-white px-4 py-2 border-b border-gray-300">
-                  <h2 className="text-sm font-bold">Investment: <span className="text-xs text-gray-600">(Enter any two fields)</span></h2>
+                <div className="bg-[#111111] px-4 py-2 border-b border-[#3A3A3A]">
+                  <h2 className="text-sm font-bold">Investment: <span className="text-xs text-[#9CA3AF]">(Enter any two fields)</span></h2>
                 </div>
                 
                 <table className="w-full">
                   <tbody>
                     <tr>
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50 w-48">
-                        Total Investment: <span className="text-xs text-gray-600">(Rupees)</span>
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#3A3A3A] bg-[#1F1A1A] w-48">
+                        Total Investment: <span className="text-xs text-[#9CA3AF]">(Rupees)</span>
                       </td>
-                      <td className="px-4 py-3 border-r border-gray-300">
+                      <td className="px-4 py-3 border-r border-[#3A3A3A]">
                         <input 
                           type="text"
                           value={formData.totalInvestment}
                           onChange={(e) => handleChange("totalInvestment", e.target.value)}
-                          className="w-full border border-gray-300 px-2 py-1 text-sm"
+                          className="w-full border border-[#3A3A3A] px-2 py-1 text-sm"
                         />
                       </td>
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50 w-48">
-                        Rate (per 10 gms): <span className="text-xs text-gray-600">(Rupees)</span>
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#3A3A3A] bg-[#1F1A1A] w-48">
+                        Rate (per 10 gms): <span className="text-xs text-[#9CA3AF]">(Rupees)</span>
                       </td>
                       <td className="px-4 py-3">
                         <input 
                           type="text"
                           value={formData.rate}
                           onChange={(e) => handleChange("rate", e.target.value)}
-                          className="w-full border border-gray-300 px-2 py-1 text-sm"
+                          className="w-full border border-[#3A3A3A] px-2 py-1 text-sm"
                         />
                       </td>
                     </tr>
 
                     <tr className="border-t">
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50">Quantity (gms):</td>
-                      <td className="px-4 py-3 border-r border-gray-300">
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#3A3A3A] bg-[#1F1A1A]">Quantity (gms):</td>
+                      <td className="px-4 py-3 border-r border-[#3A3A3A]">
                         <input 
                           type="text"
                           value={formData.quantity}
                           onChange={(e) => handleChange("quantity", e.target.value)}
-                          className="w-full border border-gray-300 px-2 py-1 text-sm"
+                          className="w-full border border-[#3A3A3A] px-2 py-1 text-sm"
                         />
                       </td>
                       <td className="px-4 py-3" colSpan={2}></td>
@@ -291,8 +291,8 @@ export default function PreciousMetalPage({ onBack }: PreciousMetalProps) {
               </div>
 
               {/* Submit Button */}
-              <div className="p-4 bg-gray-100 text-center">
-                <button className="bg-gray-200 border border-gray-300 px-6 py-2 text-sm font-medium hover:bg-gray-300 mr-2">
+              <div className="p-4 bg-[#1F1A1A] text-center">
+                <button className="bg-[#2A2A2A] border border-[#3A3A3A] px-6 py-2 text-sm font-medium hover:bg-gray-300 mr-2">
                   Clear Form
                 </button>
                 <button className="bg-blue-600 text-white px-6 py-2 text-sm font-medium hover:bg-blue-700">

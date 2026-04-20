@@ -80,20 +80,20 @@ export default function InterestBearingPage({ onBack }: InterestingBearingProps)
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <div className="max-w-6xl mx-auto bg-white shadow-sm">
+    <div className="min-h-screen bg-[#111111] p-4">
+      <div className="max-w-6xl mx-auto bg-[#111111] shadow-sm">
         {/* Header */}
-        <div className="bg-blue-600 text-white p-3 flex justify-between items-center">
+        <div className="bg-[#F59E0B] text-[#F9FAFB] p-3 flex justify-between items-center">
           <button
             onClick={handleBack}
-            className="flex items-center bg-indigo-300 text-white hover:bg-indigo-400 transition-colors px-4 py-2 rounded"
+            className="flex items-center bg-[#F59E0B] text-[#F9FAFB] hover:bg-[#B45309] transition-colors px-4 py-2 rounded"
           >
             <ArrowLeft size={20} className="mr-2" />
             Back
           </button>
           <h1 className="text-lg font-medium">Add New Financial Product</h1>
           <div className="flex space-x-2">
-            <button className="bg-blue-500 px-3 py-1 rounded text-sm">📊 Manage Tickets</button>
+            <button className="bg-[#F59E0B] px-3 py-1 rounded text-sm">📊 Manage Tickets</button>
             <button className="bg-green-500 px-3 py-1 rounded text-sm">💬 Send us Whatsapp</button>
           </div>
         </div>
@@ -104,13 +104,13 @@ export default function InterestBearingPage({ onBack }: InterestingBearingProps)
           <div className="border-b">
             <table className="w-full">
               <tbody>
-                <tr className="bg-gray-200">
-                  <td className="px-4 py-2 font-medium text-sm border-r border-gray-300 w-48">Select Investor:</td>
-                  <td className="px-4 py-2 border-r border-gray-300">
+                <tr className="bg-[#1A1A1A]">
+                  <td className="px-4 py-2 font-medium text-sm border-r border-[#2A2A2A] w-48">Select Investor:</td>
+                  <td className="px-4 py-2 border-r border-[#2A2A2A]">
                     <select
                       value={formData.investor}
                       onChange={(e) => handleChange("investor", e.target.value)}
-                      className="w-full border border-gray-300 px-2 py-1 text-sm"
+                      className="w-full border border-[#2A2A2A] px-2 py-1 text-sm"
                     >
                       {investors.map((investor, i) => (
                         <option key={i} value={investor}>{investor}</option>
@@ -118,13 +118,13 @@ export default function InterestBearingPage({ onBack }: InterestingBearingProps)
                     </select>
                   </td>
                 </tr>
-                <tr className="bg-gray-200">
-                  <td className="px-4 py-2 font-medium text-sm border-r border-gray-300">Select Distributor:</td>
-                  <td className="px-4 py-2 border-r border-gray-300">
+                <tr className="bg-[#1A1A1A]">
+                  <td className="px-4 py-2 font-medium text-sm border-r border-[#2A2A2A]">Select Distributor:</td>
+                  <td className="px-4 py-2 border-r border-[#2A2A2A]">
                     <select
                       value={formData.distributor}
                       onChange={(e) => handleChange("distributor", e.target.value)}
-                      className="w-full border border-gray-300 px-2 py-1 text-sm"
+                      className="w-full border border-[#2A2A2A] px-2 py-1 text-sm"
                     >
                       {distributors.map((dist, i) => (
                         <option key={i} value={dist}>{dist}</option>
@@ -132,13 +132,13 @@ export default function InterestBearingPage({ onBack }: InterestingBearingProps)
                     </select>
                   </td>
                 </tr>
-                <tr className="bg-gray-200">
-                  <td className="px-4 py-2 font-medium text-sm border-r border-gray-300">Select Asset Type:</td>
-                  <td className="px-4 py-2 border-r border-gray-300">
+                <tr className="bg-[#1A1A1A]">
+                  <td className="px-4 py-2 font-medium text-sm border-r border-[#2A2A2A]">Select Asset Type:</td>
+                  <td className="px-4 py-2 border-r border-[#2A2A2A]">
                     <select
                       value={formData.assetType}
                       onChange={(e) => handleChange("assetType", e.target.value)}
-                      className="w-full border border-gray-300 px-2 py-1 text-sm"
+                      className="w-full border border-[#2A2A2A] px-2 py-1 text-sm"
                     >
                       {assetTypes.map((type, i) => (
                         <option key={i} value={type}>{type}</option>
@@ -146,15 +146,15 @@ export default function InterestBearingPage({ onBack }: InterestingBearingProps)
                     </select>
                   </td>
                 </tr>
-                <tr className="bg-gray-200">
-                  <td className="px-4 py-2 font-medium text-sm border-r border-gray-300">
-                    Select Product Type: <span className="text-blue-600 underline cursor-pointer">[ Help ]</span>
+                <tr className="bg-[#1A1A1A]">
+                  <td className="px-4 py-2 font-medium text-sm border-r border-[#2A2A2A]">
+                    Select Product Type: <span className="text-[#F59E0B] underline cursor-pointer">[ Help ]</span>
                   </td>
-                  <td className="px-4 py-2 border-r border-gray-300">
+                  <td className="px-4 py-2 border-r border-[#2A2A2A]">
                     <select
                       value={formData.productType}
                       onChange={(e) => handleChange("productType", e.target.value)}
-                      className="w-full border border-gray-300 px-2 py-1 text-sm"
+                      className="w-full border border-[#2A2A2A] px-2 py-1 text-sm"
                     >
                       <option value="">Select Product Type...</option>
                       {productTypes.map((type, i) => (
@@ -171,25 +171,25 @@ export default function InterestBearingPage({ onBack }: InterestingBearingProps)
           {showProductDetails && (
             <>
               <div className="border-b">
-                <div className="bg-white px-4 py-2 border-b border-gray-300">
+                <div className="bg-[#111111] px-4 py-2 border-b border-[#2A2A2A]">
                   <h2 className="text-sm font-bold">Product Details:</h2>
                 </div>
 
                 <table className="w-full">
                   <tbody>
                     <tr>
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50 w-48">Product Name:</td>
-                      <td className="px-4 py-3 border-r border-gray-300 w-96">
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#2A2A2A] bg-[#0A0A0A] w-48">Product Name:</td>
+                      <td className="px-4 py-3 border-r border-[#2A2A2A] w-96">
                         <input
                           type="text"
                           value={formData.productName}
                           onChange={(e) => handleChange("productName", e.target.value)}
-                          className="w-full border border-gray-300 px-2 py-1 text-sm"
+                          className="w-full border border-[#2A2A2A] px-2 py-1 text-sm"
                         />
                       </td>
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50 w-32">
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#2A2A2A] bg-[#0A0A0A] w-32">
                         <div>Tenure:</div>
-                        <div className="text-xs text-gray-600 mt-1">
+                        <div className="text-xs text-[#9CA3AF] mt-1">
                           (e.g. '1000 Days' or '0365 Days'
                           or '0060 Months' or '0005 Years',
                           etc)
@@ -201,34 +201,34 @@ export default function InterestBearingPage({ onBack }: InterestingBearingProps)
                             type="text"
                             value={formData.tenure.value1}
                             onChange={(e) => handleChange("tenure", { ...formData.tenure, value1: e.target.value })}
-                            className="w-8 border border-gray-300 px-1 py-1 text-sm text-center"
+                            className="w-8 border border-[#2A2A2A] px-1 py-1 text-sm text-center"
                             maxLength={1}
                           />
                           <input
                             type="text"
                             value={formData.tenure.value2}
                             onChange={(e) => handleChange("tenure", { ...formData.tenure, value2: e.target.value })}
-                            className="w-8 border border-gray-300 px-1 py-1 text-sm text-center"
+                            className="w-8 border border-[#2A2A2A] px-1 py-1 text-sm text-center"
                             maxLength={1}
                           />
                           <input
                             type="text"
                             value={formData.tenure.value3}
                             onChange={(e) => handleChange("tenure", { ...formData.tenure, value3: e.target.value })}
-                            className="w-8 border border-gray-300 px-1 py-1 text-sm text-center"
+                            className="w-8 border border-[#2A2A2A] px-1 py-1 text-sm text-center"
                             maxLength={1}
                           />
                           <input
                             type="text"
                             value={formData.tenure.value4}
                             onChange={(e) => handleChange("tenure", { ...formData.tenure, value4: e.target.value })}
-                            className="w-8 border border-gray-300 px-1 py-1 text-sm text-center"
+                            className="w-8 border border-[#2A2A2A] px-1 py-1 text-sm text-center"
                             maxLength={1}
                           />
                           <select
                             value={formData.tenure.unit}
                             onChange={(e) => handleChange("tenure", { ...formData.tenure, unit: e.target.value })}
-                            className="border border-gray-300 px-2 py-1 text-sm"
+                            className="border border-[#2A2A2A] px-2 py-1 text-sm"
                           >
                             {tenureUnits.map((unit, i) => (
                               <option key={i} value={unit}>{unit}</option>
@@ -239,22 +239,22 @@ export default function InterestBearingPage({ onBack }: InterestingBearingProps)
                     </tr>
 
                     <tr className="border-t">
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50">Institution / Company:</td>
-                      <td className="px-4 py-3 border-r border-gray-300">
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#2A2A2A] bg-[#0A0A0A]">Institution / Company:</td>
+                      <td className="px-4 py-3 border-r border-[#2A2A2A]">
                         <input
                           type="text"
                           value={formData.institution}
                           onChange={(e) => handleChange("institution", e.target.value)}
-                          className="w-full border border-gray-300 px-2 py-1 text-sm"
+                          className="w-full border border-[#2A2A2A] px-2 py-1 text-sm"
                         />
                       </td>
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50">Purchase / Start Date:</td>
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#2A2A2A] bg-[#0A0A0A]">Purchase / Start Date:</td>
                       <td className="px-4 py-3">
                         <div className="flex space-x-1">
                           <select
                             value={formData.purchaseDate.day}
                             onChange={(e) => handleChange("purchaseDate", { ...formData.purchaseDate, day: e.target.value })}
-                            className="border border-gray-300 px-2 py-1 text-sm w-16"
+                            className="border border-[#2A2A2A] px-2 py-1 text-sm w-16"
                           >
                             {Array.from({ length: 31 }, (_, i) => i + 1).map(day => (
                               <option key={day} value={day}>{day}</option>
@@ -263,7 +263,7 @@ export default function InterestBearingPage({ onBack }: InterestingBearingProps)
                           <select
                             value={formData.purchaseDate.month}
                             onChange={(e) => handleChange("purchaseDate", { ...formData.purchaseDate, month: e.target.value })}
-                            className="border border-gray-300 px-2 py-1 text-sm"
+                            className="border border-[#2A2A2A] px-2 py-1 text-sm"
                           >
                             {months.map(month => (
                               <option key={month} value={month}>{month}</option>
@@ -273,7 +273,7 @@ export default function InterestBearingPage({ onBack }: InterestingBearingProps)
                             type="text"
                             value={formData.purchaseDate.year}
                             onChange={(e) => handleChange("purchaseDate", { ...formData.purchaseDate, year: e.target.value })}
-                            className="border border-gray-300 px-2 py-1 text-sm w-16"
+                            className="border border-[#2A2A2A] px-2 py-1 text-sm w-16"
                             placeholder="yyyy"
                           />
                         </div>
@@ -281,25 +281,25 @@ export default function InterestBearingPage({ onBack }: InterestingBearingProps)
                     </tr>
 
                     <tr className="border-t">
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50">
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#2A2A2A] bg-[#0A0A0A]">
                         Folio Number:<br />
-                        <span className="text-xs text-gray-600">(Optional)</span>
+                        <span className="text-xs text-[#9CA3AF]">(Optional)</span>
                       </td>
-                      <td className="px-4 py-3 border-r border-gray-300">
+                      <td className="px-4 py-3 border-r border-[#2A2A2A]">
                         <input
                           type="text"
                           value={formData.folioNumber}
                           onChange={(e) => handleChange("folioNumber", e.target.value)}
-                          className="w-full border border-gray-300 px-2 py-1 text-sm"
+                          className="w-full border border-[#2A2A2A] px-2 py-1 text-sm"
                         />
                       </td>
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50">Maturity / End Date:</td>
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#2A2A2A] bg-[#0A0A0A]">Maturity / End Date:</td>
                       <td className="px-4 py-3">
                         <input
                           type="text"
                           value={formData.maturityDate}
                           onChange={(e) => handleChange("maturityDate", e.target.value)}
-                          className="w-full border border-gray-300 px-2 py-1 text-sm"
+                          className="w-full border border-[#2A2A2A] px-2 py-1 text-sm"
                         />
                       </td>
                     </tr>
@@ -309,53 +309,53 @@ export default function InterestBearingPage({ onBack }: InterestingBearingProps)
 
               {/* Investment Section */}
               <div className="border-b">
-                <div className="bg-white px-4 py-2 border-b border-gray-300">
-                  <h2 className="text-sm font-bold">Investment: <span className="text-xs text-gray-600">(Enter any two fields)</span></h2>
+                <div className="bg-[#111111] px-4 py-2 border-b border-[#2A2A2A]">
+                  <h2 className="text-sm font-bold">Investment: <span className="text-xs text-[#9CA3AF]">(Enter any two fields)</span></h2>
                 </div>
 
                 <table className="w-full">
                   <tbody>
                     <tr>
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50 w-48">
-                        Total Investment: <span className="text-xs text-gray-600">(Rupees)</span>
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#2A2A2A] bg-[#0A0A0A] w-48">
+                        Total Investment: <span className="text-xs text-[#9CA3AF]">(Rupees)</span>
                       </td>
-                      <td className="px-4 py-3 border-r border-gray-300 w-96">
+                      <td className="px-4 py-3 border-r border-[#2A2A2A] w-96">
                         <input
                           type="text"
                           value={formData.totalInvestment}
                           onChange={(e) => handleChange("totalInvestment", e.target.value)}
-                          className="w-full border border-gray-300 px-2 py-1 text-sm"
+                          className="w-full border border-[#2A2A2A] px-2 py-1 text-sm"
                         />
                       </td>
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50 w-32">
-                        Face Value: <span className="text-xs text-gray-600">(Rupees)</span>
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#2A2A2A] bg-[#0A0A0A] w-32">
+                        Face Value: <span className="text-xs text-[#9CA3AF]">(Rupees)</span>
                       </td>
                       <td className="px-4 py-3">
                         <input
                           type="text"
                           value={formData.faceValue}
                           onChange={(e) => handleChange("faceValue", e.target.value)}
-                          className="w-full border border-gray-300 px-2 py-1 text-sm"
+                          className="w-full border border-[#2A2A2A] px-2 py-1 text-sm"
                         />
                       </td>
                     </tr>
 
                     <tr className="border-t">
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50">Quantity:</td>
-                      <td className="px-4 py-3 border-r border-gray-300">
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#2A2A2A] bg-[#0A0A0A]">Quantity:</td>
+                      <td className="px-4 py-3 border-r border-[#2A2A2A]">
                         <input
                           type="text"
                           value={formData.quantity}
                           onChange={(e) => handleChange("quantity", e.target.value)}
-                          className="w-full border border-gray-300 px-2 py-1 text-sm"
+                          className="w-full border border-[#2A2A2A] px-2 py-1 text-sm"
                         />
                       </td>
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50">Compounding</td>
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#2A2A2A] bg-[#0A0A0A]">Compounding</td>
                       <td className="px-4 py-3">
                         <select
                           value={formData.compounding}
                           onChange={(e) => handleChange("compounding", e.target.value)}
-                          className="w-full border border-gray-300 px-2 py-1 text-sm"
+                          className="w-full border border-[#2A2A2A] px-2 py-1 text-sm"
                         >
                           {compoundingOptions.map((option, i) => (
                             <option key={i} value={option}>{option}</option>
@@ -365,28 +365,28 @@ export default function InterestBearingPage({ onBack }: InterestingBearingProps)
                     </tr>
 
                     <tr className="border-t">
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50">Interest:</td>
-                      <td className="px-4 py-3 border-r border-gray-300">
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#2A2A2A] bg-[#0A0A0A]">Interest:</td>
+                      <td className="px-4 py-3 border-r border-[#2A2A2A]">
                         <input
                           type="text"
                           value={formData.interest}
                           onChange={(e) => handleChange("interest", e.target.value)}
-                          className="w-full border border-gray-300 px-2 py-1 text-sm"
+                          className="w-full border border-[#2A2A2A] px-2 py-1 text-sm"
                         />
                       </td>
                       <td className="px-4 py-3" colSpan={2}></td>
                     </tr>
 
                     <tr className="border-t">
-                      <td className="px-4 py-3 font-medium text-sm border-r border-gray-300 bg-gray-50">
-                        Annual Interest Rate: <span className="text-xs text-gray-600">(%)</span>
+                      <td className="px-4 py-3 font-medium text-sm border-r border-[#2A2A2A] bg-[#0A0A0A]">
+                        Annual Interest Rate: <span className="text-xs text-[#9CA3AF]">(%)</span>
                       </td>
-                      <td className="px-4 py-3 border-r border-gray-300">
+                      <td className="px-4 py-3 border-r border-[#2A2A2A]">
                         <input
                           type="text"
                           value={formData.annualInterestRate}
                           onChange={(e) => handleChange("annualInterestRate", e.target.value)}
-                          className="w-full border border-gray-300 px-2 py-1 text-sm"
+                          className="w-full border border-[#2A2A2A] px-2 py-1 text-sm"
                         />
                       </td>
                       <td className="px-4 py-3" colSpan={2}></td>
@@ -396,8 +396,8 @@ export default function InterestBearingPage({ onBack }: InterestingBearingProps)
               </div>
 
               {/* Submit Button */}
-              <div className="p-4 bg-gray-100 text-center">
-                <button className="bg-gray-200 border border-gray-300 px-6 py-2 text-sm font-medium hover:bg-gray-300">
+              <div className="p-4 bg-[#111111] text-center">
+                <button className="bg-[#1A1A1A] border border-[#2A2A2A] px-6 py-2 text-sm font-medium hover:bg-gray-300">
                   Next
                 </button>
               </div>

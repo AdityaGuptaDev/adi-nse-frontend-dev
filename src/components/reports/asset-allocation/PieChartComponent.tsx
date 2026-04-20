@@ -106,7 +106,7 @@ const DebtPieChart: React.FC = () => {
           <>
             <div
               key={item.name}
-              className="flex items-center gap-2 text-sm text-gray-700"
+              className="flex items-center gap-2 text-sm text-[#E5E7EB]"
             >
               <div
                 className="w-3 h-3 rounded-full "

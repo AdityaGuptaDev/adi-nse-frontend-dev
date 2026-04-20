@@ -90,8 +90,8 @@ const Pagination = ({
     <div
       className={`${styles.paginationContainer} sm:flex xl:flex-row 2xl:flex-row md:flex-row justify-between place-items-center px-3 pb-3 gap-1`}
     >
-      <div className="pagination-info text-xs border-0 w-fit p-2 rounded-lg bg-border/30 whitespace-nowrap mb-3 sm:mb-0">
-        <div>
+      <div className="pagination-info text-xs border-0 w-fit p-2 rounded-lg bg-border/30 whitespace-nowrap mb-3 sm:mb-0 dark:bg-gray-800">
+        <div className="text-[#F9FAFB] dark:text-white">
           Showing{" "}
           <span className="px-1 py-1 font-semibold">
             {getPaginatedData(totalCount, limit, currentPage)}
@@ -102,39 +102,35 @@ const Pagination = ({
       </div>
 
       <div className="w-full sm:w-auto lg:w-auto xl:w-auto 2xl:w-auto overflow-x-auto flex gap-4 items-center">
-        {/* <div className="input w-28 focus-within:outline-0 rounded-lg">
-          <input
-            className={`grow autofill:!bg-white disabled:text-black shadow-[inset_1000px_0px_0px_rgba(255,255,255,1)] disabled:shadow-[inset_1000px_0px_0px_#f8f8f8] `}
-            type="number"
-            value={currentPage}
-            onChange={(e: any) => handleInputPageChange(e)}
-          />
-        </div> */}
         <div className="inline-flex gap-1 whitespace-nowrap lg:justify-end w-full md:justify-start">
           <ReactPaginate
             breakLabel="..."
-            containerClassName={`${styles.pagination} flex gap-1`}
+            containerClassName="flex gap-1 items-center"
             nextLabel={
-              <CustomButton className="text-skin-base p-0 w-10 bg-white shadow-none">
-                <GrNext className="text-black" />
+              <CustomButton className="text-skin-base p-0 w-10 bg-[#111111] shadow-none dark:bg-gray-800">
+                <GrNext className="text-black dark:text-white" />
               </CustomButton>
             }
             onPageChange={handlePageChange}
-            // pageRangeDisplayed={1}
-            // marginPagesDisplayed={2}
-            pageRangeDisplayed={isMobileView ? 0 : 1} // no middle pages on mobile
-            marginPagesDisplayed={isMobileView ? 1 : 2} // only show start and end
+            pageRangeDisplayed={isMobileView ? 0 : 1}
+            marginPagesDisplayed={isMobileView ? 1 : 2}
             pageCount={pageCount}
-            pageLinkClassName={"pageLink"}
-            // activeLinkClassName={"activePage"}
-            forcePage={currentPage - 1}
-            activeClassName={styles.active}
+            pageClassName="page-item"
+            pageLinkClassName="min-w-[40px] h-[40px] flex items-center justify-center rounded-lg border border-[#2A2A2A] dark:border-gray-700 shadow-sm text-[#E5E7EB] dark:text-white bg-[#111111] dark:bg-gray-800 hover:bg-[#1F1A1A] dark:hover:bg-gray-700 transition-colors cursor-pointer"
+            activeClassName="!bg-blue-500 !text-white dark:!bg-blue-600"
+            activeLinkClassName="!text-white"
+            breakClassName="break-item"
+            breakLinkClassName="min-w-[40px] h-[40px] flex items-center justify-center text-[#E5E7EB] dark:text-white"
             previousLabel={
-              <CustomButton className="text-skin-base p-0 w-10 bg-white shadow-none">
-                <GrPrevious className="text-black" />
+              <CustomButton className="text-skin-base p-0 w-10 bg-[#111111] shadow-none dark:bg-gray-800">
+                <GrPrevious className="text-black dark:text-white" />
               </CustomButton>
             }
+            previousClassName="previous-item"
+            nextClassName="next-item"
+            disabledClassName="opacity-50 cursor-not-allowed"
             renderOnZeroPageCount={null}
+            forcePage={currentPage - 1}
             {...props}
           />
         </div>

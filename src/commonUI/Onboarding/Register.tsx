@@ -253,6 +253,7 @@ export default function RegisterForm() {
                 <OnBoarding
                     onBoardingModal={showOnBoarding}
                     mandatory={true}
+                    mobile={submittedMobile}
                 />
             )}
 

@@ -82,12 +82,12 @@ export default function ViewTargets({ onBack, clientData }: ViewTargetsProps) {
   ];
 
   return (
-    <div className="bg-gray-50 min-h-screen">
+    <div className="bg-[#0A0A0A] min-h-screen">
       <div className="max-w-7xl mx-auto p-4">
         {/* Header */}
         <button 
           onClick={handleBack}
-          className="flex items-center text-blue-600 hover:text-blue-800 mb-4"
+          className="flex items-center text-[#F59E0B] hover:text-[#FBBF24] mb-4"
         >
           <ArrowLeft className="mr-1" size={20} />
           Back
@@ -95,42 +95,42 @@ export default function ViewTargets({ onBack, clientData }: ViewTargetsProps) {
         
         {loading ? (
           <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto"></div>
-            <p className="mt-4">Loading client details...</p>
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#F59E0B] mx-auto"></div>
+            <p className="mt-4 text-[#F9FAFB]">Loading client details...</p>
           </div>
         ) : error ? (
-          <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4">
+          <div className="bg-[#1F1A1A] border-l-4 border-[#EF4444] text-[#EF4444] p-4 mb-4">
             <p>{error}</p>
           </div>
         ) : (
           <>
-            <div className="bg-white border-b-2 border-gray-200 p-6 mb-4">
+            <div className="bg-[#111111] border-b-2 border-[#2A2A2A] p-6 mb-4">
               <div className="flex justify-between items-start">
-                <div className="text-4xl font-bold text-orange-600">
-                  Vedant<span className="text-black">Asset</span>
+                <div className="text-4xl font-bold text-[#F59E0B]">
+                  Vedant<span className="text-[#F9FAFB]">Asset</span>
                 </div>
-                <div className="text-right text-sm text-gray-700 leading-relaxed">
-                  <p className="font-semibold text-base mb-1">vedant asset</p>
+                <div className="text-right text-sm text-[#9CA3AF] leading-relaxed">
+                  <p className="font-semibold text-base mb-1 text-[#F9FAFB]">vedant asset</p>
                   <p>3rd Floor, Gayways House, Above Space Furniture, P.P Compound,</p>
                   <p>Main Road Ranchi 834001 Jharkhand</p>
                   <p>Phone: 9304955509, Email: vedantasset@gmail.com</p>
-                  <p>Website: <a href="https://www.vedantasset.co.in" className="text-blue-600 hover:underline">www.vedantasset.co.in</a></p>
+                  <p>Website: <a href="https://www.vedantasset.co.in" className="text-[#F59E0B] hover:underline">www.vedantasset.co.in</a></p>
                 </div>
               </div>
             </div>
 
             {/* Client Information Grid */}
             {clientDetails && (
-              <div className="bg-white border border-gray-200 p-6 mb-4">
+              <div className="bg-[#111111] border border-[#2A2A2A] p-6 mb-4">
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-4 text-sm">
-                  <div><span className="font-semibold">Name:</span> {clientDetails.name}</div>
-                  <div><span className="font-semibold">Address:</span> {clientDetails.address}</div>
-                  <div>
+                  <div className="text-[#F9FAFB]"><span className="font-semibold">Name:</span> {clientDetails.name}</div>
+                  <div className="text-[#F9FAFB]"><span className="font-semibold">Address:</span> {clientDetails.address}</div>
+                  <div className="text-[#F9FAFB]">
                     <span className="font-semibold">Fin. Year:</span> 
                     <select
                       value={financialYear}
                       onChange={(e) => setFinancialYear(e.target.value)}
-                      className="ml-2 border border-gray-300 px-2 py-1 text-sm rounded"
+                      className="ml-2 border border-[#2A2A2A] px-2 py-1 text-sm rounded bg-[#1F1A1A] text-[#F9FAFB]"
                     >
                       {financialYearOptions.map(year => (
                         <option key={year} value={year}>{year}</option>
@@ -138,53 +138,53 @@ export default function ViewTargets({ onBack, clientData }: ViewTargetsProps) {
                     </select>
                   </div>
                   
-                  <div><span className="font-semibold">Gender:</span> -</div>
-                  <div><span className="font-semibold">City:</span> {clientDetails.city}</div>
-                  <div>
+                  <div className="text-[#F9FAFB]"><span className="font-semibold">Gender:</span> -</div>
+                  <div className="text-[#F9FAFB]"><span className="font-semibold">City:</span> {clientDetails.city}</div>
+                  <div className="text-[#F9FAFB]">
                     <span className="font-semibold">Targets:</span>
-                    <select className="ml-2 border border-gray-300 px-2 py-1 text-sm rounded">
+                    <select className="ml-2 border border-[#2A2A2A] px-2 py-1 text-sm rounded bg-[#1F1A1A] text-[#F9FAFB]">
                       <option>- All Targets -</option>
                     </select>
                   </div>
                   
-                  <div><span className="font-semibold">Phone (Res):</span> {clientDetails.phoneRes || '-'}</div>
-                  <div><span className="font-semibold">Pincode:</span> {clientDetails.pincode}</div>
-                  <div className="text-sm text-gray-600">(including the targets of all family members)</div>
+                  <div className="text-[#F9FAFB]"><span className="font-semibold">Phone (Res):</span> {clientDetails.phoneRes || '-'}</div>
+                  <div className="text-[#F9FAFB]"><span className="font-semibold">Pincode:</span> {clientDetails.pincode}</div>
+                  <div className="text-sm text-[#9CA3AF]">(including the targets of all family members)</div>
                   
-                  <div><span className="font-semibold">Phone (Off):</span> {clientDetails.phoneOff || '-'}</div>
-                  <div><span className="font-semibold">State:</span> Jharkhand</div>
+                  <div className="text-[#F9FAFB]"><span className="font-semibold">Phone (Off):</span> {clientDetails.phoneOff || '-'}</div>
+                  <div className="text-[#F9FAFB]"><span className="font-semibold">State:</span> Jharkhand</div>
                   <div></div>
                   
-                  <div><span className="font-semibold">Mobile:</span> {clientDetails.mobile}</div>
-                  <div><span className="font-semibold">DOB:</span> {clientDetails.dob}</div>
+                  <div className="text-[#F9FAFB]"><span className="font-semibold">Mobile:</span> {clientDetails.mobile}</div>
+                  <div className="text-[#F9FAFB]"><span className="font-semibold">DOB:</span> {clientDetails.dob}</div>
                   <div></div>
                   
-                  <div><span className="font-semibold">Email:</span> {clientDetails.email}</div>
-                  <div><span className="font-semibold">PAN:</span> {clientDetails.pan}</div>
+                  <div className="text-[#F9FAFB]"><span className="font-semibold">Email:</span> {clientDetails.email}</div>
+                  <div className="text-[#F9FAFB]"><span className="font-semibold">PAN:</span> {clientDetails.pan}</div>
                   <div></div>
                 </div>
               </div>
             )}
 
             {/* Targets Section */}
-            <div className="bg-white border border-gray-200 p-8">
+            <div className="bg-[#111111] border border-[#2A2A2A] p-8">
               <div className="text-center">
-                <p className="text-gray-700 mb-6 text-base">
-                  Sorry, No targets found active during the Financial Year <span className="font-semibold">[{financialYear}]</span>
+                <p className="text-[#9CA3AF] mb-6 text-base">
+                  Sorry, No targets found active during the Financial Year <span className="font-semibold text-[#F59E0B]">[{financialYear}]</span>
                 </p>
                 
                 <div className="space-y-2">
-                  <div className="text-blue-600">
+                  <div className="text-[#F59E0B]">
                     • <button 
-                        className="text-blue-600 hover:text-blue-800 underline"
+                        className="text-[#F59E0B] hover:text-[#FBBF24] underline"
                         onClick={() => setFinancialYear(financialYearOptions.find(y => y !== financialYear) || financialYear)}
                       >
                         Select a different Financial Year
                       </button>
                   </div>
-                  <div className="text-blue-600">
+                  <div className="text-[#F59E0B]">
                     • <button 
-                        className="text-blue-600 hover:text-blue-800 underline"
+                        className="text-[#F59E0B] hover:text-[#FBBF24] underline"
                         onClick={() => alert("Create a New Target")}
                       >
                         Create a New Target

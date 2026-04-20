@@ -180,7 +180,7 @@ const TransactionHistory = () => {
       case 'redemption':
         return 'bg-red-100 text-red-800';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-[#111111] text-[#F9FAFB]';
     }
   };
 
@@ -195,7 +195,7 @@ const TransactionHistory = () => {
 
   const getSortIcon = (column: string) => {
     if (sortBy !== column) return null;
-    return sortOrder === 'asc' ? '↑' : '↓';
+    return sortOrder === 'asc' ? '?' : '?';
   };
 
   const viewTransactionDetails = (transaction: Transaction) => {
@@ -205,10 +205,10 @@ const TransactionHistory = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
+      <div className="min-h-screen bg-[#0A0A0A] p-6 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading transaction data...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#F59E0B] mx-auto"></div>
+          <p className="mt-4 text-[#9CA3AF]">Loading transaction data...</p>
         </div>
       </div>
     );
@@ -216,14 +216,14 @@ const TransactionHistory = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
+      <div className="min-h-screen bg-[#0A0A0A] p-6 flex items-center justify-center">
         <div className="text-center">
           <div className="bg-red-100 text-red-700 p-4 rounded-lg max-w-md mx-auto">
             <h3 className="font-medium">Error loading data</h3>
             <p className="mt-2 text-sm">{error}</p>
             <button 
               onClick={() => window.location.reload()}
-              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="mt-4 px-4 py-2 bg-[#F59E0B] text-[#F9FAFB] rounded hover:bg-[#B45309]"
             >
               Retry
             </button>
@@ -234,14 +234,14 @@ const TransactionHistory = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-[#0A0A0A] p-4">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center">
             <button 
               onClick={() => window.history.back()}
-              className="flex items-center text-blue-600 hover:text-blue-800 mr-4 transition-colors"
+              className="flex items-center text-[#F59E0B] hover:text-[#F59E0B] mr-4 transition-colors"
             >
               <ChevronLeft className="w-5 h-5 mr-1" />
               Back
@@ -249,7 +249,7 @@ const TransactionHistory = () => {
            
           </div>
           <div className="flex items-center space-x-2">
-            <button className="flex items-center px-3 py-2 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+            <button className="flex items-center px-3 py-2 bg-[#111111] border border-[#2A2A2A] rounded-md text-sm font-medium text-[#F9FAFB] hover:bg-[#0A0A0A]">
               <Download className="w-4 h-4 mr-1" />
               Export
             </button>
@@ -257,11 +257,11 @@ const TransactionHistory = () => {
         </div>
 
         {/* Filters and Search */}
-        <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+        <div className="bg-[#111111] rounded-lg shadow-sm p-4 mb-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] w-4 h-4" />
               <input
                 type="text"
                 placeholder="Search transactions..."
@@ -270,7 +270,7 @@ const TransactionHistory = () => {
                   setSearchTerm(e.target.value);
                   setCurrentPage(1);
                 }}
-                className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="pl-10 pr-4 py-2 w-full border border-[#2A2A2A] rounded-lg focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
               />
             </div>
 
@@ -281,7 +281,7 @@ const TransactionHistory = () => {
                 setFilterType(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-4 py-2 border border-[#2A2A2A] rounded-lg focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
             >
               <option value="all">All Transactions</option>
               <option value="purchase">Purchase</option>
@@ -295,7 +295,7 @@ const TransactionHistory = () => {
                 setSortBy(e.target.value);
                 setCurrentPage(1);
               }}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="px-4 py-2 border border-[#2A2A2A] rounded-lg focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
             >
               <option value="rep_date">Sort by Date</option>
               <option value="amount">Sort by Amount</option>
@@ -303,7 +303,7 @@ const TransactionHistory = () => {
             </select>
 
             {/* Results Count */}
-            <div className="flex items-center text-sm text-gray-600">
+            <div className="flex items-center text-sm text-[#9CA3AF]">
               <Filter className="w-4 h-4 mr-2" />
               {filteredTransactions.length} transactions found
             </div>
@@ -311,13 +311,13 @@ const TransactionHistory = () => {
         </div>
 
         {/* Transaction Table */}
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
+        <div className="bg-[#111111] rounded-lg shadow-sm overflow-hidden mb-6">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-[#2A2A2A]">
+              <thead className="bg-[#0A0A0A]">
                 <tr>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                    className="px-6 py-3 text-left text-xs font-medium text-[#9CA3AF] uppercase tracking-wider cursor-pointer"
                     onClick={() => handleSort('investorName')}
                   >
                     <div className="flex items-center">
@@ -326,7 +326,7 @@ const TransactionHistory = () => {
                     </div>
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                    className="px-6 py-3 text-left text-xs font-medium text-[#9CA3AF] uppercase tracking-wider cursor-pointer"
                     onClick={() => handleSort('rep_date')}
                   >
                     <div className="flex items-center">
@@ -334,11 +334,11 @@ const TransactionHistory = () => {
                       <span className="ml-1">{getSortIcon('rep_date')}</span>
                     </div>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[#9CA3AF] uppercase tracking-wider">
                     Scheme
                   </th>
                   <th 
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                    className="px-6 py-3 text-left text-xs font-medium text-[#9CA3AF] uppercase tracking-wider cursor-pointer"
                     onClick={() => handleSort('amount')}
                   >
                     <div className="flex items-center">
@@ -346,56 +346,56 @@ const TransactionHistory = () => {
                       <span className="ml-1">{getSortIcon('amount')}</span>
                     </div>
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[#9CA3AF] uppercase tracking-wider">
                     Type
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[#9CA3AF] uppercase tracking-wider">
                     Folio No
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[#9CA3AF] uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-[#111111] divide-y divide-[#2A2A2A]">
                 {currentRecords.map((transaction, index) => (
-                  <tr key={index} className="hover:bg-gray-50 transition-colors">
+                  <tr key={index} className="hover:bg-[#0A0A0A] transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                          <User className="h-5 w-5 text-blue-600" />
+                        <div className="flex-shrink-0 h-10 w-10 rounded-full bg-[#1F1A1A] flex items-center justify-center">
+                          <User className="h-5 w-5 text-[#F59E0B]" />
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-medium text-[#F9FAFB]">
                             {transaction.investorName}
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-[#9CA3AF]">
                             PAN: {transaction.pan}
                           </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{formatDate(transaction.txnDate)}</div>
+                      <div className="text-sm text-[#F9FAFB]">{formatDate(transaction.txnDate)}</div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900 max-w-xs truncate">{transaction.scheme}</div>
+                      <div className="text-sm text-[#F9FAFB] max-w-xs truncate">{transaction.scheme}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{formatCurrency(transaction.amount)}</div>
+                      <div className="text-sm font-medium text-[#F9FAFB]">{formatCurrency(transaction.amount)}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getTransactionTypeColor(transaction.txnNature)}`}>
                         {transaction.txnNature}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#9CA3AF]">
                       {transaction.folioNo}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button 
                         onClick={() => viewTransactionDetails(transaction)}
-                        className="text-blue-600 hover:text-blue-900 flex items-center"
+                        className="text-[#F59E0B] hover:text-[#FBBF24] flex items-center"
                       >
                         <Eye className="w-4 h-4 mr-1" />
                         View
@@ -410,9 +410,9 @@ const TransactionHistory = () => {
           {/* Empty State */}
           {filteredTransactions.length === 0 && !loading && (
             <div className="text-center py-12">
-              <FileText className="mx-auto h-12 w-12 text-gray-400" />
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No transactions found</h3>
-              <p className="mt-1 text-sm text-gray-500">
+              <FileText className="mx-auto h-12 w-12 text-[#9CA3AF]" />
+              <h3 className="mt-2 text-sm font-medium text-[#F9FAFB]">No transactions found</h3>
+              <p className="mt-1 text-sm text-[#9CA3AF]">
                 Try adjusting your search criteria or filters.
               </p>
             </div>
@@ -421,29 +421,29 @@ const TransactionHistory = () => {
 
         {/* Pagination Controls */}
         {filteredTransactions.length > 0 && (
-          <div className="flex items-center justify-between bg-white rounded-lg shadow-sm p-4 mb-6">
+          <div className="flex items-center justify-between bg-[#111111] rounded-lg shadow-sm p-4 mb-6">
             <div className="flex-1 flex justify-between items-center sm:hidden">
               <button
                 onClick={prevPage}
                 disabled={currentPage === 1}
-                className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${currentPage === 1 ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                className={`relative inline-flex items-center px-4 py-2 border border-[#2A2A2A] text-sm font-medium rounded-md ${currentPage === 1 ? 'bg-[#111111] text-[#9CA3AF] cursor-not-allowed' : 'bg-[#111111] text-[#F9FAFB] hover:bg-[#0A0A0A]'}`}
               >
                 Previous
               </button>
-              <span className="text-sm text-gray-700">
+              <span className="text-sm text-[#F9FAFB]">
                 Page {currentPage} of {totalPages}
               </span>
               <button
                 onClick={nextPage}
                 disabled={currentPage === totalPages}
-                className={`relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md ${currentPage === totalPages ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                className={`relative inline-flex items-center px-4 py-2 border border-[#2A2A2A] text-sm font-medium rounded-md ${currentPage === totalPages ? 'bg-[#111111] text-[#9CA3AF] cursor-not-allowed' : 'bg-[#111111] text-[#F9FAFB] hover:bg-[#0A0A0A]'}`}
               >
                 Next
               </button>
             </div>
             <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
               <div>
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-[#F9FAFB]">
                   Showing <span className="font-medium">{indexOfFirstRecord + 1}</span> to{' '}
                   <span className="font-medium">
                     {Math.min(indexOfLastRecord, filteredTransactions.length)}
@@ -456,7 +456,7 @@ const TransactionHistory = () => {
                   <button
                     onClick={prevPage}
                     disabled={currentPage === 1}
-                    className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium ${currentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-50'}`}
+                    className={`relative inline-flex items-center px-2 py-2 rounded-l-md border border-[#2A2A2A] bg-[#111111] text-sm font-medium ${currentPage === 1 ? 'text-gray-300 cursor-not-allowed' : 'text-[#9CA3AF] hover:bg-[#0A0A0A]'}`}
                   >
                     <span className="sr-only">Previous</span>
                     <ChevronLeft className="h-5 w-5" aria-hidden="true" />
@@ -478,7 +478,7 @@ const TransactionHistory = () => {
                       <button
                         key={pageNum}
                         onClick={() => paginate(pageNum)}
-                        className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${currentPage === pageNum ? 'z-10 bg-blue-50 border-blue-500 text-blue-600' : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'}`}
+                        className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${currentPage === pageNum ? 'z-10 bg-[#1F1A1A] border-[#F59E0B] text-[#F59E0B]' : 'bg-[#111111] border-[#2A2A2A] text-[#9CA3AF] hover:bg-[#0A0A0A]'}`}
                       >
                         {pageNum}
                       </button>
@@ -488,7 +488,7 @@ const TransactionHistory = () => {
                   <button
                     onClick={nextPage}
                     disabled={currentPage === totalPages}
-                    className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium ${currentPage === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-gray-500 hover:bg-gray-50'}`}
+                    className={`relative inline-flex items-center px-2 py-2 rounded-r-md border border-[#2A2A2A] bg-[#111111] text-sm font-medium ${currentPage === totalPages ? 'text-gray-300 cursor-not-allowed' : 'text-[#9CA3AF] hover:bg-[#0A0A0A]'}`}
                   >
                     <span className="sr-only">Next</span>
                     <ChevronRight className="h-5 w-5" aria-hidden="true" />
@@ -501,19 +501,19 @@ const TransactionHistory = () => {
 
         {/* Summary Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="bg-[#111111] rounded-lg shadow-sm p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="h-8 w-8 rounded-md bg-blue-500 flex items-center justify-center">
-                  <FileText className="h-4 w-4 text-white" />
+                <div className="h-8 w-8 rounded-md bg-[#F59E0B] flex items-center justify-center">
+                  <FileText className="h-4 w-4 text-[#F9FAFB]" />
                 </div>
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
+                  <dt className="text-sm font-medium text-[#9CA3AF] truncate">
                     Total Transactions
                   </dt>
-                  <dd className="text-lg font-medium text-gray-900">
+                  <dd className="text-lg font-medium text-[#F9FAFB]">
                     {filteredTransactions.length}
                   </dd>
                 </dl>
@@ -521,19 +521,19 @@ const TransactionHistory = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="bg-[#111111] rounded-lg shadow-sm p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <div className="h-8 w-8 rounded-md bg-green-500 flex items-center justify-center">
-                  <CreditCard className="h-4 w-4 text-white" />
+                  <CreditCard className="h-4 w-4 text-[#F9FAFB]" />
                 </div>
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
+                  <dt className="text-sm font-medium text-[#9CA3AF] truncate">
                     Total Amount
                   </dt>
-                  <dd className="text-lg font-medium text-gray-900">
+                  <dd className="text-lg font-medium text-[#F9FAFB]">
                     {formatCurrency(filteredTransactions.reduce((sum, t) => sum + t.amount, 0))}
                   </dd>
                 </dl>
@@ -541,19 +541,19 @@ const TransactionHistory = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="bg-[#111111] rounded-lg shadow-sm p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="h-8 w-8 rounded-md bg-purple-500 flex items-center justify-center">
-                  <User className="h-4 w-4 text-white" />
+                <div className="h-8 w-8 rounded-md bg-[#F59E0B] flex items-center justify-center">
+                  <User className="h-4 w-4 text-[#F9FAFB]" />
                 </div>
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
+                  <dt className="text-sm font-medium text-[#9CA3AF] truncate">
                     Unique Investors
                   </dt>
-                  <dd className="text-lg font-medium text-gray-900">
+                  <dd className="text-lg font-medium text-[#F9FAFB]">
                     {new Set(filteredTransactions.map(t => t.investorName)).size}
                   </dd>
                 </dl>
@@ -561,19 +561,19 @@ const TransactionHistory = () => {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-sm p-6">
+          <div className="bg-[#111111] rounded-lg shadow-sm p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <div className="h-8 w-8 rounded-md bg-orange-500 flex items-center justify-center">
-                  <Building2 className="h-4 w-4 text-white" />
+                  <Building2 className="h-4 w-4 text-[#F9FAFB]" />
                 </div>
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">
+                  <dt className="text-sm font-medium text-[#9CA3AF] truncate">
                     Current Page
                   </dt>
-                  <dd className="text-lg font-medium text-gray-900">
+                  <dd className="text-lg font-medium text-[#F9FAFB]">
                     {currentPage} of {totalPages}
                   </dd>
                 </dl>
@@ -586,14 +586,14 @@ const TransactionHistory = () => {
       {/* Transaction Details Modal */}
       {showDetailsModal && selectedTransaction && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
-          <div className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4">
+          <div className="relative bg-[#111111] rounded-lg shadow-xl max-w-2xl w-full mx-4">
             <div className="flex items-center justify-between p-4 border-b">
-              <h3 className="text-xl font-semibold text-gray-900">
+              <h3 className="text-xl font-semibold text-[#F9FAFB]">
                 Transaction Details
               </h3>
               <button
                 onClick={() => setShowDetailsModal(false)}
-                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
+                className="text-[#9CA3AF] bg-transparent hover:bg-[#1A1A1A] hover:text-[#F9FAFB] rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"
               >
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                   <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd"></path>
@@ -603,72 +603,72 @@ const TransactionHistory = () => {
             <div className="p-6 space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500">Investor Name</h4>
-                  <p className="mt-1 text-sm text-gray-900">{selectedTransaction.investorName}</p>
+                  <h4 className="text-sm font-medium text-[#9CA3AF]">Investor Name</h4>
+                  <p className="mt-1 text-sm text-[#F9FAFB]">{selectedTransaction.investorName}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500">PAN Number</h4>
-                  <p className="mt-1 text-sm text-gray-900">{selectedTransaction.pan}</p>
+                  <h4 className="text-sm font-medium text-[#9CA3AF]">PAN Number</h4>
+                  <p className="mt-1 text-sm text-[#F9FAFB]">{selectedTransaction.pan}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500">Transaction Date</h4>
-                  <p className="mt-1 text-sm text-gray-900">{formatDate(selectedTransaction.txnDate)}</p>
+                  <h4 className="text-sm font-medium text-[#9CA3AF]">Transaction Date</h4>
+                  <p className="mt-1 text-sm text-[#F9FAFB]">{formatDate(selectedTransaction.txnDate)}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500">Folio Number</h4>
-                  <p className="mt-1 text-sm text-gray-900">{selectedTransaction.folioNo}</p>
+                  <h4 className="text-sm font-medium text-[#9CA3AF]">Folio Number</h4>
+                  <p className="mt-1 text-sm text-[#F9FAFB]">{selectedTransaction.folioNo}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500">Scheme</h4>
-                  <p className="mt-1 text-sm text-gray-900">{selectedTransaction.scheme}</p>
+                  <h4 className="text-sm font-medium text-[#9CA3AF]">Scheme</h4>
+                  <p className="mt-1 text-sm text-[#F9FAFB]">{selectedTransaction.scheme}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500">Transaction Type</h4>
-                  <p className="mt-1 text-sm text-gray-900">{selectedTransaction.txnNature}</p>
+                  <h4 className="text-sm font-medium text-[#9CA3AF]">Transaction Type</h4>
+                  <p className="mt-1 text-sm text-[#F9FAFB]">{selectedTransaction.txnNature}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500">Amount</h4>
-                  <p className="mt-1 text-sm text-gray-900">{formatCurrency(selectedTransaction.amount)}</p>
+                  <h4 className="text-sm font-medium text-[#9CA3AF]">Amount</h4>
+                  <p className="mt-1 text-sm text-[#F9FAFB]">{formatCurrency(selectedTransaction.amount)}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500">Units</h4>
-                  <p className="mt-1 text-sm text-gray-900">{selectedTransaction.units.toFixed(4)}</p>
+                  <h4 className="text-sm font-medium text-[#9CA3AF]">Units</h4>
+                  <p className="mt-1 text-sm text-[#F9FAFB]">{selectedTransaction.units.toFixed(4)}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500">Bank & Branch</h4>
-                  <p className="mt-1 text-sm text-gray-900">{selectedTransaction.bankBranch}</p>
+                  <h4 className="text-sm font-medium text-[#9CA3AF]">Bank & Branch</h4>
+                  <p className="mt-1 text-sm text-[#F9FAFB]">{selectedTransaction.bankBranch}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500">Account Number</h4>
-                  <p className="mt-1 text-sm text-gray-900">{selectedTransaction.accountNumber}</p>
+                  <h4 className="text-sm font-medium text-[#9CA3AF]">Account Number</h4>
+                  <p className="mt-1 text-sm text-[#F9FAFB]">{selectedTransaction.accountNumber}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500">Account Type</h4>
-                  <p className="mt-1 text-sm text-gray-900">{selectedTransaction.accountType}</p>
+                  <h4 className="text-sm font-medium text-[#9CA3AF]">Account Type</h4>
+                  <p className="mt-1 text-sm text-[#F9FAFB]">{selectedTransaction.accountType}</p>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-500">Holding Type</h4>
-                  <p className="mt-1 text-sm text-gray-900">{selectedTransaction.holding}</p>
+                  <h4 className="text-sm font-medium text-[#9CA3AF]">Holding Type</h4>
+                  <p className="mt-1 text-sm text-[#F9FAFB]">{selectedTransaction.holding}</p>
                 </div>
               </div>
               <div className="border-t pt-4 mt-4">
-                <h4 className="text-sm font-medium text-gray-500 mb-2">Contact Information</h4>
+                <h4 className="text-sm font-medium text-[#9CA3AF] mb-2">Contact Information</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="flex items-center">
-                    <Mail className="w-4 h-4 text-gray-400 mr-2" />
-                    <p className="text-sm text-gray-900">{selectedTransaction.email || 'N/A'}</p>
+                    <Mail className="w-4 h-4 text-[#9CA3AF] mr-2" />
+                    <p className="text-sm text-[#F9FAFB]">{selectedTransaction.email || 'N/A'}</p>
                   </div>
                   <div className="flex items-center">
-                    <Phone className="w-4 h-4 text-gray-400 mr-2" />
-                    <p className="text-sm text-gray-900">{selectedTransaction.mobile || 'N/A'}</p>
+                    <Phone className="w-4 h-4 text-[#9CA3AF] mr-2" />
+                    <p className="text-sm text-[#F9FAFB]">{selectedTransaction.mobile || 'N/A'}</p>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="flex items-center p-6 space-x-2 border-t border-gray-200 rounded-b">
+            <div className="flex items-center p-6 space-x-2 border-t border-[#2A2A2A] rounded-b">
               <button
                 onClick={() => setShowDetailsModal(false)}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="px-4 py-2 bg-[#F59E0B] text-[#F9FAFB] rounded hover:bg-[#B45309]"
               >
                 Close
               </button>

@@ -10,6 +10,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import ExcelJS from 'exceljs';
+import autoTable from 'jspdf-autotable';
 
 interface SIPSTPData {
   id: number;
@@ -238,10 +239,10 @@ const SIPSTPReport = () => {
   const uniqueStatuses = [...new Set(portfolioData.map(item => item.sip_status))].sort();
   
   const assetTypeColors: Record<string, string> = {
-    equity: "text-green-600",
-    debt: "text-blue-600",
-    hybrid: "text-purple-600",
-    liquid: "text-blue-600",
+    equity: "text-green-400",
+    debt: "text-blue-400",
+    hybrid: "text-purple-400",
+    liquid: "text-cyan-400",
   };
 
   const resetFilters = () => {
@@ -304,8 +305,7 @@ const SIPSTPReport = () => {
     const pageHeight = doc.internal.pageSize.getHeight();
     let yPosition = 15;
 
-    // Header
-    doc.setFillColor(255, 165, 0); // Orange
+    doc.setFillColor(245, 158, 11);
     doc.rect(0, 0, pageWidth, 30, 'F');
     
     doc.setFontSize(18);
@@ -320,7 +320,7 @@ const SIPSTPReport = () => {
 
     // Investor Details
     doc.setFontSize(10);
-    doc.setTextColor(0, 0, 0);
+    doc.setTextColor(249, 250, 251);
     doc.setFont('helvetica', 'bold');
     doc.text(`Investor: ${name}`, 15, yPosition);
     doc.text(`PAN: ${pan}`, 15, yPosition + 6);
@@ -335,30 +335,18 @@ const SIPSTPReport = () => {
     const totalMonthlySIP = filteredData.reduce((sum, item) => sum + item.sip_amount, 0);
     const totalCurrentValue = filteredData.reduce((sum, item) => sum + item.current_value, 0);
 
-    doc.setFillColor(240, 240, 240);
+    doc.setFillColor(31, 26, 26);
     doc.rect(15, yPosition, pageWidth - 30, 15, 'F');
     doc.setFontSize(9);
-    doc.setTextColor(0, 0, 0);
+    doc.setTextColor(249, 250, 251);
     doc.text(`Total SIPs: ${totalSIPs} | Active SIPs: ${activeSIPs} | Total Monthly SIP: ₹${totalMonthlySIP.toLocaleString()} | Total Current Value: ₹${totalCurrentValue.toLocaleString()}`, 20, yPosition + 9);
 
     yPosition += 25;
 
-    // Table headers
     const headers = [
-      'Sno',
-      'Investor',
-      'AMC',
-      'Scheme',
-      'Folio',
-      'Asset Type',
-      'Start Date',
-      'Txn Type',
-      'Debit Day',
-      'Install Amt',
-      'Inst Paid',
-      'Unit Balance',
-      'Curr Value',
-      'XIRR %'
+      'Sno', 'Investor', 'AMC', 'Scheme', 'Folio', 'Asset Type',
+      'Start Date', 'Txn Type', 'Debit Day', 'Install Amt', 'Inst Paid',
+      'Unit Balance', 'Curr Value', 'XIRR %'
     ];
 
     // Table data
@@ -379,85 +367,36 @@ const SIPSTPReport = () => {
       `${item.xirr_return.toFixed(2)}%`
     ]);
 
-    // Manual table creation since autoTable might not be working
-    const rowHeight = 8;
-    const cellPadding = 2;
-    
-    // Column widths (adjusted to fit landscape)
-    const columnWidths = [10, 25, 20, 35, 25, 20, 20, 20, 15, 20, 15, 20, 20, 15];
-    const totalTableWidth = columnWidths.reduce((sum, width) => sum + width, 0);
-    
-    // Scale factor to fit table width
-    const scaleFactor = (pageWidth - 30) / totalTableWidth;
-    const scaledColumnWidths = columnWidths.map(width => width * scaleFactor);
-
-    // Draw table headers
-    doc.setFillColor(59, 130, 246); // Blue header
-    doc.rect(15, yPosition, pageWidth - 30, rowHeight, 'F');
-    doc.setTextColor(255, 255, 255);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7);
-
-    let xPosition = 17;
-    headers.forEach((header, index) => {
-      doc.text(header, xPosition, yPosition + 5);
-      xPosition += scaledColumnWidths[index];
+    autoTable(doc, {
+      head: [headers],
+      body: tableData,
+      startY: yPosition,
+      theme: 'grid',
+      headStyles: { fillColor: [245, 158, 11], textColor: [255, 255, 255], halign: 'center', fontStyle: 'bold' },
+      bodyStyles: { fontSize: 7, textColor: [249, 250, 251], fillColor: [17, 17, 17] },
+      alternateRowStyles: { fillColor: [31, 26, 26] },
+      margin: { left: 15, right: 15 },
+      columnStyles: {
+        0: { cellWidth: 15 },
+        1: { cellWidth: 30 },
+        2: { cellWidth: 20 },
+        3: { cellWidth: 50 },
+        4: { cellWidth: 25 },
+        5: { cellWidth: 20 },
+        6: { cellWidth: 20 },
+        7: { cellWidth: 20 },
+        8: { cellWidth: 15 },
+        9: { cellWidth: 25 },
+        10: { cellWidth: 20 },
+        11: { cellWidth: 25 },
+        12: { cellWidth: 25 },
+        13: { cellWidth: 20 },
+      },
     });
 
-    yPosition += rowHeight;
-
-    // Draw table rows
-    doc.setTextColor(0, 0, 0);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(6);
-
-    tableData.forEach((row, rowIndex) => {
-      // Check for page break
-      if (yPosition > pageHeight - 20) {
-        doc.addPage();
-        yPosition = 15;
-        
-        // Redraw headers on new page
-        doc.setFillColor(59, 130, 246);
-        doc.rect(15, yPosition, pageWidth - 30, rowHeight, 'F');
-        doc.setTextColor(255, 255, 255);
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(7);
-        
-        xPosition = 17;
-        headers.forEach((header, index) => {
-          doc.text(header, xPosition, yPosition + 5);
-          xPosition += scaledColumnWidths[index];
-        });
-        
-        yPosition += rowHeight;
-        doc.setTextColor(0, 0, 0);
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(6);
-      }
-
-      // Alternate row colors
-      if (rowIndex % 2 === 0) {
-        doc.setFillColor(240, 240, 240);
-      } else {
-        doc.setFillColor(255, 255, 255);
-      }
-      doc.rect(15, yPosition, pageWidth - 30, rowHeight, 'F');
-
-      // Draw row data
-      xPosition = 17;
-      row.forEach((cell, cellIndex) => {
-        doc.text(cell.toString(), xPosition, yPosition + 5);
-        xPosition += scaledColumnWidths[cellIndex];
-      });
-
-      yPosition += rowHeight;
-    });
-
-    // Footer
-    const footerY = Math.min(yPosition + 10, pageHeight - 10);
+    const footerY = doc.internal.pageSize.getHeight() - 10;
     doc.setFontSize(8);
-    doc.setTextColor(100, 100, 100);
+    doc.setTextColor(156, 163, 175);
     doc.setFont('helvetica', 'italic');
     doc.text('Generated by Vedant Asset Management Pvt. Ltd. | SEBI Registration No.: INZ000123456', 
              pageWidth / 2, footerY, { align: 'center' });
@@ -465,7 +404,6 @@ const SIPSTPReport = () => {
     doc.save(`${name}_SIP_SWP_Report_${new Date().toISOString().split('T')[0]}.pdf`);
   };
 
-  // Export to Excel function
   const exportToExcel = async () => {
     if (!filteredData.length) {
       alert('No data available to export');
@@ -475,28 +413,27 @@ const SIPSTPReport = () => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('SIP SWP Report');
 
-    // Add header
     worksheet.mergeCells('A1:N2');
     const titleCell = worksheet.getCell('A1');
     titleCell.value = 'VEDANT ASSET - SIP/SWP REPORT';
-    titleCell.font = { bold: true, size: 16, color: { argb: 'FFEA580C' } };
+    titleCell.font = { bold: true, size: 16, color: { argb: 'FFF59E0B' } };
     titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
     titleCell.fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'FFFEF3C7' }
+      fgColor: { argb: 'FF1F1A1A' }
     };
 
     // Investor details
     worksheet.mergeCells('A3:N3');
     const investorCell = worksheet.getCell('A3');
     investorCell.value = `Investor: ${name} | PAN: ${pan} | Period: ${fromDate} to ${toDate} | Generated: ${new Date().toLocaleDateString()}`;
-    investorCell.font = { bold: true, size: 11 };
+    investorCell.font = { bold: true, size: 11, color: { argb: 'FFF9FAFB' } };
     investorCell.alignment = { horizontal: 'center' };
     investorCell.fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'FFE5E7EB' }
+      fgColor: { argb: 'FF2A2A2A' }
     };
 
     // Summary
@@ -508,11 +445,11 @@ const SIPSTPReport = () => {
     worksheet.mergeCells('A4:N4');
     const summaryCell = worksheet.getCell('A4');
     summaryCell.value = `Summary: Total SIPs: ${totalSIPs} | Active SIPs: ${activeSIPs} | Total Monthly SIP: ₹${totalMonthlySIP.toLocaleString()} | Total Current Value: ₹${totalCurrentValue.toLocaleString()}`;
-    summaryCell.font = { bold: true, size: 10 };
+    summaryCell.font = { bold: true, size: 10, color: { argb: 'FFF9FAFB' } };
     summaryCell.fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'FFF0F9FF' }
+      fgColor: { argb: 'FF1F1A1A' }
     };
 
     // Column headers
@@ -539,7 +476,7 @@ const SIPSTPReport = () => {
     headerRow.fill = {
       type: 'pattern',
       pattern: 'solid',
-      fgColor: { argb: 'FF4B5563' }
+      fgColor: { argb: 'FFF59E0B' }
     };
     headerRow.eachCell((cell) => {
       cell.border = {
@@ -575,10 +512,17 @@ const SIPSTPReport = () => {
         row.fill = {
           type: 'pattern',
           pattern: 'solid',
-          fgColor: { argb: 'FFF3F4F6' }
+          fgColor: { argb: 'FF1F1A1A' }
+        };
+      } else {
+        row.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FF111111' }
         };
       }
 
+      row.font = { color: { argb: 'FFF9FAFB' } };
       row.eachCell((cell) => {
         cell.border = {
           top: { style: 'thin' },
@@ -594,8 +538,13 @@ const SIPSTPReport = () => {
     worksheet.mergeCells(`A${footerRow.number}:N${footerRow.number}`);
     const footer = worksheet.getCell(`A${footerRow.number}`);
     footer.value = 'Generated by Vedant Asset Management Pvt. Ltd. | SEBI Registration No.: INZ000123456';
-    footer.font = { italic: true, size: 9, color: { argb: 'FF6B7280' } };
+    footer.font = { italic: true, size: 9, color: { argb: 'FF9CA3AF' } };
     footer.alignment = { horizontal: 'center' };
+    footer.fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: 'FF111111' }
+    };
 
     // Write to file
     const buffer = await workbook.xlsx.writeBuffer();
@@ -612,10 +561,10 @@ const SIPSTPReport = () => {
 
   if (loading) {
     return (
-      <div className="w-full bg-white">
+      <div className="min-h-screen bg-[#0A0A0A]">
         <div className="p-4 flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
-          <p className="ml-4">Loading SIP/SWP data...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#F59E0B]"></div>
+          <p className="ml-4 text-[#F9FAFB]">Loading SIP/SWP data...</p>
         </div>
       </div>
     );
@@ -623,8 +572,8 @@ const SIPSTPReport = () => {
 
   if (error) {
     return (
-      <div className="w-full bg-white">
-        <div className="p-4 bg-red-100 border-l-4 border-red-500 text-red-700">
+      <div className="min-h-screen bg-[#0A0A0A]">
+        <div className="p-4 bg-red-500/10 border-l-4 border-red-500 text-red-400">
           <p className="font-bold">Error loading data:</p>
           <p>{error}</p>
         </div>
@@ -633,482 +582,446 @@ const SIPSTPReport = () => {
   }
 
   return (
-    <div className="w-full bg-white">
-      {/* Compact Header with all information together */}
-      <div className="px-4 py-3 border-b border-gray-200">
-        <div className="flex justify-between items-start">
-          {/* Left side: Back button and Company info */}
-          <div className="flex-1">
-            <button
-              onClick={() => window.history.back()}
-              className="flex items-center text-blue-600 hover:text-blue-800 transition-colors mb-3"
-            >
-              <ChevronLeft className="w-5 h-5 mr-1" />
-              Back
-            </button>
-            
-            {/* All company info together */}
-            <div className="space-y-1">
-              <h1 className="text-xl font-bold text-orange-500">
-                Vedant<span className="text-black">Asset</span>
-                <span className="text-black text-sm font-normal ml-3">
-                  | 3rd Floor, Gayways House, Above Space Furniture, P.P Compound, Main Road Ranchi 834001 Jharkhand
-                </span>
-              </h1>
+    <div className="min-h-screen bg-[#0A0A0A]">
+      <div className="max-w-full mx-auto bg-[#111111] rounded-xl border border-[#2A2A2A] shadow-xl">
+        {/* Compact Header */}
+        <div className="px-4 py-3 border-b border-[#2A2A2A]">
+          <div className="flex justify-between items-start">
+            <div className="flex-1">
+              <button
+                onClick={() => window.history.back()}
+                className="flex items-center text-[#F59E0B] hover:text-[#FBBF24] transition-colors mb-3 group"
+              >
+                <ChevronLeft className="w-5 h-5 mr-1 group-hover:-translate-x-1 transition-transform" />
+                Back
+              </button>
               
-              <div className="text-xs text-gray-700">
-                <span className="font-semibold"></span> 9304955509 | 
-                <span className="font-semibold ml-2"></span> vedantasset@gmail.com | 
-                <span className="font-semibold ml-2"></span> 
-                <a href="https://www.vedantasset.co.in" className="text-blue-600 hover:underline ml-1">
-                  www.vedantasset.co.in
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* Right side: Export buttons and Investor info */}
-          <div className="flex flex-col items-end gap-2">
-            {/* Export buttons in a row */}
-            <div className="flex gap-2">
-              <button
-                onClick={exportToPDF}
-                className="flex items-center gap-2 px-3 py-2 bg-red-50 hover:bg-red-100 text-red-700 rounded-md border border-red-200 transition-colors text-sm"
-                title="Export to PDF"
-              >
-                <FileDown size={16} />
-                <span>PDF</span>
-              </button>
-              <button
-                onClick={exportToExcel}
-                className="flex items-center gap-2 px-3 py-2 bg-green-50 hover:bg-green-100 text-green-700 rounded-md border border-green-200 transition-colors text-sm"
-                title="Export to Excel"
-              >
-                <FileSpreadsheet size={16} />
-                <span>Excel</span>
-              </button>
-            </div>
-
-            {/* Investor info in one line */}
-            <div className="text-xs text-gray-700 text-right">
-              <span className="font-semibold">Investor:</span> {name} | 
-              <span className="font-semibold ml-2">PAN:</span> {pan}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
-      <div className="p-4">
-        {/* Report Controls */}
-        <div className="mb-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Report Type Dropdown */}
-            <div>
-              <label className="block text-sm font-medium mb-1">Report Type</label>
-              <select
-                className="w-full p-2 border border-gray-300 rounded text-sm"
-                value={reportType}
-                onChange={(e) => setReportType(e.target.value)}
-              >
-                <option value="sip_stp">SIP/STP</option>
-                <option value="ledger">Ledger</option>
-              </select>
-            </div>
-
-            {/* From Date */}
-            <div>
-              <label className="block text-sm font-medium mb-1">From Date</label>
-              <div className="relative">
-                <DatePicker
-                  selected={fromDate ? new Date(fromDate) : null}
-                  onChange={(date: Date | null) => {
-                    setFromDate(date ? date.toISOString().split("T")[0] : "");
-                  }}
-                  dateFormat="yyyy-MM-dd"
-                  className="w-full p-2 border border-gray-300 rounded text-sm"
-                  placeholderText="Select From Date"
-                />
-                <Calendar className="absolute right-2 top-2.5 h-4 w-4 text-gray-500 pointer-events-none" />
+              <div className="space-y-1">
+                <h1 className="text-xl font-bold">
+                  <span className="text-[#F59E0B]">Vedant</span>
+                  <span className="text-[#F9FAFB]">Asset</span>
+                  <span className="text-[#9CA3AF] text-sm font-normal ml-3">
+                    | 3rd Floor, Gayways House, Above Space Furniture, P.P Compound, Main Road Ranchi 834001 Jharkhand
+                  </span>
+                </h1>
+                
+                <div className="text-xs text-[#9CA3AF]">
+                  <span className="font-semibold text-[#F9FAFB]">Phone:</span> 9304955509 | 
+                  <span className="font-semibold text-[#F9FAFB] ml-2">Email:</span> vedantasset@gmail.com | 
+                  <span className="font-semibold text-[#F9FAFB] ml-2">Website:</span>
+                  <a href="https://www.vedantasset.co.in" className="text-[#F59E0B] hover:underline ml-1">
+                    www.vedantasset.co.in
+                  </a>
+                </div>
               </div>
             </div>
 
-            {/* To Date */}
-            <div>
-              <label className="block text-sm font-medium mb-1">To Date</label>
-              <div className="relative">
-                <DatePicker
-                  selected={toDate ? new Date(toDate) : null}
-                  onChange={(date: Date | null) => {
-                    setToDate(date ? date.toISOString().split("T")[0] : "");
-                  }}
-                  dateFormat="yyyy-MM-dd"
-                  className="w-full p-2 border border-gray-300 rounded text-sm"
-                  placeholderText="Select To Date"
-                />
-                <Calendar className="absolute right-2 top-2.5 h-4 w-4 text-gray-500 pointer-events-none" />
+            <div className="flex flex-col items-end gap-2">
+              <div className="flex gap-2">
+                <button
+                  onClick={exportToPDF}
+                  className="flex items-center gap-2 px-3 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-md border border-red-500/30 transition-colors text-sm"
+                >
+                  <FileDown size={16} />
+                  <span>PDF</span>
+                </button>
+                <button
+                  onClick={exportToExcel}
+                  className="flex items-center gap-2 px-3 py-2 bg-green-500/10 hover:bg-green-500/20 text-green-400 rounded-md border border-green-500/30 transition-colors text-sm"
+                >
+                  <FileSpreadsheet size={16} />
+                  <span>Excel</span>
+                </button>
               </div>
-            </div>
 
-            {/* Apply Button */}
-            <div className="flex items-end">
-              <button
-                onClick={handleDateRangeChange}
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
-              >
-                Search
-              </button>
+              <div className="text-xs text-[#9CA3AF] text-right">
+                <span className="font-semibold text-[#F9FAFB]">Investor:</span> {name} | 
+                <span className="font-semibold text-[#F9FAFB] ml-2">PAN:</span> {pan}
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Filter Section */}
-        <div className="mb-4">
-          <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold">SIP/SWP Report</h2>
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100"
-            >
-              <Filter size={16} />
-              <span>Filters</span>
-              {(statusFilter !== 'all' || amcFilter !== 'all' || schemeTypeFilter !== 'all' || minAmountFilter || maxAmountFilter) && (
-                <span className="bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {[statusFilter, amcFilter, schemeTypeFilter, minAmountFilter, maxAmountFilter]
-                    .filter(f => f !== 'all' && f !== '').length}
-                </span>
-              )}
-            </button>
+        {/* Main Content */}
+        <div className="p-4">
+          {/* Report Controls */}
+          <div className="mb-4 p-4 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A]">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-[#F9FAFB] mb-1">Report Type</label>
+                <select
+                  className="w-full p-2 border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] rounded-lg text-sm focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                  value={reportType}
+                  onChange={(e) => setReportType(e.target.value)}
+                >
+                  <option value="sip_stp">SIP/STP</option>
+                  <option value="ledger">Ledger</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[#F9FAFB] mb-1">From Date</label>
+                <div className="relative">
+                  <DatePicker
+                    selected={fromDate ? new Date(fromDate) : null}
+                    onChange={(date: Date | null) => {
+                      setFromDate(date ? date.toISOString().split("T")[0] : "");
+                    }}
+                    dateFormat="yyyy-MM-dd"
+                    className="w-full p-2 border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] rounded-lg text-sm focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                    placeholderText="Select From Date"
+                  />
+                  <Calendar className="absolute right-2 top-2.5 h-4 w-4 text-[#9CA3AF] pointer-events-none" />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[#F9FAFB] mb-1">To Date</label>
+                <div className="relative">
+                  <DatePicker
+                    selected={toDate ? new Date(toDate) : null}
+                    onChange={(date: Date | null) => {
+                      setToDate(date ? date.toISOString().split("T")[0] : "");
+                    }}
+                    dateFormat="yyyy-MM-dd"
+                    className="w-full p-2 border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] rounded-lg text-sm focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                    placeholderText="Select To Date"
+                  />
+                  <Calendar className="absolute right-2 top-2.5 h-4 w-4 text-[#9CA3AF] pointer-events-none" />
+                </div>
+              </div>
+
+              <div className="flex items-end">
+                <button
+                  onClick={handleDateRangeChange}
+                  className="px-4 py-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg hover:opacity-90 text-sm"
+                >
+                  Search
+                </button>
+              </div>
+            </div>
           </div>
 
-          {showFilters && (
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {/* Status Filter */}
-                <div>
-                  <label className="block text-sm font-medium mb-1">Status</label>
-                  <select
-                    className="w-full p-2 border border-gray-300 rounded text-sm"
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                  >
-                    <option value="all">All Statuses</option>
-                    {uniqueStatuses.map(status => (
-                      <option key={status} value={status}>{status}</option>
-                    ))}
-                  </select>
-                </div>
+          {/* Filter Section */}
+          <div className="mb-4">
+            <div className="flex justify-between items-center">
+              <h2 className="text-lg font-semibold text-[#F9FAFB]">SIP/SWP Report</h2>
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="flex items-center gap-2 px-3 py-1 bg-[#1F1A1A] text-[#F59E0B] rounded-md hover:bg-[#2A2A2A] border border-[#2A2A2A]"
+              >
+                <Filter size={16} />
+                <span>Filters</span>
+                {(statusFilter !== 'all' || amcFilter !== 'all' || schemeTypeFilter !== 'all' || minAmountFilter || maxAmountFilter) && (
+                  <span className="bg-[#F59E0B] text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {[statusFilter, amcFilter, schemeTypeFilter, minAmountFilter, maxAmountFilter]
+                      .filter(f => f !== 'all' && f !== '').length}
+                  </span>
+                )}
+              </button>
+            </div>
 
-                {/* AMC Filter */}
-                <div>
-                  <label className="block text-sm font-medium mb-1">AMC</label>
-                  <select
-                    className="w-full p-2 border border-gray-300 rounded text-sm"
-                    value={amcFilter}
-                    onChange={(e) => setAmcFilter(e.target.value)}
-                  >
-                    <option value="all">All AMCs</option>
-                    {uniqueAmcs.map(amc => (
-                      <option key={amc} value={amc}>{amc}</option>
-                    ))}
-                  </select>
-                </div>
+            {showFilters && (
+              <div className="mt-4 p-4 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A]">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-[#F9FAFB] mb-1">Status</label>
+                    <select
+                      className="w-full p-2 border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] rounded-lg text-sm focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value)}
+                    >
+                      <option value="all">All Statuses</option>
+                      {uniqueStatuses.map(status => (
+                        <option key={status} value={status}>{status}</option>
+                      ))}
+                    </select>
+                  </div>
 
-                {/* Scheme Type Filter */}
-                <div>
-                  <label className="block text-sm font-medium mb-1">Scheme Type</label>
-                  <select
-                    className="w-full p-2 border border-gray-300 rounded text-sm"
-                    value={schemeTypeFilter}
-                    onChange={(e) => setSchemeTypeFilter(e.target.value)}
-                  >
-                    <option value="all">All Types</option>
-                    {uniqueSchemeTypes.map(type => (
-                      <option key={type} value={type}>{type}</option>
-                    ))}
-                  </select>
-                </div>
+                  <div>
+                    <label className="block text-sm font-medium text-[#F9FAFB] mb-1">AMC</label>
+                    <select
+                      className="w-full p-2 border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] rounded-lg text-sm focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                      value={amcFilter}
+                      onChange={(e) => setAmcFilter(e.target.value)}
+                    >
+                      <option value="all">All AMCs</option>
+                      {uniqueAmcs.map(amc => (
+                        <option key={amc} value={amc}>{amc}</option>
+                      ))}
+                    </select>
+                  </div>
 
-                {/* Amount Range Filter */}
-                <div>
-                  <label className="block text-sm font-medium mb-1">SIP Amount Range</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="number"
-                      placeholder="Min"
-                      className="w-1/2 p-2 border border-gray-300 rounded text-sm"
-                      value={minAmountFilter}
-                      onChange={(e) => setMinAmountFilter(e.target.value)}
-                    />
-                    <input
-                      type="number"
-                      placeholder="Max"
-                      className="w-1/2 p-2 border border-gray-300 rounded text-sm"
-                      value={maxAmountFilter}
-                      onChange={(e) => setMaxAmountFilter(e.target.value)}
-                    />
+                  <div>
+                    <label className="block text-sm font-medium text-[#F9FAFB] mb-1">Scheme Type</label>
+                    <select
+                      className="w-full p-2 border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] rounded-lg text-sm focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                      value={schemeTypeFilter}
+                      onChange={(e) => setSchemeTypeFilter(e.target.value)}
+                    >
+                      <option value="all">All Types</option>
+                      {uniqueSchemeTypes.map(type => (
+                        <option key={type} value={type}>{type}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-[#F9FAFB] mb-1">SIP Amount Range</label>
+                    <div className="flex gap-2">
+                      <input
+                        type="number"
+                        placeholder="Min"
+                        className="w-1/2 p-2 border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] rounded-lg text-sm focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                        value={minAmountFilter}
+                        onChange={(e) => setMinAmountFilter(e.target.value)}
+                      />
+                      <input
+                        type="number"
+                        placeholder="Max"
+                        className="w-1/2 p-2 border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] rounded-lg text-sm focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                        value={maxAmountFilter}
+                        onChange={(e) => setMaxAmountFilter(e.target.value)}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="mt-4 flex justify-end gap-2">
+                <div className="mt-4 flex justify-end gap-2">
+                  <button
+                    onClick={resetFilters}
+                    className="px-4 py-2 text-sm text-[#9CA3AF] hover:text-[#F59E0B] flex items-center gap-1 transition-colors"
+                  >
+                    <X size={14} />
+                    Reset Filters
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {(statusFilter !== 'all' || amcFilter !== 'all' || schemeTypeFilter !== 'all' || minAmountFilter || maxAmountFilter) && (
+              <div className="mt-2 flex flex-wrap gap-2">
+                {statusFilter !== 'all' && (
+                  <span className="text-xs bg-[#F59E0B]/20 text-[#F59E0B] px-2 py-1 rounded-full flex items-center">
+                    Status: {statusFilter}
+                    <button
+                      onClick={() => setStatusFilter('all')}
+                      className="ml-1 hover:text-[#FBBF24]"
+                    >
+                      <X size={12} />
+                    </button>
+                  </span>
+                )}
+                {amcFilter !== 'all' && (
+                  <span className="text-xs bg-[#F59E0B]/20 text-[#F59E0B] px-2 py-1 rounded-full flex items-center">
+                    AMC: {amcFilter}
+                    <button
+                      onClick={() => setAmcFilter('all')}
+                      className="ml-1 hover:text-[#FBBF24]"
+                    >
+                      <X size={12} />
+                    </button>
+                  </span>
+                )}
+                {schemeTypeFilter !== 'all' && (
+                  <span className="text-xs bg-[#F59E0B]/20 text-[#F59E0B] px-2 py-1 rounded-full flex items-center">
+                    Type: {schemeTypeFilter}
+                    <button
+                      onClick={() => setSchemeTypeFilter('all')}
+                      className="ml-1 hover:text-[#FBBF24]"
+                    >
+                      <X size={12} />
+                    </button>
+                  </span>
+                )}
+                {(minAmountFilter || maxAmountFilter) && (
+                  <span className="text-xs bg-[#F59E0B]/20 text-[#F59E0B] px-2 py-1 rounded-full flex items-center">
+                    Amount: {minAmountFilter || '0'} - {maxAmountFilter || '∞'}
+                    <button
+                      onClick={() => {
+                        setMinAmountFilter('');
+                        setMaxAmountFilter('');
+                      }}
+                      className="ml-1 hover:text-[#FBBF24]"
+                    >
+                      <X size={12} />
+                    </button>
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Pagination Controls - Top */}
+          <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-2">
+            <div className="text-sm text-[#9CA3AF]">
+              Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filteredData.length)} of {filteredData.length} entries
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-[#9CA3AF]">Rows per page:</span>
+              <select
+                value={itemsPerPage}
+                onChange={handleItemsPerPageChange}
+                className="p-1 border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] rounded-lg text-sm focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+              >
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse">
+              <thead className="bg-[#1F1A1A]">
+                <tr>
+                  <th className="border border-[#2A2A2A] px-2 py-2 text-xs font-medium text-left text-[#F59E0B]">Sno</th>
+                  <th className="border border-[#2A2A2A] px-2 py-2 text-xs font-medium text-left text-[#F59E0B]">Investor</th>
+                  <th className="border border-[#2A2A2A] px-2 py-2 text-xs font-medium text-left text-[#F59E0B]">AMC</th>
+                  <th className="border border-[#2A2A2A] px-2 py-2 text-xs font-medium text-left text-[#F59E0B]">Scheme</th>
+                  <th className="border border-[#2A2A2A] px-2 py-2 text-xs font-medium text-left text-[#F59E0B]">Folio</th>
+                  <th className="border border-[#2A2A2A] px-2 py-2 text-xs font-medium text-left text-[#F59E0B]">Asset Type</th>
+                  <th className="border border-[#2A2A2A] px-2 py-2 text-xs font-medium text-left text-[#F59E0B]">Start Date</th>
+                  <th className="border border-[#2A2A2A] px-2 py-2 text-xs font-medium text-left text-[#F59E0B]">Transaction Type</th>
+                  <th className="border border-[#2A2A2A] px-2 py-2 text-xs font-medium text-left text-[#F59E0B]">Debit Day</th>
+                  <th className="border border-[#2A2A2A] px-2 py-2 text-xs font-medium text-left text-[#F59E0B]">Installment Amt (Rs)</th>
+                  <th className="border border-[#2A2A2A] px-2 py-2 text-xs font-medium text-left text-[#F59E0B]">Installments Paid</th>
+                  <th className="border border-[#2A2A2A] px-2 py-2 text-xs font-medium text-left text-[#F59E0B]">Unit Balance</th>
+                  <th className="border border-[#2A2A2A] px-2 py-2 text-xs font-medium text-left text-[#F59E0B]">Current Value (Rs)</th>
+                  <th className="border border-[#2A2A2A] px-2 py-2 text-xs font-medium text-left text-[#F59E0B]">Return% (XIRR pa)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentPageData.map((item, index) => (
+                  <tr key={item.id} className="hover:bg-[#1F1A1A] transition-colors">
+                    <td className="border border-[#2A2A2A] px-2 py-1 text-xs text-[#F9FAFB]">{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                    <td className="border border-[#2A2A2A] px-2 py-1 text-xs text-[#F9FAFB]">{item.inv_name}</td>
+                    <td className="border border-[#2A2A2A] px-2 py-1 text-xs text-[#F9FAFB]">{item.amc_code}</td>
+                    <td className="border border-[#2A2A2A] px-2 py-1 text-xs text-[#F9FAFB]">{item.scheme}</td>
+                    <td className="border border-[#2A2A2A] px-2 py-1 text-xs text-[#F9FAFB]">{item.folio_no}</td>
+                    <td className={`border border-[#2A2A2A] px-2 py-1 text-xs font-semibold ${assetTypeColors[item.scheme_typ?.toLowerCase()] || "text-yellow-400"}`}>
+                      {item.scheme_typ}
+                    </td>
+                    <td className="border border-[#2A2A2A] px-2 py-1 text-xs text-[#F9FAFB]">{item.start_date}</td>
+                    <td className="border border-[#2A2A2A] px-2 py-1 text-xs text-[#F9FAFB]">{item.trn_typ}</td>
+                    <td className="border border-[#2A2A2A] px-2 py-1 text-xs text-[#F9FAFB]">{item.debit_day}</td>
+                    <td className="border border-[#2A2A2A] px-2 py-1 text-xs text-[#F9FAFB]">{item.sip_amount.toLocaleString()}</td>
+                    <td className="border border-[#2A2A2A] px-2 py-1 text-xs text-[#F9FAFB]">{item.installments_paid}</td>
+                    <td className="border border-[#2A2A2A] px-2 py-1 text-xs text-[#F9FAFB]">{item.unit_balance.toFixed(3)}</td>
+                    <td className="border border-[#2A2A2A] px-2 py-1 text-xs text-[#F9FAFB]">{item.current_value.toLocaleString()}</td>
+                    <td className="border border-[#2A2A2A] px-2 py-1 text-xs text-[#10B981]">{item.xirr_return.toFixed(2)}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination Controls - Bottom */}
+          {filteredData.length > 0 && (
+            <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="text-sm text-[#9CA3AF]">
+                Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filteredData.length)} of {filteredData.length} entries
+              </div>
+              
+              <div className="flex items-center gap-2">
                 <button
-                  onClick={resetFilters}
-                  className="px-4 py-2 text-sm text-gray-600 hover:text-gray-800 flex items-center gap-1"
+                  onClick={() => goToPage(1)}
+                  disabled={currentPage === 1}
+                  className="p-1 rounded border border-[#2A2A2A] text-[#F9FAFB] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#1F1A1A] hover:border-[#F59E0B] transition-all"
+                  title="First Page"
                 >
-                  <X size={14} />
-                  Reset Filters
+                  <ChevronsLeft size={16} />
+                </button>
+                
+                <button
+                  onClick={() => goToPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="p-1 rounded border border-[#2A2A2A] text-[#F9FAFB] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#1F1A1A] hover:border-[#F59E0B] transition-all"
+                  title="Previous Page"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                
+                <div className="flex items-center gap-1">
+                  <span className="text-sm text-[#9CA3AF]">Page</span>
+                  
+                  <form onSubmit={handlePageInputSubmit} className="flex items-center">
+                    <input
+                      type="text"
+                      value={pageInput}
+                      onChange={handlePageInput}
+                      className="w-12 p-1 border border-[#2A2A2A] bg-[#1F1A1A] text-[#F9FAFB] rounded-lg text-center text-sm focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                      placeholder={currentPage.toString()}
+                    />
+                  </form>
+                  
+                  <span className="text-sm text-[#9CA3AF]">of {totalPages}</span>
+                </div>
+                
+                <button
+                  onClick={() => goToPage(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="p-1 rounded border border-[#2A2A2A] text-[#F9FAFB] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#1F1A1A] hover:border-[#F59E0B] transition-all"
+                  title="Next Page"
+                >
+                  <ChevronRight size={16} />
+                </button>
+                
+                <button
+                  onClick={() => goToPage(totalPages)}
+                  disabled={currentPage === totalPages}
+                  className="p-1 rounded border border-[#2A2A2A] text-[#F9FAFB] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#1F1A1A] hover:border-[#F59E0B] transition-all"
+                  title="Last Page"
+                >
+                  <ChevronsRight size={16} />
                 </button>
               </div>
             </div>
           )}
 
-          {/* Active Filters Display */}
-          {(statusFilter !== 'all' || amcFilter !== 'all' || schemeTypeFilter !== 'all' || minAmountFilter || maxAmountFilter) && (
-            <div className="mt-2 flex flex-wrap gap-2">
-              {statusFilter !== 'all' && (
-                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full flex items-center">
-                  Status: {statusFilter}
-                  <button
-                    onClick={() => setStatusFilter('all')}
-                    className="ml-1 text-blue-600 hover:text-blue-800"
-                  >
-                    <X size={12} />
-                  </button>
-                </span>
-              )}
-              {amcFilter !== 'all' && (
-                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full flex items-center">
-                  AMC: {amcFilter}
-                  <button
-                    onClick={() => setAmcFilter('all')}
-                    className="ml-1 text-blue-600 hover:text-blue-800"
-                  >
-                    <X size={12} />
-                  </button>
-                </span>
-              )}
-              {schemeTypeFilter !== 'all' && (
-                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full flex items-center">
-                  Type: {schemeTypeFilter}
-                  <button
-                    onClick={() => setSchemeTypeFilter('all')}
-                    className="ml-1 text-blue-600 hover:text-blue-800"
-                  >
-                    <X size={12} />
-                  </button>
-                </span>
-              )}
-              {(minAmountFilter || maxAmountFilter) && (
-                <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full flex items-center">
-                  Amount: {minAmountFilter || '0'} - {maxAmountFilter || '∞'}
-                  <button
-                    onClick={() => {
-                      setMinAmountFilter('');
-                      setMaxAmountFilter('');
-                    }}
-                    className="ml-1 text-blue-600 hover:text-blue-800"
-                  >
-                    <X size={12} />
-                  </button>
-                </span>
-              )}
+          {/* No Data Message */}
+          {filteredData.length === 0 && !loading && (
+            <div className="text-center py-8">
+              <p className="text-red-400 font-medium">No SIP/SWP match your current filters</p>
+              <button
+                onClick={resetFilters}
+                className="mt-2 text-[#F59E0B] hover:text-[#FBBF24] text-sm"
+              >
+                Reset all filters
+              </button>
             </div>
           )}
-        </div>
 
-        {/* Pagination Controls - Top */}
-        <div className="flex flex-col sm:flex-row justify-between items-center mb-4 gap-2">
-          <div className="text-sm text-gray-600">
-            Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filteredData.length)} of {filteredData.length} entries
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Rows per page:</span>
-            <select
-              value={itemsPerPage}
-              onChange={handleItemsPerPageChange}
-              className="p-1 border border-gray-300 rounded text-sm"
-            >
-              <option value="10">10</option>
-              <option value="25">25</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">Sno</th>
-                <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">Investor</th>
-                <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">AMC</th>
-                <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">Scheme</th>
-                <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">Folio</th>
-                <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">Asset Type</th>
-                <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">Start Date</th>
-                <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">Transaction Type</th>
-                <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">Debit Day</th>
-                <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">Installment Amt (Rs)</th>
-                <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">Installments Paid</th>
-                <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">Unit Balance</th>
-                <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">Current Value (Rs)</th>
-                <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">Return% (XIRR pa)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentPageData.map((item, index) => (
-                <tr key={item.id} className="hover:bg-gray-50">
-                  <td className="border border-gray-400 px-2 py-1 text-xs">{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                  <td className="border border-gray-400 px-2 py-1 text-xs">{item.inv_name}</td>
-                  <td className="border border-gray-400 px-2 py-1 text-xs">{item.amc_code}</td>
-                  <td className="border border-gray-400 px-2 py-1 text-xs">
-                    <span >
-                      {item.scheme}
-                    </span>
-                  </td>
-                  <td className="border border-gray-400 px-2 py-1 text-xs">
-                    <span >
-                      {item.folio_no}
-                    </span>
-                  </td>
-                  <td
-                    className={`border border-gray-400 px-2 py-1 text-xs font-semibold
-    ${assetTypeColors[item.scheme_typ?.toLowerCase()] ||
-                      "bg-yellow-500 text-black" 
-                      }
-  `}
-                  >
-                    {item.scheme_typ}
-                  </td>
-
-                  <td className="border border-gray-400 px-2 py-1 text-xs">{item.start_date}</td>
-                  <td className="border border-gray-400 px-2 py-1 text-xs">{item.trn_typ}</td>
-                  <td className="border border-gray-400 px-2 py-1 text-xs">{item.debit_day}</td>
-                  <td className="border border-gray-400 px-2 py-1 text-xs">{item.sip_amount.toLocaleString()}</td>
-                  <td className="border border-gray-400 px-2 py-1 text-xs">{item.installments_paid}</td>
-                  <td className="border border-gray-400 px-2 py-1 text-xs">{item.unit_balance.toFixed(3)}</td>
-                  <td className="border border-gray-400 px-2 py-1 text-xs">{item.current_value.toLocaleString()}</td>
-                  <td className="border border-gray-400 px-2 py-1 text-xs">{item.xirr_return.toFixed(2)}%</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination Controls - Bottom */}
-        {filteredData.length > 0 && (
-          <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-sm text-gray-600">
-              Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filteredData.length)} of {filteredData.length} entries
-            </div>
-            
-            <div className="flex items-center gap-2">
-              {/* First Page Button */}
-              <button
-                onClick={() => goToPage(1)}
-                disabled={currentPage === 1}
-                className="p-1 rounded border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                title="First Page"
-              >
-                <ChevronsLeft size={16} />
-              </button>
-              
-              {/* Previous Page Button */}
-              <button
-                onClick={() => goToPage(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="p-1 rounded border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Previous Page"
-              >
-                <ChevronLeft size={16} />
-              </button>
-              
-              {/* Page Navigation */}
-              <div className="flex items-center gap-1">
-                <span className="text-sm">Page</span>
-                
-                <form onSubmit={handlePageInputSubmit} className="flex items-center">
-                  <input
-                    type="text"
-                    value={pageInput}
-                    onChange={handlePageInput}
-                    className="w-12 p-1 border border-gray-300 rounded text-center text-sm"
-                    placeholder={currentPage.toString()}
-                  />
-                </form>
-                
-                <span className="text-sm">of {totalPages}</span>
-              </div>
-              
-              {/* Next Page Button */}
-              <button
-                onClick={() => goToPage(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="p-1 rounded border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Next Page"
-              >
-                <ChevronRight size={16} />
-              </button>
-              
-              {/* Last Page Button */}
-              <button
-                onClick={() => goToPage(totalPages)}
-                disabled={currentPage === totalPages}
-                className="p-1 rounded border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Last Page"
-              >
-                <ChevronsRight size={16} />
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* No Data Message */}
-        {filteredData.length === 0 && !loading && (
-          <div className="text-center py-8">
-            <p className="text-red-500 font-medium">
-              No SIP/SWP match your current filters
-            </p>
-            <button
-              onClick={resetFilters}
-              className="mt-2 text-blue-600 hover:text-blue-800 text-sm"
-            >
-              Reset all filters
-            </button>
-          </div>
-        )}
-
-        {/* Summary */}
-        {filteredData.length > 0 && (
-          <div className="mt-4 p-4 bg-gray-50 rounded">
-            <div className="text-sm font-medium mb-2">Summary:</div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-              <div>
-                <span className="font-medium">Total SIPs:</span> {filteredData.length}
-              </div>
-           
-              <div>
-                <span className="font-medium">Total Monthly SIP:</span> ₹{filteredData.reduce((sum, item) => sum + item.sip_amount, 0).toLocaleString()}
-              </div>
-              <div>
-                <span className="font-medium">Total Current Value:</span> ₹{filteredData.reduce((sum, item) => sum + item.current_value, 0).toLocaleString()}
+          {/* Summary */}
+          {filteredData.length > 0 && (
+            <div className="mt-4 p-4 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A]">
+              <div className="text-sm font-medium text-[#F9FAFB] mb-2">Summary:</div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+                <div>
+                  <span className="font-medium text-[#9CA3AF]">Total SIPs:</span> <span className="text-[#F9FAFB]">{filteredData.length}</span>
+                </div>
+                <div>
+                  <span className="font-medium text-[#9CA3AF]">Total Monthly SIP:</span> <span className="text-[#F9FAFB]">₹{filteredData.reduce((sum, item) => sum + item.sip_amount, 0).toLocaleString()}</span>
+                </div>
+                <div>
+                  <span className="font-medium text-[#9CA3AF]">Total Current Value:</span> <span className="text-[#F9FAFB]">₹{filteredData.reduce((sum, item) => sum + item.current_value, 0).toLocaleString()}</span>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Disclaimer Section */}
-        <div className="mt-8 text-xs text-black">
-          <div className="font-bold mb-2">Disclaimer:</div>
-          <div className="mb-2">
-            The above report output is generated by computer, using the mailback data received from the respective registrars. No signature required. Please report to the administrator immediately, for any discrepancy found in the statement.
-          </div>
-          <div className="mb-2">
-            Mutual Fund investments are subject to market risks, read all scheme related documents carefully. The NAVs of the schemes may go up or down depending upon the factors and forces affecting the securities market including the fluctuations in the interest rates. The past performance of the mutual funds is not necessarily indicative of future performance of the schemes. The Mutual Fund is not guaranteeing or assuring any dividend under any of the schemes and the same is subject to the availability and adequacy of distributable surplus. Investors are requested to review the prospectus carefully and obtain expert professional advice with regard to specific legal, tax and financial implications of the investment/participation in the scheme. Please refer more details about commission disclosures, SID/SAI/KIM, Code of Conduct and privacy at : http://vedantasset.co.in
+          {/* Disclaimer Section */}
+          <div className="mt-8 text-xs text-[#9CA3AF]">
+            <div className="font-bold text-[#F9FAFB] mb-2">Disclaimer:</div>
+            <div className="mb-2">
+              The above report output is generated by computer, using the mailback data received from the respective registrars. No signature required. Please report to the administrator immediately, for any discrepancy found in the statement.
+            </div>
+            <div className="mb-2">
+              Mutual Fund investments are subject to market risks, read all scheme related documents carefully. The NAVs of the schemes may go up or down depending upon the factors and forces affecting the securities market including the fluctuations in the interest rates. The past performance of the mutual funds is not necessarily indicative of future performance of the schemes. The Mutual Fund is not guaranteeing or assuring any dividend under any of the schemes and the same is subject to the availability and adequacy of distributable surplus. Investors are requested to review the prospectus carefully and obtain expert professional advice with regard to specific legal, tax and financial implications of the investment/participation in the scheme. Please refer more details about commission disclosures, SID/SAI/KIM, Code of Conduct and privacy at : http://vedantasset.co.in
+            </div>
           </div>
         </div>
       </div>

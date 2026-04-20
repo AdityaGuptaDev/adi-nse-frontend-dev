@@ -17,8 +17,7 @@ import DataGrid from '../commonGrid/DataGrid';
 import KYC from '../initial-KYC';
 import { RxDashboard } from "react-icons/rx";
 import { GoPlusCircle } from 'react-icons/go';
-import { toast } from 'react-toastify';
-
+import { AlertCircle, X } from 'lucide-react';
 
 const investorHeader = [
     {
@@ -31,14 +30,6 @@ const investorHeader = [
     {
         name: "Family Head",
         fieldName: "GroupLeader.name",
-        // formatter: (value: any) => {
-        //     console.log(value, "value?.group_leader_id")
-        //     if (value.group_leader_id !== 0 || value.group_leader_id !== null) {
-        //         return value?.GroupLeader?.name
-        //     } else {
-        //         return "--";
-        //     }
-        // },
         sorting: true,
         filter: true,
         type: "text",
@@ -111,7 +102,6 @@ const investorHeader = [
     {
         name: "User Type",
         fieldName: "user_type",
-        // formatter: (value: any) => (value === '>=50K' ? "Equal And Above 50K" : "Less Than 50K"), // Convert boolean to string
         sorting: true,
         filter: true,
         type: "text",
@@ -144,7 +134,7 @@ const investorHeader = [
             { label: 'Done', value: true },
             { label: 'Pending', value: false }
         ],
-        formatter: (value: any) => (value ? "Done" : "Pending"), // Convert boolean to string
+        formatter: (value: any) => (value ? "Done" : "Pending"),
         dataClass: (value: any) => (value ? "activeClass" : "inActiveClass"),
     },
     {
@@ -156,25 +146,16 @@ const investorHeader = [
             { label: 'DeActive', value: true },
             { label: 'Active', value: false }
         ],
-        formatter: (value: any) => (value ? "DeActive" : "Active"), // Convert boolean to string
+        formatter: (value: any) => (value ? "DeActive" : "Active"),
         dataClass: (value: any) => (value ? "inActiveClass" : "activeClass"),
     },
 ];
-
 
 function InvestorList(props: any) {
 
     const mappingModalRef = useRef<HTMLDivElement>(null);
     const deleteModalRef = useRef<HTMLDivElement>(null);
     const showInvModalRef = useRef<HTMLDivElement>(null);
-
-    // const mappingOpenModal = () => {
-    //     mappingModalRef.current?.showModal();
-    // };
-
-    // const mappingCloseModal = () => {
-    //     mappingModalRef.current?.close();
-    // };
 
     const [pageType, setpageType] = useState<pageTypes>("list");
     const [familyHeadList, setFamilyHeadList] = useState<any>([]);
@@ -198,9 +179,6 @@ function InvestorList(props: any) {
         isError: false,
         msg: ""
     })
-
-
-
 
     const mappingOpenModal = () => setMappingModal(true);
     const mappingCloseModal = () => setMappingModal(false);
@@ -240,8 +218,6 @@ function InvestorList(props: any) {
         }, []),
     });
 
-
-
     const getFamilyHeadList = async () => {
         try {
             let familyHead = await api.get(`/investor/getAllFamilyHeadList`);
@@ -279,18 +255,11 @@ function InvestorList(props: any) {
     };
 
     let actionButtons: any[] = [
-        // {
-        //     icon: <RxEyeOpen />,
-        //     title: "View",
-        //     tooltip: "view",
-        //     show: props.permission.view,
-        // },
         {
             icon: <RiEdit2Line />,
             title: "Edit",
             tooltip: "edit",
-            className: "p-2 bg-primary text-white rounded-lg",
-
+            className: "p-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg hover:opacity-90 transition-all",
             show: props.permission.edit,
         },
         {
@@ -298,65 +267,49 @@ function InvestorList(props: any) {
             title: "Mapping",
             tooltip: "mapping",
             show: true,
-            className: "p-2 bg-primary text-white rounded-lg",
+            className: "p-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg hover:opacity-90 transition-all",
         },
         {
             icon: <GoPlusCircle />,
             title: "Create Partner",
             tooltip: "create partner",
             show: true,
-            className: "p-2 bg-primary text-white rounded-lg",
+            className: "p-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg hover:opacity-90 transition-all",
         },
-        {
-            icon: <GoPlusCircle />,
-            title: "Create Bc",
-            tooltip: "create bc",
-            show: true,
-            className: "p-2 bg-primary text-white rounded-lg",
-        },
+        // {
+        //     icon: <GoPlusCircle />,
+        //     title: "Create Bc",
+        //     tooltip: "create bc",
+        //     show: true,
+        //     className: "p-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg hover:opacity-90 transition-all",
+        // },
         {
             icon: <RiUserUnfollowFill />,
             title: "DeActive",
             tooltip: "DeActive",
             show: true,
-            className: "p-2 bg-primary text-white rounded-lg",
+            className: "p-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg hover:opacity-90 transition-all",
         },
         {
             icon: <RxDashboard />,
             title: "Dashboard",
             tooltip: "Dashboard",
             show: true,
-            className: "p-2 bg-primary text-white rounded-lg",
+            className: "p-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg hover:opacity-90 transition-all",
         }
-        // {
-        //     icon: <RiDeleteBinLine />,
-        //     title: "Delete",
-        //     tooltip: "delete",
-        //     confirmBox: {
-        //         title: "Are you sure ?",
-        //         confirmText: "Yes",
-        //         cancelText: "Cancel",
-        //     },
-        //     show: props.permission.delete,
-        // },
     ];
 
-    // toggleform
     const toggleForm = (
         formType: pageTypes = pageType == "list" ? "add" : "list"
     ) => {
         console.log('formType', formType)
         if (formType != 'edit') {
-
             const getUser = getLS(USER_DATA);
             delete getUser.InvestorRegistration;
             removeLS(ADD_MEMBER);
             removeLS(MEMBER_DATA);
             setLS(USER_DATA, getUser);
-
         }
-
-
         setpageType(formType);
     };
 
@@ -372,18 +325,14 @@ function InvestorList(props: any) {
                 setDisableRM(!!data.partner_id);
                 setDisablePartner(false);
             }
-
             if (data.rm_id) {
-                // disable Partner if rm is selected
                 setDisablePartner(!!data.rm_id);
                 setDisableRM(false);
             }
             if (data.bc_id) {
-
                 setDisableRM(!!data.bc_id);
                 setDisableBC(false);
             }
-
             mappingOpenModal();
         }
 
@@ -395,11 +344,9 @@ function InvestorList(props: any) {
 
             try {
                 setLoading(true);
-
                 const res: any = await api.post(
                     `/partner/convertInvToPartner?userId=${data.user_id}`
                 );
-
                 setLoading(false);
                 console.log("Response =====================", res.data.data.msg, res)
 
@@ -414,8 +361,6 @@ function InvestorList(props: any) {
                         res.data.data.msg
                     );
                 }
-
-
             } catch (error: any) {
                 setLoading(false);
                 toastAlert("error", error.message || "Something went wrong");
@@ -430,11 +375,9 @@ function InvestorList(props: any) {
 
             try {
                 setLoading(true);
-
                 const res: any = await api.post(
                     `/partner/convertInvToBc?userId=${data.user_id}`
                 );
-
                 setLoading(false);
                 console.log("Response =====================", res.data.data.msg, res)
 
@@ -449,8 +392,6 @@ function InvestorList(props: any) {
                         res.data.data.msg
                     );
                 }
-
-
             } catch (error: any) {
                 setLoading(false);
                 toastAlert("error", error.message || "Something went wrong");
@@ -458,15 +399,10 @@ function InvestorList(props: any) {
         }
 
         if (e == "DeActive") {
-
             setInvestorId(data.id);
-
             let res: any = await api.get(`/investor/findFamilyHeadList/${data.id}`);
-
             let result = res.data.data;
-
             let familyHead = result.map((item: any) => item.name);
-
             let findInType = result.find((item: any) => item?.TaxStatus?.status === 'Minor');
 
             if (findInType) {
@@ -480,7 +416,6 @@ function InvestorList(props: any) {
             } else {
                 deleteOpenModal();
             }
-
         }
 
         if (e == 'Edit') {
@@ -492,37 +427,29 @@ function InvestorList(props: any) {
                 setLS(USER_DATA, { ...getUser, InvestorRegistration: data });
                 toggleForm("edit");
             }, 1000);
-
         }
 
         if (e == 'Dashboard') {
             try {
                 const payload = {
-                    userName: data.reg_mobile,
+                    userName: data.reg_email,
                     userTypeId: USER_TYPE.InvestorRegistration
                 };
-
                 const res: any = await api.post(`/user/investor-login`, payload);
-
                 const loginData = res?.data?.data;
 
                 if (!loginData?.token) {
                     return toastAlert("error", "Unable to login as investor");
                 }
 
-                // store login data temporarily
                 localStorage.setItem("partnerLoginData", JSON.stringify(loginData));
-
-                // open dashboard
                 window.open("/as-investor", "_blank");
 
             } catch (error) {
                 handleServerError(error);
             }
         }
-
     };
-
 
     const handleChange = (item: any, type: string) => {
         if (type === "family_head") {
@@ -572,16 +499,11 @@ function InvestorList(props: any) {
                 return toastAlert("error", "Please select partner, rm, or bc");
             }
 
-            // let filtered = Object.fromEntries(
-            //     Object.entries(values).filter(([_, v]) => v !== null && v !== undefined && v !== "")
-            // );
-
             let resData: any = await api.put(`/investor/updateIvestor/${investorData?.id}`, values);
 
             if (resData.data) {
                 toastAlert("success", resData.data.msg);
                 setRefreshKey((prev: any) => prev + 1);
-
                 handleCloseModal();
             }
 
@@ -612,7 +534,6 @@ function InvestorList(props: any) {
     const handleInvestorMapping = async () => {
         try {
             if (!isAllInvesFamilyHead) {
-                // Map all investors as family heads
                 return toastAlert("error", "Please confirm if all investors are family heads.");
             }
 
@@ -622,7 +543,6 @@ function InvestorList(props: any) {
                 toastAlert("success", resData.data.msg);
                 setIsAllInvesFamilyHead(false);
                 setRefreshKey((prev: any) => prev + 1);
-
                 handleDelete();
                 showInvCloseModal();
             }
@@ -642,14 +562,14 @@ function InvestorList(props: any) {
         <>
             {pageType !== "list" ? (
                 <>
-                    <div className="p-3">
+                    <div className="p-3 bg-[#0A0A0A]">
                         <CustomButton
-                            className="flex !text-secondary normal-case bg-transparent p-0 shadow-none"
+                            className="flex !text-[#F59E0B] normal-case bg-transparent p-0 shadow-none hover:!text-[#FBBF24] transition-colors"
                             onClick={(e) => {
                                 toggleForm("list");
                             }}
                         >
-                            <IoIosArrowBack className="h-6 w-6" /> Back
+                            <IoIosArrowBack className="h-6 w-6 mr-2" /> Back
                         </CustomButton>
                     </div>
                 </>
@@ -657,7 +577,7 @@ function InvestorList(props: any) {
 
             {pageType == "list" ? (
                 <>
-                    <div>
+                    <div className="bg-[#0A0A0A] min-h-screen">
                         <DataGrid
                             refreshKey={refreshKey}
                             headerList={investorHeader}
@@ -665,7 +585,6 @@ function InvestorList(props: any) {
                             actionButtons={actionButtons}
                             clickOnAction={clickOnAction}
                             permission={props.permission}
-                            // permission={false}
                             toggleForm={toggleForm}
                             pageName={"Investor"}
                             backButton={true}
@@ -674,38 +593,34 @@ function InvestorList(props: any) {
                 </>
             ) : (
                 <div className='mt-0'>
-
                     <KYC />
                 </div>
             )}
 
-            {/* mapping model */}
-
+            {/* Mapping Modal */}
             {mappingModal && (
-                <div id="my_modal_1" className="modal modal-open" ref={mappingModalRef}>
-                    <div className="modal-box max-w-3xl">
-                        <form method="dialog" className="modalHeader">
-                            <div className="flex-1 sm:flex justify-between">
-                                <h3 className="modalTitle">Mapping</h3>
-                            </div>
-                            <div className="">
-                                <button
-                                    className="btn btn-md btn-circle btn-ghost"
-                                    onClick={handleCloseModal}
-                                >
-                                    <MdClose size={25} />
-                                </button>
-                            </div>
-                        </form>
+                <div id="my_modal_1" className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" ref={mappingModalRef}>
+                    <div className="bg-[#111111] rounded-xl shadow-2xl max-w-4xl w-full border border-[#2A2A2A]">
+                        <div className="flex justify-between items-center p-5 border-b border-[#2A2A2A]">
+                            <h3 className="text-lg font-bold text-[#F59E0B]">Mapping</h3>
+                            <button
+                                className="text-[#9CA3AF] hover:text-[#F59E0B] transition-colors"
+                                onClick={handleCloseModal}
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
                         <form onSubmit={handleSubmit(onSubmit)}>
-                            <div className="modalBody">
+                            <div className="p-5">
                                 <div className="py-4">
-                                    <div className='grid grid-cols-3 gap-4'>
+                                    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
                                         <div>
+                                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                                Family Head
+                                            </label>
                                             <CustomReactSelect
                                                 items={familyHeadList}
                                                 required
-                                                label="Family Head"
                                                 placeholder="Select Family Head"
                                                 bindName="name"
                                                 bindValue="id"
@@ -714,14 +629,15 @@ function InvestorList(props: any) {
                                                 isClearable={true}
                                                 onChange={(e: any) => handleChange(e, "family_head")}
                                                 error={errors?.group_leader_id?.message}
-                                            // disabled={isView ? true : false}
                                             />
                                         </div>
                                         <div>
+                                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                                Select Partner
+                                            </label>
                                             <CustomReactSelect
                                                 items={partnerList}
                                                 required
-                                                label="Select Partner"
                                                 placeholder="Select Partner"
                                                 bindName="adhaar_name"
                                                 bindValue="regId"
@@ -730,15 +646,16 @@ function InvestorList(props: any) {
                                                 isClearable={true}
                                                 onChange={(e: any) => handleChange(e, "partner")}
                                                 error={errors?.partner_id?.message}
-                                                // disabled={watch("rm_id") ? true : false}
                                                 disabled={disablePartner}
                                             />
                                         </div>
                                         <div>
+                                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                                Select RM
+                                            </label>
                                             <CustomReactSelect
                                                 items={RMList}
                                                 required
-                                                label="Select RM"
                                                 placeholder="Select RM"
                                                 bindName="Name"
                                                 bindValue="id"
@@ -747,15 +664,16 @@ function InvestorList(props: any) {
                                                 isClearable={true}
                                                 onChange={(e: any) => handleChange(e, "rm")}
                                                 error={errors?.rm_id?.message}
-                                                // disabled={watch("partner_id") ? true : false}
                                                 disabled={disableRM}
                                             />
                                         </div>
                                         <div>
+                                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                                Select BC
+                                            </label>
                                             <CustomReactSelect
                                                 items={BCList}
                                                 required
-                                                label="Select BC"
                                                 placeholder="Select BC"
                                                 bindName="adhaar_name"
                                                 bindValue="regId"
@@ -764,150 +682,228 @@ function InvestorList(props: any) {
                                                 isClearable={true}
                                                 onChange={(e: any) => handleChange(e, "bc")}
                                                 error={errors?.bc_id?.message}
-                                                // disabled={watch("rm_id") ? true : false}
                                                 disabled={disableBC}
                                             />
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
-                            <div className="modalFooter modal-action flex justify-center">
-                                {/* <form method="dialog"> */}
-                                <div className="flex gap-5 mt-4 text-center">
-                                    <div>
-                                        <CustomButton
-                                            className="w-28"
-                                            type="submit"
-                                            loading={loading}
-                                        >
-                                            Submit
-                                        </CustomButton>
-                                    </div>
-                                    <div>
-                                        <CustomButton
-                                            className="bg-white !text-black !border !border-gray-300 w-28"
-                                            onClick={handleCloseModal}
-                                        >
-                                            Cancel
-                                        </CustomButton>
-                                    </div>
-                                </div>
-                                {/* </form> */}
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-
-            {/* delete investor model */}
-
-            {deleteModal && (
-                <div id="my_modal_2" className="modal modal-open" ref={deleteModalRef}>
-                    <div className="modal-box text-center">
-                        <div className="flex justify-center text-center my-2">
-                            <MdError className="text-red-600 w-14 h-14" />
-                        </div>
-                        <h3 className="text-xl font-bold">Delete Investor</h3>
-                        <p className="py-4">Are you sure you want to delete this investor?</p>
-                        <div className="modal-action flex gap-5 justify-center items-center text-center">
-                            <form
-                                method="dialog"
-                                className="flex gap-5 justify-center items-center text-center"
-                            >
-                                <div className="mt-4 text-center">
-                                    <CustomButton
-                                        className="bg-white !text-black !border !border-gray-300 w-28"
-                                        onClick={() => {
-                                            deleteCloseModal();
-                                        }}
-                                    >
-                                        Cancel
-                                    </CustomButton>
-                                </div>
-
-                                <div className="mt-4 text-center">
-                                    <CustomButton
-                                        className="w-28"
-                                        loading={deleteLoader}
-                                        onClick={() => handleDelete()}
-                                    >
-                                        Yes
-                                    </CustomButton>
-                                </div>
-                                {/* <button className="btn" onClick={handleMFAllocation}>Close</button> */}
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* investor list model */}
-
-            {showInvModal && (
-                <div id="my_modal_1" className="modal modal-open" ref={showInvModalRef}>
-                    <div className="modal-box max-w-3xl">
-                        <form method="dialog" className="modalHeader">
-                            <div className="flex-1 sm:flex justify-between">
-                                <h3 className="modalTitle">Investor List</h3>
-                            </div>
-                            <div className="">
+                            <div className="flex gap-4 justify-center p-5 border-t border-[#2A2A2A]">
                                 <button
-                                    className="btn btn-md btn-circle btn-ghost"
-                                    onClick={onChangeCloseInvestorList}
+                                    type="submit"
+                                    disabled={loading}
+                                    className="px-6 py-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white font-semibold rounded-lg hover:opacity-90 transition-all disabled:opacity-50"
                                 >
-                                    <MdClose size={25} />
+                                    {loading ? "Submitting..." : "Submit"}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={handleCloseModal}
+                                    className="px-6 py-2 bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] rounded-lg hover:bg-[#2A2A2A] transition-colors"
+                                >
+                                    Cancel
                                 </button>
                             </div>
                         </form>
-                        <div className="modalBody">
-                            <div className='p-4'>
-                                <div className='grid grid-cols-2 gap-4'>
-                                    {headMemberList.map((member: any, index: any) => (
-                                        <div key={index}>
-                                            <CustomText className='text-sm'>{member}</CustomText>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className='mt-10'>
-                                    <CustomCheckbox
-                                        labelClassName='text-base text-red-600'
-                                        label="Are you sure you want to delete the investor and remove them from the member mapping?"
-                                        checked={isAllInvesFamilyHead}
-                                        onChange={(e: any) => setIsAllInvesFamilyHead(e.target.checked)}
-                                    />
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Investor Modal */}
+            {deleteModal && (
+                <div id="my_modal_2" className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" ref={deleteModalRef}>
+                    <div className="bg-[#111111] rounded-xl shadow-2xl max-w-md w-full border border-[#2A2A2A]">
+                        <div className="p-6 text-center">
+                            <div className="flex justify-center mb-4">
+                                <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center">
+                                    <AlertCircle className="w-8 h-8 text-red-400" />
                                 </div>
                             </div>
-                        </div>
-                        <div className="modalFooter modal-action flex justify-center">
-                            {/* <form method="dialog"> */}
-                            <div className="flex gap-5 mt-4 text-center">
-                                <div>
-                                    <CustomButton
-                                        className="w-28"
-                                        type="submit"
-                                        onClick={handleInvestorMapping}
-                                    // loading={loading}
-                                    >
-                                        Yes
-                                    </CustomButton>
-                                </div>
-                                <div>
-                                    <CustomButton
-                                        className="bg-white !text-black !border !border-gray-300 w-28"
-                                        onClick={onChangeCloseInvestorList}
-                                    >
-                                        Cancel
-                                    </CustomButton>
-                                </div>
+                            <h3 className="text-xl font-bold text-[#F9FAFB] mb-3">Delete Investor</h3>
+                            <p className="text-[#9CA3AF] mb-6">
+                                Are you sure you want to delete this investor?
+                            </p>
+                            <div className="flex gap-4 justify-center">
+                                <button
+                                    onClick={() => deleteCloseModal()}
+                                    className="px-6 py-2 bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] rounded-lg hover:bg-[#2A2A2A] transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={() => handleDelete()}
+                                    disabled={deleteLoader}
+                                    className="px-6 py-2 bg-gradient-to-r from-[#EF4444] to-[#DC2626] text-white font-semibold rounded-lg hover:opacity-90 transition-all disabled:opacity-50"
+                                >
+                                    {deleteLoader ? "Processing..." : "Yes, Delete"}
+                                </button>
                             </div>
-                            {/* </form> */}
                         </div>
                     </div>
                 </div>
             )}
+
+            {/* Investor List Modal */}
+            {showInvModal && (
+                <div id="my_modal_1" className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" ref={showInvModalRef}>
+                    <div className="bg-[#111111] rounded-xl shadow-2xl max-w-2xl w-full border border-[#2A2A2A]">
+                        <div className="flex justify-between items-center p-5 border-b border-[#2A2A2A]">
+                            <h3 className="text-lg font-bold text-[#F59E0B]">Investor List</h3>
+                            <button
+                                className="text-[#9CA3AF] hover:text-[#F59E0B] transition-colors"
+                                onClick={onChangeCloseInvestorList}
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className="p-5">
+                            <div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
+                                {headMemberList.map((member: any, index: any) => (
+                                    <div key={index} className="p-3 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A]">
+                                        <CustomText className='text-sm text-[#F9FAFB]'>{member}</CustomText>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className='mt-6 p-4 bg-red-500/10 rounded-lg border border-red-500/30'>
+                                <CustomCheckbox
+                                    labelClassName='text-sm text-red-400'
+                                    label="Are you sure you want to delete the investor and remove them from the member mapping?"
+                                    checked={isAllInvesFamilyHead}
+                                    onChange={(e: any) => setIsAllInvesFamilyHead(e.target.checked)}
+                                />
+                            </div>
+                        </div>
+                        <div className="flex gap-4 justify-center p-5 border-t border-[#2A2A2A]">
+                            <button
+                                type="button"
+                                onClick={handleInvestorMapping}
+                                className="px-6 py-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white font-semibold rounded-lg hover:opacity-90 transition-all"
+                            >
+                                Yes
+                            </button>
+                            <button
+                                type="button"
+                                onClick={onChangeCloseInvestorList}
+                                className="px-6 py-2 bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] rounded-lg hover:bg-[#2A2A2A] transition-colors"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <style jsx>{`
+                :global(.activeClass) {
+                    color: #10B981;
+                    background-color: rgba(16, 185, 129, 0.1);
+                    padding: 4px 12px;
+                    border-radius: 20px;
+                    font-weight: 500;
+                    display: inline-block;
+                }
+                
+                :global(.inActiveClass) {
+                    color: #EF4444;
+                    background-color: rgba(239, 68, 68, 0.1);
+                    padding: 4px 12px;
+                    border-radius: 20px;
+                    font-weight: 500;
+                    display: inline-block;
+                }
+                
+                :global(.data-grid-container) {
+                    background-color: #0A0A0A;
+                }
+                
+                :global(.data-grid-table) {
+                    background-color: #111111;
+                    border-color: #2A2A2A;
+                }
+                
+                :global(.data-grid-table th) {
+                    background-color: #1F1A1A;
+                    color: #F59E0B;
+                    border-bottom-color: #2A2A2A;
+                }
+                
+                :global(.data-grid-table td) {
+                    color: #F9FAFB;
+                    border-bottom-color: #2A2A2A;
+                }
+                
+                :global(.data-grid-table tr:hover) {
+                    background-color: #1F1A1A;
+                }
+                
+                :global(.data-grid-pagination button) {
+                    background-color: #111111;
+                    border-color: #2A2A2A;
+                    color: #F9FAFB;
+                }
+                
+                :global(.data-grid-pagination button:hover:not(:disabled)) {
+                    background-color: #1F1A1A;
+                    border-color: #F59E0B;
+                    color: #F59E0B;
+                }
+                
+                :global(.data-grid-pagination button.active) {
+                    background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
+                    color: white;
+                    border-color: transparent;
+                }
+                
+                :global(.data-grid-search input) {
+                    background-color: #111111;
+                    border-color: #2A2A2A;
+                    color: #F9FAFB;
+                }
+                
+                :global(.data-grid-search input::placeholder) {
+                    color: #9CA3AF;
+                }
+                
+                :global(.data-grid-search input:focus) {
+                    border-color: #F59E0B;
+                    ring-color: #F59E0B;
+                }
+                
+                :global(.data-grid-filter select) {
+                    background-color: #111111;
+                    border-color: #2A2A2A;
+                    color: #F9FAFB;
+                }
+                
+                :global(.data-grid-filter select:focus) {
+                    border-color: #F59E0B;
+                    ring-color: #F59E0B;
+                }
+                
+                :global(.data-grid-filter select option) {
+                    background-color: #111111;
+                    color: #F9FAFB;
+                }
+                
+                :global(.data-grid-header) {
+                    background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
+                }
+                
+                :global(.data-grid-header h2) {
+                    color: white;
+                }
+                
+                :global(.data-grid-header button) {
+                    background-color: rgba(255, 255, 255, 0.2);
+                    color: white;
+                }
+                
+                :global(.data-grid-header button:hover) {
+                    background-color: rgba(255, 255, 255, 0.3);
+                }
+            `}</style>
         </>
     );
 }
 
-export default InvestorList
+export default InvestorList;

@@ -835,7 +835,7 @@ function GoalPlanForm({
               <div className="sm:mt-8 sm:w-1/12">
                 {isEdit ? (
                   <CustomButton
-                    className="bg-white !text-black !border !border-gray-300 w-full"
+                    className="bg-[#111111] !text-black !border !border-[#3A3A3A] w-full"
                     type="button"
                     onClick={(e: any) => handleCancelEdit()}
                   >
@@ -872,7 +872,7 @@ function GoalPlanForm({
                             <tr className="bg-[#F4F6F8]">
                               <td
                                 colSpan={3}
-                                className="font-semibold text-gray-700"
+                                className="font-semibold text-[#E5E7EB]"
                               >
                                 {riskLabel}
                               </td>
@@ -897,7 +897,7 @@ function GoalPlanForm({
                                           <div className="font-medium">
                                             {item.selectedScheme.ms_fullname}
                                           </div>
-                                          <div className="text-sm text-gray-500">
+                                          <div className="text-sm text-[#9CA3AF]">
                                             {item.scheme_category.Name} -{" "}
                                             {item.scheme_subCategory.Name}
                                           </div>
@@ -1030,7 +1030,7 @@ function GoalPlanForm({
                                     <div className="font-medium">
                                       {item.ms_fullname}
                                     </div>
-                                    <div className="text-sm text-gray-500">
+                                    <div className="text-sm text-[#9CA3AF]">
                                       {item.SchemeCategory.Name} -{" "}
                                       {item.SchemeSubcategory.Name}
                                     </div>
@@ -1156,7 +1156,7 @@ function GoalPlanForm({
             <div className="flex gap-5 justify-center text-center p-5">
               <div className="mt-0 text-center">
                 <CustomButton
-                  className="bg-white !text-black !border !border-gray-300 w-24 shadow-none"
+                  className="bg-[#111111] !text-black !border !border-[#3A3A3A] w-24 shadow-none"
                   onClick={() => {
                     setIsEdit(false);
                     handleScheModalClose();

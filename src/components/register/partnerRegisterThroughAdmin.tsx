@@ -146,7 +146,7 @@ function RegisterForm() {
 
   return (
     <>
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 space-y-6 mx-auto mt-10 mb-10 transition-all duration-300 hover:shadow-2xl">
+      <div className="w-full max-w-md bg-[#111111] rounded-2xl shadow-xl p-8 space-y-6 mx-auto mt-10 mb-10 transition-all duration-300 hover:shadow-2xl">
         {/* Header Section */}
         <div className="text-center space-y-3">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-full mb-2">
@@ -164,10 +164,10 @@ function RegisterForm() {
               />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 className="text-2xl font-bold text-[#F9FAFB]">
             Partner Registration
           </h2>
-          <p className="text-gray-600 text-sm">
+          <p className="text-[#9CA3AF] text-sm">
             Register as a Partner to start your journey
           </p>
         </div>
@@ -196,7 +196,7 @@ function RegisterForm() {
           <div className="space-y-5">
             {/* User Type Display */}
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[#E5E7EB] mb-2">
                 Register as:
               </label>
               <div className="flex items-center p-3 bg-gradient-to-r from-blue-50 to-indigo-100 rounded-lg border border-blue-200">
@@ -220,19 +220,19 @@ function RegisterForm() {
                 </span>
 
               </div>
-              <p className="mt-2 text-xs text-gray-500">
+              <p className="mt-2 text-xs text-[#9CA3AF]">
                 You are registering as a Business Partner
               </p>
             </div>
 
             {/* Mobile Input */}
             <div className="relative">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-[#E5E7EB] mb-2">
                 Your Mobile No. *
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <span className="text-gray-700 font-medium sm:text-sm">
+                  <span className="text-[#E5E7EB] font-medium sm:text-sm">
                     +91
                   </span>
                 </div>
@@ -243,7 +243,7 @@ function RegisterForm() {
                   error={errors.mobile?.message}
                   onChange={handleMobileChange}
                   maxLength={10}
-                  className="pl-12 py-3 border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+                  className="pl-12 py-3 border-[#3A3A3A] focus:border-blue-500 focus:ring-blue-500"
                   style={{
                     paddingLeft: "3.5rem",
                   }}
@@ -273,7 +273,7 @@ function RegisterForm() {
               )}
 
               {/* Helper Text */}
-              <p className="mt-2 text-xs text-gray-500">
+              <p className="mt-2 text-xs text-[#9CA3AF]">
                 Must be a 10-digit Indian mobile number starting with 6-9
               </p>
             </div>
@@ -338,8 +338,8 @@ function RegisterForm() {
         </form>
 
         {/* Additional Info */}
-        <div className="text-center pt-6 border-t border-gray-100">
-          <div className="flex items-center justify-center text-gray-500 mb-2">
+        <div className="text-center pt-6 border-t border-[#2A2A2A]">
+          <div className="flex items-center justify-center text-[#9CA3AF] mb-2">
             <svg
               className="w-4 h-4 mr-2"
               fill="none"
@@ -357,7 +357,7 @@ function RegisterForm() {
               Your information is secure and encrypted
             </p>
           </div>
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-[#6B7280]">
             By continuing, you agree to our Terms & Conditions
           </p>
         </div>
@@ -365,7 +365,7 @@ function RegisterForm() {
         {isOpenOtpModal && userData && (
           <div id="my_modal" className="modal modal-open" ref={modalRef}>
             <div
-              className="modal-box relative transform transition-all max-w-md mx-auto bg-white shadow-2xl rounded-xl"
+              className="modal-box relative transform transition-all max-w-md mx-auto bg-[#111111] shadow-2xl rounded-xl"
               onClick={(e) => e.stopPropagation()}
               style={{
                 position: 'fixed',

@@ -25,6 +25,22 @@ import { eMandateStatus, getMandates, updateMandates } from '@/api/transaction';
 import CustomBackButton from '@/commonUI/CustomBackButton';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 
+// Golden Black Theme Constants
+const theme = {
+  primary: "#F59E0B",
+  secondary: "#FBBF24",
+  accent: "#1F1A1A",
+  success: "#10B981",
+  warning: "#F59E0B",
+  danger: "#EF4444",
+  background: "#0A0A0A",
+  cardBg: "#111111",
+  textPrimary: "#F9FAFB",
+  textSecondary: "#9CA3AF",
+  border: "#2A2A2A",
+  gradient: "linear-gradient(135deg, #F59E0B 0%, #B45309 100%)",
+  hoverBg: "#1F1A1A",
+};
 
 function AccountHolding() {
 
@@ -40,10 +56,8 @@ function AccountHolding() {
     const [viewAllMandatesModal, setViewAllMandatesModal] = useState(false);
     const [liveMandatesModal, setLiveMandatesModal] = useState(false);
 
-
     const [isEdit, setIsEdit] = useState(false);
 
-    //const accountHoldingOpenModal = () => setAccountHoldingModal(true);
     const accountHoldingCloseModal = () => setAccountHoldingModal(false);
 
     const viewAllMandatesOpenModal = () => setViewAllMandatesModal(true);
@@ -61,7 +75,6 @@ function AccountHolding() {
     const [transactionData, seTransactionData] = useState({})
     const [accountHoldingList, setAccountHoldingList] = useState<any[]>([])
     const [mandates, setMandates] = useState<any[]>([])
-    //const [payload, setPayload] = useState<any>({})
 
     useEffect(() => {
         const searchInvestor = async () => {
@@ -243,72 +256,103 @@ function AccountHolding() {
                 }}
             />
 
-
-            <div className='p-4'>
-                <div className=' flex  justify-between'>
-
-                    <div>
-                        <CustomBackButton onClick={() => window.history.back()}>
-                            <IoMdArrowRoundBack className="h-6 w-6 mr-1" />
-                        </CustomBackButton>
-                    </div>
-
-
-                    <div className='flex flex-wrap gap-2 md:gap-5'>
+            <div className='min-h-screen' style={{ background: theme.background }}>
+                <div className='p-4 md:p-6'>
+                    {/* Header Section */}
+                    <div className='flex flex-wrap justify-between items-center gap-4 mb-6'>
                         <div>
-                            <CustomButton onClick={viewAllMandatesOpenModal}>View All Mandates</CustomButton>
+                            <CustomBackButton onClick={() => window.history.back()}>
+                                <IoMdArrowRoundBack className="h-6 w-6 mr-1 transition-transform duration-300 hover:-translate-x-1" style={{ color: theme.primary }} />
+                            </CustomBackButton>
                         </div>
-                        <div>
-                            <CustomButton onClick={accountHoldingOpenModal}>Create New</CustomButton>
-                        </div>
-                    </div>
-                </div>
-                {/*************Added by rakesh sinha */}
-                <div className='mt-5'>
 
-                    {accountHoldingList.length > 0 && (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
-                            {accountHoldingList.map((item: any, index: number) => (
-                                <AccountHoldingCard
-                                    key={index}
-                                    item={item}
-                                    mandates={mandates.length}
-                                    onEdit={() => {
-                                        accountHoldingOpenModal();
-                                        setIsEdit(true);
+                        <div className='flex flex-wrap gap-3 md:gap-4'>
+                            <div>
+                                <CustomButton 
+                                    onClick={viewAllMandatesOpenModal}
+                                    className="transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                                    style={{
+                                        background: theme.gradient,
+                                        color: "white",
+                                        border: "none",
                                     }}
-                                    onLinkedMandatesClick={liveMandatesOpenModal}
-                                />
-                            ))}
+                                >
+                                    View All Mandates
+                                </CustomButton>
+                            </div>
+                            <div>
+                                <CustomButton 
+                                    onClick={accountHoldingOpenModal}
+                                    className="transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                                    style={{
+                                        background: theme.gradient,
+                                        color: "white",
+                                        border: "none",
+                                    }}
+                                >
+                                    Create New
+                                </CustomButton>
+                            </div>
                         </div>
-                    )}
+                    </div>
 
+                    {/* Account Holding Cards Grid */}
+                    <div className='mt-6'>
+                        {accountHoldingList.length > 0 && (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-5">
+                                {accountHoldingList.map((item: any, index: number) => (
+                                    <AccountHoldingCard
+                                        key={index}
+                                        item={item}
+                                        mandates={mandates.length}
+                                        onEdit={() => {
+                                            accountHoldingOpenModal();
+                                            setIsEdit(true);
+                                        }}
+                                        onLinkedMandatesClick={liveMandatesOpenModal}
+                                    />
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
+            {/* Add/Edit Account Holding Modal */}
             {accountHoldingModal && (
                 <div id="my_modal" className="modal modal-open" ref={addAccountHoldingModalRef}>
-
-                    <div className="modal-box">
-                        <form method="dialog" className="modalHeader">
-
-                            <div className="flex-1 sm:flex justify-between">
-                                <h3 className="modalTitle">{isEdit ? `Update` : `Add`} Account Holdings</h3>
-                            </div>
-                            <div className="">
-                                <button
-                                    className="btn btn-md btn-circle btn-ghost"
-                                    onClick={() => { accountHoldingCloseModal(); setIsEdit(false) }}
-                                >
-                                    <MdClose size={25} />
-                                </button>
-                            </div>
+                    <div 
+                        className="modal-box rounded-xl shadow-2xl"
+                        style={{
+                            background: theme.cardBg,
+                            border: `1px solid ${theme.border}`,
+                            maxWidth: "500px",
+                        }}
+                    >
+                        <form method="dialog" className="modalHeader flex justify-between items-center pb-4 border-b" style={{ borderBottomColor: theme.border }}>
+                            <h3 
+                                className="modalTitle text-xl font-bold"
+                                style={{ color: theme.textPrimary }}
+                            >
+                                {isEdit ? `Update` : `Add`} Account Holdings
+                            </h3>
+                            <button
+                                className="btn btn-md btn-circle btn-ghost transition-all duration-300 hover:rotate-90"
+                                onClick={() => { accountHoldingCloseModal(); setIsEdit(false) }}
+                                style={{ color: theme.textSecondary }}
+                            >
+                                <MdClose size={25} />
+                            </button>
                         </form>
-                        <div className="modalBody my-6">
-                            {error &&
-                                <p className='text-error text-xs text-center'>{error}</p>
-                            }
-                            <div>
+                        
+                        <div className="modalBody my-6 space-y-4">
+                            {error && (
+                                <p className='text-xs text-center p-2 rounded-lg' style={{ color: theme.danger, background: `${theme.danger}20` }}>
+                                    {error}
+                                </p>
+                            )}
+                            
+                            <div className="space-y-4">
                                 <div>
                                     <CustomReactSelect
                                         label='Account Type'
@@ -338,16 +382,20 @@ function AccountHolding() {
                                     />
                                 </div>
                                 <div>
-                                    {(accountType?.includes('JO') || accountType?.includes('AS')) &&
-                                        <CustomReactSelect label='Second Applicant' items={investorList} bindName='name' bindValue='id' placeholder='select investor'
+                                    {(accountType?.includes('JO') || accountType?.includes('AS')) && (
+                                        <CustomReactSelect 
+                                            label='Second Applicant' 
+                                            items={investorList} 
+                                            bindName='name' 
+                                            bindValue='id' 
+                                            placeholder='select investor'
                                             value={secondInvestorId}
                                             onChange={(value) => {
                                                 console.log("Selected:", value.name);
                                                 setSecondInvestorId(value.id);
                                             }}
-
                                         />
-                                    }
+                                    )}
                                 </div>
                                 {isEdit && (
                                     <div className='mt-4'>
@@ -358,199 +406,171 @@ function AccountHolding() {
                             </div>
                         </div>
 
-                        <div className="modalFooter">
-
-                            <div>
-                                {/*<CustomButton onClick={() => { accountHoldingCloseModal(); setIsEdit(false) }}>{isEdit ? `Update` : `Save`}</CustomButton>*/}
-                                <CustomButton onClick={handleSubmit}>{isEdit ?
-                                    `Update` :
-                                    isLoading ? `Wait...` :
-                                        `Save`}
-
-                                    {isLoading &&
-                                        <>
-                                            <Loader size="w-4 h-4" color="text-white" thickness="border-2" borderColor='border-gray-300' />
-
-                                        </>
-
-
-
-                                    }    </CustomButton>
-
-                            </div>
+                        <div className="modalFooter pt-4 border-t" style={{ borderTopColor: theme.border }}>
+                            <CustomButton 
+                                onClick={handleSubmit}
+                                className="w-full transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                                style={{
+                                    background: theme.gradient,
+                                    color: "white",
+                                    border: "none",
+                                    padding: "10px 20px",
+                                }}
+                            >
+                                {isEdit ? `Update` : isLoading ? `Wait...` : `Save`}
+                                {isLoading && (
+                                    <Loader size="w-4 h-4" color="text-white" thickness="border-2" borderColor='border-[#3A3A3A]' />
+                                )}
+                            </CustomButton>
                         </div>
                     </div>
 
                 </div>
             )}
 
+            {/* View All Mandates Modal */}
             {viewAllMandatesModal && (
                 <div id="my_modal_2" className="modal modal-open" ref={viewAllMandatesModalRef}>
-                    <div className="modal-box max-w-7xl">
-                        <form method="dialog" className="modalHeader">
-                            <div className="flex-1 sm:flex justify-between">
-                                <h3 className="modalTitle">All Mandates</h3>
-                            </div>
-                            <div className="">
-                                <button
-                                    className="btn btn-md btn-circle btn-ghost"
-                                    onClick={viewAllMandatesCloseModal}
-                                >
-                                    <MdClose size={25} />
-                                </button>
-                            </div>
+                    <div 
+                        className="modal-box max-w-7xl rounded-xl shadow-2xl"
+                        style={{
+                            background: theme.cardBg,
+                            border: `1px solid ${theme.border}`,
+                        }}
+                    >
+                        <form method="dialog" className="modalHeader flex justify-between items-center pb-4 border-b" style={{ borderBottomColor: theme.border }}>
+                            <h3 className="modalTitle text-xl font-bold" style={{ color: theme.textPrimary }}>
+                                All Mandates
+                            </h3>
+                            <button
+                                className="btn btn-md btn-circle btn-ghost transition-all duration-300 hover:rotate-90"
+                                onClick={viewAllMandatesCloseModal}
+                                style={{ color: theme.textSecondary }}
+                            >
+                                <MdClose size={25} />
+                            </button>
                         </form>
                         <div className="modalBody my-6">
                             <div className="overflow-x-auto">
-                                <table className='table'>
+                                <table className='table w-full'>
                                     <thead>
-                                        <tr>
-                                            <th>Mandate Code</th>
-                                            <th>Holding Account</th>
-                                            <th>Bank</th>
-                                            <th>Start Date</th>
-                                            <th>Validity</th>
-                                            <th>Mandate Amount</th>
-                                            <th>IFSC</th>
-                                            <th>Verification</th>
-                                            <th>Status</th>
+                                        <tr style={{ borderBottomColor: theme.border }}>
+                                            <th className="text-left py-3 px-4 font-semibold" style={{ color: theme.primary }}>Mandate Code</th>
+                                            <th className="text-left py-3 px-4 font-semibold" style={{ color: theme.primary }}>Holding Account</th>
+                                            <th className="text-left py-3 px-4 font-semibold" style={{ color: theme.primary }}>Bank</th>
+                                            <th className="text-left py-3 px-4 font-semibold" style={{ color: theme.primary }}>Start Date</th>
+                                            <th className="text-left py-3 px-4 font-semibold" style={{ color: theme.primary }}>Validity</th>
+                                            <th className="text-left py-3 px-4 font-semibold" style={{ color: theme.primary }}>Mandate Amount</th>
+                                            <th className="text-left py-3 px-4 font-semibold" style={{ color: theme.primary }}>IFSC</th>
+                                            <th className="text-left py-3 px-4 font-semibold" style={{ color: theme.primary }}>Verification</th>
+                                            <th className="text-left py-3 px-4 font-semibold" style={{ color: theme.primary }}>Status</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <th>867966</th>
-                                            <td>34992672506</td>
-                                            <td>sbik</td>
-                                            <td>11-09-2024</td>
-                                            <td>11-09-2040</td>
-                                            <td>5000</td>
-                                            <td>SBIN0005943</td>
-                                            <td>Success</td>
-                                            <td>Active</td>
+                                        <tr style={{ borderBottomColor: theme.border }}>
+                                            <td className="py-3 px-4" style={{ color: theme.textPrimary }}>867966</td>
+                                            <td className="py-3 px-4" style={{ color: theme.textSecondary }}>34992672506</td>
+                                            <td className="py-3 px-4" style={{ color: theme.textSecondary }}>sbik</td>
+                                            <td className="py-3 px-4" style={{ color: theme.textSecondary }}>11-09-2024</td>
+                                            <td className="py-3 px-4" style={{ color: theme.textSecondary }}>11-09-2040</td>
+                                            <td className="py-3 px-4" style={{ color: theme.textSecondary }}>5000</td>
+                                            <td className="py-3 px-4" style={{ color: theme.textSecondary }}>SBIN0005943</td>
+                                            <td className="py-3 px-4" style={{ color: theme.success }}>Success</td>
+                                            <td className="py-3 px-4" style={{ color: theme.success }}>Active</td>
                                         </tr>
-
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-
                 </div>
             )}
 
+            {/* Linked Mandates Modal */}
             {liveMandatesModal && (
                 <div id="my_modal_3" className="modal modal-open" ref={liveMandatesModalRef}>
-                    <div className="modal-box max-w-7xl">
-                        <form method="dialog" className="modalHeader">
-                            <div className="flex-1 sm:flex justify-between">
-                                <h3 className="modalTitle">Linked Mandates</h3>
-                            </div>
-                            <div className="">
-                                <button
-                                    className="btn btn-md btn-circle btn-ghost"
-                                    onClick={liveMandatesCloseModal}
-                                >
-                                    <MdClose size={25} />
-                                </button>
-                            </div>
+                    <div 
+                        className="modal-box max-w-7xl rounded-xl shadow-2xl"
+                        style={{
+                            background: theme.cardBg,
+                            border: `1px solid ${theme.border}`,
+                        }}
+                    >
+                        <form method="dialog" className="modalHeader flex justify-between items-center pb-4 border-b" style={{ borderBottomColor: theme.border }}>
+                            <h3 className="modalTitle text-xl font-bold" style={{ color: theme.textPrimary }}>
+                                Linked Mandates
+                            </h3>
+                            <button
+                                className="btn btn-md btn-circle btn-ghost transition-all duration-300 hover:rotate-90"
+                                onClick={liveMandatesCloseModal}
+                                style={{ color: theme.textSecondary }}
+                            >
+                                <MdClose size={25} />
+                            </button>
                         </form>
                         <div className="modalBody my-6">
-                            <div className='text-end'>
-                                <CustomButton onClick={handleMandate}>Create Mandate</CustomButton>
+                            <div className='text-end mb-4'>
+                                <CustomButton 
+                                    onClick={handleMandate}
+                                    className="transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                                    style={{
+                                        background: theme.gradient,
+                                        color: "white",
+                                        border: "none",
+                                    }}
+                                >
+                                    Create Mandate
+                                </CustomButton>
                             </div>
                             <div className="overflow-x-auto mt-4">
-                                <table className='table'>
+                                <table className='table w-full'>
                                     <thead>
-                                        <tr>
-                                            <th>Mandate Code</th>
-                                            <th>Bank</th>
-                                            <th>Start Date</th>
-                                            <th >Validity</th>
-                                            <th>Mandate Amount</th>
-                                            <th className='text-center'>IFSC</th>
-                                            <th>Verification</th>
-                                            <th>Registration Status</th>
-                                            <th>Aggregator Status</th>
-
-                                            {/*<th className='text-center'>Action</th>*/}
+                                        <tr style={{ borderBottomColor: theme.border }}>
+                                            <th className="text-left py-3 px-4 font-semibold" style={{ color: theme.primary }}>Mandate Code</th>
+                                            <th className="text-left py-3 px-4 font-semibold" style={{ color: theme.primary }}>Bank</th>
+                                            <th className="text-left py-3 px-4 font-semibold" style={{ color: theme.primary }}>Start Date</th>
+                                            <th className="text-left py-3 px-4 font-semibold" style={{ color: theme.primary }}>Validity</th>
+                                            <th className="text-left py-3 px-4 font-semibold" style={{ color: theme.primary }}>Mandate Amount</th>
+                                            <th className="text-left py-3 px-4 font-semibold" style={{ color: theme.primary }}>IFSC</th>
+                                            <th className="text-left py-3 px-4 font-semibold" style={{ color: theme.primary }}>Verification</th>
+                                            <th className="text-left py-3 px-4 font-semibold" style={{ color: theme.primary }}>Registration Status</th>
+                                            <th className="text-left py-3 px-4 font-semibold" style={{ color: theme.primary }}>Aggregator Status</th>
                                         </tr>
                                     </thead>
 
                                     <tbody>
                                         {mandates.length > 0 ? (
                                             mandates.map((mandate, index) => (
-                                                <tr key={index}>
-                                                    <td>{mandate.prn || '—'}</td>
-                                                    <td>{mandate.acc_no || '—'}</td>
-                                                    <td>{mandate.bank_id || '—'}</td>
-                                                    <td>{mandate.start_date}</td>
-                                                    <td>{mandate.end_date}</td>
-                                                    <td>{mandate.max_amt || '—'}</td>
-                                                    <td>{mandate.ifsc || '—'}</td>
-                                                    <td>{mmrnRegStatus[mandate.mmrnregstatus as keyof typeof mmrnRegStatus] || 'Pending'}</td>
-
-                                                    <td>{mmrnAggrStatus[mandate.mmrnaggrstatus as keyof typeof mmrnAggrStatus] || 'Pending'}</td>
-                                                    <td></td>
+                                                <tr key={index} style={{ borderBottomColor: theme.border }}>
+                                                    <td className="py-3 px-4" style={{ color: theme.textPrimary }}>{mandate.prn || '—'}</td>
+                                                    <td className="py-3 px-4" style={{ color: theme.textSecondary }}>{mandate.acc_no || '—'}</td>
+                                                    <td className="py-3 px-4" style={{ color: theme.textSecondary }}>{mandate.bank_id || '—'}</td>
+                                                    <td className="py-3 px-4" style={{ color: theme.textSecondary }}>{mandate.start_date}</td>
+                                                    <td className="py-3 px-4" style={{ color: theme.textSecondary }}>{mandate.end_date}</td>
+                                                    <td className="py-3 px-4" style={{ color: theme.textSecondary }}>{mandate.max_amt || '—'}</td>
+                                                    <td className="py-3 px-4" style={{ color: theme.textSecondary }}>{mandate.ifsc || '—'}</td>
+                                                    <td className="py-3 px-4" style={{ color: mmrnRegStatus[mandate.mmrnregstatus as keyof typeof mmrnRegStatus] === 'Confirmed' ? theme.success : theme.warning }}>
+                                                        {mmrnRegStatus[mandate.mmrnregstatus as keyof typeof mmrnRegStatus] || 'Pending'}
+                                                    </td>
+                                                    <td className="py-3 px-4" style={{ color: mmrnAggrStatus[mandate.mmrnaggrstatus as keyof typeof mmrnAggrStatus] === 'Confirmed' ? theme.success : theme.warning }}>
+                                                        {mmrnAggrStatus[mandate.mmrnaggrstatus as keyof typeof mmrnAggrStatus] || 'Pending'}
+                                                    </td>
                                                 </tr>
                                             ))
                                         ) : (
                                             <tr>
-                                                <td colSpan={9}>No mandates found.</td>
+                                                <td colSpan={9} className="py-8 text-center" style={{ color: theme.textSecondary }}>
+                                                    No mandates found.
+                                                </td>
                                             </tr>
                                         )}
-                                        {/*<tr>
-                                            <td>
-                                                <div>867966</div>
-                                                <div className='text-red-600'>Physical</div>
-                                            </td>
-                                            <td>
-                                                <div>sbik</div>
-                                                <div className='text-red-600'>34992672506</div>
-                                            </td>
-                                            <td>11-09-2024</td>
-                                            <td>11-09-2040</td>
-                                            <td className='text-right'>5000</td>
-                                            <td>SBIN0005943</td>
-                                            <td>Success</td>
-                                            <td>Active</td>
-                                            <td>
-                                                <div className='flex gap-5'>
-                                                    <span className='p-2 rounded-full bg-accent'><GrNote /></span>
-                                                    <span className='p-2 rounded-full bg-accent'><GrDownload /></span>
-                                                    <span className='p-2 rounded-full bg-accent'><RiDeleteBin5Fill /></span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <div>867966</div>
-                                                <div className='text-red-600'>Physical</div>
-                                            </td>
-                                            <td>
-                                                <div>sbik</div>
-                                                <div className='text-red-600'>34992672506</div>
-                                            </td>
-                                            <td>11-09-2024</td>
-                                            <td>11-09-2040</td>
-                                            <td className='text-right'>5000</td>
-                                            <td>SBIN0005943</td>
-                                            <td>Success</td>
-                                            <td>Active</td>
-                                            <td><div className='flex gap-5'>
-                                                <span className='p-2 rounded-full bg-accent'><GrNote /></span>
-                                                <span className='p-2 rounded-full bg-accent'><GrDownload /></span>
-                                                <span className='p-2 rounded-full bg-accent'><RiDeleteBin5Fill /></span>
-                                            </div></td>
-                                        </tr>*/}
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-
                 </div>
             )}
-
         </>
     )
 }

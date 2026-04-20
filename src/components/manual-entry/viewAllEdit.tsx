@@ -117,12 +117,12 @@ export default function FinancialProductsInterface({ onBack }: FinancialProducts
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-3">
       {/* Compact Header */}
-      <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm border border-gray-200 p-3 mb-3">
+      <div className="bg-[#111111]/90 backdrop-blur rounded-lg shadow-sm border border-[#2A2A2A] p-3 mb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <button
               onClick={handleBack}
-              className="flex items-center bg-indigo-300 text-white hover:bg-indigo-400 transition-colors px-4 py-2 rounded"
+              className="flex items-center bg-[#F59E0B] text-white hover:bg-[#B45309] transition-colors px-4 py-2 rounded"
             >
               <ArrowLeft size={20} className="mr-2" />
               Back
@@ -132,8 +132,8 @@ export default function FinancialProductsInterface({ onBack }: FinancialProducts
               <DollarSign className="w-4 h-4 text-white" />
             </div>
             <div>
-              <h1 className="text-sm font-bold text-gray-800">Financial Portfolio</h1>
-              <p className="text-xs text-gray-500">Investment management</p>
+              <h1 className="text-sm font-bold text-[#F9FAFB]">Financial Portfolio</h1>
+              <p className="text-xs text-[#9CA3AF]">Investment management</p>
             </div>
           </div>
           <div className="flex items-center space-x-2">
@@ -146,7 +146,7 @@ export default function FinancialProductsInterface({ onBack }: FinancialProducts
             </button>
             <button
               onClick={handleExport}
-              className="flex items-center space-x-1 bg-white text-gray-700 px-3 py-1.5 rounded-lg text-xs font-medium border border-gray-200 hover:bg-gray-50 transition-all"
+              className="flex items-center space-x-1 bg-[#111111] text-[#E5E7EB] px-3 py-1.5 rounded-lg text-xs font-medium border border-[#2A2A2A] hover:bg-[#1F1A1A] transition-all"
             >
               <Download size={12} />
               <span>Export</span>
@@ -158,11 +158,11 @@ export default function FinancialProductsInterface({ onBack }: FinancialProducts
       {/* Compact Stats */}
       <div className="grid grid-cols-4 gap-2 mb-3">
         {stats.map((stat, index) => (
-          <div key={index} className="bg-white/90 backdrop-blur rounded-lg shadow-sm border border-gray-200 p-2">
+          <div key={index} className="bg-[#111111]/90 backdrop-blur rounded-lg shadow-sm border border-[#2A2A2A] p-2">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-gray-600">{stat.label}</p>
-                <p className="text-sm font-bold text-gray-900">{stat.value}</p>
+                <p className="text-xs text-[#9CA3AF]">{stat.label}</p>
+                <p className="text-sm font-bold text-[#F9FAFB]">{stat.value}</p>
               </div>
               <div className={`w-6 h-6 ${stat.bg} rounded-md flex items-center justify-center`}>
                 <stat.icon className={`w-3 h-3 ${stat.color}`} />
@@ -173,7 +173,7 @@ export default function FinancialProductsInterface({ onBack }: FinancialProducts
       </div>
 
       {/* Tabs */}
-      <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm border border-gray-200 p-1 mb-3">
+      <div className="bg-[#111111]/90 backdrop-blur rounded-lg shadow-sm border border-[#2A2A2A] p-1 mb-3">
         <div className="flex overflow-x-auto">
           {tabs.map(tab => (
             <button
@@ -181,7 +181,7 @@ export default function FinancialProductsInterface({ onBack }: FinancialProducts
               onClick={() => handleTabChange(tab.id)}
               className={`px-3 py-1.5 text-xs font-medium rounded-md whitespace-nowrap mr-1 transition-colors ${activeTab === tab.id
                   ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white'
-                  : 'text-gray-600 hover:bg-gray-100'
+                  : 'text-[#9CA3AF] hover:bg-[#1F1A1A]'
                 }`}
             >
               {tab.label}
@@ -191,23 +191,23 @@ export default function FinancialProductsInterface({ onBack }: FinancialProducts
       </div>
 
       {/* Compact Controls */}
-      <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm border border-gray-200 p-3 mb-3">
+      <div className="bg-[#111111]/90 backdrop-blur rounded-lg shadow-sm border border-[#2A2A2A] p-3 mb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
 
             <form onSubmit={handleSearch} className="relative">
-              <Search size={14} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <Search size={14} className="absolute left-2 top-1/2 transform -translate-y-1/2 text-[#6B7280]" />
               <input
                 type="text"
                 placeholder="Search products..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-7 pr-3 py-1.5 bg-gray-50 border-0 rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 w-48"
+                className="pl-7 pr-3 py-1.5 bg-[#1F1A1A] border-0 rounded-md text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 w-48"
               />
             </form>
 
-            <div className="flex items-center space-x-1 bg-gray-50 rounded-md px-2 py-1">
-              <label className="text-xs text-gray-600">Show:</label>
+            <div className="flex items-center space-x-1 bg-[#1F1A1A] rounded-md px-2 py-1">
+              <label className="text-xs text-[#9CA3AF]">Show:</label>
               <select
                 value={recordsPerPage}
                 onChange={(e) => handleRecordsPerPageChange(e.target.value)}
@@ -222,8 +222,8 @@ export default function FinancialProductsInterface({ onBack }: FinancialProducts
           </div>
 
           <div className="flex items-center space-x-2">
-            <Filter size={12} className="text-gray-400" />
-            <span className="text-xs text-gray-600">Sort:</span>
+            <Filter size={12} className="text-[#6B7280]" />
+            <span className="text-xs text-[#9CA3AF]">Sort:</span>
             <div className="flex items-center space-x-1">
               {sortOptions.map((option) => (
                 <button
@@ -231,7 +231,7 @@ export default function FinancialProductsInterface({ onBack }: FinancialProducts
                   onClick={() => handleSortChange(option)}
                   className={`px-2 py-1 rounded-md text-xs font-medium transition-all ${currentSort === option
                       ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white'
-                      : 'text-gray-600 hover:bg-gray-100'
+                      : 'text-[#9CA3AF] hover:bg-[#1F1A1A]'
                     }`}
                 >
                   {option}
@@ -243,15 +243,15 @@ export default function FinancialProductsInterface({ onBack }: FinancialProducts
       </div>
 
       {/* Compact Table */}
-      <div className="bg-white/90 backdrop-blur rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-[#111111]/90 backdrop-blur rounded-lg shadow-sm border border-[#2A2A2A] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
+              <tr className="bg-[#1F1A1A] border-b border-[#2A2A2A]">
                 {tableHeaders.map((header, index) => (
                   <th
                     key={index}
-                    className="px-2 py-2 text-left text-xs font-semibold text-gray-700 whitespace-nowrap"
+                    className="px-2 py-2 text-left text-xs font-semibold text-[#E5E7EB] whitespace-nowrap"
                   >
                     {header}
                   </th>
@@ -266,8 +266,8 @@ export default function FinancialProductsInterface({ onBack }: FinancialProducts
                       <PieChart className="w-6 h-6 text-blue-600" />
                     </div>
                     <div className="text-center">
-                      <h3 className="text-sm font-semibold text-gray-800 mb-1">No Products Added</h3>
-                      <p className="text-xs text-gray-500 mb-3">Start by adding your first financial product</p>
+                      <h3 className="text-sm font-semibold text-[#F9FAFB] mb-1">No Products Added</h3>
+                      <p className="text-xs text-[#9CA3AF] mb-3">Start by adding your first financial product</p>
                       <button
                         onClick={handleAddProduct}
                         className="flex items-center space-x-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 rounded-lg text-xs font-medium hover:from-blue-700 hover:to-indigo-700 transition-all mx-auto"
@@ -284,7 +284,7 @@ export default function FinancialProductsInterface({ onBack }: FinancialProducts
         </div>
 
         {/* Compact Footer */}
-        <div className="px-3 py-2 bg-gray-50 border-t border-gray-200 flex items-center justify-between text-xs text-gray-600">
+        <div className="px-3 py-2 bg-[#1F1A1A] border-t border-[#2A2A2A] flex items-center justify-between text-xs text-[#9CA3AF]">
           <div className="flex items-center space-x-1">
             <div className="w-1.5 h-1.5 bg-green-400 rounded-full"></div>
             <span>Showing 0 to 0 of 0 entries</span>
@@ -292,7 +292,7 @@ export default function FinancialProductsInterface({ onBack }: FinancialProducts
           <div className="flex items-center space-x-1">
             <button
               onClick={handlePreviousPage}
-              className="px-2 py-1 bg-white border border-gray-200 rounded text-xs hover:bg-gray-50 disabled:opacity-50"
+              className="px-2 py-1 bg-[#111111] border border-[#2A2A2A] rounded text-xs hover:bg-[#1F1A1A] disabled:opacity-50"
               disabled
             >
               Previous
@@ -302,7 +302,7 @@ export default function FinancialProductsInterface({ onBack }: FinancialProducts
             </div>
             <button
               onClick={handleNextPage}
-              className="px-2 py-1 bg-white border border-gray-200 rounded text-xs hover:bg-gray-50 disabled:opacity-50"
+              className="px-2 py-1 bg-[#111111] border border-[#2A2A2A] rounded text-xs hover:bg-[#1F1A1A] disabled:opacity-50"
               disabled
             >
               Next

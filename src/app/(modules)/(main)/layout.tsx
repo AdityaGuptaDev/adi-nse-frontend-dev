@@ -41,7 +41,7 @@ function AuthLayoutContent({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div className="flex h-screen w-full bg-secondary" data-theme="light">
+    <div className="flex h-screen w-full bg-[#0A0A0A]" data-theme="light">
       {/* for web */}
       <div
         className={`hidden lg:block transition-all duration-300 ease-in-out ${sidebarCollapsed ? "w-16" : "w-[288px]"
@@ -51,13 +51,12 @@ function AuthLayoutContent({ children }: { children: React.ReactNode }) {
       </div>
       {/* for mobile */}
       <div
-        className={`fixed z-50 top-0 h-screen bg-secondary lg:hidden transition-all duration-300 ease-in-out ${sidebarCollapsed ? "left-[-100%]" : "left-0 w-[288px]"
+        className={`fixed z-50 top-0 h-screen bg-[#111111] lg:hidden transition-all duration-300 ease-in-out ${sidebarCollapsed ? "left-[-100%]" : "left-0 w-[288px]"
           }`}
       >
         <Sidebar toggleSidebar={toggleSidebar} collapsed={sidebarCollapsed} />
       </div>
-      {/* <main className="flex-1 overflow-y-auto xl:px-0 bg-[#F4F6F8] rounded-l-3xl min-h-screen"> */}
-      <main className="flex flex-col flex-1 overflow-hidden bg-mainbackground lg:rounded-l-3xl">
+      <main className="flex flex-col flex-1 overflow-hidden bg-[#0A0A0A] lg:rounded-l-3xl border-l border-[#2A2A2A]">
         <Header
           toggleSidebar={toggleSidebar}
           title={title}
@@ -65,7 +64,7 @@ function AuthLayoutContent({ children }: { children: React.ReactNode }) {
           userData={user}
         />
         <div className="flex-1 overflow-y-auto xl:px-6 py-0">
-          <div className="bg-white rounded-2xl min-h-[calc(100vh-100px)]">{children}</div>
+          <div className="bg-[#0A0A0A] rounded-2xl min-h-[calc(100vh-100px)] text-[#F9FAFB]">{children}</div>
         </div>
       </main>
     </div>

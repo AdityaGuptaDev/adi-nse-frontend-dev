@@ -285,7 +285,7 @@ const FundPickerFilter = ({ isOpen, handleClose, setPayload, payload }: any) => 
                   name="nature"
                   className={`btn rounded-xl border-none shadow-none text-sm font-medium ${Number(selectNature) === Number(item.id)
                     ? "bg-other text-white border-other"
-                    : "bg-gray-200 text-gray-700 border-gray-200"
+                    : "bg-[#2A2A2A] text-[#E5E7EB] border-[#2A2A2A]"
                     }`}
                   checked={selectNature === item.id}
                   onChange={() => setSelectNature(item.id)}
@@ -306,7 +306,7 @@ const FundPickerFilter = ({ isOpen, handleClose, setPayload, payload }: any) => 
                 name="nature"
                 className={`btn rounded-xl border-none shadow-none text-sm font-medium ${selectReturn === "Absolute"
                   ? "bg-other text-white border-other"
-                  : "bg-gray-200 text-gray-700 border-gray-200"
+                  : "bg-[#2A2A2A] text-[#E5E7EB] border-[#2A2A2A]"
                   }`}
                 checked={selectReturn === "Absolute"}
                 onChange={() => setSelectReturn("Absolute")}
@@ -317,7 +317,7 @@ const FundPickerFilter = ({ isOpen, handleClose, setPayload, payload }: any) => 
                 name="nature"
                 className={`btn rounded-xl border-none shadow-none text-sm font-medium ${selectReturn === "Annualised"
                   ? "bg-other text-white border-other"
-                  : "bg-gray-200 text-gray-700 border-gray-200"
+                  : "bg-[#2A2A2A] text-[#E5E7EB] border-[#2A2A2A]"
                   }`}
                 checked={selectReturn === "Annualised"}
                 onChange={() => setSelectReturn("Annualised")}

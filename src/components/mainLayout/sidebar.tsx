@@ -35,12 +35,12 @@ export default function Sidebar({
 
   const router = useRouter();
 
-  const [menuList, setMenuList] = useState([]);
-  const [isMobileView, setIsMobileView] = useState<any>(false);
-  const [openMenu, setOpenMenu] = useState<any>(false);
+  const [menuList, setMenuList] = useState<any[]>([]);
+  const [isMobileView, setIsMobileView] = useState<boolean>(false);
+  const [openMenu, setOpenMenu] = useState<boolean>(false);
 
   const [searchMenu, setSearchMenu] = useState<any>();
-  const [mainMenuList, setMainMenuList] = useState<any>(menuList);
+  const [mainMenuList, setMainMenuList] = useState<any[]>([]);
 
   const pathname = usePathname();
   // console.log(collapsed, "collapsedcollapsed");
@@ -62,16 +62,17 @@ export default function Sidebar({
 
   const getMenuList = () => {
     try {
-      let menu = getLS(MENU_PREFIX);
-      setMenuList(menu);
+      const menu = getLS(MENU_PREFIX);
+      setMenuList(Array.isArray(menu) ? menu : []);
     } catch (error) {
       handleServerError(error);
+      setMenuList([]);
     }
   };
 
 
   useEffect(() => {
-    setMainMenuList(menuList);
+    setMainMenuList(Array.isArray(menuList) ? menuList : []);
   }, [menuList]);
 
 
@@ -102,7 +103,7 @@ export default function Sidebar({
     }
 
     return (
-      <IconComponent className="w-5 h-5" aria-hidden="true" color="white" />
+      <IconComponent className="w-5 h-5 text-[#F9FAFB]" aria-hidden="true" />
     );
   };
 
@@ -113,59 +114,60 @@ export default function Sidebar({
         {!openMenu && (
           <div
             className={`flex ${collapsed ? "w-16 py-0 px-0" : "w-[288px] p-0 justify-start overflow-y-auto"
-              } transition-all flex-col sticky top-0 z-10  h-screen`}
+              } transition-all flex-col sticky top-0 z-10 h-screen bg-[#111111] border-r border-[#2A2A2A]`}
           >
-            <div className="text-left sticky top-0 z-10 bg-secondary" onClick={toggleSidebar}>
+            <div className="text-left sticky top-0 z-10 bg-gradient-to-r from-[#F59E0B] to-[#B45309] cursor-pointer" onClick={toggleSidebar}>
               <HiOutlineBars3CenterLeft
                 color="white"
-                className="cursor-pointer p-3 w-12 h-12"
+                className="cursor-pointer p-3 w-12 h-12 hover:opacity-80 transition-all"
               />
             </div>
 
             <div
-              onMouseEnter={() => collapsed ? setOpenMenu(true) : undefined}   // hover in -> expand
-              onMouseLeave={() => collapsed ? setOpenMenu(false) : undefined}    // hover out -> collapse
+              onMouseEnter={() => collapsed ? setOpenMenu(true) : undefined}
+              onMouseLeave={() => collapsed ? setOpenMenu(false) : undefined}
+              className="flex-1 overflow-y-auto custom-scrollbar"
             >
-              <ul className="menu mt-3 w-full flex flex-col gap-1 text-base text-white">
+              <ul className="menu mt-3 w-full flex flex-col gap-1 text-base">
                 {mainMenuList.length > 0 &&
                   mainMenuList.map((item: any, index: number) => (
                     <Fragment key={`item-${index}`}>
                       <li className="group">
                         {item.children && item.children.length > 0 ? (
-                          <details>
-                            <summary className={`cursor-pointer py-3 ${collapsed ? "after:absolute after:right-1" : ""}`}>
+                          <details className="group">
+                            <summary className={`cursor-pointer py-3 px-4 hover:bg-[#1F1A1A] transition-colors rounded-lg mx-2 ${collapsed ? "after:absolute after:right-4" : ""}`}>
                               <div className="flex gap-4 items-center">
                                 <DynamicIcon iconName={item.icon} />
                                 {!collapsed ? (
-                                  <span className="text-sm font-normal text-nowrap">
+                                  <span className="text-sm font-normal text-[#F9FAFB]">
                                     {item.title}
                                   </span>
                                 ) : (
-                                  <span className="invisible group-hover:visible absolute left-16 bg-gray-800 text-white px-2 py-1 rounded text-sm whitespace-nowrap z-10">
+                                  <span className="invisible group-hover:visible absolute left-16 bg-[#1F1A1A] text-[#F9FAFB] px-3 py-1.5 rounded-lg text-sm whitespace-nowrap z-50 border border-[#F59E0B]/30 shadow-lg">
                                     {item.title}
                                   </span>
                                 )}
                               </div>
                             </summary>
-                            <ul className={`${collapsed ? "ms-0 ps-0" : ""}`}>
+                            <ul className={`${collapsed ? "ms-0 ps-0" : "ml-8"} mt-1 space-y-1`}>
                               {item.children.map(
                                 (subItem: any, subIndex: number) => (
                                   <li key={`subItem-${subIndex}`}>
                                     <Link
                                       href={subItem.link || "/"}
                                       className={`${pathname === subItem.link
-                                        ? `activePage py-3 block`
-                                        : `py-3 block`
+                                        ? `activePage py-2.5 px-4 block rounded-lg mx-2 bg-gradient-to-r from-[#F59E0B]/20 to-[#B45309]/20 border-l-2 border-[#F59E0B]`
+                                        : `py-2.5 px-4 block rounded-lg mx-2 hover:bg-[#1F1A1A] transition-colors`
                                         }`}
                                     >
                                       <div className={`flex gap-4 ${collapsed ? "justify-center" : ""}`} onClick={isMobileView ? toggleSidebar : undefined}>
                                         <DynamicIcon iconName={subItem.icon} />
                                         {!collapsed ? (
-                                          <span className="text-sm font-normal">
+                                          <span className="text-sm font-normal text-[#F9FAFB]">
                                             {subItem.title}
                                           </span>
                                         ) : (
-                                          <span className="invisible group-hover:visible absolute left-16 bg-gray-800 text-white px-2 py-1 rounded text-sm whitespace-nowrap z-10">
+                                          <span className="invisible group-hover:visible absolute left-16 bg-[#1F1A1A] text-[#F9FAFB] px-3 py-1.5 rounded-lg text-sm whitespace-nowrap z-50 border border-[#F59E0B]/30 shadow-lg">
                                             {subItem.title}
                                           </span>
                                         )}
@@ -179,17 +181,19 @@ export default function Sidebar({
                         ) : (
                           <Link
                             href={item.link || "/"}
-                            className={`${pathname === item.link ? `activePage py-3 block` : `py-3 block`
+                            className={`${pathname === item.link
+                              ? `activePage py-3 px-4 block rounded-lg mx-2 bg-gradient-to-r from-[#F59E0B]/20 to-[#B45309]/20 border-l-2 border-[#F59E0B]`
+                              : `py-3 px-4 block rounded-lg mx-2 hover:bg-[#1F1A1A] transition-colors`
                               }`}
                           >
                             <div className={`flex gap-4 items-center ${collapsed ? "justify-center" : ""}`} onClick={isMobileView ? toggleSidebar : undefined}>
                               <DynamicIcon iconName={item.icon} />
                               {!collapsed ? (
-                                <span className="text-sm font-normal">
+                                <span className="text-sm font-normal text-[#F9FAFB]">
                                   {item.title}
                                 </span>
                               ) : (
-                                <span className="invisible group-hover:visible absolute left-16 bg-gray-800 text-white px-2 py-1 rounded text-sm whitespace-nowrap z-10">
+                                <span className="invisible group-hover:visible absolute left-16 bg-[#1F1A1A] text-[#F9FAFB] px-3 py-1.5 rounded-lg text-sm whitespace-nowrap z-50 border border-[#F59E0B]/30 shadow-lg">
                                   {item.title}
                                 </span>
                               )}
@@ -197,7 +201,7 @@ export default function Sidebar({
                           </Link>
                         )}
                       </li>
-                      <div className="my-0 h-[1px] w-full bg-gradient-to-r from-white/0 via-white/30 to-white/0"></div>
+                      <div className="my-1 h-px w-full bg-gradient-to-r from-transparent via-[#2A2A2A] to-transparent"></div>
                     </Fragment>
                   ))}
               </ul>
@@ -358,45 +362,45 @@ export default function Sidebar({
 
         {openMenu && collapsed && (
           <div
-            className="p-0 w-64 bg-secondary absolute top-0 left-0 z-50 overflow-y-auto h-screen rounded-tr-3xl rounded-br-3xl"
-            onMouseEnter={() => setOpenMenu(true)}   // hover in -> expand
-            onMouseLeave={() => setOpenMenu(false)}    // hover out -> collapse
+            className="p-0 w-64 bg-[#111111] absolute top-0 left-0 z-50 overflow-y-auto h-screen rounded-tr-2xl rounded-br-2xl border-r border-[#2A2A2A] shadow-2xl"
+            onMouseEnter={() => setOpenMenu(true)}
+            onMouseLeave={() => setOpenMenu(false)}
           >
-            <div className="text-left sticky top-0 z-10 bg-secondary">
+            <div className="text-left sticky top-0 z-10 bg-gradient-to-r from-[#F59E0B] to-[#B45309]">
               <HiOutlineBars3CenterLeft
                 color="white"
-                className="cursor-pointer p-3 w-12 h-12"
+                className="cursor-pointer p-3 w-12 h-12 hover:opacity-80 transition-all"
               />
             </div>
-            <ul className="menu mt-3 w-full flex flex-col gap-1 text-base text-white">
+            <ul className="menu mt-3 w-full flex flex-col gap-1 text-base">
               {mainMenuList.length > 0 &&
                 mainMenuList.map((item: any, index: number) => (
                   <Fragment key={`item-${index}`}>
                     <li className="group">
                       {item.children && item.children.length > 0 ? (
-                        <details>
-                          <summary className={`cursor-pointer py-3 ${collapsed ? "after:absolute after:right-1" : ""}`}>
+                        <details open>
+                          <summary className={`cursor-pointer py-3 px-4 hover:bg-[#1F1A1A] transition-colors rounded-lg mx-2 ${collapsed ? "after:absolute after:right-4" : ""}`}>
                             <div className="flex gap-4 items-center">
                               <DynamicIcon iconName={item.icon} />
-                              <span className="text-sm font-normal text-nowrap">
+                              <span className="text-sm font-normal text-[#F9FAFB] text-nowrap">
                                 {item.title}
                               </span>
                             </div>
                           </summary>
-                          <ul className={`${collapsed ? "ms-0 ps-0" : ""}`}>
+                          <ul className={`${collapsed ? "ms-0 ps-0" : "ml-8"} mt-1 space-y-1`}>
                             {item.children.map(
                               (subItem: any, subIndex: number) => (
                                 <li key={`subItem-${subIndex}`}>
                                   <Link
                                     href={subItem.link || "/"}
                                     className={`${pathname === subItem.link
-                                      ? `activePage py-3 block`
-                                      : `py-3 block`
+                                      ? `activePage py-2.5 px-4 block rounded-lg mx-2 bg-gradient-to-r from-[#F59E0B]/20 to-[#B45309]/20 border-l-2 border-[#F59E0B]`
+                                      : `py-2.5 px-4 block rounded-lg mx-2 hover:bg-[#1F1A1A] transition-colors`
                                       }`}
                                   >
                                     <div className={`flex gap-4 ${collapsed ? "justify-start" : ""}`} onClick={isMobileView ? toggleSidebar : undefined}>
                                       <DynamicIcon iconName={subItem.icon} />
-                                      <span className="text-sm font-normal">
+                                      <span className="text-sm font-normal text-[#F9FAFB]">
                                         {subItem.title}
                                       </span>
                                     </div>
@@ -409,25 +413,85 @@ export default function Sidebar({
                       ) : (
                         <Link
                           href={item.link || "/"}
-                          className={`${pathname === item.link ? `activePage py-3 block` : `py-3 block`
+                          className={`${pathname === item.link
+                            ? `activePage py-3 px-4 block rounded-lg mx-2 bg-gradient-to-r from-[#F59E0B]/20 to-[#B45309]/20 border-l-2 border-[#F59E0B]`
+                            : `py-3 px-4 block rounded-lg mx-2 hover:bg-[#1F1A1A] transition-colors`
                             }`}
                         >
                           <div className={`flex gap-4 items-center ${collapsed ? "justify-start" : ""}`} onClick={isMobileView ? toggleSidebar : undefined}>
                             <DynamicIcon iconName={item.icon} />
-                            <span className="text-sm font-normal">
+                            <span className="text-sm font-normal text-[#F9FAFB]">
                               {item.title}
                             </span>
                           </div>
                         </Link>
                       )}
                     </li>
-                    <div className="my-0 h-[1px] w-full bg-gradient-to-r from-white/0 via-white/30 to-white/0"></div>
+                    <div className="my-1 h-px w-full bg-gradient-to-r from-transparent via-[#2A2A2A] to-transparent"></div>
                   </Fragment>
                 ))}
             </ul>
           </div>
         )}
       </>
+
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 4px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #2A2A2A;
+          border-radius: 4px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #F59E0B;
+          border-radius: 4px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #B45309;
+        }
+        
+        details summary {
+          list-style: none;
+        }
+        
+        details summary::-webkit-details-marker {
+          display: none;
+        }
+        
+        details summary::after {
+          content: '?';
+          font-size: 10px;
+          position: absolute;
+          right: 16px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #9CA3AF;
+          transition: transform 0.2s ease;
+        }
+        
+        details[open] summary::after {
+          transform: translateY(-50%) rotate(180deg);
+        }
+        
+        .activePage {
+          position: relative;
+        }
+        
+        .activePage::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 100%;
+          width: 3px;
+          background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
+          border-radius: 2px;
+        }
+      `}</style>
     </>
   );
 }

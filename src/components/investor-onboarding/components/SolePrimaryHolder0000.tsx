@@ -218,18 +218,18 @@ export default function SolePrimaryHolder({
 
     return (
         <form onSubmit={handleSubmit} className="p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">Sole / Primary Holder</h2>
+            <h2 className="text-xl font-semibold text-[#F9FAFB] mb-6">Sole / Primary Holder</h2>
 
             {/* Basic Details Section */}
-            <div className="bg-white rounded-lg border border-gray-200 mb-6">
-                <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-                    <h3 className="text-lg font-medium text-gray-900">Basic Details</h3>
+            <div className="bg-[#111111] rounded-lg border border-[#2A2A2A] mb-6">
+                <div className="bg-[#1F1A1A] px-4 py-3 border-b border-[#2A2A2A]">
+                    <h3 className="text-lg font-medium text-[#F9FAFB]">Basic Details</h3>
                 </div>
                 <div className="p-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         {/* Name */}
                         <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="name" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 Name <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -237,7 +237,7 @@ export default function SolePrimaryHolder({
                                 id="name"
                                 value={formData.name}
                                 onChange={(e) => handleInputChange('name', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
                                 maxLength={100}
                             />
                             {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
@@ -245,7 +245,7 @@ export default function SolePrimaryHolder({
 
                         {/* Date of Birth */}
                         <div>
-                            <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="dateOfBirth" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 Date of Birth <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -253,14 +253,14 @@ export default function SolePrimaryHolder({
                                 id="dateOfBirth"
                                 value={formData.dateOfBirth}
                                 onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             />
                             {errors.dateOfBirth && <p className="text-red-500 text-xs mt-1">{errors.dateOfBirth}</p>}
                         </div>
 
                         {/* PAN */}
                         <div>
-                            <label htmlFor="pan" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="pan" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 PAN / PEKRN <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -268,7 +268,7 @@ export default function SolePrimaryHolder({
                                 id="pan"
                                 value={formData.pan}
                                 onChange={(e) => handleInputChange('pan', e.target.value.toUpperCase())}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
                                 maxLength={10}
                             />
                             {errors.pan && <p className="text-red-500 text-xs mt-1">{errors.pan}</p>}
@@ -285,7 +285,7 @@ export default function SolePrimaryHolder({
                     {/* Re-enter PAN */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         <div className="md:col-start-2">
-                            <label htmlFor="reEnterPan" className="block text-sm font-medium text-gray-700 mb-2 text-right">
+                            <label htmlFor="reEnterPan" className="block text-sm font-medium text-[#E5E7EB] mb-2 text-right">
                                 Re-Enter PAN / PEKRN <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -293,7 +293,7 @@ export default function SolePrimaryHolder({
                                 id="reEnterPan"
                                 value={formData.reEnterPan}
                                 onChange={(e) => handleInputChange('reEnterPan', e.target.value.toUpperCase())}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
                                 maxLength={10}
                             />
                             {errors.reEnterPan && <p className="text-red-500 text-xs mt-1">{errors.reEnterPan}</p>}
@@ -304,7 +304,7 @@ export default function SolePrimaryHolder({
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         {/* Residential Phone */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 Res. (ISD-STD-Phone)
                             </label>
                             <div className="flex gap-2">
@@ -312,21 +312,21 @@ export default function SolePrimaryHolder({
                                     type="text"
                                     value={formData.resISD}
                                     onChange={(e) => handleInputChange('resISD', e.target.value)}
-                                    className="w-1/4 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
+                                    className="w-1/4 px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
                                     maxLength={5}
                                 />
                                 <input
                                     type="text"
                                     value={formData.resSTD}
                                     onChange={(e) => handleInputChange('resSTD', e.target.value)}
-                                    className="w-1/4 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
+                                    className="w-1/4 px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
                                     maxLength={5}
                                 />
                                 <input
                                     type="text"
                                     value={formData.resPhone}
                                     onChange={(e) => handleInputChange('resPhone', e.target.value)}
-                                    className="w-2/4 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-2/4 px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     maxLength={15}
                                 />
                             </div>
@@ -334,7 +334,7 @@ export default function SolePrimaryHolder({
 
                         {/* Mobile Number */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 Mobile (ISD-Mobile) <span className="text-red-500">*</span>
                             </label>
                             <div className="flex gap-2">
@@ -342,14 +342,14 @@ export default function SolePrimaryHolder({
                                     type="text"
                                     value={formData.mobileISD}
                                     onChange={(e) => handleInputChange('mobileISD', e.target.value)}
-                                    className="w-1/4 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
+                                    className="w-1/4 px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-right"
                                     maxLength={5}
                                 />
                                 <input
                                     type="text"
                                     value={formData.mobileNumber}
                                     onChange={(e) => handleInputChange('mobileNumber', e.target.value)}
-                                    className="w-3/4 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-3/4 px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                     maxLength={15}
                                 />
                             </div>
@@ -358,7 +358,7 @@ export default function SolePrimaryHolder({
 
                         {/* Email */}
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="email" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 Email <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -366,7 +366,7 @@ export default function SolePrimaryHolder({
                                 id="email"
                                 value={formData.email}
                                 onChange={(e) => handleInputChange('email', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 maxLength={100}
                             />
                             {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
@@ -378,14 +378,14 @@ export default function SolePrimaryHolder({
                         <div></div>
                         {/* Mobile Declaration */}
                         <div>
-                            <label htmlFor="mobileDeclaration" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="mobileDeclaration" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 Mobile Declaration <span className="text-red-500">*</span>
                             </label>
                             <select
                                 id="mobileDeclaration"
                                 value={formData.mobileDeclaration}
                                 onChange={(e) => handleInputChange('mobileDeclaration', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 {declarationOptions.map(option => (
@@ -399,14 +399,14 @@ export default function SolePrimaryHolder({
 
                         {/* Email Declaration */}
                         <div>
-                            <label htmlFor="emailDeclaration" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="emailDeclaration" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 Email Declaration <span className="text-red-500">*</span>
                             </label>
                             <select
                                 id="emailDeclaration"
                                 value={formData.emailDeclaration}
                                 onChange={(e) => handleInputChange('emailDeclaration', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 {declarationOptions.map(option => (
@@ -422,22 +422,22 @@ export default function SolePrimaryHolder({
             </div>
 
             {/* Additional KYC Details Section */}
-            <div className="bg-white rounded-lg border border-gray-200 mb-6">
-                <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-                    <h3 className="text-lg font-medium text-gray-900">Additional KYC Details</h3>
+            <div className="bg-[#111111] rounded-lg border border-[#2A2A2A] mb-6">
+                <div className="bg-[#1F1A1A] px-4 py-3 border-b border-[#2A2A2A]">
+                    <h3 className="text-lg font-medium text-[#F9FAFB]">Additional KYC Details</h3>
                 </div>
                 <div className="p-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         {/* Gross Annual Income */}
                         <div>
-                            <label htmlFor="grossAnnualIncome" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="grossAnnualIncome" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 Gross Annual Income <span className="text-red-500">*</span>
                             </label>
                             <select
                                 id="grossAnnualIncome"
                                 value={formData.grossAnnualIncome}
                                 onChange={(e) => handleInputChange('grossAnnualIncome', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 {incomeOptions.map(option => (
@@ -450,7 +450,7 @@ export default function SolePrimaryHolder({
 
                         {/* Networth */}
                         <div>
-                            <label htmlFor="networth" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="networth" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 Networth (in Rs.)
                             </label>
                             <input
@@ -458,14 +458,14 @@ export default function SolePrimaryHolder({
                                 id="networth"
                                 value={formData.networth}
                                 onChange={(e) => handleInputChange('networth', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 maxLength={10}
                             />
                         </div>
 
                         {/* Networth Date */}
                         <div>
-                            <label htmlFor="networthDate" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="networthDate" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 As on date
                             </label>
                             <input
@@ -473,7 +473,7 @@ export default function SolePrimaryHolder({
                                 id="networthDate"
                                 value={formData.networthDate}
                                 onChange={(e) => handleInputChange('networthDate', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             />
                         </div>
                     </div>
@@ -483,14 +483,14 @@ export default function SolePrimaryHolder({
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         {/* Source of Wealth */}
                         <div>
-                            <label htmlFor="sourceOfWealth" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="sourceOfWealth" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 Source of Wealth
                             </label>
                             <select
                                 id="sourceOfWealth"
                                 value={formData.sourceOfWealth}
                                 onChange={(e) => handleInputChange('sourceOfWealth', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 {sourceOfWealthOptions.map(option => (
@@ -503,14 +503,14 @@ export default function SolePrimaryHolder({
 
                         {/* Occupation */}
                         <div>
-                            <label htmlFor="occupation" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="occupation" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 Occupation <span className="text-red-500">*</span>
                             </label>
                             <select
                                 id="occupation"
                                 value={formData.occupation}
                                 onChange={(e) => handleInputChange('occupation', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 {occupationOptions.map(option => (
@@ -524,14 +524,14 @@ export default function SolePrimaryHolder({
 
                         {/* Political Exposure */}
                         <div>
-                            <label htmlFor="pepStatus" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="pepStatus" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 Political Exposure <span className="text-red-500">*</span>
                             </label>
                             <select
                                 id="pepStatus"
                                 value={formData.pepStatus}
                                 onChange={(e) => handleInputChange('pepStatus', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 <option value="NA">Not Applicable</option>
@@ -545,14 +545,14 @@ export default function SolePrimaryHolder({
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {/* KRA Address Type */}
                         <div>
-                            <label htmlFor="kraAddressType" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="kraAddressType" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 KRA Address Type <span className="text-red-500">*</span>
                             </label>
                             <select
                                 id="kraAddressType"
                                 value={formData.kraAddressType}
                                 onChange={(e) => handleInputChange('kraAddressType', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 <option value="1">Residential or Business</option>
@@ -565,7 +565,7 @@ export default function SolePrimaryHolder({
 
                         {/* Source of Wealth Other */}
                         <div>
-                            <label htmlFor="sourceOfWealthOther" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="sourceOfWealthOther" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 Other
                             </label>
                             <input
@@ -573,7 +573,7 @@ export default function SolePrimaryHolder({
                                 id="sourceOfWealthOther"
                                 value={formData.sourceOfWealthOther}
                                 onChange={(e) => handleInputChange('sourceOfWealthOther', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
                                 maxLength={50}
                                 readOnly={formData.sourceOfWealth !== '08'}
                             />
@@ -581,7 +581,7 @@ export default function SolePrimaryHolder({
 
                         {/* Occupation Other */}
                         <div>
-                            <label htmlFor="occupationOther" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="occupationOther" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 Other
                             </label>
                             <input
@@ -589,7 +589,7 @@ export default function SolePrimaryHolder({
                                 id="occupationOther"
                                 value={formData.occupationOther}
                                 onChange={(e) => handleInputChange('occupationOther', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
                                 maxLength={50}
                                 readOnly={formData.occupation !== '99'}
                             />
@@ -599,22 +599,22 @@ export default function SolePrimaryHolder({
             </div>
 
             {/* FATCA Details Section */}
-            <div className="bg-white rounded-lg border border-gray-200 mb-6">
-                <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-                    <h3 className="text-lg font-medium text-gray-900">FATCA Details</h3>
+            <div className="bg-[#111111] rounded-lg border border-[#2A2A2A] mb-6">
+                <div className="bg-[#1F1A1A] px-4 py-3 border-b border-[#2A2A2A]">
+                    <h3 className="text-lg font-medium text-[#F9FAFB]">FATCA Details</h3>
                 </div>
                 <div className="p-6">
                     {/* Tax Residency Question */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div className="md:col-span-2">
-                            <label htmlFor="taxResidency" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="taxResidency" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 Tax Residency in a country other than India? <span className="text-red-500">*</span>
                             </label>
                             <select
                                 id="taxResidency"
                                 value={formData.taxResidency}
                                 onChange={(e) => handleTaxResidencyChange(e.target.value)}
-                                className="w-full md:w-1/2 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full md:w-1/2 px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             >
                                 <option value="N">No - Not a Tax Resident in a Country other than India</option>
                                 <option value="Y">Yes - Tax Resident in a Country other than India</option>
@@ -626,7 +626,7 @@ export default function SolePrimaryHolder({
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                         {/* Place of Birth */}
                         <div>
-                            <label htmlFor="placeOfBirth" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="placeOfBirth" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 Place of Birth <span className="text-red-500">*</span>
                             </label>
                             <input
@@ -634,7 +634,7 @@ export default function SolePrimaryHolder({
                                 id="placeOfBirth"
                                 value={formData.placeOfBirth}
                                 onChange={(e) => handleInputChange('placeOfBirth', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
                                 maxLength={60}
                             />
                             {errors.placeOfBirth && <p className="text-red-500 text-xs mt-1">{errors.placeOfBirth}</p>}
@@ -642,14 +642,14 @@ export default function SolePrimaryHolder({
 
                         {/* Country of Birth */}
                         <div>
-                            <label htmlFor="countryOfBirth" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="countryOfBirth" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 Country of Birth <span className="text-red-500">*</span>
                             </label>
                             <select
                                 id="countryOfBirth"
                                 value={formData.countryOfBirth}
                                 onChange={(e) => handleInputChange('countryOfBirth', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 {countryOptions.map(option => (
@@ -663,14 +663,14 @@ export default function SolePrimaryHolder({
 
                         {/* Country of Citizenship */}
                         <div>
-                            <label htmlFor="countryOfCitizenship" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="countryOfCitizenship" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 Country of Citizenship <span className="text-red-500">*</span>
                             </label>
                             <select
                                 id="countryOfCitizenship"
                                 value={formData.countryOfCitizenship}
                                 onChange={(e) => handleInputChange('countryOfCitizenship', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 {countryOptions.map(option => (
@@ -684,14 +684,14 @@ export default function SolePrimaryHolder({
 
                         {/* Country of Nationality */}
                         <div>
-                            <label htmlFor="countryOfNationality" className="block text-sm font-medium text-gray-700 mb-2">
+                            <label htmlFor="countryOfNationality" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                 Country of Nationality <span className="text-red-500">*</span>
                             </label>
                             <select
                                 id="countryOfNationality"
                                 value={formData.countryOfNationality}
                                 onChange={(e) => handleInputChange('countryOfNationality', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 {countryOptions.map(option => (
@@ -706,17 +706,17 @@ export default function SolePrimaryHolder({
 
                     {/* Tax Residency Section (Conditional) */}
                     {showTaxSection && (
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 pt-6 border-t border-gray-200">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6 pt-6 border-t border-[#2A2A2A]">
                             {/* Country of Tax Residency */}
                             <div>
-                                <label htmlFor="taxCountry" className="block text-sm font-medium text-gray-700 mb-2">
+                                <label htmlFor="taxCountry" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                     Countries of Tax Residency <span className="text-red-500">*</span>
                                 </label>
                                 <select
                                     id="taxCountry"
                                     value={formData.taxCountry}
                                     onChange={(e) => handleInputChange('taxCountry', e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 >
                                     <option value="">Select</option>
                                     {countryOptions.map(option => (
@@ -730,7 +730,7 @@ export default function SolePrimaryHolder({
 
                             {/* Tax Identification Number */}
                             <div>
-                                <label htmlFor="taxIdentificationNumber" className="block text-sm font-medium text-gray-700 mb-2">
+                                <label htmlFor="taxIdentificationNumber" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                     Tax Identification Numbers <span className="text-red-500">*</span>
                                 </label>
                                 <input
@@ -738,7 +738,7 @@ export default function SolePrimaryHolder({
                                     id="taxIdentificationNumber"
                                     value={formData.taxIdentificationNumber}
                                     onChange={(e) => handleInputChange('taxIdentificationNumber', e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                    className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
                                     maxLength={20}
                                 />
                                 {errors.taxIdentificationNumber && <p className="text-red-500 text-xs mt-1">{errors.taxIdentificationNumber}</p>}
@@ -746,14 +746,14 @@ export default function SolePrimaryHolder({
 
                             {/* Tax Identification Type */}
                             <div>
-                                <label htmlFor="taxIdentificationType" className="block text-sm font-medium text-gray-700 mb-2">
+                                <label htmlFor="taxIdentificationType" className="block text-sm font-medium text-[#E5E7EB] mb-2">
                                     Tax Identification Types <span className="text-red-500">*</span>
                                 </label>
                                 <select
                                     id="taxIdentificationType"
                                     value={formData.taxIdentificationType}
                                     onChange={(e) => handleInputChange('taxIdentificationType', e.target.value)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 >
                                     <option value="">Select</option>
                                     <option value="E">Driving License</option>
@@ -775,13 +775,13 @@ export default function SolePrimaryHolder({
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+            <div className="flex justify-between items-center pt-6 border-t border-[#2A2A2A]">
                 <button
                     type="button"
                     onClick={onPrevious}
                     disabled={isFirstStep}
                     className={`px-6 py-2 rounded-md transition-colors ${isFirstStep
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        ? 'bg-gray-300 text-[#9CA3AF] cursor-not-allowed'
                         : 'bg-gray-600 text-white hover:bg-gray-700'
                         }`}
                 >
@@ -793,7 +793,7 @@ export default function SolePrimaryHolder({
                     disabled={!isFormValid}
                     className={`px-6 py-2 rounded-md transition-colors ${isFormValid
                         ? 'bg-blue-600 text-white hover:bg-blue-700'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-gray-300 text-[#9CA3AF] cursor-not-allowed'
                         }`}
                 >
                     {isLastStep ? 'Submit' : 'Next'}

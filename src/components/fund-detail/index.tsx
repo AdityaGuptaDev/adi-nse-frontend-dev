@@ -154,7 +154,7 @@ function FundDetail() {
                                 addToCart(schemeData?.id);
                             }}
                         >
-                            <IoCartOutline size={16} className="text-white" />
+                            <IoCartOutline size={16} className="text-[#F9FAFB]" />
                         </div>
                         <span className="text-primary text-lg flex items-center gap-2 mr-1">
                             {schemeData?.SchemePerformances?.[0]?.OverallRating ? (
@@ -179,7 +179,7 @@ function FundDetail() {
                             key={tab}
                             role="tab"
                             className={`tab h-7 ${activeTab === tab
-                                ? "tab-active text-secondary bg-white rounded-t-xl"
+                                ? "tab-active text-secondary bg-[#111111] rounded-t-xl"
                                 : " !text-base-content"
                                 }`}
                             onClick={() => setActiveTab(tab)}

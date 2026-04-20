@@ -157,7 +157,7 @@ const PortfolioOverview = ({ portfolioStats }: { portfolioStats: any }) => {
       label: "Total Investment",
       value: portfolioStats.totalInvestment,
       icon: IndianRupee,
-      color: "bg-blue-100 text-blue-600",
+      color: "bg-[#1F1A1A] text-[#F59E0B]",
     },
     {
       label: "Current Value",
@@ -171,7 +171,7 @@ const PortfolioOverview = ({ portfolioStats }: { portfolioStats: any }) => {
       icon: Activity,
       color: portfolioStats.totalReturns.startsWith("-")
         ? "bg-red-100 text-red-600"
-        : "bg-purple-100 text-purple-600",
+        : "bg-[#2A1F0A] text-[#F59E0B]",
     },
     // {
     //   label: "CAGR",
@@ -184,15 +184,15 @@ const PortfolioOverview = ({ portfolioStats }: { portfolioStats: any }) => {
   ];
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 w-full">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+    <div className="bg-[#111111] rounded-xl shadow-sm border border-[#2A2A2A] p-4 mb-6 w-full">
+      <h3 className="text-lg font-semibold text-[#F9FAFB] mb-4">
         Portfolio Overview
       </h3>
       <div className="flex gap-4">
         {stats.map((stat, idx) => (
           <div
             key={idx}
-            className="flex items-center bg-gray-50 rounded-lg p-3 hover:shadow-md transition-all flex-1"
+            className="flex items-center bg-[#0A0A0A] rounded-lg p-3 hover:shadow-md transition-all flex-1"
           >
             <div
               className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${stat.color}`}
@@ -200,10 +200,10 @@ const PortfolioOverview = ({ portfolioStats }: { portfolioStats: any }) => {
               <stat.icon className="w-5 h-5" />
             </div>
             <div>
-              <div className="text-sm font-bold text-gray-900">
+              <div className="text-sm font-bold text-[#F9FAFB]">
                 {stat.value}
               </div>
-              <div className="text-gray-500 text-xs">{stat.label}</div>
+              <div className="text-[#9CA3AF] text-xs">{stat.label}</div>
             </div>
           </div>
         ))}
@@ -219,7 +219,7 @@ const InvestmentCard = ({ investment, index, onToggleDetails, isExpanded }: Inve
 
   return (
     <div
-      className={`bg-white rounded-xl shadow-sm border border-gray-200 p-6 transition-all duration-300 cursor-pointer ${
+      className={`bg-[#111111] rounded-xl shadow-sm border border-[#2A2A2A] p-6 transition-all duration-300 cursor-pointer ${
         isExpanded ? 'shadow-lg' : 'hover:shadow-lg hover:scale-[1.02]'
       }`}
       style={{ animationDelay: `${index * 100}ms` }}
@@ -234,23 +234,23 @@ const InvestmentCard = ({ investment, index, onToggleDetails, isExpanded }: Inve
           <span className={`text-sm font-semibold ${investment.returnsColor} bg-green-50 px-2 py-1 rounded-full`}>
             {investment.returns}
           </span>
-          <span className="text-xs text-gray-500 mt-1">{investment.category}</span>
+          <span className="text-xs text-[#9CA3AF] mt-1">{investment.category}</span>
         </div>
       </div>
 
       <div className="mb-4">
-        <h3 className="font-semibold text-gray-900 mb-1 text-sm leading-tight">{investment.schemeName}</h3>
-        <p className="text-xs text-gray-600">{investment.amcName}</p>
+        <h3 className="font-semibold text-[#F9FAFB] mb-1 text-sm leading-tight">{investment.schemeName}</h3>
+        <p className="text-xs text-[#9CA3AF]">{investment.amcName}</p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 mb-4">
         <div>
-          <p className="text-xs text-gray-500 mb-1">Invested</p>
-          <p className="text-sm font-semibold text-gray-900">{investment.investedAmount}</p>
+          <p className="text-xs text-[#9CA3AF] mb-1">Invested</p>
+          <p className="text-sm font-semibold text-[#F9FAFB]">{investment.investedAmount}</p>
         </div>
         <div>
-          <p className="text-xs text-gray-500 mb-1">Current Value</p>
-          <p className="text-sm font-semibold text-gray-900">{investment.currentValue}</p>
+          <p className="text-xs text-[#9CA3AF] mb-1">Current Value</p>
+          <p className="text-sm font-semibold text-[#F9FAFB]">{investment.currentValue}</p>
         </div>
       </div>
 
@@ -262,7 +262,7 @@ const InvestmentCard = ({ investment, index, onToggleDetails, isExpanded }: Inve
               e.stopPropagation();
               onToggleDetails(investment.id);
             }}
-            className="flex items-center text-blue-600 text-sm hover:text-blue-800 transition-colors"
+            className="flex items-center text-[#F59E0B] text-sm hover:text-[#F59E0B] transition-colors"
           >
             <span className="mr-1">View Details</span>
             {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -272,31 +272,31 @@ const InvestmentCard = ({ investment, index, onToggleDetails, isExpanded }: Inve
 
       {/* Expanded details section */}
       {isExpanded && (
-        <div className="mt-4 pt-4 border-t border-gray-200 animate-fade-in">
-          <h4 className="font-medium text-gray-900 mb-3">Transaction History</h4>
+        <div className="mt-4 pt-4 border-t border-[#2A2A2A] animate-fade-in">
+          <h4 className="font-medium text-[#F9FAFB] mb-3">Transaction History</h4>
           <div className="space-y-3 max-h-60 overflow-y-auto">
             {investment.childRecords.map((record, idx) => (
-              <div key={idx} className="bg-gray-50 p-3 rounded-lg">
+              <div key={idx} className="bg-[#0A0A0A] p-3 rounded-lg">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{record.out_trxntype || 'Portfolio Summary'}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-sm font-medium text-[#F9FAFB]">{record.out_trxntype || 'Portfolio Summary'}</p>
+                    <p className="text-xs text-[#9CA3AF]">
                       {record.out_traddate ? new Date(record.out_traddate).toLocaleDateString('en-IN') : 'N/A'}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900">₹{parseFloat(record.out_amount || '0').toLocaleString('en-IN')}</p>
-                    <p className="text-xs text-gray-500">{record.out_units} units</p>
+                    <p className="text-sm font-medium text-[#F9FAFB]">₹{parseFloat(record.out_amount || '0').toLocaleString('en-IN')}</p>
+                    <p className="text-xs text-[#9CA3AF]">{record.out_units} units</p>
                   </div>
                 </div>
                 {record.out_trxntype && (
                   <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
                     <div>
-                      <span className="text-gray-500">NAV: </span>
+                      <span className="text-[#9CA3AF]">NAV: </span>
                       <span className="font-medium">₹{record.out_purprice}</span>
                     </div>
                     <div>
-                      <span className="text-gray-500">Type: </span>
+                      <span className="text-[#9CA3AF]">Type: </span>
                       <span className="font-medium">{record.out_scheme_typ}</span>
                     </div>
                   </div>
@@ -329,12 +329,12 @@ const TransactionModal = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">All Transactions</h2>
+      <div className="bg-[#111111] rounded-xl shadow-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
+        <div className="flex items-center justify-between p-6 border-b border-[#2A2A2A]">
+          <h2 className="text-xl font-semibold text-[#F9FAFB]">All Transactions</h2>
           <button 
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-[#9CA3AF] hover:text-[#9CA3AF] transition-colors"
           >
             <X className="w-6 h-6" />
           </button>
@@ -346,12 +346,12 @@ const TransactionModal = ({
               {allTransactions.map((transaction, index) => (
                 <div 
                   key={index} 
-                  className="flex items-center justify-between py-3 px-4 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors duration-200"
+                  className="flex items-center justify-between py-3 px-4 bg-[#0A0A0A] hover:bg-[#111111] rounded-lg transition-colors duration-200"
                 >
                   <div className="flex items-center space-x-4">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
                       transaction.out_trxntype.includes('Purchase') || transaction.out_trxntype.includes('Switch In') 
-                        ? 'bg-blue-100 text-blue-600' 
+                        ? 'bg-[#1F1A1A] text-[#F59E0B]' 
                         : transaction.out_trxntype.includes('Redemption') || transaction.out_trxntype.includes('Switch Out')
                         ? 'bg-red-100 text-red-600'
                         : 'bg-green-100 text-green-600'
@@ -363,8 +363,8 @@ const TransactionModal = ({
                         : <ArrowLeftRight className="w-5 h-5" />}
                     </div>
                     <div>
-                      <p className="font-medium text-gray-900">{transaction.out_scheme}</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="font-medium text-[#F9FAFB]">{transaction.out_scheme}</p>
+                      <p className="text-sm text-[#9CA3AF]">
                         {transaction.out_trxntype} • 
                         {transaction.out_traddate 
                           ? new Date(transaction.out_traddate).toLocaleDateString('en-IN', {
@@ -374,7 +374,7 @@ const TransactionModal = ({
                             })
                           : 'N/A'}
                       </p>
-                      <p className="text-xs text-gray-400 mt-1">
+                      <p className="text-xs text-[#9CA3AF] mt-1">
                         Folio: {transaction.out_folio_no}
                       </p>
                     </div>
@@ -383,7 +383,7 @@ const TransactionModal = ({
                     <p className={`font-semibold ${
                       transaction.out_trxntype.includes('Redemption') || transaction.out_trxntype.includes('Switch Out')
                         ? 'text-red-600'
-                        : 'text-gray-900'
+                        : 'text-[#F9FAFB]'
                     }`}>
                       {transaction.out_trxntype.includes('Redemption') || transaction.out_trxntype.includes('Switch Out')
                         ? '-₹' + parseFloat(transaction.out_amount || '0').toLocaleString('en-IN', { maximumFractionDigits: 2 })
@@ -393,7 +393,7 @@ const TransactionModal = ({
                     <p className="text-xs text-green-600">
                       Completed
                     </p>
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-[#9CA3AF] mt-1">
                       {transaction.out_units} units @ ₹{transaction.out_purprice}
                     </p>
                   </div>
@@ -401,16 +401,16 @@ const TransactionModal = ({
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 text-gray-500">
+            <div className="text-center py-8 text-[#9CA3AF]">
               No transactions found
             </div>
           )}
         </div>
         
-        <div className="border-t p-4 bg-gray-50 flex justify-end">
+        <div className="border-t p-4 bg-[#0A0A0A] flex justify-end">
           <button 
             onClick={onClose}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-4 py-2 bg-[#F59E0B] text-[#F9FAFB] rounded-lg hover:bg-[#B45309] transition-colors"
           >
             Close
           </button>
@@ -431,13 +431,13 @@ const RecentTransactions = ({ transactions }: { transactions: PortfolioRecord[] 
 
   return (
     <>
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+      <div className="bg-[#111111] rounded-xl shadow-sm border border-[#2A2A2A] p-6 mb-8">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-900">Recent Transactions</h3>
+          <h3 className="text-lg font-semibold text-[#F9FAFB]">Recent Transactions</h3>
           {transactions.filter(t => t.out_traddate && t.out_trxntype).length > 5 && (
             <button 
               onClick={() => setShowAllTransactions(true)}
-              className="flex items-center text-blue-600 hover:text-blue-800 transition-colors text-sm font-medium"
+              className="flex items-center text-[#F59E0B] hover:text-[#F59E0B] transition-colors text-sm font-medium"
             >
               View All
               <ChevronRight className="w-4 h-4 ml-1" />
@@ -450,12 +450,12 @@ const RecentTransactions = ({ transactions }: { transactions: PortfolioRecord[] 
             {recentTxns.map((transaction, index) => (
               <div 
                 key={index} 
-                className="flex items-center justify-between py-3 px-2 hover:bg-gray-50 rounded-lg transition-colors duration-200"
+                className="flex items-center justify-between py-3 px-2 hover:bg-[#0A0A0A] rounded-lg transition-colors duration-200"
               >
                 <div className="flex items-center space-x-3">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                     transaction.out_trxntype.includes('Purchase') || transaction.out_trxntype.includes('Switch In') 
-                      ? 'bg-blue-100 text-blue-600' 
+                      ? 'bg-[#1F1A1A] text-[#F59E0B]' 
                       : transaction.out_trxntype.includes('Redemption') || transaction.out_trxntype.includes('Switch Out')
                       ? 'bg-red-100 text-red-600'
                       : 'bg-green-100 text-green-600'
@@ -467,8 +467,8 @@ const RecentTransactions = ({ transactions }: { transactions: PortfolioRecord[] 
                       : <ArrowLeftRight className="w-4 h-4" />}
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900 text-sm">{transaction.out_scheme}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="font-medium text-[#F9FAFB] text-sm">{transaction.out_scheme}</p>
+                    <p className="text-xs text-[#9CA3AF]">
                       {transaction.out_trxntype} • 
                       {transaction.out_traddate 
                         ? new Date(transaction.out_traddate).toLocaleDateString('en-IN', {
@@ -484,7 +484,7 @@ const RecentTransactions = ({ transactions }: { transactions: PortfolioRecord[] 
                   <p className={`font-semibold text-sm ${
                     transaction.out_trxntype.includes('Redemption') || transaction.out_trxntype.includes('Switch Out')
                       ? 'text-red-600'
-                      : 'text-gray-900'
+                      : 'text-[#F9FAFB]'
                   }`}>
                     {transaction.out_trxntype.includes('Redemption') || transaction.out_trxntype.includes('Switch Out')
                       ? '-₹' + parseFloat(transaction.out_amount || '0').toLocaleString('en-IN', { maximumFractionDigits: 2 })
@@ -499,7 +499,7 @@ const RecentTransactions = ({ transactions }: { transactions: PortfolioRecord[] 
             ))}
           </div>
         ) : (
-          <div className="text-center py-4 text-gray-500">
+          <div className="text-center py-4 text-[#9CA3AF]">
             No recent transactions found
           </div>
         )}
@@ -539,12 +539,12 @@ const getCategory = (schemeName: string): string => {
 
 const getColorForCategory = (category: string): string => {
   switch(category) {
-    case 'Large Cap': return 'bg-blue-100 text-blue-600';
-    case 'Mid Cap': return 'bg-purple-100 text-purple-600';
+    case 'Large Cap': return 'bg-[#1F1A1A] text-[#F59E0B]';
+    case 'Mid Cap': return 'bg-[#2A1F0A] text-[#F59E0B]';
     case 'Small Cap': return 'bg-orange-100 text-orange-600';
     case 'Hybrid': return 'bg-teal-100 text-teal-600';
-    case 'Liquid': return 'bg-indigo-100 text-indigo-600';
-    default: return 'bg-gray-100 text-gray-600';
+    case 'Liquid': return 'bg-[#2A1F0A] text-[#F59E0B]';
+    default: return 'bg-[#111111] text-[#9CA3AF]';
   }
 };
 
@@ -720,7 +720,7 @@ const MutualFundInvestorDashboard = () => {
           <OnBoarding onBoardingModal={onBoardingModal} />
         </div>
       )}
-      <div className="min-h-screen w-full bg-gray-50">
+      <div className="min-h-screen w-full bg-[#0A0A0A]">
         <main className="p-4 sm:p-6">
           <div className="max-w-7xl mx-auto">
             {/* Portfolio Overview now at the top with full width */}
@@ -731,31 +731,31 @@ const MutualFundInvestorDashboard = () => {
                 <RecentTransactions transactions={portfolioData} />
               </div>
               
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div className="bg-[#111111] rounded-xl shadow-sm border border-[#2A2A2A] p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-semibold text-gray-900">Portfolio Summary</h3>
-                  <span className="text-sm text-blue-600">{new Date().toLocaleDateString()}</span>
+                  <h3 className="text-lg font-semibold text-[#F9FAFB]">Portfolio Summary</h3>
+                  <span className="text-sm text-[#F59E0B]">{new Date().toLocaleDateString()}</span>
                 </div>
                 
                 <div className="space-y-4">
-                  <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-                    <span className="text-sm text-gray-600">Total Funds</span>
-                    <span className="text-sm font-medium text-gray-900">{investments.length}</span>
+                  <div className="flex justify-between items-center pb-2 border-b border-[#2A2A2A]">
+                    <span className="text-sm text-[#9CA3AF]">Total Funds</span>
+                    <span className="text-sm font-medium text-[#F9FAFB]">{investments.length}</span>
                   </div>
-                  <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-                    <span className="text-sm text-gray-600">Total Folios</span>
-                    <span className="text-sm font-medium text-gray-900">
+                  <div className="flex justify-between items-center pb-2 border-b border-[#2A2A2A]">
+                    <span className="text-sm text-[#9CA3AF]">Total Folios</span>
+                    <span className="text-sm font-medium text-[#F9FAFB]">
                       {new Set(investments.map(i => i.folioNo)).size}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-                    <span className="text-sm text-gray-600">Asset Allocation</span>
-                    <span className="text-sm font-medium text-gray-900">
+                  <div className="flex justify-between items-center pb-2 border-b border-[#2A2A2A]">
+                    <span className="text-sm text-[#9CA3AF]">Asset Allocation</span>
+                    <span className="text-sm font-medium text-[#F9FAFB]">
                       Equity: {investments.length > 0 ? Math.round((investments.filter(i => i.category.includes('Cap')).length / investments.length * 100)) : 0}%
                     </span>
                   </div>
-                  <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-                    <span className="text-sm text-gray-600">Best Performer</span>
+                  <div className="flex justify-between items-center pb-2 border-b border-[#2A2A2A]">
+                    <span className="text-sm text-[#9CA3AF]">Best Performer</span>
                     <span className="text-sm font-medium text-green-600">
                       {investments.length > 0 
                         ? investments.reduce((max, inv) => 
@@ -772,13 +772,13 @@ const MutualFundInvestorDashboard = () => {
             <div className="mb-6">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                 <div className="relative max-w-md w-full">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#9CA3AF] w-5 h-5" />
                   <input
                     type="text"
                     placeholder="Search your investments..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm"
+                    className="w-full pl-10 pr-4 py-3 border border-[#2A2A2A] rounded-lg focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent bg-[#111111] shadow-sm"
                   />
                 </div>
                 
@@ -791,16 +791,16 @@ const MutualFundInvestorDashboard = () => {
                       onClick={() => setActiveFilter(filter.id)}
                       className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
                         activeFilter === filter.id
-                          ? 'bg-blue-600 text-white shadow-lg'
-                          : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200'
+                          ? 'bg-[#F59E0B] text-[#F9FAFB] shadow-lg'
+                          : 'bg-[#111111] text-[#F9FAFB] hover:bg-[#0A0A0A] border border-[#2A2A2A]'
                       }`}
                     >
                       {filter.label}
                       <span
                         className={`ml-2 px-2 py-1 rounded-full text-xs ${
                           activeFilter === filter.id
-                            ? 'bg-blue-700 text-white'
-                            : 'bg-gray-100 text-gray-600'
+                            ? 'bg-[#B45309] text-[#F9FAFB]'
+                            : 'bg-[#111111] text-[#9CA3AF]'
                         }`}
                       >
                         {filter.count}
@@ -811,13 +811,13 @@ const MutualFundInvestorDashboard = () => {
               </div>
 
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-gray-900">Your Investment Holdings</h2>
-                <span className="text-sm text-gray-500">{filteredInvestments.length} funds</span>
+                <h2 className="text-xl font-semibold text-[#F9FAFB]">Your Investment Holdings</h2>
+                <span className="text-sm text-[#9CA3AF]">{filteredInvestments.length} funds</span>
               </div>
 
               {loading && (
                 <div className="flex justify-center items-center h-64">
-                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                  <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#F59E0B]"></div>
                   <span className="ml-3">Loading your investments...</span>
                 </div>
               )}
@@ -854,17 +854,17 @@ const MutualFundInvestorDashboard = () => {
 
                   {filteredInvestments.length === 0 && (
                     <div className="text-center py-12">
-                      <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <Search className="w-12 h-12 text-gray-400" />
+                      <div className="w-24 h-24 bg-[#111111] rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Search className="w-12 h-12 text-[#9CA3AF]" />
                       </div>
-                      <h3 className="text-lg font-medium text-gray-900 mb-2">No investments found</h3>
-                      <p className="text-gray-600">Try adjusting your search criteria</p>
+                      <h3 className="text-lg font-medium text-[#F9FAFB] mb-2">No investments found</h3>
+                      <p className="text-[#9CA3AF]">Try adjusting your search criteria</p>
                       <button 
                         onClick={() => {
                           setSearchTerm('');
                           setActiveFilter('all');
                         }}
-                        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                        className="mt-4 px-4 py-2 bg-[#F59E0B] text-[#F9FAFB] rounded-lg hover:bg-[#B45309] transition-colors"
                       >
                         Reset Filters
                       </button>

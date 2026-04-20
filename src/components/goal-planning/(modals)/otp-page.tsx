@@ -35,50 +35,50 @@ const Otp: React.FC<{ showOtpModal: any; onClose: () => void }> = ({
 
   return (
     <>
-      <div className="modal-box w-lg  max-w-lg bg-white rounded-3xl shadow-2xl ">
+      <div className="modal-box w-lg  max-w-lg bg-[#111111] border border-[#2A2A2A] rounded-3xl shadow-2xl ">
         {/* Investment Details  */}
         <div className="mb-8">
-          <h2 className="text-sm font-bold text-base-content mb-2">
+          <h2 className="text-sm font-bold text-[#F9FAFB] mb-2">
             KOTAK - EMERGING EQUITY (G)
           </h2>
-          <p className="text-xs text-base-content mb-6 ">Equity - Large Cap</p>
+          <p className="text-xs text-[#9CA3AF] mb-6 ">Equity - Large Cap</p>
 
           <div className="space-y-3 flex justify-between ">
             <div className="flex flex-col">
-              <span className="text-base-content text-sm ">Investor Name</span>
-              <span className="text-base-content text-xs ">Rajendra</span>
+              <span className="text-[#F9FAFB] text-sm ">Investor Name</span>
+              <span className="text-[#9CA3AF] text-xs ">Rajendra</span>
             </div>
             <div className="flex flex-col">
-              <span className="text-base-content text-sm ">Holding Name</span>
-              <span className="text-base-content text-xs ">Rajendra</span>
+              <span className="text-[#F9FAFB] text-sm ">Holding Name</span>
+              <span className="text-[#9CA3AF] text-xs ">Rajendra</span>
             </div>
             <div className="flex flex-col">
-              <span className="text-base-content text-sm">Folio No.</span>
-              <span className="text-base-content text-xs">09876543321</span>
+              <span className="text-[#F9FAFB] text-sm">Folio No.</span>
+              <span className="text-[#9CA3AF] text-xs">09876543321</span>
             </div>
             <div className="flex flex-col">
-              <span className="text-base-content text-sm">Amount</span>
-              <span className="text-base-content text-xs ">₹ 15000</span>
+              <span className="text-[#F9FAFB] text-sm">Amount</span>
+              <span className="text-[#9CA3AF] text-xs ">₹ 15000</span>
             </div>
           </div>
           <div className="flex justify-start gap-22 ">
             <div className="flex flex-col">
-              <span className="text-base-content text-sm">SIP Day</span>
-              <span className="text-base-content text-xs ">15</span>
+              <span className="text-[#F9FAFB] text-sm">SIP Day</span>
+              <span className="text-[#9CA3AF] text-xs ">15</span>
             </div>
             <div className="flex flex-col">
-              <span className="text-base-content text-sm">Mandate Code</span>
-              <span className="text-base-content text-xs ">1234</span>
+              <span className="text-[#F9FAFB] text-sm">Mandate Code</span>
+              <span className="text-[#9CA3AF] text-xs ">1234</span>
             </div>
           </div>
         </div>
 
         <div className="text-center mb-8">
           {/* OTP Section */}
-          <h3 className="text-2xl font-bold text-gray-950 mb-4 tracking-wider">
+          <h3 className="text-2xl font-bold text-[#F59E0B] mb-4 tracking-wider">
             OTP
           </h3>
-          <p className="text-gray-700 mb-6 text-sm leading-relaxed">
+          <p className="text-[#9CA3AF] mb-6 text-sm leading-relaxed">
             We have sent the verification code to your email address and mobile
             number
           </p>
@@ -122,7 +122,7 @@ const Otp: React.FC<{ showOtpModal: any; onClose: () => void }> = ({
             </CustomButton>
 
             <button
-              className="btn btn-link text-secondary-content hover:text-secondary-content text-md font-normal "
+              className="btn btn-link text-[#F59E0B] hover:text-[#FBBF24] text-md font-normal "
               onClick={handleResendOTP}
             >
               Resend OTP
@@ -133,7 +133,7 @@ const Otp: React.FC<{ showOtpModal: any; onClose: () => void }> = ({
         {/* Close Button */}
         <div className="modal-action mt-0">
           <button
-            className="btn btn-sm btn-circle btn-ghost absolute right-4 top-4 text-gray-400 text-2xl hover:text-base-content"
+            className="btn btn-sm btn-circle btn-ghost absolute right-4 top-4 text-[#9CA3AF] text-2xl hover:text-[#F9FAFB]"
             onClick={handleClose}
           >
             <MdClose />

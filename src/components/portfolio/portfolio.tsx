@@ -3,7 +3,6 @@
 import type { NextPage } from "next";
 import { Fragment, useContext, useEffect, useRef, useState, useCallback } from "react";
 import { FaChevronUp, FaStar, FaSearch } from "react-icons/fa";
-import style from "../fund-explore/FundExplore.module.scss";
 import { getAMCList } from "@/api/fund-picker";
 import { useRouter } from "next/navigation";
 import { FiFilter, FiPlus, FiTrendingUp, FiTrendingDown } from "react-icons/fi";
@@ -33,6 +32,7 @@ import { searchByISIN } from "@/api/transaction";
 import { getInvestor } from "@/api/holder";
 import { useFundStore } from "@/store/useFundStore";
 import { MdOutlineCalendarToday } from "react-icons/md";
+import { ChevronLeft, TrendingUp, TrendingDown, Wallet, BarChart3, Calendar, Star, Search, Filter, X } from 'lucide-react';
 
 const env = (process.env.NODE_ENV as 'development' | 'staging' | 'production') || 'development';
 const { ApiUrl } = getConfig(env);
@@ -359,6 +359,12 @@ const Portfolio: NextPage = () => {
         // Save current state before navigating
         saveStateToStorage();
 
+        // Store in localStorage for persistence across refreshes
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('portfolioOrder_schemeData', JSON.stringify(_schemeData));
+          localStorage.setItem('portfolioOrder_investorList', JSON.stringify(investorList));
+        }
+
         router.push("/mutual-fund/portfolio-order");
       }
     }
@@ -544,7 +550,6 @@ const Portfolio: NextPage = () => {
   const formatUnits = (units: string | number) => {
     const num = parseFloat(units as string);
     if (isNaN(num)) return "--";
-    // Show 4 decimal places for units
     return num.toFixed(4);
   };
 
@@ -585,114 +590,12 @@ const Portfolio: NextPage = () => {
 
   const getSortIcon = (key: string) => {
     if (sortConfig.key !== key) {
-      return (
-        <>
-          <LuArrowUpDown size={15} className="text-gray-500" />
-        </>
-      );
+      return <LuArrowUpDown size={15} className="text-[#9CA3AF]" />;
     }
     return sortConfig.order === "ASC" ? (
-      <GoArrowUp size={15} className="text-blue-600" />
+      <GoArrowUp size={15} className="text-[#F59E0B]" />
     ) : (
-      <GoArrowDown size={15} className="text-blue-600" />
-    );
-  };
-
-  // Render scheme row
-  const renderSchemeRow = (item: any, index: number, globalIndex: number) => {
-    const profitLoss = parseFloat(item.out_p_n_l || 0);
-    const isProfit = profitLoss >= 0;
-    const returnPercent = parseFloat(item.out_abs_per || 0);
-    const holdingDays = parseInt(item.out_no_of_days || 0);
-
-    return (
-      <tr key={`${item.out_folio_no}-${globalIndex}`} className="hover:bg-gray-50 transition-colors duration-150 border-b border-gray-200">
-        <td className="font-normal text-gray-900 py-4 px-6">
-          <div className="flex items-center gap-4">
-            <div>
-              <img
-                src={`${publicPathName}/Kotak.png`}
-                className="w-10 h-10 min-w-10 min-h-10 object-contain"
-                alt="bank"
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <div
-                className="text-sm font-semibold text-gray-900 cursor-pointer hover:text-blue-600 transition-colors"
-                onClick={() => router.push(`/scheme-detail`)}
-              >
-                {item.out_scheme}
-              </div>
-              <div className="flex gap-3 text-xs text-gray-500">
-                <div className="flex items-center gap-1">
-                  {item.out_mutual_fund}
-                </div>
-                <div className="flex items-center gap-1">-</div>
-                <div className="flex items-center gap-1">
-                  Folio: {item.out_folio_no}
-                </div>
-              </div>
-            </div>
-          </div>
-        </td>
-
-        <td className="text-right font-medium text-gray-900 py-4 px-6">
-          {item.out_current_nav ? `₹${parseFloat(item.out_current_nav).toFixed(2)}` : "--"}
-        </td>
-
-        {/* Units Column */}
-        <td className="text-right font-medium text-gray-900 py-4 px-6">
-          {formatUnits(item.out_units)}
-        </td>
-
-        {/* Holding Days Column */}
-        <td className="text-right font-medium text-gray-900 py-4 px-6">
-          <div className="flex items-center justify-end gap-1">
-            <MdOutlineCalendarToday className="text-gray-400" size={14} />
-            <span>{formatHoldingDays(item.out_no_of_days)}</span>
-          </div>
-        </td>
-
-        <td className="text-right font-medium text-gray-900 py-4 px-6">
-          {formatCurrency(item.out_amount)}
-        </td>
-
-        <td className="text-right font-medium text-gray-900 py-4 px-6">
-          {formatCurrency(item.out_current_val)}
-        </td>
-
-        <td className="text-right py-4 px-6">
-          <div className={`flex items-center justify-end gap-1 font-medium ${isProfit ? 'text-green-600' : 'text-red-600'
-            }`}>
-            {isProfit ? <FiTrendingUp size={14} /> : <FiTrendingDown size={14} />}
-            {formatCurrency(item.out_p_n_l)}
-          </div>
-        </td>
-
-        <td className="text-right py-4 px-6">
-          <div className={`font-medium ${returnPercent >= 0 ? 'text-green-600' : 'text-red-600'
-            }`}>
-            {item.out_abs_per ? `${parseFloat(item.out_abs_per).toFixed(2)}%` : "--"}
-          </div>
-        </td>
-
-        <td className="relative w-20 py-4 px-6">
-          <div className="relative flex justify-end">
-            <button
-              ref={(el) => {
-                transactButtonRefs.current[globalIndex] = el;
-              }}
-              className="transact-button btn btn-sm bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 w-10 mx-auto py-0 px-2 text-sm font-medium text-white border-0 rounded-lg shadow-sm transition-all duration-200 transform hover:scale-105"
-              onClick={() => {
-                setSelectedScheme(item);
-                handleTransactClick(globalIndex);
-              }}
-            >
-              <GrTransaction size={14} className="text-white" />
-            </button>
-          </div>
-        </td>
-      </tr>
+      <GoArrowDown size={15} className="text-[#F59E0B]" />
     );
   };
 
@@ -707,19 +610,110 @@ const Portfolio: NextPage = () => {
     ? Math.round(schemeData.reduce((sum, item) => sum + parseInt(item.out_no_of_days || 0), 0) / schemeData.length)
     : 0;
 
+  // Render scheme row
+  const renderSchemeRow = (item: any, globalIndex: number) => {
+    const profitLoss = parseFloat(item.out_p_n_l || 0);
+    const isProfit = profitLoss >= 0;
+    const returnPercent = parseFloat(item.out_abs_per || 0);
+
+    return (
+      <tr key={`${item.out_folio_no}-${globalIndex}`} className="hover:bg-[#1F1A1A] transition-colors duration-150 border-b border-[#2A2A2A]">
+        <td className="font-normal text-white/90 py-4 px-6">
+          <div className="flex items-center gap-4">
+            <div>
+              <img
+                src={`${publicPathName}/Kotak.png`}
+                className="w-10 h-10 min-w-10 min-h-10 object-contain"
+                alt="bank"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <div
+                className="text-sm font-semibold text-white cursor-pointer hover:text-[#F59E0B] transition-colors"
+                onClick={() => router.push(`/scheme-detail`)}
+              >
+                {item.out_scheme}
+              </div>
+              <div className="flex gap-3 text-xs text-white/50">
+                <div className="flex items-center gap-1">
+                  {item.out_mutual_fund}
+                </div>
+                <div className="flex items-center gap-1">-</div>
+                <div className="flex items-center gap-1">
+                  Folio: {item.out_folio_no}
+                </div>
+              </div>
+            </div>
+          </div>
+        </td>
+        <td className="text-right font-medium text-white/90 py-4 px-6">
+          {item.out_current_nav ? `₹${parseFloat(item.out_current_nav).toFixed(2)}` : "--"}
+        </td>
+        <td className="text-right font-medium text-white/90 py-4 px-6">
+          {formatUnits(item.out_units)}
+        </td>
+        <td className="text-right font-medium text-white/90 py-4 px-6">
+          <div className="flex items-center justify-end gap-1">
+            <MdOutlineCalendarToday className="text-white/40" size={14} />
+            <span>{formatHoldingDays(item.out_no_of_days)}</span>
+          </div>
+        </td>
+        <td className="text-right font-medium text-white/90 py-4 px-6">
+          {formatCurrency(item.out_amount)}
+        </td>
+        <td className="text-right font-medium text-white/90 py-4 px-6">
+          {formatCurrency(item.out_current_val)}
+        </td>
+        <td className="text-right py-4 px-6">
+          <div className={`flex items-center justify-end gap-1 font-medium ${isProfit ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>
+            {isProfit ? <FiTrendingUp size={14} /> : <FiTrendingDown size={14} />}
+            {formatCurrency(item.out_p_n_l)}
+          </div>
+        </td>
+        <td className="text-right py-4 px-6">
+          <div className={`font-medium ${returnPercent >= 0 ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>
+            {item.out_abs_per ? `${parseFloat(item.out_abs_per).toFixed(2)}%` : "--"}
+          </div>
+        </td>
+        <td className="relative w-20 py-4 px-6">
+          <div className="relative flex justify-end">
+            <button
+              ref={(el) => {
+                transactButtonRefs.current[globalIndex] = el;
+              }}
+              className="transact-button btn btn-sm bg-gradient-to-r from-[#F59E0B] to-[#B45309] hover:from-[#F59E0B] hover:to-[#B45309] w-10 mx-auto py-0 px-2 text-sm font-medium text-white border-0 rounded-lg shadow-sm transition-all duration-200 transform hover:scale-105"
+              onClick={() => {
+                setSelectedScheme(item);
+                handleTransactClick(globalIndex);
+              }}
+            >
+              <GrTransaction size={14} className="text-white" />
+            </button>
+          </div>
+        </td>
+      </tr>
+    );
+  };
+
   return (
-    <>
+    <div className="min-h-screen bg-[#0A0A0A]">
       {/* Header Section */}
-      <div className="bg-white border-b border-gray-200 shadow-sm w-full">
+      <div className="bg-[#111111] border-b border-[#2A2A2A] shadow-sm w-full">
         <div className="w-full px-4 sm:px-6 lg:px-8 py-4">
           {/* Title Section */}
           <div className="flex items-center gap-3 mb-6">
             <CustomBackButton
               onClick={() => window.history.back()}
-              className="inline-flex items-center p-2 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+              className="inline-flex items-center p-2 border border-[#2A2A2A] rounded-lg text-[#F9FAFB] bg-[#1F1A1A] hover:bg-[#2A2A2A] transition-colors"
             >
-              <IoMdArrowRoundBack className="h-5 w-5" />
+              <ChevronLeft className="h-5 w-5" />
             </CustomBackButton>
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-[#F59E0B]/20 rounded-lg">
+                <BarChart3 className="w-5 h-5 text-[#F59E0B]" />
+              </div>
+              <h1 className="text-xl font-bold text-white">Portfolio</h1>
+            </div>
           </div>
 
           {/* Investor Selection Section */}
@@ -727,7 +721,7 @@ const Portfolio: NextPage = () => {
             <div className="flex flex-wrap items-end gap-4 flex-1">
               {/* Investor Dropdown */}
               <div className="form-control min-w-[200px] sm:min-w-[240px]">
-                <CustomLabel className="text-sm font-medium text-gray-700 mb-2">
+                <CustomLabel className="text-sm font-medium text-white mb-2">
                   Investor name
                 </CustomLabel>
                 <CustomReactSelect
@@ -737,14 +731,45 @@ const Portfolio: NextPage = () => {
                   bindValue="value"
                   value={selectedInvestorId}
                   onChange={handleInvestorSelection}
-                  className="border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="bg-[#1F1A1A] border-[#2A2A2A] text-white rounded-lg"
+                  styles={{
+                    control: (base: any) => ({
+                      ...base,
+                      backgroundColor: '#1F1A1A',
+                      borderColor: '#2A2A2A',
+                      color: '#F9FAFB'
+                    }),
+                    menu: (base: any) => ({
+                      ...base,
+                      backgroundColor: '#1F1A1A',
+                      border: '1px solid #2A2A2A'
+                    }),
+                    option: (base: any, state: any) => ({
+                      ...base,
+                      backgroundColor: state.isFocused ? '#2A2A2A' : '#1F1A1A',
+                      color: '#F9FAFB',
+                      cursor: 'pointer'
+                    }),
+                    singleValue: (base: any) => ({
+                      ...base,
+                      color: '#F9FAFB'
+                    }),
+                    input: (base: any) => ({
+                      ...base,
+                      color: '#F9FAFB'
+                    }),
+                    placeholder: (base: any) => ({
+                      ...base,
+                      color: '#9CA3AF'
+                    })
+                  }}
                 />
               </div>
 
               {/* Account Holding Dropdown */}
               {hasAccountHolders && (
                 <div className="form-control min-w-[200px] sm:min-w-[240px]">
-                  <CustomLabel className="text-sm font-medium text-gray-700 mb-2">
+                  <CustomLabel className="text-sm font-medium text-white mb-2">
                     Account Holding
                   </CustomLabel>
                   <CustomReactSelect
@@ -753,12 +778,43 @@ const Portfolio: NextPage = () => {
                     bindName="text"
                     bindValue="value"
                     value={selectedAccountHoldingId}
-                    onChange={(option) => {
+                    onChange={(option: any) => {
                       setSelectedAccountHolding(option.text);
                       setSelectedAccountHoldingId(option.value);
                       setSelectedAccountHoldingPan(option.pan);
                     }}
-                    className="border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="bg-[#1F1A1A] border-[#2A2A2A] text-white rounded-lg"
+                    styles={{
+                      control: (base: any) => ({
+                        ...base,
+                        backgroundColor: '#1F1A1A',
+                        borderColor: '#2A2A2A',
+                        color: '#F9FAFB'
+                      }),
+                      menu: (base: any) => ({
+                        ...base,
+                        backgroundColor: '#1F1A1A',
+                        border: '1px solid #2A2A2A'
+                      }),
+                      option: (base: any, state: any) => ({
+                        ...base,
+                        backgroundColor: state.isFocused ? '#2A2A2A' : '#1F1A1A',
+                        color: '#F9FAFB',
+                        cursor: 'pointer'
+                      }),
+                      singleValue: (base: any) => ({
+                        ...base,
+                        color: '#F9FAFB'
+                      }),
+                      input: (base: any) => ({
+                        ...base,
+                        color: '#F9FAFB'
+                      }),
+                      placeholder: (base: any) => ({
+                        ...base,
+                        color: '#9CA3AF'
+                      })
+                    }}
                   />
                 </div>
               )}
@@ -766,11 +822,11 @@ const Portfolio: NextPage = () => {
               {/* Search Button */}
               <div className="flex items-end">
                 <button
-                  className="inline-flex items-center gap-2 px-6 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-[#F59E0B] to-[#B45309] hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#F59E0B] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
                   onClick={handleSearch}
                   disabled={!selectedInvestorPan}
                 >
-                  <FaSearch className="h-4 w-4" />
+                  <Search className="h-4 w-4" />
                   <span>Search</span>
                 </button>
               </div>
@@ -779,85 +835,76 @@ const Portfolio: NextPage = () => {
 
           {/* Stats Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-            <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+            <div className="bg-[#111111] rounded-xl border border-[#2A2A2A] p-4 shadow-sm hover:border-[#F59E0B]/50 transition-all">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Invested</p>
-                  <p className="text-lg font-bold text-gray-900 mt-1">
+                  <p className="text-sm font-medium text-white/60">Invested</p>
+                  <p className="text-lg font-bold text-white mt-1">
                     {formatCurrency(totalInvested.toString())}
                   </p>
                 </div>
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <IoWalletOutline className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-[#F59E0B]/20 rounded-xl flex items-center justify-center">
+                  <Wallet className="w-5 h-5 text-[#F59E0B]" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+            <div className="bg-[#111111] rounded-xl border border-[#2A2A2A] p-4 shadow-sm hover:border-[#F59E0B]/50 transition-all">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Current Value</p>
-                  <p className="text-lg font-bold text-gray-900 mt-1">
+                  <p className="text-sm font-medium text-white/60">Current Value</p>
+                  <p className="text-lg font-bold text-white mt-1">
                     {formatCurrency(totalCurrentValue.toString())}
                   </p>
                 </div>
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <IoAnalyticsOutline className="w-5 h-5 text-green-600" />
+                <div className="w-10 h-10 bg-[#10B981]/20 rounded-xl flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-[#10B981]" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+            <div className="bg-[#111111] rounded-xl border border-[#2A2A2A] p-4 shadow-sm hover:border-[#F59E0B]/50 transition-all">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Profit/Loss</p>
-                  <p className={`text-lg font-bold mt-1 ${totalProfitLoss >= 0
-                    ? 'text-green-600'
-                    : 'text-red-600'
-                    }`}>
+                  <p className="text-sm font-medium text-white/60">Profit/Loss</p>
+                  <p className={`text-lg font-bold mt-1 ${totalProfitLoss >= 0 ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>
                     {formatCurrency(totalProfitLoss.toString())}
                   </p>
                 </div>
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${totalProfitLoss >= 0
-                  ? 'bg-green-100'
-                  : 'bg-red-100'
-                  }`}>
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${totalProfitLoss >= 0 ? 'bg-[#10B981]/20' : 'bg-[#EF4444]/20'}`}>
                   {totalProfitLoss >= 0 ? (
-                    <FiTrendingUp className="w-5 h-5 text-green-600" />
+                    <TrendingUp className="w-5 h-5 text-[#10B981]" />
                   ) : (
-                    <FiTrendingDown className="w-5 h-5 text-red-600" />
+                    <TrendingDown className="w-5 h-5 text-[#EF4444]" />
                   )}
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+            <div className="bg-[#111111] rounded-xl border border-[#2A2A2A] p-4 shadow-sm hover:border-[#F59E0B]/50 transition-all">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Avg Return</p>
-                  <p className={`text-lg font-bold mt-1 ${avgReturn >= 0
-                    ? 'text-green-600'
-                    : 'text-red-600'
-                    }`}>
+                  <p className="text-sm font-medium text-white/60">Avg Return</p>
+                  <p className={`text-lg font-bold mt-1 ${avgReturn >= 0 ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>
                     {avgReturn.toFixed(2)}%
                   </p>
                 </div>
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <FaStar className="w-5 h-5 text-purple-600" />
+                <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                  <Star className="w-5 h-5 text-purple-400" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
+            <div className="bg-[#111111] rounded-xl border border-[#2A2A2A] p-4 shadow-sm hover:border-[#F59E0B]/50 transition-all">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Avg Holding</p>
-                  <p className="text-lg font-bold text-gray-900 mt-1">
+                  <p className="text-sm font-medium text-white/60">Avg Holding</p>
+                  <p className="text-lg font-bold text-white mt-1">
                     {formatHoldingDays(avgHoldingDays)}
                   </p>
                 </div>
-                <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <MdOutlineCalendarToday className="w-5 h-5 text-orange-600" />
+                <div className="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center">
+                  <Calendar className="w-5 h-5 text-orange-400" />
                 </div>
               </div>
             </div>
@@ -866,12 +913,12 @@ const Portfolio: NextPage = () => {
       </div>
 
       {/* Filter Section */}
-      <div className="bg-gray-50 border-b border-gray-200 w-full">
+      <div className="bg-[#0F0F0F] border-b border-[#2A2A2A] w-full">
         <div className="w-full px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-wrap items-center gap-4">
-            <span className="text-sm font-medium text-gray-700">Group by:</span>
+            <span className="text-sm font-medium text-white/70">Group by:</span>
 
-            <label className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 cursor-pointer transition-colors">
+            <label className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-[#2A2A2A] bg-[#111111] hover:bg-[#1F1A1A] cursor-pointer transition-colors">
               <CustomCheckbox
                 label="None"
                 name="groupBy"
@@ -881,7 +928,7 @@ const Portfolio: NextPage = () => {
               />
             </label>
 
-            <label className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 cursor-pointer transition-colors">
+            <label className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-[#2A2A2A] bg-[#111111] hover:bg-[#1F1A1A] cursor-pointer transition-colors">
               <CustomCheckbox
                 label="By AMC"
                 name="groupBy"
@@ -891,7 +938,7 @@ const Portfolio: NextPage = () => {
               />
             </label>
 
-            <label className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 cursor-pointer transition-colors">
+            <label className="inline-flex items-center gap-2 px-3 py-2 rounded-lg border border-[#2A2A2A] bg-[#111111] hover:bg-[#1F1A1A] cursor-pointer transition-colors">
               <CustomCheckbox
                 label="By Sub Category"
                 name="groupBy"
@@ -901,7 +948,7 @@ const Portfolio: NextPage = () => {
               />
             </label>
 
-            <div className="md:pl-4 md:ml-4 text-sm text-gray-600 md:border-l-2 border-gray-300 flex items-center">
+            <div className="md:pl-4 md:ml-4 text-sm text-white/60 md:border-l-2 border-[#2A2A2A] flex items-center">
               <label className="inline-flex items-center gap-2 cursor-pointer">
                 <CustomCheckbox
                   type="checkbox"
@@ -917,111 +964,101 @@ const Portfolio: NextPage = () => {
 
       {/* Table Section */}
       <div className="w-full px-4 sm:px-6 lg:px-8 py-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden w-full">
+        <div className="bg-[#111111] rounded-xl shadow-sm border border-[#2A2A2A] overflow-hidden w-full">
           <div className="overflow-x-auto w-full">
             <table className="w-full min-w-full table-auto">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-[#1F1A1A] border-b border-[#2A2A2A]">
                 <tr>
                   <th className="text-left py-4 px-6 w-1/4">
                     <div className="flex justify-between items-center">
-                      <div className="text-sm font-semibold text-gray-700">Scheme</div>
+                      <div className="text-sm font-semibold text-white">Scheme</div>
                       <div
-                        className="sorting cursor-pointer hover:bg-gray-200 p-1 rounded transition-colors"
+                        className="sorting cursor-pointer hover:bg-[#2A2A2A] p-1 rounded transition-colors"
                         onClick={() => onChangeSorting("out_scheme")}
                       >
                         {getSortIcon("out_scheme")}
                       </div>
                     </div>
                   </th>
-
                   <th className="text-right py-4 px-6 w-1/8">
                     <div className="flex justify-between items-center">
-                      <div className="text-sm font-semibold text-gray-700">NAV</div>
+                      <div className="text-sm font-semibold text-white">NAV</div>
                       <div
-                        className="sorting cursor-pointer hover:bg-gray-200 p-1 rounded transition-colors"
+                        className="sorting cursor-pointer hover:bg-[#2A2A2A] p-1 rounded transition-colors"
                         onClick={() => onChangeSorting("out_current_nav")}
                       >
                         {getSortIcon("out_current_nav")}
                       </div>
                     </div>
                   </th>
-
-                  {/* Units Column Header */}
                   <th className="text-right py-4 px-6 w-1/8">
                     <div className="flex justify-between items-center">
-                      <div className="text-sm font-semibold text-gray-700">Units</div>
+                      <div className="text-sm font-semibold text-white">Units</div>
                       <div
-                        className="sorting cursor-pointer hover:bg-gray-200 p-1 rounded transition-colors"
+                        className="sorting cursor-pointer hover:bg-[#2A2A2A] p-1 rounded transition-colors"
                         onClick={() => onChangeSorting("out_units")}
                       >
                         {getSortIcon("out_units")}
                       </div>
                     </div>
                   </th>
-
-                  {/* Holding Days Column Header */}
                   <th className="text-right py-4 px-6 w-1/8">
                     <div className="flex justify-between items-center">
-                      <div className="text-sm font-semibold text-gray-700">Holding Days</div>
+                      <div className="text-sm font-semibold text-white">Holding Days</div>
                       <div
-                        className="sorting cursor-pointer hover:bg-gray-200 p-1 rounded transition-colors"
+                        className="sorting cursor-pointer hover:bg-[#2A2A2A] p-1 rounded transition-colors"
                         onClick={() => onChangeSorting("out_no_of_days")}
                       >
                         {getSortIcon("out_no_of_days")}
                       </div>
                     </div>
                   </th>
-
                   <th className="text-right py-4 px-6 w-1/8">
                     <div className="flex justify-between items-center">
-                      <div className="text-sm font-semibold text-gray-700">Invested Value</div>
+                      <div className="text-sm font-semibold text-white">Invested Value</div>
                       <div
-                        className="sorting cursor-pointer hover:bg-gray-200 p-1 rounded transition-colors"
+                        className="sorting cursor-pointer hover:bg-[#2A2A2A] p-1 rounded transition-colors"
                         onClick={() => onChangeSorting("out_amount")}
                       >
                         {getSortIcon("out_amount")}
                       </div>
                     </div>
                   </th>
-
                   <th className="text-right py-4 px-6 w-1/8">
                     <div className="flex justify-between items-center">
-                      <div className="text-sm font-semibold text-gray-700">Current Value</div>
+                      <div className="text-sm font-semibold text-white">Current Value</div>
                       <div
-                        className="sorting cursor-pointer hover:bg-gray-200 p-1 rounded transition-colors"
+                        className="sorting cursor-pointer hover:bg-[#2A2A2A] p-1 rounded transition-colors"
                         onClick={() => onChangeSorting("out_current_val")}
                       >
                         {getSortIcon("out_current_val")}
                       </div>
                     </div>
                   </th>
-
                   <th className="text-right py-4 px-6 w-1/8">
                     <div className="flex justify-between items-center">
-                      <div className="text-sm font-semibold text-gray-700">Profit/Loss</div>
+                      <div className="text-sm font-semibold text-white">Profit/Loss</div>
                       <div
-                        className="sorting cursor-pointer hover:bg-gray-200 p-1 rounded transition-colors"
+                        className="sorting cursor-pointer hover:bg-[#2A2A2A] p-1 rounded transition-colors"
                         onClick={() => onChangeSorting("out_p_n_l")}
                       >
                         {getSortIcon("out_p_n_l")}
                       </div>
                     </div>
                   </th>
-
                   <th className="text-right py-4 px-6 w-1/8">
                     <div className="flex justify-between items-center">
-                      <div className="text-sm font-semibold text-gray-700">Return</div>
+                      <div className="text-sm font-semibold text-white">Return</div>
                       <div
-                        className="sorting cursor-pointer hover:bg-gray-200 p-1 rounded transition-colors"
+                        className="sorting cursor-pointer hover:bg-[#2A2A2A] p-1 rounded transition-colors"
                         onClick={() => onChangeSorting("out_abs_per")}
                       >
                         {getSortIcon("out_abs_per")}
                       </div>
                     </div>
                   </th>
-
                   <th className="text-right py-4 px-6 w-24">
-                    <div className="text-sm font-semibold text-gray-700">Transact</div>
+                    <div className="text-sm font-semibold text-white">Transact</div>
                   </th>
                 </tr>
               </thead>
@@ -1029,7 +1066,7 @@ const Portfolio: NextPage = () => {
                 {loader ? (
                   <tr>
                     <td colSpan={9} className="text-center py-8">
-                      <div className="text-gray-500">
+                      <div className="text-white/60">
                         {!hasSearched ? "Select an investor and click Search" : "Loading..."}
                       </div>
                     </td>
@@ -1037,39 +1074,40 @@ const Portfolio: NextPage = () => {
                 ) : (
                   <>
                     {Object.keys(groupedData).length > 0 ? (
-                      Object.entries(groupedData).map(([groupName, schemes]) => {
-                        let globalIndex = 0;
+                      Object.entries(groupedData).map(([groupName, schemes], groupIndex) => {
                         const isOpen = groupBy === "None" || openAccordionGroup === groupName;
-
+                        let globalIndex = 0;
+                        
                         return (
                           <Fragment key={groupName}>
                             {groupBy !== "None" && (
                               <tr
-                                className="bg-gray-100 border-b border-gray-200 cursor-pointer hover:bg-gray-200 transition-colors"
+                                key={`group-${groupIndex}`}
+                                className="bg-[#1F1A1A] border-b border-[#2A2A2A] cursor-pointer hover:bg-[#2A2A2A] transition-colors"
                                 onClick={() => setOpenAccordionGroup(openAccordionGroup === groupName ? null : groupName)}
                               >
                                 <td colSpan={9} className="font-semibold text-sm py-3 px-6">
                                   <div className="flex items-center justify-between">
-                                    <span className="text-gray-900">
+                                    <span className="text-white">
                                       {groupName}
-                                      <span className="text-gray-600 ml-2">
+                                      <span className="text-white/50 ml-2">
                                         ({schemes.length} {schemes.length === 1 ? "scheme" : "schemes"})
                                       </span>
                                     </span>
                                     <span>
                                       {isOpen ? (
-                                        <FaChevronUp className="w-4 h-4 transition-transform text-blue-600" />
+                                        <FaChevronUp className="w-4 h-4 transition-transform text-[#F59E0B]" />
                                       ) : (
-                                        <FaChevronUp className="w-4 h-4 rotate-180 transition-transform text-blue-600" />
+                                        <FaChevronUp className="w-4 h-4 rotate-180 transition-transform text-[#F59E0B]" />
                                       )}
                                     </span>
                                   </div>
                                 </td>
                               </tr>
                             )}
-                            {isOpen && schemes.map((item: any, index: number) => {
+                            {isOpen && schemes.map((item: any) => {
                               const currentGlobalIndex = globalIndex++;
-                              return renderSchemeRow(item, index, currentGlobalIndex);
+                              return renderSchemeRow(item, currentGlobalIndex);
                             })}
                           </Fragment>
                         );
@@ -1077,7 +1115,7 @@ const Portfolio: NextPage = () => {
                     ) : (
                       <tr>
                         <td colSpan={9} className="text-center py-8">
-                          <div className="text-gray-500">
+                          <div className="text-white/60">
                             {hasSearched ? "No Data Found" : "Select an investor and click Search"}
                           </div>
                         </td>
@@ -1153,7 +1191,7 @@ const Portfolio: NextPage = () => {
           setPayload={setPayload}
         />
       )}
-    </>
+    </div>
   );
 };
 

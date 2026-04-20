@@ -42,20 +42,20 @@ export default function SendMailForm({ onBack }: SendMailFormProps) {
                     {/* Back Button */}
                     <button
                         onClick={handleBack}
-                        className="flex items-center text-blue-600 hover:text-blue-800 mb-4"
+                        className="flex items-center text-[#F59E0B] hover:text-[#F59E0B] mb-4"
                     >
                         <ArrowLeft className="w-4 h-4 mr-1" />
                         Back
                     </button>
-                    <h1 className="text-xl font-bold text-gray-900 mb-1">Send Email</h1>
+                    <h1 className="text-xl font-bold text-[#F9FAFB] mb-1">Send Email</h1>
 
                 </div>
 
                 {/* Main Form Card */}
-                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                <div className="bg-[#111111] rounded-2xl shadow-lg border border-[#2A2A2A] overflow-hidden">
                     {/* Card Header */}
                     <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3">
-                        <h2 className="text-sm font-semibold text-white flex items-center">
+                        <h2 className="text-sm font-semibold text-[#F9FAFB] flex items-center">
                             <MessageSquare className="w-4 h-4 mr-2" />
                             Email Composer
                         </h2>
@@ -65,8 +65,8 @@ export default function SendMailForm({ onBack }: SendMailFormProps) {
                     <div className="p-4 space-y-4">
                         {/* Mail To Field */}
                         <div>
-                            <label className="flex items-center text-xs font-semibold text-gray-700 mb-1">
-                                <User className="w-3 h-3 mr-1 text-blue-600" />
+                            <label className="flex items-center text-xs font-semibold text-[#F9FAFB] mb-1">
+                                <User className="w-3 h-3 mr-1 text-[#F59E0B]" />
                                 Recipient Email
                             </label>
                             <div className="relative">
@@ -74,38 +74,38 @@ export default function SendMailForm({ onBack }: SendMailFormProps) {
                                     type="email"
                                     value={mailTo}
                                     onChange={(e) => setMailTo(e.target.value)}
-                                    className="w-full px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white transition-all duration-300 text-gray-800 placeholder-gray-400"
+                                    className="w-full px-3 py-2 text-sm bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg focus:outline-none focus:border-[#F59E0B] focus:bg-[#111111] transition-all duration-300 text-[#F9FAFB] placeholder-gray-400"
                                     placeholder="Enter recipient's email address"
                                 />
                                 <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                                    <Mail className="w-4 h-4 text-gray-400" />
+                                    <Mail className="w-4 h-4 text-[#9CA3AF]" />
                                 </div>
                             </div>
                         </div>
 
                         {/* Subject Field */}
                         <div>
-                            <label className="flex items-center text-xs font-semibold text-gray-700 mb-1">
-                                <MessageSquare className="w-3 h-3 mr-1 text-blue-600" />
+                            <label className="flex items-center text-xs font-semibold text-[#F9FAFB] mb-1">
+                                <MessageSquare className="w-3 h-3 mr-1 text-[#F59E0B]" />
                                 Subject Line
                             </label>
                             <input
                                 type="text"
                                 value={subject}
                                 onChange={(e) => setSubject(e.target.value)}
-                                className="w-full px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white transition-all duration-300 text-gray-800 placeholder-gray-400"
+                                className="w-full px-3 py-2 text-sm bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg focus:outline-none focus:border-[#F59E0B] focus:bg-[#111111] transition-all duration-300 text-[#F9FAFB] placeholder-gray-400"
                                 placeholder="Enter email subject"
                             />
                         </div>
 
                         {/* Message Field */}
                         <div>
-                            <label className="flex items-center justify-between text-xs font-semibold text-gray-700 mb-1">
+                            <label className="flex items-center justify-between text-xs font-semibold text-[#F9FAFB] mb-1">
                                 <span className="flex items-center">
-                                    <Mail className="w-3 h-3 mr-1 text-blue-600" />
+                                    <Mail className="w-3 h-3 mr-1 text-[#F59E0B]" />
                                     Message Content
                                 </span>
-                                <span className="text-xs font-normal text-gray-500">
+                                <span className="text-xs font-normal text-[#9CA3AF]">
                                     Max 500 characters
                                 </span>
                             </label>
@@ -115,10 +115,10 @@ export default function SendMailForm({ onBack }: SendMailFormProps) {
                                     onChange={(e) => setMessage(e.target.value)}
                                     rows={6}
                                     maxLength={500}
-                                    className="w-full px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-blue-500 focus:bg-white transition-all duration-300 text-gray-800 placeholder-gray-400 resize-none"
+                                    className="w-full px-3 py-2 text-sm bg-[#0A0A0A] border border-[#2A2A2A] rounded-lg focus:outline-none focus:border-[#F59E0B] focus:bg-[#111111] transition-all duration-300 text-[#F9FAFB] placeholder-gray-400 resize-none"
                                     placeholder="Type your message here..."
                                 />
-                                <div className="absolute bottom-2 right-2 text-xs text-gray-500 bg-white px-2 py-1 rounded-md shadow-sm">
+                                <div className="absolute bottom-2 right-2 text-xs text-[#9CA3AF] bg-[#111111] px-2 py-1 rounded-md shadow-sm">
                                     {message.length}/500
                                 </div>
                             </div>
@@ -128,7 +128,7 @@ export default function SendMailForm({ onBack }: SendMailFormProps) {
                         <div className="flex justify-end pt-2">
                             <button
                                 onClick={handleSendMail}
-                                className="group px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-200"
+                                className="group px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-[#F9FAFB] text-sm font-semibold rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-200"
                             >
                                 <span className="flex items-center">
                                     <Send className="w-4 h-4 mr-2 group-hover:translate-x-1 transition-transform duration-300" />
@@ -157,7 +157,7 @@ export default function SendMailForm({ onBack }: SendMailFormProps) {
                 </div>
 
                 {/* Footer */}
-                <div className="text-center mt-4 text-gray-500 text-xs">
+                <div className="text-center mt-4 text-[#9CA3AF] text-xs">
                     <p>Secure email delivery • Professional communication platform</p>
                 </div>
             </div>

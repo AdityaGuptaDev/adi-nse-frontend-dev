@@ -37,9 +37,9 @@ const TopFundManagers = ({ data }: any) => {
         isVisible={navegateLoader}
         message="Processing..."
       />
-      <div className="bg-white">
+      <div className="bg-[#111111]">
         <div className="flex items-center justify-between mb-4">
-          <CustomText className="text-lg font-montserrat font-semibold text-gray-900">
+          <CustomText className="text-lg font-montserrat font-semibold text-[#F9FAFB]">
             Top Fund Managers
           </CustomText>
           {/* <CustomButton
@@ -48,7 +48,7 @@ const TopFundManagers = ({ data }: any) => {
           View All →
         </CustomButton> */}
           <CustomButton
-            className="p-0 h-auto min-h-0 !text-secondary-content !bg-white"
+            className="p-0 h-auto min-h-0 !text-secondary-content !bg-[#111111]"
             onClick={() => onChangeViewAll()}
           >
             View All <span><FaAngleRight /></span>
@@ -60,16 +60,16 @@ const TopFundManagers = ({ data }: any) => {
             fundManagers?.slice(0, 3)?.map((manager: any, index: any) => (
               <div
                 key={index}
-                className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all duration-200 cursor-pointer"
+                className="bg-[#111111] border border-[#2A2A2A] rounded-xl p-4 hover:shadow-lg transition-all duration-200 cursor-pointer"
                 onClick={() => onChangeFundManager(manager)}
               >
                 {/* Manager Info */}
                 <div className=" mb-3">
-                  <CustomText className="font-semibold text-gray-900 text-base mb-1">
+                  <CustomText className="font-semibold text-[#F9FAFB] text-base mb-1">
                     {manager?.manager_name}
                   </CustomText>
                   {/* {manager.experience && (
-                <CustomText className="text-xs text-gray-500">
+                <CustomText className="text-xs text-[#9CA3AF]">
                   {manager.experience} years experience
                 </CustomText>
               )} */}
@@ -77,10 +77,10 @@ const TopFundManagers = ({ data }: any) => {
 
                 {/* AUM Managed */}
                 <div className=" mb-3">
-                  <CustomText className="text-xs text-gray-500 mb-1">
+                  <CustomText className="text-xs text-[#9CA3AF] mb-1">
                     AUM Managed
                   </CustomText>
-                  <CustomText className="text-sm font-bold text-gray-900">
+                  <CustomText className="text-sm font-bold text-[#F9FAFB]">
                     {convertToCrores(manager.total_AUM)} Cr.
                   </CustomText>
                 </div>
@@ -88,10 +88,10 @@ const TopFundManagers = ({ data }: any) => {
                 {/* Top Performing Scheme */}
                 <div className="mt-4">
                   <div className="flex justify-between items-center">
-                    <CustomText className="text-xs text-gray-500 mb-2">
+                    <CustomText className="text-xs text-[#9CA3AF] mb-2">
                       Top Performing Scheme
                     </CustomText>
-                    <CustomText className="text-xs text-gray-500">
+                    <CustomText className="text-xs text-[#9CA3AF]">
                       3y Return %
                     </CustomText>
                   </div>
@@ -102,7 +102,7 @@ const TopFundManagers = ({ data }: any) => {
                         <span className="text-blue-600 text-xs">{manager?.topScheme?.SchemeMaster?.name?.charAt(0)}</span>
                       </div>
                       <div className="flex-1">
-                        <CustomText className="text-sm font-medium text-gray-900 leading-tight">
+                        <CustomText className="text-sm font-medium text-[#F9FAFB] leading-tight">
                           {manager?.topScheme?.SchemeMaster?.name}
                         </CustomText>
                       </div>
@@ -124,7 +124,7 @@ const TopFundManagers = ({ data }: any) => {
               </div>
             ))) : (
             <div className="col-span-3">
-              <CustomText className="text-center text-gray-500">
+              <CustomText className="text-center text-[#9CA3AF]">
                 No Data Found
               </CustomText>
             </div>

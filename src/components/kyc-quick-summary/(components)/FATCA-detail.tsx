@@ -21,14 +21,14 @@ function FATCADetail({ nextTabs, summarydata }: any) {
 
             {/* Main Content */}
             <div className="max-w-7xl mx-auto">
-                <div className="bg-white">
+                <div className="bg-[#111111]">
 
                     {/* FATCA Header */}
 
 
                     {/* FATCA Information Grid */}
                     <div className="p-6">
-                        <CustomText className="text-lg font-semibold text-gray-900 mb-6">
+                        <CustomText className="text-lg font-semibold text-[#F9FAFB] mb-6">
                             Declaration Details
                         </CustomText>
 
@@ -114,7 +114,7 @@ function FATCADetail({ nextTabs, summarydata }: any) {
                             <div className="mt-8">
                                 <div className="flex items-center mb-4">
                                     <FaFlag className="text-orange-600 mr-2" />
-                                    <CustomText className="text-lg font-semibold text-gray-900">
+                                    <CustomText className="text-lg font-semibold text-[#F9FAFB]">
                                         Foreign Address Information
                                     </CustomText>
                                 </div>
@@ -124,7 +124,7 @@ function FATCADetail({ nextTabs, summarydata }: any) {
                                         <CustomText className="viewlabel">
                                             Citizenship Country
                                         </CustomText>
-                                        <CustomText className="text-base font-medium text-gray-900 bg-white px-3 py-2 rounded-md">
+                                        <CustomText className="text-base font-medium text-[#F9FAFB] bg-[#111111] px-3 py-2 rounded-md">
                                             {summarydata?.InvestorDeclaration?.CitizenshipCountry?.name || 'N/A'}
                                         </CustomText>
                                     </div>
@@ -133,7 +133,7 @@ function FATCADetail({ nextTabs, summarydata }: any) {
                                         <CustomText className="viewlabel">
                                             Foreign Address
                                         </CustomText>
-                                        <CustomText className="text-base font-medium text-gray-900 bg-white px-3 py-2 rounded-md">
+                                        <CustomText className="text-base font-medium text-[#F9FAFB] bg-[#111111] px-3 py-2 rounded-md">
                                             {summarydata?.InvestorDeclaration?.foreign_address || 'N/A'}
                                         </CustomText>
                                     </div>
@@ -142,7 +142,7 @@ function FATCADetail({ nextTabs, summarydata }: any) {
                                         <CustomText className="viewlabel">
                                             Foreign City
                                         </CustomText>
-                                        <CustomText className="text-base font-medium text-gray-900 bg-white px-3 py-2 rounded-md">
+                                        <CustomText className="text-base font-medium text-[#F9FAFB] bg-[#111111] px-3 py-2 rounded-md">
                                             {summarydata?.InvestorDeclaration?.foreign_city || 'N/A'}
                                         </CustomText>
                                     </div>
@@ -151,7 +151,7 @@ function FATCADetail({ nextTabs, summarydata }: any) {
                                         <CustomText className="viewlabel">
                                             Foreign District
                                         </CustomText>
-                                        <CustomText className="text-base font-medium text-gray-900 bg-white px-3 py-2 rounded-md">
+                                        <CustomText className="text-base font-medium text-[#F9FAFB] bg-[#111111] px-3 py-2 rounded-md">
                                             {summarydata?.InvestorDeclaration?.foreign_district || 'N/A'}
                                         </CustomText>
                                     </div>
@@ -160,7 +160,7 @@ function FATCADetail({ nextTabs, summarydata }: any) {
                                         <CustomText className="viewlabel">
                                             Foreign State
                                         </CustomText>
-                                        <CustomText className="text-base font-medium text-gray-900 bg-white px-3 py-2 rounded-md">
+                                        <CustomText className="text-base font-medium text-[#F9FAFB] bg-[#111111] px-3 py-2 rounded-md">
                                             {summarydata?.InvestorDeclaration?.StateMaster?.name || 'N/A'}
                                         </CustomText>
                                     </div>
@@ -169,7 +169,7 @@ function FATCADetail({ nextTabs, summarydata }: any) {
                                         <CustomText className="viewlabel">
                                             Foreign Country
                                         </CustomText>
-                                        <CustomText className="text-base font-medium text-gray-900 bg-white px-3 py-2 rounded-md">
+                                        <CustomText className="text-base font-medium text-[#F9FAFB] bg-[#111111] px-3 py-2 rounded-md">
                                             {summarydata?.InvestorDeclaration?.ContryOfBirth?.name || 'N/A'}
                                         </CustomText>
                                     </div>
@@ -184,7 +184,7 @@ function FATCADetail({ nextTabs, summarydata }: any) {
             </div>
 
             {/* Action Buttons */}
-            <div className="bg-white">
+            <div className="bg-[#111111]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6 py-4">
                     <div className="flex justify-end items-center">
 

@@ -4,7 +4,7 @@ import AccountContext from "@/context/AccountContext/Account.context";
 import api from "@/utils/api";
 import { handleServerError, toastAlert } from "@/utils/helpers";
 import { useContext, useEffect, useMemo, useState } from "react";
-
+import { ShoppingCart, Trash2, Loader2, AlertCircle } from 'lucide-react';
 
 const MyCartSync = () => {
     const [loader, setLoader] = useState<boolean>(false);
@@ -64,19 +64,20 @@ const MyCartSync = () => {
     }, [InvestorId, AccountHolder]);
 
 
-
-
-
     const handleDeleteCart = async (cartId: number) => {
         try {
             await api.delete(`/cart/deleteCartItem/${cartId}`);
             setLoader(true);
             const payload = {
-                InvestorId
+                investor_id: "1"
             }
 
-            // const getCart = await api.get(`/cart/getAllInvestorCartData?data=${payload}`);
-            const getCart = await api.post(`/investor/kyc-users`);
+            //const getCart = await api.get(`/cart/getAllInvestorCartData?data=${payload}`);
+            //const getCart = await api.post(`/investor/kyc-users`);
+
+            const getCart = await api.post(`/cart/getInvestorCartData`, payload);
+
+            console.log(getCart, 'getCart')
 
 
             if (getCart?.data?.data) {
@@ -96,7 +97,7 @@ const MyCartSync = () => {
         }
     }
 
-    console.log(cartCounter,"cartCountercartCounter")
+    console.log(cartCounter, "cartCountercartCounter")
 
     const handleMultipalDeleteCart = async (cartIds: any) => {
         try {
@@ -121,9 +122,33 @@ const MyCartSync = () => {
         }
     }
 
+    // Helper function to get cart summary (can be used in UI components)
+    const getCartSummary = () => {
+        const totalItems = cartData?.length || 0;
+        const totalAmount = cartData?.reduce((sum: number, item: any) => 
+            sum + Number(item.trans_amount || item.amount || 0), 0) || 0;
+        
+        return {
+            totalItems,
+            totalAmount,
+            lumpsumItems: cartData?.filter((item: any) => item.trans_type === 1)?.length || 0,
+            sipItems: cartData?.filter((item: any) => item.trans_type === 2)?.length || 0,
+            stpItems: cartData?.filter((item: any) => item.trans_type === 3)?.length || 0,
+        };
+    };
 
+    // Helper function to check if cart is empty
+    const isCartEmpty = () => {
+        return !cartData || cartData.length === 0;
+    };
+
+    // Helper function to get cart item count
+    const getCartItemCount = () => {
+        return cartData?.length || 0;
+    };
 
     return {
+        // State variables
         loader,
         setCurrentAmt,
         currentAmt,
@@ -132,20 +157,35 @@ const MyCartSync = () => {
         setCartTab,
         cartTab,
         cartList,
-        handleDeleteCart,
+        paymentOpen,
+        setPaymentOpen,
+        setLoader,
+        setCartList,
+        
+        // Cart data
+        cartData,
+        setCartData,
+        
+        // Account related
         AccountHolder,
         investorContextList,
         handleInvesterChange,
         setAccountHolder,
         setInvestorId,
         InvestorId,
-        setPaymentOpen,
-        paymentOpen,
-        setLoader,
-        setCartList,
+        
+        // Cart operations
+        handleDeleteCart,
         handleMultipalDeleteCart,
-        cartData,
-        setCartData
+        
+        // Cart utilities
+        getCartSummary,
+        isCartEmpty,
+        getCartItemCount,
+        
+        // Cart counter
+        cartCounter,
+        setCartCounter,
     };
 };
 

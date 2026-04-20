@@ -46,7 +46,7 @@ const DashboardSummary: NextPage = () => {
                       <Typography variant="h5" color="blue-gray">
                         {card.title}
                       </Typography>
-                      <div className="text-proses-secondary bg-transparent shadow-lg border-2 border-gray-100 p-2 rounded-full">
+                      <div className="text-proses-secondary bg-transparent shadow-lg border-2 border-[#2A2A2A] p-2 rounded-full">
                         {card.icon}
                       </div>
                     </div>
@@ -55,7 +55,7 @@ const DashboardSummary: NextPage = () => {
                 <CardBody className="px-0 py-1">
                     <div className="grid justify-items-stretch">
                     <Typography>{card.percentage}</Typography>
-                    <div className="bg-gray-200/50 py-1 px-2">
+                    <div className="bg-[#2A2A2A]/50 py-1 px-2">
                     <Typography className="font-bold justify-self-end text-proses-secondary">{card.amount}</Typography>
                     </div>
                     </div>

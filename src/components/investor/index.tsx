@@ -548,7 +548,7 @@ export default function ClientTable() {
   if (loading) {
     return (
       <div className="p-4 flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#F59E0B]"></div>
       </div>
     );
   }
@@ -558,7 +558,7 @@ export default function ClientTable() {
       <div className="p-4">
         <button
           onClick={() => window.history.back()}
-          className="flex items-center text-blue-600 hover:text-blue-800 mb-6 transition-colors"
+          className="flex items-center text-[#F59E0B] hover:text-[#F59E0B] mb-6 transition-colors"
         >
           <ChevronLeft className="w-5 h-5 mr-2" />
           Back
@@ -572,7 +572,7 @@ export default function ClientTable() {
         <div className="flex gap-4">
           <button
             onClick={handleRefresh}
-            className="flex items-center bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
+            className="flex items-center bg-[#F59E0B] text-[#F9FAFB] px-4 py-2 rounded hover:bg-[#B45309] transition-colors"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
             Refresh Data
@@ -580,7 +580,7 @@ export default function ClientTable() {
           
           <button
             onClick={handleBackToSearch}
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors"
+            className="bg-green-600 text-[#F9FAFB] px-4 py-2 rounded hover:bg-green-700 transition-colors"
           >
             Search Client Again
           </button>
@@ -710,7 +710,7 @@ export default function ClientTable() {
           <div className="flex justify-between items-center mb-6">
             <button
               onClick={() => window.history.back()}
-              className="flex items-center text-blue-600 hover:text-blue-800 transition-colors"
+              className="flex items-center text-[#F59E0B] hover:text-[#F59E0B] transition-colors"
             >
               <ChevronLeft className="w-5 h-5 mr-2" />
               Back
@@ -725,7 +725,7 @@ export default function ClientTable() {
               
               <button
                 onClick={handleRefresh}
-                className="flex items-center text-blue-600 hover:text-blue-800 transition-colors text-sm"
+                className="flex items-center text-[#F59E0B] hover:text-[#F59E0B] transition-colors text-sm"
               >
                 <RefreshCw className="w-4 h-4 mr-1" />
                 Refresh
@@ -733,8 +733,8 @@ export default function ClientTable() {
             </div>
           </div>
           
-          <table className="w-full border border-gray-300 table-auto text-center text-[14px] leading-relaxed">
-            <thead className="bg-gray-200 font-medium">
+          <table className="w-full border border-[#2A2A2A] table-auto text-center text-[14px] leading-relaxed">
+            <thead className="bg-[#1A1A1A] font-medium">
               <tr>
                 {[
                   "Folio No", "Date Added", "Name", "Group", "PAN", "Mobile",
@@ -751,7 +751,7 @@ export default function ClientTable() {
             <tbody>
               {clients.map((client) => (
                 <React.Fragment key={client.id}>
-                  <tr className="hover:bg-gray-50">
+                  <tr className="hover:bg-[#0A0A0A]">
                     <td className="border px-2 py-2">{client.id}</td>
                     <td className="border px-2 py-2 text-center whitespace-nowrap">
                       <div className="flex items-center justify-center">
@@ -803,7 +803,7 @@ export default function ClientTable() {
                     <td className="border px-2 py-2">{client.kyc}</td>
                     <td className="border px-2 py-2 text-center">
                       <div className="flex items-center justify-center gap-1">
-                        <Mail size={14} className="text-blue-500" />
+                        <Mail size={14} className="text-[#F59E0B]" />
                         <span>{client.login}</span>
                       </div>
                     </td>
@@ -829,11 +829,11 @@ export default function ClientTable() {
                       )}
                     </td>
                   </tr>
-                  <tr className="bg-blue-50">
+                  <tr className="bg-[#1F1A1A]">
                     <td colSpan={18} className="px-2 py-1 text-left">
                       <button
                         onClick={() => toggleRow(client.id)}
-                        className="text-blue-600 underline cursor-pointer flex items-center"
+                        className="text-[#F59E0B] underline cursor-pointer flex items-center"
                       >
                         {expandedRows.includes(client.id) ? (
                           <ChevronUp size={16} className="mr-1" />
@@ -848,7 +848,7 @@ export default function ClientTable() {
                   {expandedRows.includes(client.id) && (
                     <>
                       <tr>
-                        <td colSpan={18} className="bg-gray-100 px-2 py-3">
+                        <td colSpan={18} className="bg-[#111111] px-2 py-3">
                           <div className="flex flex-wrap gap-2 justify-start relative">
                             {reportTabs.map((tab) => (
                               <div key={tab} className="relative">
@@ -872,7 +872,7 @@ export default function ClientTable() {
                                       setSelectedClient(client);
                                     }
                                   }}
-                                  className="bg-[#2f80b9] text-white text-xs px-3 py-1 rounded hover:bg-[#23679b] flex items-center"
+                                  className="bg-[#2f80b9] text-[#F9FAFB] text-xs px-3 py-1 rounded hover:bg-[#23679b] flex items-center"
                                 >
                                   {tab}
                                   {(tab === "Manual Entry" || tab === "Risk Management" ||
@@ -883,12 +883,12 @@ export default function ClientTable() {
                                 </button>
 
                                 {activeDropdown?.clientId === parseInt(client.id) && activeDropdown?.tab === tab && (
-                                  <div className="fixed z-[1000] mt-1 w-48 bg-white rounded-md shadow-lg border border-gray-200">
+                                  <div className="fixed z-[1000] mt-1 w-48 bg-[#111111] rounded-md shadow-lg border border-[#2A2A2A]">
                                     {getDropdownOptions(tab).map((option: string) => (
                                       <div
                                         key={option}
                                         onClick={() => handleOptionClick(option, client)}
-                                        className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 cursor-pointer border-b border-gray-100 last:border-b-0"
+                                        className="px-4 py-2 text-sm text-[#F9FAFB] hover:bg-[#1F1A1A] hover:text-[#F59E0B] cursor-pointer border-b border-[#2A2A2A] last:border-b-0"
                                       >
                                         {option}
                                       </div>
@@ -905,7 +905,7 @@ export default function ClientTable() {
                         <tr>
                           <td colSpan={18} className="p-0">
                             {showComponentUnderRow.component === 'folioList' && selectedFolio && (
-                              <div className="p-4 bg-white border-t">
+                              <div className="p-4 bg-[#111111] border-t">
                                 <FolioList
                                   panNo={clients.find(c => c.id === selectedFolio.clientId)?.pan || ""}
                                   schName={selectedFolio.sch_name}
@@ -913,7 +913,7 @@ export default function ClientTable() {
                                 <div className="flex justify-start w-full">
                                   <button
                                     onClick={() => setShowComponentUnderRow({ clientId: '', component: null })}
-                                    className="bg-[#2f80b9] text-white px-4 py-1 rounded text-sm mt-2"
+                                    className="bg-[#2f80b9] text-[#F9FAFB] px-4 py-1 rounded text-sm mt-2"
                                   >
                                     Close Folio List
                                   </button>
@@ -922,14 +922,14 @@ export default function ClientTable() {
                             )}
 
                             {showComponentUnderRow.component === 'remapInvestor' && selectedFolio && (
-                              <div className="p-4 bg-white border-t">
+                              <div className="p-4 bg-[#111111] border-t">
                                 <RemapInvestor
                                   pan={clients.find(c => c.id === selectedFolio.clientId)?.pan || ""}
                                 />
                                 <div className="flex justify-start w-full">
                                   <button
                                     onClick={() => setShowComponentUnderRow({ clientId: '', component: null })}
-                                    className="bg-[#2f80b9] text-white px-4 py-1 rounded text-sm mt-2"
+                                    className="bg-[#2f80b9] text-[#F9FAFB] px-4 py-1 rounded text-sm mt-2"
                                   >
                                     Close Remap Investor
                                   </button>
@@ -948,12 +948,12 @@ export default function ClientTable() {
 
           {showTaxSheet && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
-              <div className="bg-white rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-auto">
+              <div className="bg-[#111111] rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-auto">
                 <div className="flex justify-between items-center border-b p-4">
                   <h2 className="text-xl font-bold">Taxation Sheet</h2>
                   <button
                     onClick={() => setShowTaxSheet(false)}
-                    className="text-gray-500 hover:text-gray-700"
+                    className="text-[#9CA3AF] hover:text-[#F9FAFB]"
                   >
                     <X size={24} />
                   </button>
@@ -966,12 +966,12 @@ export default function ClientTable() {
           )}
           {showTaxSheet1 && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
-              <div className="bg-white rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-auto">
+              <div className="bg-[#111111] rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-auto">
                 <div className="flex justify-between items-center border-b p-4">
                   <h2 className="text-xl font-bold">Taxation Sheet</h2>
                   <button
                     onClick={() => setShowTaxSheet1(false)}
-                    className="text-gray-500 hover:text-gray-700"
+                    className="text-[#9CA3AF] hover:text-[#F9FAFB]"
                   >
                     <X size={24} />
                   </button>

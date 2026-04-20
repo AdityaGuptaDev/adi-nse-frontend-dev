@@ -11,8 +11,20 @@ function KYC() {
 
 
   return (
-    <div>
-      {!KYCFlow ? <InitialScreen setKYCSFlow={setKYCSFlow} setKYCFlowScreen={setKYCFlowScreen} /> : <KYCInitial />}
+    <div className="min-h-screen bg-[#0A0A0A] w-full">
+      <div className="container mx-auto px-4 py-6">
+        {!KYCFlow ? (
+          <InitialScreen 
+            setKYCSFlow={setKYCSFlow} 
+            setKYCFlowScreen={setKYCFlowScreen} 
+          />
+        ) : (
+          <KYCInitial 
+            KYCFlowScreen={KYCFlowScreen}
+            setKYCFlowScreen={setKYCFlowScreen}
+          />
+        )}
+      </div>
     </div>
   );
 }

@@ -103,7 +103,7 @@ const MutualFundThemes: React.FC<MutualFundThemesProps> = ({ data }) => {
       case "Low":
         return "bg-green-100 text-green-700 border-green-200";
       default:
-        return "bg-gray-100 text-gray-700 border-gray-200";
+        return "bg-[#1F1A1A] text-[#E5E7EB] border-[#2A2A2A]";
     }
   };
 
@@ -119,13 +119,13 @@ const MutualFundThemes: React.FC<MutualFundThemesProps> = ({ data }) => {
   };
 
   return (
-    <div className="bg-white">
+    <div className="bg-[#111111]">
       <div className="flex items-center justify-between mb-4">
-        <CustomText className="text-lg font-semibold text-gray-900">
+        <CustomText className="text-lg font-semibold text-[#F9FAFB]">
           Mutual Fund Themes
         </CustomText>
         <CustomButton
-          className="p-0 h-auto min-h-0 !text-secondary-content !bg-white"
+          className="p-0 h-auto min-h-0 !text-secondary-content !bg-[#111111]"
           onClick={() => {/* Navigate to all AMCs */ }}
         >
           View All <span><FaAngleRight /></span>
@@ -139,7 +139,7 @@ const MutualFundThemes: React.FC<MutualFundThemesProps> = ({ data }) => {
               key={theme.id}
               className={`
                        rounded-lg p-4 cursor-pointer hover:shadow-lg transition-all duration-200
-                       border border-gray-200`}
+                       border border-[#2A2A2A]`}
             >
               <div className="flex justify-center mb-3">
                 <div className="w-16 h-16 rounded-lg overflow-hidden">
@@ -158,25 +158,25 @@ const MutualFundThemes: React.FC<MutualFundThemesProps> = ({ data }) => {
               </div>
 
               <div className="text-center mb-2">
-                <CustomText className="font-semibold text-sm leading-tight text-gray-900">
+                <CustomText className="font-semibold text-sm leading-tight text-[#F9FAFB]">
                   {theme.name}
                 </CustomText>
               </div>
 
               <div className="text-center mb-3">
-                <CustomText className="text-xs text-gray-600 leading-relaxed">
+                <CustomText className="text-xs text-[#9CA3AF] leading-relaxed">
                   {theme.description}
                 </CustomText>
               </div>
 
               <div className="text-center mb-3">
-                <CustomText className="text-xs text-gray-500">
+                <CustomText className="text-xs text-[#9CA3AF]">
                   {theme.schemes} Schemes
                 </CustomText>
               </div>
 
               <div className="text-center mb-3">
-                <CustomText className="text-xs text-gray-500 mb-1">
+                <CustomText className="text-xs text-[#9CA3AF] mb-1">
                   3Y Return Range
                 </CustomText>
                 <div className="flex items-center justify-center gap-2">
@@ -188,7 +188,7 @@ const MutualFundThemes: React.FC<MutualFundThemesProps> = ({ data }) => {
               </div>
 
               <div className="text-center">
-                <CustomText className="text-xs text-gray-500">
+                <CustomText className="text-xs text-[#9CA3AF]">
                   p.a
                 </CustomText>
               </div>
@@ -202,25 +202,25 @@ const MutualFundThemes: React.FC<MutualFundThemesProps> = ({ data }) => {
               </figure>
               <div className="card-body">
                 <div className="">
-                  <CustomText className="font-semibold text-sm leading-tight text-gray-900">
+                  <CustomText className="font-semibold text-sm leading-tight text-[#F9FAFB]">
                     {theme.name}
                   </CustomText>
                 </div>
 
                 <div className="">
-                  <CustomText className="text-xs text-gray-600 leading-relaxed">
+                  <CustomText className="text-xs text-[#9CA3AF] leading-relaxed">
                     {theme.description}
                   </CustomText>
                 </div>
 
                 <div className="mt-3">
-                  <CustomText className="text-xs text-gray-500">
+                  <CustomText className="text-xs text-[#9CA3AF]">
                     {theme.schemes} Schemes
                   </CustomText>
                 </div>
 
                 <div className="">
-                  <CustomText className="text-xs text-gray-500 ">
+                  <CustomText className="text-xs text-[#9CA3AF] ">
                     3Y Return Range
                   </CustomText>
                   <div className="flex items-center gap-2">
@@ -237,7 +237,7 @@ const MutualFundThemes: React.FC<MutualFundThemesProps> = ({ data }) => {
                       </CustomText>
                     </div>
                     <div className="">
-                      <CustomText className="text-xs text-gray-500">
+                      <CustomText className="text-xs text-[#9CA3AF]">
                         p.a
                       </CustomText>
                     </div>

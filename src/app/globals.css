@@ -4,37 +4,90 @@
 @plugin "daisyui/theme" {
   name: "light";
   default: true;
-  /* --color-primary: #2c3e50; */
-  --color-primary: #f5862e;
-  --color-secondary: #233b74;
-  --color-secondary-content: #3498db;
-  --color-base-content: #333333;
-  /* border-color */
-  --color-accent: #e2e2e2;
-  --color-accent-content: #f9f9f9;
+  --color-primary: #F59E0B;
+  --color-primary-content: #F9FAFB;
+  --color-secondary: #B45309;
+  --color-secondary-content: #F9FAFB;
+  --color-accent: #FBBF24;
+  --color-accent-content: #0A0A0A;
+  --color-neutral: #111111;
+  --color-neutral-content: #F9FAFB;
+  --color-base-100: #0A0A0A;
+  --color-base-200: #111111;
+  --color-base-300: #1F1A1A;
+  --color-base-content: #F9FAFB;
+  --color-info: #3B82F6;
+  --color-info-content: #F9FAFB;
+  --color-success: #10B981;
+  --color-success-content: #F9FAFB;
+  --color-warning: #F59E0B;
+  --color-warning-content: #0A0A0A;
+  --color-error: #EF4444;
+  --color-error-content: #F9FAFB;
 }
 
 @plugin "daisyui/theme" {
   name: "dark";
-  /* --color-primary: #2c3e50; */
-  --color-primary: #f5862e;
-  --color-secondary: #233b74;
-  --color-secondary-content: #3498db;
-  --color-base-content: #333333;
-  --color-accent: #e2e2e2;
-  --color-accent-content: #f9f9f9;
+  --color-primary: #F59E0B;
+  --color-primary-content: #F9FAFB;
+  --color-secondary: #B45309;
+  --color-secondary-content: #F9FAFB;
+  --color-accent: #FBBF24;
+  --color-accent-content: #0A0A0A;
+  --color-neutral: #111111;
+  --color-neutral-content: #F9FAFB;
+  --color-base-100: #0A0A0A;
+  --color-base-200: #111111;
+  --color-base-300: #1F1A1A;
+  --color-base-content: #F9FAFB;
+  --color-info: #3B82F6;
+  --color-info-content: #F9FAFB;
+  --color-success: #10B981;
+  --color-success-content: #F9FAFB;
+  --color-warning: #F59E0B;
+  --color-warning-content: #0A0A0A;
+  --color-error: #EF4444;
+  --color-error-content: #F9FAFB;
 }
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --color-primary: #f5862e;
-  --color-secondary: #233b74;
-  --color-secondary-content: #3498db;
-  --color-base-content: #333333;
-  --color-accent: #e2e2e2;
-  --color-accent-content: #f9f9f9;
-  /* --color-placeholder: #98A2B3; */
+  /* Golden Black Theme Colors */
+  --background: #0A0A0A;
+  --foreground: #F9FAFB;
+  --color-primary: #F59E0B;
+  --color-secondary: #B45309;
+  --color-accent: #FBBF24;
+  --color-accent-content: #F9FAFB;
+  --color-secondary-content: #F9FAFB;
+  --color-base-content: #F9FAFB;
+
+  /* Background Colors */
+  --color-background-dark: #0A0A0A;
+  --color-card-dark: #111111;
+  --color-hover-dark: #1F1A1A;
+
+  /* Text Colors */
+  --color-text-primary: #F9FAFB;
+  --color-text-secondary: #9CA3AF;
+
+  /* Border Colors */
+  --color-border-dark: #2A2A2A;
+  --color-border-light: #3A3A3A;
+
+  /* Status Colors */
+  --color-success: #10B981;
+  --color-danger: #EF4444;
+  --color-warning: #F59E0B;
+  --color-info: #3B82F6;
+
+  /* Custom Tokens */
+  --color-placeholder: #6B7280;
+  --color-disable: #374151;
+  --color-field-border: #2A2A2A;
+  --color-mainbackground: #0A0A0A;
+  --color-border: #2A2A2A;
+  --color-other: #9CA3AF;
+  --color-progressBg: #2A2A2A;
 }
 
 @theme inline {
@@ -42,25 +95,24 @@
   --color-foreground: var(--foreground);
   --font-lato: var(--font-lato);
   --font-montserrat: var(--font-montserrat);
-  --color-placeholder: #98a2b3;
-  --color-disable: #f9f9f9;
-  --color-field-border: #eaecf0;
-  --color-mainbackground: #f4f6f8;
-  --color-border: #e2e2e2;
-  --color-other: #3498db;
-  --color-progressBg: #D9D9D9;
+  --color-placeholder: #6B7280;
+  --color-disable: #374151;
+  --color-field-border: #2A2A2A;
+  --color-mainbackground: #0A0A0A;
+  --color-border: #2A2A2A;
+  --color-other: #9CA3AF;
+  --color-progressBg: #2A2A2A;
 }
 
 body {
-  /* background: var(--background);
-  color: var(--foreground); */
-  background: #ffffff;
-  color: #000000;
+  background: #0A0A0A;
+  color: #F9FAFB;
   font-family: var(--font-lato);
 }
 
 .title {
   font-family: var(--font-montserrat);
+  color: #F9FAFB;
 }
 
 .myContainer {
@@ -68,15 +120,15 @@ body {
 }
 
 .activeClass {
-  @apply bg-green-100 text-green-600 px-2 rounded-md;
+  @apply bg-green-500/20 text-green-400 px-2 py-1 rounded-md font-medium;
 }
 
 .inActiveClass {
-  @apply bg-red-100 text-red-600 px-2 rounded-md;
+  @apply bg-red-500/20 text-red-400 px-2 py-1 rounded-md font-medium;
 }
 
 .activePage {
-  @apply bg-white/10;
+  @apply bg-gradient-to-r from-[#F59E0B]/20 to-[#B45309]/20 border-l-2 border-[#F59E0B];
 }
 
 .riskchart {
@@ -92,8 +144,8 @@ body {
   }
 }
 
-.collapse-arrow>.collapse-title:after {
-  @apply text-primary;
+.collapse-arrow > .collapse-title:after {
+  @apply text-[#F59E0B];
   top: 1.9rem;
   content: "";
   transform-origin: 75% 75%;
@@ -101,19 +153,17 @@ body {
   width: 0.5rem;
   height: 0.5rem;
   transition-property: all;
-
   transition-duration: 0.2s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   display: block;
   position: absolute;
   inset-inline-end: 1.4rem;
-
   box-shadow: 2px 2px;
-  color: orange;
+  color: #F59E0B;
 }
 
-.collapse-arrow>.collapse-title::before {
-  @apply bg-gray-200 rounded-2xl;
+.collapse-arrow > .collapse-title::before {
+  @apply bg-[#2A2A2A] rounded-2xl;
   top: 3.2rem;
   content: "";
   transform-origin: 95% 95%;
@@ -127,7 +177,7 @@ body {
 }
 
 .otpInput {
-  @apply w-11 h-11 min-w-11 min-h-11 border border-accent focus-visible:border-primary rounded-lg text-xl;
+  @apply w-11 h-11 min-w-11 min-h-11 border border-[#2A2A2A] focus-visible:border-[#F59E0B] rounded-lg text-xl text-[#F9FAFB] bg-[#1F1A1A];
 }
 
 .otpInputGap {
@@ -135,23 +185,23 @@ body {
 }
 
 .pageTitle {
-  @apply border-b border-gray-200 p-4 ps-6;
+  @apply border-b border-[#2A2A2A] p-4 ps-6 text-[#F9FAFB];
 }
 
 .thead {
-  @apply text-center text-black text-sm font-montserrat font-medium;
+  @apply text-center text-[#9CA3AF] text-sm font-montserrat font-medium;
 }
 
 .thead th {
-  @apply font-medium bg-gray-50;
+  @apply font-medium bg-[#1F1A1A] text-[#F59E0B];
 }
 
 .thead th.mergeTh {
-  box-shadow: -1px -1px 0px inset rgba(0, 0, 0, 0.05), 1px 0px 0px inset rgba(0, 0, 0, 0.05);
+  box-shadow: -1px -1px 0px inset rgba(245, 158, 11, 0.05), 1px 0px 0px inset rgba(245, 158, 11, 0.05);
 }
 
 .thead th.colTh {
-  box-shadow: -1px -1px 0px inset rgba(0, 0, 0, 0.05), 1px 0px 0px inset rgba(0, 0, 0, 0.05);
+  box-shadow: -1px -1px 0px inset rgba(245, 158, 11, 0.05), 1px 0px 0px inset rgba(245, 158, 11, 0.05);
 }
 
 .thead tr {
@@ -171,31 +221,44 @@ body {
 }
 
 .viewlabel {
-  @apply text-sm font-medium text-gray-500 tracking-wide;
+  @apply text-sm font-medium text-[#9CA3AF] tracking-wide;
 }
 
 .viewFieldValue {
-  @apply text-base font-medium text-gray-900 bg-gray-50 px-3 py-2 rounded-md
+  @apply text-base font-medium text-[#F9FAFB] bg-[#1F1A1A] px-3 py-2 rounded-md border border-[#2A2A2A];
 }
 
 .rmsc {
-  --rmsc-main: #000000;
-  --rmsc-hover: #f1f3f5;
-  --rmsc-selected: #e2e6ea;
-  --rmsc-border: #ccc;
-  --rmsc-gray: #aaa;
-  --rmsc-bg: #fff;
+  --rmsc-main: #F59E0B;
+  --rmsc-hover: #1F1A1A;
+  --rmsc-selected: #2A2A2A;
+  --rmsc-border: #2A2A2A;
+  --rmsc-gray: #9CA3AF;
+  --rmsc-bg: #111111;
   --rmsc-p: 10px;
-  /* Spacing */
   --rmsc-radius: 10px !important;
-  /* Radius */
   --rmsc-h: 38px;
-  /* Height */
 }
 
-/* .rmsc .dropdown-container {
-    border-radius: 10px !important;
-} */
+.rmsc .dropdown-container {
+  background-color: #111111;
+  border-color: #2A2A2A;
+  color: #F9FAFB;
+}
+
+.rmsc .dropdown-container:hover {
+  border-color: #F59E0B;
+}
+
+.rmsc .dropdown-content {
+  background-color: #111111;
+  border-color: #2A2A2A;
+}
+
+.rmsc .panel-content {
+  background-color: #111111;
+  color: #F9FAFB;
+}
 
 .multi-select-up .dropdown-content {
   top: auto !important;
@@ -203,21 +266,20 @@ body {
   width: 100% !important;
 }
 
-/* Remove border and background on hover for react-multi-select-component */
 .multi-select-up .dropdown-content:hover {
-  background: white !important;
-  border: none !important;
-  box-shadow: none !important;
+  background: #111111 !important;
+  border: 1px solid #2A2A2A !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3) !important;
 }
 
 .multi-select-up .dropdown-content:active {
-  background: white !important;
-  border: none !important;
-  box-shadow: none !important;
+  background: #111111 !important;
+  border: 1px solid #2A2A2A !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3) !important;
 }
 
 .tableHeaderClass {
-  @apply flex justify-between items-center gap-1
+  @apply flex justify-between items-center gap-1 text-[#F9FAFB];
 }
 
 .Toastify__toast-container {
@@ -238,35 +300,23 @@ input[type='number'] {
 }
 
 /* modal css start */
-/* .modal-box {
-  @apply p-0;
-} */
 .modalHeader {
-  /* @apply flex justify-between items-center border-b border-accent pb-2 p-5; */
-  @apply flex justify-between items-center border-b border-accent pb-2;
+  @apply flex justify-between items-center border-b border-[#2A2A2A] pb-2 text-[#F9FAFB];
 }
 
 .modalTitle {
-  @apply text-lg font-montserrat;
+  @apply text-lg font-montserrat text-[#F59E0B];
 }
 
-/* .modalBody {
-  @apply overflow-y-auto max-h-[65vh] px-5;
-} */
 .modalFooter {
-  /* @apply flex gap-5 justify-center text-center border-t border-accent p-5; */
-  @apply flex gap-5 justify-center text-center border-t border-accent pt-5;
+  @apply flex gap-5 justify-center text-center border-t border-[#2A2A2A] pt-5;
 }
 
 /* modal css end */
 
 .labelValue {
-  @apply text-xs font-semibold;
+  @apply text-xs font-semibold text-[#9CA3AF];
 }
-
-/* .steps .step::before {
-  color: black;
-} */
 
 .steps .step-primary::before {
   color: white !important;
@@ -281,15 +331,15 @@ input[type='number'] {
 }
 
 .arrow--disabled {
-  fill: rgba(255, 255, 255, 0.5);
+  fill: rgba(245, 158, 11, 0.5);
 }
-
 
 @media print {
   body {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     background: white !important;
+    color: black !important;
   }
 
   .action-buttons {
@@ -307,33 +357,175 @@ canvas {
 }
 
 .inlineLabel {
-  @apply min-w-28 text-placeholder;
+  @apply min-w-28 text-[#9CA3AF];
 }
 
+.tabs .tab {
+  @apply px-2 text-[#9CA3AF] hover:text-[#F59E0B];
+}
+
+.tabs .tab-active {
+  @apply text-[#F59E0B] border-b-2 border-[#F59E0B];
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slideDown {
+  animation: slideDown 0.4s ease;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #2A2A2A;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #F59E0B;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B45309;
+}
+
+/* Form Input Styles — applies to every bare <input>, <textarea>, <select>
+   and to daisyUI `.input`, `.select`, `.textarea`, `.file-input` wrappers.
+   Uses !important so daisyUI's own theme presets can't repaint them white. */
+input, textarea, select,
+.input, .select, .textarea, .file-input {
+  background-color: #1F1A1A !important;
+  border-color: #2A2A2A !important;
+  color: #F9FAFB !important;
+}
+
+input:focus, textarea:focus, select:focus,
+.input:focus, .input:focus-within,
+.select:focus, .textarea:focus, .file-input:focus {
+  border-color: #F59E0B !important;
+  outline: none !important;
+  box-shadow: 0 0 0 1px #F59E0B;
+}
+
+input::placeholder, textarea::placeholder,
+.input input::placeholder {
+  color: #6B7280 !important;
+}
+
+/* Inputs nested inside a daisyUI `.input` label wrapper should stay
+   transparent so the wrapper's dark bg shows through. */
+.input > input,
+.input > input:focus {
+  background-color: transparent !important;
+  color: #F9FAFB !important;
+  box-shadow: none !important;
+}
+
+/* Browser autofill (Chrome yellow / Safari blue) — force dark. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: #F9FAFB !important;
+  -webkit-box-shadow: 0 0 0 1000px #1F1A1A inset !important;
+  transition: background-color 9999s ease-in-out 0s;
+  caret-color: #F9FAFB;
+}
+
+/* Disabled inputs should still be legible (not black-on-black). */
+input:disabled, textarea:disabled, select:disabled,
+.input:disabled, .select:disabled, .textarea:disabled, .file-input:disabled {
+  background-color: #111111 !important;
+  color: #9CA3AF !important;
+  cursor: not-allowed;
+}
+
+/* Native date-picker icon: invert so the calendar glyph is visible. */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+input[type="month"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.8) sepia(1) saturate(5) hue-rotate(2deg);
+  cursor: pointer;
+}
+
+/* daisyUI labels inside inputs — icons / currency prefixes. */
+.input > * {
+  color: inherit;
+}
+
+/* Button Styles */
+.btn-primary {
+  background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
+  border: none;
+  color: white;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Card Styles */
+.card {
+  background-color: #111111;
+  border: 1px solid #2A2A2A;
+  border-radius: 12px;
+}
+
+/* Table Styles */
+table {
+  background-color: #111111;
+  border-color: #2A2A2A;
+}
+
+th {
+  background-color: #1F1A1A;
+  color: #F59E0B;
+}
+
+td {
+  color: #F9FAFB;
+  border-bottom-color: #2A2A2A;
+}
+
+tr:hover {
+  background-color: #1F1A1A;
+}
+
+/* Override bg-white to use dark theme */
+.bg-white {
+  background-color: #0A0A0A !important;
+}
 
 /* ══════════════════════════════════════════════════════════════════════
-   NSE Module — white + orange theme
-   Applied via a `nse-module` className on the outermost div of every
-   NSE-specific page. Clean light surface with orange accents:
-     • Background            — white (#FFFFFF)
-     • Text                  — dark (#1F2937, gray-800)
-     • Primary accent        — #F59E0B (amber, buttons/badges/focus)
-     • Headings              — #F59E0B (orange) for section titles
-   ════════════════════════════════════════════════════════════════════════ */
+   NSE Module — retains its own scoped color palette since the module
+   already carries its own themed surfaces per page.
+   ══════════════════════════════════════════════════════════════════════ */
 .nse-module {
-  background-color: #ffffff;
-  color: #1F2937;
+  background-color: #0A0A0A;
+  color: #F9FAFB;
   min-height: 100vh;
 }
 
-/* Page titles get the orange accent color */
 .nse-module > h1,
 .nse-module > h2,
 .nse-module > div > h1,
 .nse-module > div > h2 {
-  color: #D97706;
-}
-
-.tabs .tab {
-  @apply px-2;
+  color: #F59E0B;
 }

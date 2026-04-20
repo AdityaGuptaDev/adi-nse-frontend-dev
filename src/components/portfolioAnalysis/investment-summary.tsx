@@ -233,7 +233,7 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
             th, td { border: 1px solid #ddd; padding: 6px; text-align: left; }
             .text-right { text-align: right; }
             .text-center { text-align: center; }
-            .bg-gray-100 { background-color: #f3f4f6; }
+            .bg-[#1F1A1A] { background-color: #f3f4f6; }
             .border { border: 1px solid #ddd; }
             .font-bold { font-weight: bold; }
             .text-red-600 { color: #dc2626; }
@@ -280,7 +280,7 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
           <!-- Main Investment Table -->
           <table>
             <thead>
-              <tr class="bg-gray-100">
+              <tr class="bg-[#1F1A1A]">
                 <th rowspan="2">Folio</th>
                 <th rowspan="2">Investor</th>
                 <th rowspan="2">Scheme</th>
@@ -292,7 +292,7 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
                 <th colspan="4">P&L (Rs.)</th>
                 <th colspan="3">Returns (%)</th>
               </tr>
-              <tr class="bg-gray-100">
+              <tr class="bg-[#1F1A1A]">
                 <th>Units</th>
                 <th>Cost (Rs.)</th>
                 <th>NAV (Rs.)</th>
@@ -353,7 +353,7 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
                   <td class="text-right ${parseFloat(item.profitLoss) < 0 ? 'text-red-600' : 'text-green-600'}">${item.profitLoss}</td>
                 </tr>
               `).join('')}
-              <tr class="bg-gray-200 font-bold">
+              <tr class="bg-[#2A2A2A] font-bold">
                 <td colspan="6" class="text-center">Total</td>
                 <td class="text-right">${summaryData.totalCost}</td>
                 <td class="text-right">0.00</td>
@@ -427,7 +427,7 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
                         font-size: 10px;
                         font-weight: bold;
                         text-shadow: 0 0 2px black;
-                        background-color: ${['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#14B8A6'][idx % 7]};
+                        background-color: ${['#F59E0B', '#10B981', '#FBBF24', '#EF4444', '#F59E0B', '#10B981', '#FBBF24'][idx % 7]};
                         ${idx === 0 ? '' : 'clip-path: polygon(0 0, 50% 50%, 100% 100%, 0 100%); transform: rotate(90deg);'}
                       ">
                         ${idx === 0 ? `${type}<br>${percentage}%` : ''}
@@ -540,10 +540,10 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
     }
   };
 
-  // Color palette for charts
+  // Color palette for charts - Golden Black Theme
   const chartColors = [
-    "#3B82F6", "#10B981", "#F59E0B", "#EF4444",
-    "#8B5CF6", "#EC4899", "#14B8A6"
+    "#F59E0B", "#10B981", "#FBBF24", "#EF4444",
+    "#F59E0B", "#10B981", "#FBBF24"
   ];
 
   if (loading) {
@@ -560,7 +560,7 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
         {error}
         <button
           onClick={onBack}
-          className="block mt-4 px-4 py-2 bg-blue-500 text-white rounded mx-auto"
+          className="block mt-4 px-4 py-2 bg-[#F59E0B] text-white rounded mx-auto hover:bg-[#B45309]"
         >
           Close
         </button>
@@ -574,7 +574,7 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
         <p>No portfolio data available for this investor.</p>
         <button
           onClick={onBack}
-          className="block mt-4 px-4 py-2 bg-blue-500 text-white rounded mx-auto"
+          className="block mt-4 px-4 py-2 bg-[#F59E0B] text-white rounded mx-auto hover:bg-[#B45309]"
         >
           Close
         </button>
@@ -583,16 +583,16 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
   }
 
   return (
-    <div className="text-sm font-sans text-black bg-white p-4 max-w-full overflow-x-auto">
+    <div className="text-sm font-sans text-[#F9FAFB] bg-[#0A0A0A] p-4 max-w-full overflow-x-auto">
                <button 
     onClick={() => window.history.back()}
-    className="flex items-center text-blue-600 hover:text-blue-800 mb-6 transition-colors"
+    className="flex items-center text-[#F59E0B] hover:text-[#FBBF24] mb-6 transition-colors"
   >
     <ChevronLeft className="w-5 h-5 mr-2" />
     Back 
   </button>
       {/* Header Section */}
-      <div className="border-b border-black pb-2 mb-4">
+      <div className="border-b border-[#2A2A2A] pb-2 mb-4">
         <div className="flex justify-between items-start">
           <div>
             <h1 className="text-xl font-bold">
@@ -647,14 +647,14 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
                   action: () => alert('WhatsApp functionality will be implemented here')
                 },
                 {
-                  icon: <Printer size={18} className="text-gray-600" />,
+                  icon: <Printer size={18} className="text-[#9CA3AF]" />,
                   label: "Print",
                   action: handlePrint
                 },
               ].map((item, index) => (
                 <button
                   key={index}
-                  className="flex flex-col items-center group hover:bg-gray-50 rounded p-1"
+                  className="flex flex-col items-center group hover:bg-[#111111] rounded p-1"
                   onClick={item.action}
                 >
                   <div className="p-1">{item.icon}</div>
@@ -669,7 +669,7 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
             <p>3rd Floor, Gayways House, Above Space Furniture, P.P Compound,</p>
             <p>Main Road Ranchi 834001 Jharkhand</p>
             <p>Phone: 9304955509, Email: vedantasset@gmail.com</p>
-            <p>Website: <a href="https://www.vedantasset.co.in" className="text-blue-600 hover:underline">www.vedantasset.co.in</a></p>
+            <p>Website: <a href="https://www.vedantasset.co.in" className="text-[#F59E0B] hover:underline">www.vedantasset.co.in</a></p>
 
             <div className="mb-2 flex items-center gap-2">
               <strong>From:</strong>
@@ -691,7 +691,7 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
               />
               <button
                 onClick={handleSubmit}
-                className="ml-2 px-2 py-1 bg-blue-500 text-white text-xs border rounded hover:bg-blue-600 active:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors"
+                className="ml-2 px-2 py-1 bg-[#F59E0B] text-white text-xs border rounded hover:bg-[#B45309] active:bg-[#92400E] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:ring-opacity-50 transition-colors"
               >
                 Submit
               </button>
@@ -704,7 +704,7 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
       <div className="mb-6 overflow-x-auto">
         <table className="w-full border-collapse text-xs">
           <thead>
-            <tr className="bg-gray-100">
+            <tr className="bg-[#1F1A1A]">
               <th rowSpan={2} className="border border-gray-400 p-1 text-center w-20">Folio</th>
               <th rowSpan={2} className="border border-gray-400 p-1 text-center w-24">Investor</th>
               <th rowSpan={2} className="border border-gray-400 p-1 text-center w-48">Scheme</th>
@@ -742,7 +742,7 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
               </th>
             </tr>
 
-            <tr className="bg-gray-50">
+            <tr className="bg-[#111111]">
               <th className="border border-gray-400 p-1 text-xs">Units</th>
               <th className="border border-gray-400 p-1 text-xs">Cost (Rs.)</th>
               <th className="border border-gray-400 p-1 text-xs">NAV (Rs.)</th>
@@ -779,7 +779,7 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
 
           <tbody>
             {portfolioData.map((row, index) => (
-              <tr key={index} className="hover:bg-gray-50">
+              <tr key={index} className="hover:bg-[#111111]">
                 <td className="border border-gray-400 p-1 whitespace-nowrap text-xs">{row.folioNo}</td>
                 <td className="border border-gray-400 p-1 whitespace-nowrap text-xs">{invName}</td>
                 <td className="border border-gray-400 p-1 whitespace-nowrap text-xs">{row.productName}</td>
@@ -806,20 +806,20 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
                 <td className={`border border-gray-400 p-1 text-xs text-center ${parseFloat(row.profitLoss) < 0 ? 'text-red-600' : 'text-green-600'}`}>
                   {row.profitLoss}
                 </td>
-                <td className="border border-gray-300 p-1 text-xs text-center">0.00</td>
-                <td className={`border border-gray-300 p-1 text-xs text-center ${parseFloat(row.absPercentage) < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                <td className="border border-[#3A3A3A] p-1 text-xs text-center">0.00</td>
+                <td className={`border border-[#3A3A3A] p-1 text-xs text-center ${parseFloat(row.absPercentage) < 0 ? 'text-red-600' : 'text-green-600'}`}>
                   {row.absPercentage}%
                 </td>
-                <td className={`border border-gray-300 p-1 text-xs text-center ${parseFloat(row.profitLoss) < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                <td className={`border border-[#3A3A3A] p-1 text-xs text-center ${parseFloat(row.profitLoss) < 0 ? 'text-red-600' : 'text-green-600'}`}>
                   {row.profitLoss}
                 </td>
-                <td className="border border-gray-300 p-1 text-xs text-center">0.00</td>
-                <td className="border border-gray-300 p-1 text-xs text-center">0.00</td>
+                <td className="border border-[#3A3A3A] p-1 text-xs text-center">0.00</td>
+                <td className="border border-[#3A3A3A] p-1 text-xs text-center">0.00</td>
               </tr>
             ))}
 
             {/* Total Row */}
-            <tr className="bg-gray-200 font-bold">
+            <tr className="bg-[#2A2A2A] font-bold">
               <td colSpan={6} className="border border-gray-400 p-1 text-[11px] text-center">Total</td>
               <td className="border border-gray-400 p-1 text-[11px] text-center">{summaryData.totalCost}</td>
               <td className="border border-gray-400 p-1 text-[11px] text-center">0.00</td>
@@ -853,23 +853,23 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
         {/* Portfolio Snapshot */}
         <div className="border border-gray-400 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-          <h3 className="bg-gray-200 p-2 text-[11px] font-bold text-center">Portfolio Snapshot</h3>
+          <h3 className="bg-[#2A2A2A] p-2 text-[11px] font-bold text-center">Portfolio Snapshot</h3>
           <div className="p-2 text-[11px]">
-            <div className="flex justify-between mb-1 hover:bg-gray-50 p-1 rounded">
+            <div className="flex justify-between mb-1 hover:bg-[#111111] p-1 rounded">
               <span>Total Cost of Balance Units (Rs.):</span>
               <span className="font-bold">{summaryData.totalCost}</span>
             </div>
-            <div className="flex justify-between mb-1 hover:bg-gray-50 p-1 rounded">
+            <div className="flex justify-between mb-1 hover:bg-[#111111] p-1 rounded">
               <span>Total Current Value of the Portfolio (Rs.):</span>
               <span className="font-bold">{summaryData.totalCurrentValue}</span>
             </div>
-            <div className="flex justify-between hover:bg-gray-50 p-1 rounded">
+            <div className="flex justify-between hover:bg-[#111111] p-1 rounded">
               <span>Total Unrealized Gain/Loss (Rs.):</span>
               <span className={`font-bold ${parseFloat(summaryData.totalProfitLoss) < 0 ? 'text-red-600' : 'text-green-600'}`}>
                 {parseFloat(summaryData.totalProfitLoss) < 0 ? '▼' : '▲'} {Math.abs(parseFloat(summaryData.totalProfitLoss)).toFixed(2)}
               </span>
             </div>
-            <div className="flex justify-between mt-2 hover:bg-gray-50 p-1 rounded">
+            <div className="flex justify-between mt-2 hover:bg-[#111111] p-1 rounded">
               <span>CA(Abs) of Balance Units:</span>
               <span className={`font-bold ${parseFloat(summaryData.totalAbsPercentage) < 0 ? 'text-red-600' : 'text-green-600'}`}>
                 {summaryData.totalAbsPercentage}%
@@ -880,7 +880,7 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
 
         {/* Asset wise Allocation */}
         <div className="border border-gray-400 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-          <h3 className="bg-gray-200 p-2 text-[11px] font-bold text-center">Asset wise Allocation (%)</h3>
+          <h3 className="bg-[#2A2A2A] p-2 text-[11px] font-bold text-center">Asset wise Allocation (%)</h3>
           <div className="p-4 flex flex-col items-center">
             <div className="relative w-32 h-32 mb-2">
               {summaryData.assetTypes && Object.entries(summaryData.assetTypes).map(([type, percentage], idx) => (
@@ -898,7 +898,7 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
                 </div>
               ))}
             </div>
-            <button className="mt-2 px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600 active:bg-blue-700 transition-colors">
+            <button className="mt-2 px-3 py-1 bg-[#F59E0B] text-white text-xs rounded hover:bg-[#B45309] active:bg-[#92400E] transition-colors">
               View Details
             </button>
           </div>
@@ -906,7 +906,7 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
 
         {/* Asset Classification */}
         <div className="border border-gray-400 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-          <h3 className="bg-gray-200 p-2 text-[11px] font-bold text-center">Asset Classification (%)</h3>
+          <h3 className="bg-[#2A2A2A] p-2 text-[11px] font-bold text-center">Asset Classification (%)</h3>
           <div className="p-2">
             <table className="w-full text-[10px]">
               <thead>
@@ -919,14 +919,14 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
               </thead>
               <tbody>
                 {assetAllocation.map((item, index) => (
-                  <tr key={index} className="border-b hover:bg-gray-50 cursor-pointer">
+                  <tr key={index} className="border-b hover:bg-[#111111] cursor-pointer">
                     <td className="p-1">Equity</td>
                     <td className="p-1">{item.type}</td>
                     <td className="p-1 text-right">{item.value.toLocaleString('en-IN', { maximumFractionDigits: 2 })}</td>
                     <td className="p-1 text-right">{item.allocation.toFixed(2)}%</td>
                   </tr>
                 ))}
-                <tr className="font-bold bg-gray-100 hover:bg-gray-200">
+                <tr className="font-bold bg-[#1F1A1A] hover:bg-[#2A2A2A]">
                   <td colSpan={2} className="p-1">Total:</td>
                   <td className="p-1 text-right">{summaryData.totalCurrentValue}</td>
                   <td className="p-1 text-right">100.00%</td>
@@ -940,7 +940,7 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
       {/* Sub-Asset wise Allocation Chart */}
       <div className="mb-6">
         <div className="border border-gray-400 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-          <h3 className="bg-gray-200 p-2 text-[11px] font-bold text-center">Sub-Asset wise Allocation (%)</h3>
+          <h3 className="bg-[#2A2A2A] p-2 text-[11px] font-bold text-center">Sub-Asset wise Allocation (%)</h3>
           <div className="p-4">
             <div className="flex items-end justify-center space-x-2 h-48">
               {assetAllocation.map((item, index) => (
@@ -961,7 +961,7 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
                     {item.type.replace(' Fund', '')}<br />
                     <span className="font-bold">({item.allocation.toFixed(2)}%)</span>
                   </div>
-                  <div className="text-[10px] text-center mt-2 group-hover:text-blue-600 transition-colors">
+                  <div className="text-[10px] text-center mt-2 group-hover:text-[#F59E0B] transition-colors">
                     Rs {(item.value / 1000).toFixed(0)}k
                   </div>
                 </div>
@@ -994,25 +994,25 @@ const InvestmentSummary: React.FC<InvestmentSummaryProps> = ({ panNo, invName, o
         </div>
         <table className="w-full border-collapse text-[11px] rounded-b-lg overflow-hidden shadow-sm">
           <tbody>
-            <tr className="bg-gray-100 hover:bg-gray-200 transition-colors">
+            <tr className="bg-[#1F1A1A] hover:bg-[#2A2A2A] transition-colors">
               <td className="border border-gray-400 p-2 font-bold">Purchases (Rs.):</td>
               <td className="border border-gray-400 p-2 text-right">0.00</td>
               <td className="border border-gray-400 p-2 font-bold">Dividends / Interest Paid (Rs.):</td>
               <td className="border border-gray-400 p-2 text-right">0.00</td>
             </tr>
-            <tr className="hover:bg-gray-100 transition-colors">
+            <tr className="hover:bg-[#1F1A1A] transition-colors">
               <td className="border border-gray-400 p-2 font-bold">Redemptions (Rs.):</td>
               <td className="border border-gray-400 p-2 text-right">0.00</td>
               <td className="border border-gray-400 p-2 font-bold">Reinvested Dividends (Rs.):</td>
               <td className="border border-gray-400 p-2 text-right">0.00</td>
             </tr>
-            <tr className="bg-gray-100 hover:bg-gray-200 transition-colors">
+            <tr className="bg-[#1F1A1A] hover:bg-[#2A2A2A] transition-colors">
               <td className="border border-gray-400 p-2 font-bold">Net Investment (Rs.):</td>
               <td className="border border-gray-400 p-2 text-right">0.00</td>
               <td className="border border-gray-400 p-2 font-bold">DTP Outs (Rs.):</td>
               <td className="border border-gray-400 p-2 text-right">0.00</td>
             </tr>
-            <tr className="hover:bg-gray-100 transition-colors">
+            <tr className="hover:bg-[#1F1A1A] transition-colors">
               <td className="border border-gray-400 p-2 font-bold">Total Realized Gain/Loss (Rs.):</td>
               <td className="border border-gray-400 p-2 text-right">0.00</td>
               <td className="border border-gray-400 p-2 font-bold">Total Returns since Inception (XIRR %p.a.):</td>

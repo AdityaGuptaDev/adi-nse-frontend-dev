@@ -6,9 +6,8 @@ module.exports = {
     ],
     theme: {
         colors: {
-            // primary: '#2c3e50',
-            primary: '#F5862E',
-            secondary: '#233B74',
+            primary: '#F59E0B',
+            secondary: '#B45309',
             accent: 'var(--color-accent)',
             accentcontent: 'var(--color-accent-content)',
         },
@@ -23,9 +22,8 @@ module.exports = {
         },
         extend: {
             colors: {
-                // primary: '#2c3e50',
-                primary: '#F5862E',
-                secondary: '#233B74',
+                primary: '#F59E0B',
+                secondary: '#B45309',
                 accent: 'var(--color-accent)',
                 accentcontent: 'var(--color-accent-content)',
                 placeholder: 'var(--color-placeholder)',

@@ -257,7 +257,7 @@ const AssetAllocation = () => {
                 aria-label="close sidebar"
                 className="drawer-overlay"
               ></label>
-              <ul className="menu rounded-l-2xl bg-white text-base-content min-h-full w-96 ">
+              <ul className="menu rounded-l-2xl bg-[#111111] text-base-content min-h-full w-96 ">
                 <AssetLocationFiler
                   isOpen={isDrawerOpen}
                   handleClose={() => setIsDrawerOpen(false)}
@@ -321,7 +321,7 @@ const AssetAllocation = () => {
         {/* Tables */}
         <div className="w-1/2 md:max-w-full flex flex-col gap-5  ">
           {/* Product Table */}
-          <div className="bg-white  text-sm  shadow-xs  rounded-sm overflow-hidden ">
+          <div className="bg-[#111111]  text-sm  shadow-xs  rounded-sm overflow-hidden ">
             <table className="w-full">
               <thead>
                 <tr>
@@ -354,7 +354,7 @@ const AssetAllocation = () => {
             </table>
           </div>
           {/* Investor Table */}
-          <div className="bg-white text-sm  shadow-xs rounded-sm  overflow-hidden">
+          <div className="bg-[#111111] text-sm  shadow-xs rounded-sm  overflow-hidden">
             <table className="w-full ">
               <thead>
                 <tr>
@@ -394,7 +394,7 @@ const AssetAllocation = () => {
 
       <div className="w-full  flex  gap-10  ">
         {/* Sub Cetagory Table */}
-        <div className="bg-white  text-sm  shadow-xs  rounded-sm overflow-hidden w-full">
+        <div className="bg-[#111111]  text-sm  shadow-xs  rounded-sm overflow-hidden w-full">
           <table className="w-full">
             <thead>
               <tr>
@@ -427,7 +427,7 @@ const AssetAllocation = () => {
           </table>
         </div>
         {/* Fund Table */}
-        <div className="bg-white text-sm  shadow-xs rounded-sm  overflow-hidden w-full">
+        <div className="bg-[#111111] text-sm  shadow-xs rounded-sm  overflow-hidden w-full">
           <table className="w-full ">
             <thead>
               <tr>
@@ -461,7 +461,7 @@ const AssetAllocation = () => {
 
       <div className="bg-accent p-3 font-semibold text-base my-3">Category</div>
       {/* Category Breakdown Table */}
-      <div className="bg-white  flex flex-col gap-4  shadow-xs rounded-sm overflow-hidden">
+      <div className="bg-[#111111]  flex flex-col gap-4  shadow-xs rounded-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -533,7 +533,7 @@ const AssetAllocation = () => {
         <div className="bg-accent p-3 font-semibold text-base ">
           Equity Cap for Mutual Fund
         </div>
-        <div className="bg-white  shadow-xs rounded-sm overflow-hidden">
+        <div className="bg-[#111111]  shadow-xs rounded-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -595,7 +595,7 @@ const AssetAllocation = () => {
           </div>
         </div>
         {/* Grand Total Table */}
-        <div className="bg-white  shadow-xs rounded-sm overflow-hidden">
+        <div className="bg-[#111111]  shadow-xs rounded-sm overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr>
@@ -654,22 +654,22 @@ const AssetAllocation = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* By Scrip (Top 10) */}
-              <div className="bg-white shadow-sm rounded-sm overflow-hidden">
+              <div className="bg-[#111111] shadow-sm rounded-sm overflow-hidden">
                 <div className="bg-accent p-3 font-semibold text-base">
                   By Scrip (Top 10)
                 </div>
                 <div className="p-4">
-                  <div className="flex items-center justify-center h-32 bg-gray-50 rounded">
+                  <div className="flex items-center justify-center h-32 bg-[#0A0A0A] rounded">
                     <div className="flex items-center text-primary">
                       <span className="text-2xl mr-2">⚠️</span>
-                      <span className="text-gray-600">No data available.</span>
+                      <span className="text-[#9CA3AF]">No data available.</span>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* By Paper (Top 10) */}
-              <div className="bg-white shadow-sm rounded-sm overflow-hidden">
+              <div className="bg-[#111111] shadow-sm rounded-sm overflow-hidden">
                 <div className="bg-accent p-3 font-semibold text-base">
                   By Paper (Top 10)
                 </div>
@@ -689,7 +689,7 @@ const AssetAllocation = () => {
                   </thead>
                   <tbody>
                     {holdingData.byPaper.map((row, idx) => (
-                      <tr key={idx} className="border-b border-gray-200">
+                      <tr key={idx} className="border-b border-[#2A2A2A]">
                         <td className="p-2 text-left">{row.name}</td>
                         <td className="p-2 text-right">{row.amount}</td>
                         <td className="p-2 text-right ">
@@ -702,22 +702,22 @@ const AssetAllocation = () => {
               </div>
 
               {/* By Sector (Top 10) */}
-              <div className="bg-white shadow-sm rounded-sm overflow-hidden">
+              <div className="bg-[#111111] shadow-sm rounded-sm overflow-hidden">
                 <div className="bg-accent p-3 font-semibold text-base">
                   By Sector (Top 10)
                 </div>
                 <div className="p-4">
-                  <div className="flex items-center justify-center h-32 bg-gray-50 rounded">
+                  <div className="flex items-center justify-center h-32 bg-[#0A0A0A] rounded">
                     <div className="flex items-center text-primary">
                       <span className="text-2xl mr-2">⚠️</span>
-                      <span className="text-gray-600">No data available.</span>
+                      <span className="text-[#9CA3AF]">No data available.</span>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* By Rating (Top 10) */}
-              <div className="bg-white shadow-sm rounded-sm overflow-hidden">
+              <div className="bg-[#111111] shadow-sm rounded-sm overflow-hidden">
                 <div className="bg-accent p-3 font-semibold text-base">
                   By Rating (Top 10)
                 </div>
@@ -737,7 +737,7 @@ const AssetAllocation = () => {
                   </thead>
                   <tbody>
                     {holdingData.byRating.map((row, idx) => (
-                      <tr key={idx} className="border-b border-gray-200">
+                      <tr key={idx} className="border-b border-[#2A2A2A]">
                         <td className="p-2 text-left">{row.name}</td>
                         <td className="p-2 text-right">{row.amount}</td>
                         <td className="p-2 text-right">

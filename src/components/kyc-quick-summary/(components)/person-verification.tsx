@@ -20,17 +20,17 @@ function PersonVerification({ summarydata }: any) {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
                         {/* Signature Section */}
-                        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                        <div className="bg-[#111111] rounded-lg shadow-lg overflow-hidden">
                             <div className="px-6 py-4 ">
                                 <div className="flex items-center">
-                                    <div className="bg-white p-2 rounded-full shadow-md border-2 border-green-200 mr-3">
+                                    <div className="bg-[#111111] p-2 rounded-full shadow-md border-2 border-green-200 mr-3">
                                         <FaSignature className="text-green-600 text-lg" />
                                     </div>
                                     <div>
-                                        <CustomText className="text-lg font-semibold text-gray-900">
+                                        <CustomText className="text-lg font-semibold text-[#F9FAFB]">
                                             Digital Signature
                                         </CustomText>
-                                        <CustomText className="text-sm text-gray-600">
+                                        <CustomText className="text-sm text-[#9CA3AF]">
                                             Your verified signature
                                         </CustomText>
                                     </div>
@@ -54,8 +54,8 @@ function PersonVerification({ summarydata }: any) {
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className="text-center text-gray-500">
-                                            <FaSignature className="text-4xl mx-auto mb-2 text-gray-400" />
+                                        <div className="text-center text-[#9CA3AF]">
+                                            <FaSignature className="text-4xl mx-auto mb-2 text-[#6B7280]" />
                                             <CustomText className="text-sm">No signature available</CustomText>
                                         </div>
                                     )}
@@ -64,17 +64,17 @@ function PersonVerification({ summarydata }: any) {
                         </div>
 
                         {/* Photo Section */}
-                        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                        <div className="bg-[#111111] rounded-lg shadow-lg overflow-hidden">
                             <div className="px-6 py-4">
                                 <div className="flex items-center">
-                                    <div className="bg-white p-2 rounded-full shadow-md border-2 border-blue-200 mr-3">
+                                    <div className="bg-[#111111] p-2 rounded-full shadow-md border-2 border-blue-200 mr-3">
                                         <FaCamera className="text-blue-600 text-lg" />
                                     </div>
                                     <div>
-                                        <CustomText className="text-lg font-semibold text-gray-900">
+                                        <CustomText className="text-lg font-semibold text-[#F9FAFB]">
                                             Profile Photo
                                         </CustomText>
-                                        <CustomText className="text-sm text-gray-600">
+                                        <CustomText className="text-sm text-[#9CA3AF]">
                                             Your verified photo
                                         </CustomText>
                                     </div>
@@ -98,8 +98,8 @@ function PersonVerification({ summarydata }: any) {
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className="text-center text-gray-500">
-                                            <FaCamera className="text-4xl mx-auto mb-2 text-gray-400" />
+                                        <div className="text-center text-[#9CA3AF]">
+                                            <FaCamera className="text-4xl mx-auto mb-2 text-[#6B7280]" />
                                             <CustomText className="text-sm">No photo available</CustomText>
                                         </div>
                                     )}
@@ -110,17 +110,17 @@ function PersonVerification({ summarydata }: any) {
 
                     {/* Video Verification Section */}
                     {summarydata?.PersonalDocument?.self_video && (
-                        <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+                        <div className="bg-[#111111] rounded-lg shadow-sm border overflow-hidden">
                             <div className="bg-gradient-to-r from-purple-50 to-pink-50 px-6 py-4 border-b">
                                 <div className="flex items-center">
-                                    <div className="bg-white p-2 rounded-full shadow-md border-2 border-purple-200 mr-3">
+                                    <div className="bg-[#111111] p-2 rounded-full shadow-md border-2 border-purple-200 mr-3">
                                         <FaVideo className="text-purple-600 text-lg" />
                                     </div>
                                     <div>
-                                        <CustomText className="text-lg font-semibold text-gray-900">
+                                        <CustomText className="text-lg font-semibold text-[#F9FAFB]">
                                             Video Verification
                                         </CustomText>
-                                        <CustomText className="text-sm text-gray-600">
+                                        <CustomText className="text-sm text-[#9CA3AF]">
                                             Your identity verification video
                                         </CustomText>
                                     </div>
@@ -128,7 +128,7 @@ function PersonVerification({ summarydata }: any) {
                             </div>
 
                             <div className="p-6">
-                                <div className="bg-gray-50 rounded-lg p-6 border-2 border-dashed border-gray-200">
+                                <div className="bg-[#1F1A1A] rounded-lg p-6 border-2 border-dashed border-[#2A2A2A]">
                                     {summarydata?.PersonalDocument?.self_video ? (
                                         <div className="max-w-md mx-auto">
                                             <div className="relative bg-black rounded-lg overflow-hidden">
@@ -155,18 +155,18 @@ function PersonVerification({ summarydata }: any) {
                                                 </div>
                                             </div>
                                             <div className="text-center mt-4">
-                                                <CustomText className="text-sm text-gray-600">
+                                                <CustomText className="text-sm text-[#9CA3AF]">
                                                     Video verification completed successfully
                                                 </CustomText>
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className="text-center text-gray-500 py-8">
-                                            <FaPlayCircle className="text-6xl mx-auto mb-4 text-gray-400" />
-                                            <CustomText className="text-lg font-medium text-gray-900 mb-2">
+                                        <div className="text-center text-[#9CA3AF] py-8">
+                                            <FaPlayCircle className="text-6xl mx-auto mb-4 text-[#6B7280]" />
+                                            <CustomText className="text-lg font-medium text-[#F9FAFB] mb-2">
                                                 No Video Available
                                             </CustomText>
-                                            <CustomText className="text-sm text-gray-600">
+                                            <CustomText className="text-sm text-[#9CA3AF]">
                                                 Video verification has not been completed yet
                                             </CustomText>
                                         </div>

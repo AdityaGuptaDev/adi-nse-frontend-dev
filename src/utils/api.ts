@@ -149,7 +149,19 @@ const fetchClient = () => {
         // before they leave the browser. The backend piiDecrypt middleware
         // detects __pii_encrypted: true and decrypts transparently so no
         // controller code needs to change.
-        config.data = encryptPIIFields(config.data);
+        //
+        // IMPORTANT — skip this for upstream-proxied payloads where our
+        // backend forwards fields verbatim to a third-party provider (MFU,
+        // NSE, NIMBUS, etc.). If we encrypt `ifsc`, `account_number`, `pan`,
+        // `mobile`, `email`, `dob` etc. inside those payloads, MFU sees the
+        // ciphertext instead of the real value and rejects with generic
+        // errors like "Invalid Request Details". The backend route does the
+        // MFU-side encryption itself, so we send plain values here.
+        const url: string = (config.url || "").toString();
+        const bypassPii = /\/(mfu|nse|nimbus|mfUtility|mutual-fund\/(?:folios-by-pan-scheme|scheme-by-name))/i.test(url);
+        if (!bypassPii) {
+          config.data = encryptPIIFields(config.data);
+        }
         // ────────────────────────────────────────────────────────────────────
       }
     } catch (error) {

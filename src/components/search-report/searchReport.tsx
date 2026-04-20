@@ -490,36 +490,38 @@ export default function ClientSearchReport() {
   const getStatusBadge = (status: string | undefined) => {
     switch (status) {
       case 'active':
-        return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>;
+        return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-500/20 text-green-400">Active</span>;
       case 'inactive':
-        return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Inactive</span>;
+        return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-red-500/20 text-red-400">Inactive</span>;
       case 'pending':
-        return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>;
+        return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-500/20 text-yellow-400">Pending</span>;
       default:
-        return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800">Unknown</span>;
+        return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-[#0A0A0A]0/20 text-[#9CA3AF]">Unknown</span>;
     }
   };
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-96">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-[#0A0A0A] flex justify-center items-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#F59E0B]"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="bg-white p-6 rounded-lg shadow-lg text-center text-red-500 max-w-2xl mx-auto my-8">
-        <div className="bg-red-100 border-l-4 border-red-500 p-4 rounded">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <p className="text-sm font-medium">{error}</p>
+      <div className="min-h-screen bg-[#0A0A0A] p-6">
+        <div className="bg-[#111111] p-6 rounded-xl shadow-lg text-center max-w-2xl mx-auto my-8 border border-[#2A2A2A]">
+          <div className="bg-red-500/10 border-l-4 border-red-500 p-4 rounded">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-red-400">{error}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -528,450 +530,455 @@ export default function ClientSearchReport() {
   }
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-none">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-        <div className="flex items-center gap-3">
-          <CustomBackButton onClick={() => window.history.back()}>
-            <IoMdArrowRoundBack className="h-6 w-6 mr-1" />
-          </CustomBackButton>
-         
-        </div>
-        
-        <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-          <div className="relative flex-grow sm:w-64">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <FiSearch className="text-gray-400" />
+    <div className="min-h-screen bg-[#0A0A0A] w-full">
+      <div className="max-w-full mx-auto p-6">
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+          <div className="flex items-center gap-3">
+            <CustomBackButton onClick={() => window.history.back()}>
+              <IoMdArrowRoundBack className="h-6 w-6 text-[#F59E0B]" />
+            </CustomBackButton>
+            <div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent">
+                Client Search Report
+              </h1>
+              <p className="text-[#9CA3AF] text-sm mt-1">Manage and search investor clients</p>
             </div>
-            <input
-              type="text"
-              placeholder="Search clients..."
-              className="block w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setCurrentPage(1);
-              }}
-            />
           </div>
           
-   
-          {(userTypeId === '1' || userTypeId === '4' || userTypeId === '5'|| userTypeId === '2'|| userTypeId === '3'|| userTypeId === '6') && (
-            <button
-              onClick={() => handleRegister("Investor")}
-              className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-md hover:shadow-lg whitespace-nowrap flex items-center justify-center gap-2"
-            >
-              <span className="font-medium">+ Add Investor</span>
-            </button>
-          )}
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+            <div className="relative flex-grow sm:w-64">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <FiSearch className="text-[#9CA3AF]" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search clients..."
+                className="block w-full pl-10 pr-4 py-2.5 border border-[#2A2A2A] rounded-lg bg-[#111111] text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent text-sm"
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
+              />
+            </div>
+            
+            {(userTypeId === '1' || userTypeId === '4' || userTypeId === '5'|| userTypeId === '2'|| userTypeId === '3'|| userTypeId === '6') && (
+              <button
+                onClick={() => handleRegister("Investor")}
+                className="bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-[#F9FAFB] px-5 py-2.5 rounded-lg text-sm font-medium transition-all shadow-md hover:shadow-lg whitespace-nowrap flex items-center justify-center gap-2"
+              >
+                <span className="font-medium">+ Add Investor</span>
+              </button>
+            )}
+          </div>
         </div>
-      </div>
 
-
-      {/* Data Table */}
-      <div className="overflow-hidden rounded-xl border border-gray-200 shadow-sm mb-6 relative">
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200 text-sm">
-            <thead className="bg-gray-50">
-              <tr>{columns.map((column) => (
-                <th
-                  key={column.key}
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider whitespace-nowrap"
-                  style={{ width: column.width }}
-                >
-                  <div className="flex items-center justify-between">
-                    <span>{column.label}</span>
-                    <div className="flex items-center gap-1">
-                      {column.sortable && (
-                        <button
-                          onClick={() => column.sortable && handleSort(column.key)}
-                          className="p-1 hover:bg-gray-200 rounded"
-                          title={`Sort by ${column.label}`}
-                        >
-                          {sortConfig?.key === column.key ? (
-                            sortConfig.direction === 'asc' ? (
-                              <FiArrowUp className="w-4 h-4 text-gray-600" />
-                            ) : (
-                              <FiArrowDown className="w-4 h-4 text-gray-600" />
-                            )
-                          ) : (
-                            <FiArrowUp className="w-4 h-4 text-gray-400" />
+        {/* Data Table */}
+        <div className="overflow-hidden rounded-xl border border-[#2A2A2A] shadow-lg mb-6 relative bg-[#111111]">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-[#2A2A2A] text-sm">
+              <thead className="bg-[#1F1A1A]">
+                <tr>
+                  {columns.map((column) => (
+                    <th
+                      key={column.key}
+                      className="px-6 py-3 text-left text-xs font-medium text-[#F59E0B] uppercase tracking-wider whitespace-nowrap"
+                      style={{ width: column.width }}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span>{column.label}</span>
+                        <div className="flex items-center gap-1">
+                          {column.sortable && (
+                            <button
+                              onClick={() => column.sortable && handleSort(column.key)}
+                              className="p-1 hover:bg-[#2A2A2A] rounded transition-colors"
+                              title={`Sort by ${column.label}`}
+                            >
+                              {sortConfig?.key === column.key ? (
+                                sortConfig.direction === 'asc' ? (
+                                  <FiArrowUp className="w-4 h-4 text-[#F59E0B]" />
+                                ) : (
+                                  <FiArrowDown className="w-4 h-4 text-[#F59E0B]" />
+                                )
+                              ) : (
+                                <FiArrowUp className="w-4 h-4 text-[#9CA3AF]" />
+                              )}
+                            </button>
                           )}
-                        </button>
-                      )}
-                      {column.filterable && (
-                        <button
-                          onClick={() => toggleFilter(column.key)}
-                          className="p-1 hover:bg-gray-200 rounded"
-                          title={`Filter ${column.label}`}
-                        >
-                          <FiFilter className="w-4 h-4 text-gray-600" />
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                  {showFilters[column.key] && column.filterable && (
-                    <div className="mt-2">
-                      <input
-                        type="text"
-                        placeholder={`Filter ${column.label}...`}
-                        className="w-full px-2 py-1 text-xs border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-500"
-                        value={filterConfig[column.key] || ''}
-                        onChange={(e) => handleFilter(column.key, e.target.value)}
-                      />
-                    </div>
-                  )}
-                </th>
-              ))}</tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {currentItems.length > 0 ? (
-                currentItems.map((client) => (
-                  <tr key={client.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div
-                        className="font-medium text-blue-600 hover:text-blue-800 cursor-pointer flex items-center"
-                        onClick={() => openClientModal(client)}
-                      >
-                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-2 text-blue-600 font-bold">
-                          {client.inv_name.charAt(0)}
-                        </div>
-                        <div>
-                          {client.inv_name || '-'}
+                          {column.filterable && (
+                            <button
+                              onClick={() => toggleFilter(column.key)}
+                              className="p-1 hover:bg-[#2A2A2A] rounded transition-colors"
+                              title={`Filter ${column.label}`}
+                            >
+                              <FiFilter className="w-4 h-4 text-[#9CA3AF]" />
+                            </button>
+                          )}
                         </div>
                       </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap font-mono text-sm">
-                      {client.pan_no || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {client.fathers_name || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {client.reg_mobile || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-600 text-sm">
-                      <div className="truncate max-w-[200px]">{client.reg_email || '-'}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap font-medium">
-                      {formatCurrency(client.aum)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {client.partner_name || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {client.rm_name || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {getStatusBadge(client.status)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex gap-2">
-                        <button
+                      {showFilters[column.key] && column.filterable && (
+                        <div className="mt-2">
+                          <input
+                            type="text"
+                            placeholder={`Filter ${column.label}...`}
+                            className="w-full px-2 py-1 text-xs border border-[#2A2A2A] rounded focus:outline-none focus:ring-1 focus:ring-[#F59E0B] bg-[#111111] text-[#F9FAFB] placeholder:text-[#9CA3AF]"
+                            value={filterConfig[column.key] || ''}
+                            onChange={(e) => handleFilter(column.key, e.target.value)}
+                          />
+                        </div>
+                      )}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="bg-[#111111] divide-y divide-[#2A2A2A]">
+                {currentItems.length > 0 ? (
+                  currentItems.map((client) => (
+                    <tr key={client.id} className="hover:bg-[#1F1A1A] transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div
+                          className="font-medium text-[#F59E0B] hover:text-[#FBBF24] cursor-pointer flex items-center transition-colors"
                           onClick={() => openClientModal(client)}
-                          className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                          title="View Details"
                         >
-                          <FiEye className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => {
-                            sessionStorage.setItem('selectedClient', JSON.stringify({
-                              name: client.inv_name,
-                              pan: client.pan_no
-                            }));
-                            router.push('/investor');
-                          }}
-                          className="p-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-                          title="View Report"
-                        >
-                          <FiFileText className="w-4 h-4" />
-                        </button>
+                          <div className="w-8 h-8 bg-gradient-to-r from-[#F59E0B]/20 to-[#B45309]/20 rounded-full flex items-center justify-center mr-2 text-[#F59E0B] font-bold">
+                            {client.inv_name?.charAt(0) || '?'}
+                          </div>
+                          <div>
+                            {client.inv_name || '-'}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap font-mono text-sm text-[#F9FAFB]">
+                        {client.pan_no || '-'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-[#F9FAFB]">
+                        {client.fathers_name || '-'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-[#F9FAFB]">
+                        {client.reg_mobile || '-'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-[#9CA3AF] text-sm">
+                        <div className="truncate max-w-[200px]">{client.reg_email || '-'}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap font-medium text-[#F59E0B]">
+                        {formatCurrency(client.aum)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-[#F9FAFB]">
+                        {client.partner_name || '-'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-[#F9FAFB]">
+                        {client.rm_name || '-'}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {getStatusBadge(client.status)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => openClientModal(client)}
+                            className="p-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-[#F9FAFB] rounded-lg hover:opacity-90 transition-all"
+                            title="View Details"
+                          >
+                            <FiEye className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => {
+                              sessionStorage.setItem('selectedClient', JSON.stringify({
+                                name: client.inv_name,
+                                pan: client.pan_no
+                              }));
+                              router.push('/investor');
+                            }}
+                            className="p-2 bg-gradient-to-r from-[#10B981] to-[#059669] text-[#F9FAFB] rounded-lg hover:opacity-90 transition-all"
+                            title="View Report"
+                          >
+                            <FiFileText className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={columns.length} className="px-6 py-8 text-center text-[#9CA3AF]">
+                      <div className="flex flex-col items-center justify-center">
+                        <FiSearch className="w-12 h-12 text-[#2A2A2A] mb-3" />
+                        <p className="text-lg font-medium text-[#F9FAFB]">No clients found</p>
+                        <p className="text-sm text-[#9CA3AF] mt-1">Try adjusting your search or filters</p>
                       </div>
                     </td>
                   </tr>
-                ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Pagination */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
+          <div className="text-[#9CA3AF]">
+            Showing <span className="font-medium text-[#F59E0B]">{startIndex + 1}</span> to{' '}
+            <span className="font-medium text-[#F59E0B]">{endIndex}</span> of{' '}
+            <span className="font-medium text-[#F59E0B]">{totalItems}</span> clients
+            {Object.keys(filterConfig).length > 0 && (
+              <span className="ml-2 text-[#F59E0B]">
+                (Filtered from {clients.length} total)
+              </span>
+            )}
+          </div>
+          
+          <div className="flex items-center gap-2">
+            <span className="text-[#9CA3AF]">Show:</span>
+            <select
+              value={itemsPerPage}
+              onChange={(e) => {
+                setItemsPerPage(Number(e.target.value));
+                setCurrentPage(1);
+              }}
+              className="border border-[#2A2A2A] rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-[#F59E0B] bg-[#111111] text-[#F9FAFB]"
+            >
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+            <span className="text-[#9CA3AF]">per page</span>
+          </div>
+
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={() => paginate(1)}
+              disabled={currentPage === 1}
+              className={`px-3 py-1.5 border border-[#2A2A2A] rounded-lg flex items-center ${
+                currentPage === 1
+                  ? 'text-[#9CA3AF] cursor-not-allowed bg-[#111111]'
+                  : 'text-[#F9FAFB] hover:bg-[#1F1A1A] hover:border-[#F59E0B] transition-colors'
+              }`}
+              title="First page"
+            >
+              <FiChevronsLeft className="h-4 w-4" />
+            </button>
+
+            <button
+              onClick={() => paginate(Math.max(1, currentPage - 1))}
+              disabled={currentPage === 1}
+              className={`px-3 py-1.5 border border-[#2A2A2A] rounded-lg flex items-center ${
+                currentPage === 1
+                  ? 'text-[#9CA3AF] cursor-not-allowed bg-[#111111]'
+                  : 'text-[#F9FAFB] hover:bg-[#1F1A1A] hover:border-[#F59E0B] transition-colors'
+              }`}
+              title="Previous page"
+            >
+              <FiChevronLeft className="h-4 w-4" />
+            </button>
+
+            {getPageNumbers().map((pageNumber, index) => (
+              pageNumber === '...' ? (
+                <span key={`ellipsis-${index}`} className="px-2 py-1.5 text-[#9CA3AF]">...</span>
               ) : (
-                <tr>
-                  <td colSpan={columns.length} className="px-6 py-8 text-center text-gray-500">
-                    <div className="flex flex-col items-center justify-center">
-                      <FiSearch className="w-12 h-12 text-gray-300 mb-3" />
-                      <p className="text-lg font-medium text-gray-600">No clients found</p>
-                      <p className="text-sm text-gray-500 mt-1">Try adjusting your search or filters</p>
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+                <button
+                  key={pageNumber}
+                  onClick={() => paginate(pageNumber as number)}
+                  className={`px-3.5 py-1.5 border rounded-lg transition-colors ${
+                    currentPage === pageNumber
+                      ? 'bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-[#F9FAFB] border-transparent'
+                      : 'text-[#F9FAFB] border-[#2A2A2A] hover:bg-[#1F1A1A] hover:border-[#F59E0B]'
+                  }`}
+                >
+                  {pageNumber}
+                </button>
+              )
+            ))}
 
-      {/* Pagination */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
-        <div className="text-gray-600">
-          Showing <span className="font-medium">{startIndex + 1}</span> to{' '}
-          <span className="font-medium">{endIndex}</span> of{' '}
-          <span className="font-medium">{totalItems}</span> clients
-          {Object.keys(filterConfig).length > 0 && (
-            <span className="ml-2 text-blue-600">
-              (Filtered from {clients.length} total)
-            </span>
-          )}
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <span className="text-gray-600">Show:</span>
-          <select
-            value={itemsPerPage}
-            onChange={(e) => {
-              setItemsPerPage(Number(e.target.value));
-              setCurrentPage(1);
-            }}
-            className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500"
-          >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-          </select>
-          <span className="text-gray-600">per page</span>
+            <button
+              onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
+              disabled={currentPage === totalPages}
+              className={`px-3 py-1.5 border border-[#2A2A2A] rounded-lg flex items-center ${
+                currentPage === totalPages
+                  ? 'text-[#9CA3AF] cursor-not-allowed bg-[#111111]'
+                  : 'text-[#F9FAFB] hover:bg-[#1F1A1A] hover:border-[#F59E0B] transition-colors'
+              }`}
+              title="Next page"
+            >
+              <FiChevronRight className="h-4 w-4" />
+            </button>
+
+            <button
+              onClick={() => paginate(totalPages)}
+              disabled={currentPage === totalPages}
+              className={`px-3 py-1.5 border border-[#2A2A2A] rounded-lg flex items-center ${
+                currentPage === totalPages
+                  ? 'text-[#9CA3AF] cursor-not-allowed bg-[#111111]'
+                  : 'text-[#F9FAFB] hover:bg-[#1F1A1A] hover:border-[#F59E0B] transition-colors'
+              }`}
+              title="Last page"
+            >
+              <FiChevronsRight className="h-4 w-4" />
+            </button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-1.5">
-          <button
-            onClick={() => paginate(1)}
-            disabled={currentPage === 1}
-            className={`px-3 py-1.5 border border-gray-300 rounded-lg flex items-center ${
-              currentPage === 1
-                ? 'text-gray-400 cursor-not-allowed'
-                : 'text-gray-700 hover:bg-gray-50'
-            }`}
-            title="First page"
-          >
-            <FiChevronsLeft className="h-4 w-4" />
-          </button>
-
-          <button
-            onClick={() => paginate(Math.max(1, currentPage - 1))}
-            disabled={currentPage === 1}
-            className={`px-3 py-1.5 border border-gray-300 rounded-lg flex items-center ${
-              currentPage === 1
-                ? 'text-gray-400 cursor-not-allowed'
-                : 'text-gray-700 hover:bg-gray-50'
-            }`}
-            title="Previous page"
-          >
-            <FiChevronLeft className="h-4 w-4" />
-          </button>
-
-          {getPageNumbers().map((pageNumber, index) => (
-            pageNumber === '...' ? (
-              <span key={`ellipsis-${index}`} className="px-2 py-1.5 text-gray-500">...</span>
-            ) : (
-              <button
-                key={pageNumber}
-                onClick={() => paginate(pageNumber as number)}
-                className={`px-3.5 py-1.5 border rounded-lg ${
-                  currentPage === pageNumber
-                    ? 'bg-blue-500 text-white border-blue-500'
-                    : 'text-gray-700 border-gray-300 hover:bg-gray-50'
-                }`}
-              >
-                {pageNumber}
-              </button>
-            )
-          ))}
-
-          <button
-            onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
-            disabled={currentPage === totalPages}
-            className={`px-3 py-1.5 border border-gray-300 rounded-lg flex items-center ${
-              currentPage === totalPages
-                ? 'text-gray-400 cursor-not-allowed'
-                : 'text-gray-700 hover:bg-gray-50'
-            }`}
-            title="Next page"
-          >
-            <FiChevronRight className="h-4 w-4" />
-          </button>
-
-          <button
-            onClick={() => paginate(totalPages)}
-            disabled={currentPage === totalPages}
-            className={`px-3 py-1.5 border border-gray-300 rounded-lg flex items-center ${
-              currentPage === totalPages
-                ? 'text-gray-400 cursor-not-allowed'
-                : 'text-gray-700 hover:bg-gray-50'
-            }`}
-            title="Last page"
-          >
-            <FiChevronsRight className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-
-      {/* Client Details Modal */}
-      <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
-        <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" aria-hidden="true" />
-        <div className="fixed inset-0 flex items-center justify-center p-4">
-          <Dialog.Panel className="w-full max-w-4xl rounded-xl bg-white shadow-xl">
-            <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-5 py-4 flex justify-between items-center rounded-t-xl">
-              <div className="flex items-center space-x-3">
-                <Dialog.Title className="text-lg font-semibold text-white">Client Details</Dialog.Title>
+        {/* Client Details Modal */}
+        <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" aria-hidden="true" />
+          <div className="fixed inset-0 flex items-center justify-center p-4">
+            <Dialog.Panel className="w-full max-w-4xl rounded-xl bg-[#111111] border border-[#2A2A2A] shadow-2xl">
+              <div className="bg-gradient-to-r from-[#F59E0B] to-[#B45309] px-5 py-4 flex justify-between items-center rounded-t-xl">
+                <div className="flex items-center space-x-3">
+                  <Dialog.Title className="text-lg font-semibold text-[#F9FAFB]">Client Details</Dialog.Title>
+                </div>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="p-1 text-[#F9FAFB] hover:text-gray-200 transition-colors"
+                >
+                  <FiX size={20} />
+                </button>
               </div>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="p-1 text-white hover:text-gray-200 transition-colors"
-              >
-                <FiX size={20} />
-              </button>
-            </div>
 
-            <div className="max-h-[70vh] overflow-y-auto p-5">
-              {selectedClient && (
-                <div className="space-y-6">
-                  {/* Client Header */}
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-3xl font-bold">
-                      {selectedClient.inv_name.charAt(0)}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="text-xl font-bold text-gray-800 truncate">{selectedClient.inv_name}</h3>
-                          <p className="text-sm text-gray-500 mt-0.5">Investor ID: {selectedClient.id}</p>
-                          <div className="flex flex-wrap gap-x-4 gap-y-2 mt-3">
-                            <div className="flex items-center text-sm text-gray-600">
-                              <FiMail className="mr-1.5 text-gray-500" size={14} />
-                              <span className="truncate">{selectedClient.reg_email || 'N/A'}</span>
-                            </div>
-                            <div className="flex items-center text-sm text-gray-600">
-                              <FiPhone className="mr-1.5 text-gray-500" size={14} />
-                              <span>{selectedClient.reg_mobile || 'N/A'}</span>
-                            </div>
-                            <div className="flex items-center text-sm text-gray-600">
-                              <FiCreditCard className="mr-1.5 text-gray-500" size={14} />
-                              <span className="font-mono">{selectedClient.pan_no || 'N/A'}</span>
+              <div className="max-h-[70vh] overflow-y-auto p-5">
+                {selectedClient && (
+                  <div className="space-y-6">
+                    {/* Client Header */}
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 w-20 h-20 bg-gradient-to-r from-[#F59E0B]/20 to-[#B45309]/20 rounded-full flex items-center justify-center text-[#F59E0B] text-3xl font-bold">
+                        {selectedClient.inv_name?.charAt(0) || '?'}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="text-xl font-bold text-[#F9FAFB] truncate">{selectedClient.inv_name}</h3>
+                            <p className="text-sm text-[#9CA3AF] mt-0.5">Investor ID: {selectedClient.id}</p>
+                            <div className="flex flex-wrap gap-x-4 gap-y-2 mt-3">
+                              <div className="flex items-center text-sm text-[#9CA3AF]">
+                                <FiMail className="mr-1.5 text-[#F59E0B]" size={14} />
+                                <span className="truncate">{selectedClient.reg_email || 'N/A'}</span>
+                              </div>
+                              <div className="flex items-center text-sm text-[#9CA3AF]">
+                                <FiPhone className="mr-1.5 text-[#F59E0B]" size={14} />
+                                <span>{selectedClient.reg_mobile || 'N/A'}</span>
+                              </div>
+                              <div className="flex items-center text-sm text-[#9CA3AF]">
+                                <FiCreditCard className="mr-1.5 text-[#F59E0B]" size={14} />
+                                <span className="font-mono">{selectedClient.pan_no || 'N/A'}</span>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div className="text-right">
-                          {getStatusBadge(selectedClient.status)}
-                         
-                         
+                          <div className="text-right">
+                            {getStatusBadge(selectedClient.status)}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Main Information Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t">
-                    {/* Personal Information */}
-                    <div className="space-y-4">
-                      <h4 className="flex items-center text-base font-semibold text-gray-800">
-                        <FiUser className="mr-2 text-gray-500" size={16} />
-                        Personal Information
+                    {/* Main Information Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-[#2A2A2A]">
+                      {/* Personal Information */}
+                      <div className="space-y-4">
+                        <h4 className="flex items-center text-base font-semibold text-[#F9FAFB]">
+                          <FiUser className="mr-2 text-[#F59E0B]" size={16} />
+                          Personal Information
+                        </h4>
+                        <div className="space-y-3">
+                          <div className="flex justify-between">
+                            <span className="text-sm text-[#9CA3AF]">Date of Birth</span>
+                            <span className="text-sm font-medium text-[#F9FAFB]">{formatDate(selectedClient.dob)}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-[#9CA3AF]">Father's Name</span>
+                            <span className="text-sm font-medium text-[#F9FAFB]">{selectedClient.fathers_name || 'N/A'}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-[#9CA3AF]">Relationship</span>
+                            <span className="text-sm font-medium text-[#F9FAFB]">{selectedClient.father_relation || 'N/A'}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-[#9CA3AF]">Risk Profile</span>
+                            <span className="text-sm font-medium text-[#F9FAFB]">{selectedClient.risk_profile || 'N/A'}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Account Information */}
+                      <div className="space-y-4">
+                        <h4 className="flex items-center text-base font-semibold text-[#F9FAFB]">
+                          <FiBriefcase className="mr-2 text-[#F59E0B]" size={16} />
+                          Account Information
+                        </h4>
+                        <div className="space-y-3">
+                          <div className="flex justify-between">
+                            <span className="text-sm text-[#9CA3AF]">Partner</span>
+                            <span className="text-sm font-medium text-[#F9FAFB]">{selectedClient.partner_name || 'N/A'}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-[#9CA3AF]">RM</span>
+                            <span className="text-sm font-medium text-[#F9FAFB]">{selectedClient.rm_name || 'N/A'}</span>
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-sm text-[#9CA3AF]">Account Created</span>
+                            <span className="text-sm font-medium text-[#F9FAFB]">{formatDate(selectedClient.created_at)}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Address Section */}
+                    <div className="pt-4 border-t border-[#2A2A2A]">
+                      <h4 className="flex items-center text-base font-semibold text-[#F9FAFB] mb-3">
+                        <FiHome className="mr-2 text-[#F59E0B]" size={16} />
+                        Address
                       </h4>
-                      <div className="space-y-3">
-                        <div className="flex justify-between">
-                          <span className="text-sm text-gray-500">Date of Birth</span>
-                          <span className="text-sm font-medium text-gray-800">{formatDate(selectedClient.dob)}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-sm text-gray-500">Father's Name</span>
-                          <span className="text-sm font-medium text-gray-800">{selectedClient.fathers_name || 'N/A'}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-sm text-gray-500">Relationship</span>
-                          <span className="text-sm font-medium text-gray-800">{selectedClient.father_relation || 'N/A'}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-sm text-gray-500">Risk Profile</span>
-                          <span className="text-sm font-medium text-gray-800">{selectedClient.risk_profile || 'N/A'}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Account Information */}
-                    <div className="space-y-4">
-                      <h4 className="flex items-center text-base font-semibold text-gray-800">
-                        <FiBriefcase className="mr-2 text-gray-500" size={16} />
-                        Account Information
-                      </h4>
-                      <div className="space-y-3">
-                        <div className="flex justify-between">
-                          <span className="text-sm text-gray-500">Partner</span>
-                          <span className="text-sm font-medium text-gray-800">{selectedClient.partner_name || 'N/A'}</span>
-                        </div>
-                   
-                        
-                        <div className="flex justify-between">
-                          <span className="text-sm text-gray-500">Account Created</span>
-                          <span className="text-sm font-medium text-gray-800">{formatDate(selectedClient.created_at)}</span>
-                        </div>
-                      </div>
+                      <p className="text-sm text-[#9CA3AF] bg-[#1F1A1A] p-4 rounded-lg border border-[#2A2A2A]">
+                        {selectedClient.address || 'No address provided'}
+                      </p>
                     </div>
                   </div>
+                )}
+              </div>
 
-                  {/* Address Section */}
-                  <div className="pt-4 border-t">
-                    <h4 className="flex items-center text-base font-semibold text-gray-800 mb-3">
-                      <FiHome className="mr-2 text-gray-500" size={16} />
-                      Address
-                    </h4>
-                    <p className="text-sm text-gray-800 bg-gray-50 p-4 rounded-lg">
-                      {selectedClient.address || 'No address provided'}
-                    </p>
-                  </div>
-
-           
-                </div>
-              )}
-            </div>
-
-            <div className="bg-gray-50 px-5 py-4 border-t rounded-b-xl flex flex-wrap justify-end gap-3">
-              <button
-                onClick={() => setIsOpen(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors border border-gray-300"
-              >
-                Close
-              </button>
-              <button
-                onClick={() => {
-                  if (selectedClient) {
-                    sessionStorage.setItem('selectedClient', JSON.stringify({
-                      name: selectedClient.inv_name,
-                      pan: selectedClient.pan_no
-                    }));
-                    router.push('/investor');
-                  }
-                }}
-                className="px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors hover:bg-blue-600 flex items-center gap-2"
-              >
-                <FiFileText className="w-4 h-4" />
-                View Full Report
-              </button>
-              <button
-                onClick={() => {
-                  if (selectedClient) {
-                    sessionStorage.setItem('selectedClient', JSON.stringify({
-                      name: selectedClient.inv_name,
-                      pan: selectedClient.pan_no
-                    }));
-                    router.push('/dashboards');
-                  }
-                }}
-                className="px-4 py-2 bg-green-500 text-white text-sm font-medium rounded-lg transition-colors hover:bg-green-600 flex items-center gap-2"
-              >
-                <FiBarChart2 className="w-4 h-4" />
-                View Dashboard
-              </button>
-            </div>
-          </Dialog.Panel>
-        </div>
-      </Dialog>
+              <div className="bg-[#1F1A1A] px-5 py-4 border-t border-[#2A2A2A] rounded-b-xl flex flex-wrap justify-end gap-3">
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="px-4 py-2 text-sm font-medium text-[#F9FAFB] hover:bg-[#2A2A2A] rounded-lg transition-colors border border-[#2A2A2A]"
+                >
+                  Close
+                </button>
+                <button
+                  onClick={() => {
+                    if (selectedClient) {
+                      sessionStorage.setItem('selectedClient', JSON.stringify({
+                        name: selectedClient.inv_name,
+                        pan: selectedClient.pan_no
+                      }));
+                      router.push('/investor');
+                    }
+                  }}
+                  className="px-4 py-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-[#F9FAFB] text-sm font-medium rounded-lg transition-colors hover:opacity-90 flex items-center gap-2"
+                >
+                  <FiFileText className="w-4 h-4" />
+                  View Full Report
+                </button>
+                <button
+                  onClick={() => {
+                    if (selectedClient) {
+                      sessionStorage.setItem('selectedClient', JSON.stringify({
+                        name: selectedClient.inv_name,
+                        pan: selectedClient.pan_no
+                      }));
+                      router.push('/dashboards');
+                    }
+                  }}
+                  className="px-4 py-2 bg-gradient-to-r from-[#10B981] to-[#059669] text-[#F9FAFB] text-sm font-medium rounded-lg transition-colors hover:opacity-90 flex items-center gap-2"
+                >
+                  <FiBarChart2 className="w-4 h-4" />
+                  View Dashboard
+                </button>
+              </div>
+            </Dialog.Panel>
+          </div>
+        </Dialog>
+      </div>
     </div>
   );
 }

@@ -15,7 +15,7 @@ function AddressDetail({ nextTabs, backTabs, summarydata }: any) {
 
             {/* Main Content */}
             <div className="max-w-7xl mx-auto ">
-                <div className="bg-white ">
+                <div className="bg-[#111111] ">
 
                     {/* Address Header */}
                     {summarydata?.AddressDetail?.address_front_doc && summarydata?.AddressDetail?.address_back_doc && (
@@ -27,14 +27,14 @@ function AddressDetail({ nextTabs, backTabs, summarydata }: any) {
                                         {/* Front Document */}
 
                                         <div className="flex flex-col items-center">
-                                            <div className="bg-white p-4 rounded-lg shadow-md border-2 border-dashed border-purple-200 w-full">
+                                            <div className="bg-[#111111] p-4 rounded-lg shadow-md border-2 border-dashed border-purple-200 w-full">
                                                 <img
                                                     src={`${NODE_API_URL}/static/addressDoc/${summarydata?.AddressDetail?.address_front_doc}`}
                                                     alt="Address Proof Front"
                                                     className="w-full max-h-48 object-contain rounded"
                                                 />
                                             </div>
-                                            <CustomText className="text-sm text-gray-600 mt-3 font-medium">
+                                            <CustomText className="text-sm text-[#9CA3AF] mt-3 font-medium">
                                                 Front Side Document
                                             </CustomText>
                                         </div>
@@ -42,14 +42,14 @@ function AddressDetail({ nextTabs, backTabs, summarydata }: any) {
 
 
                                         <div className="flex flex-col items-center">
-                                            <div className="bg-white p-4 rounded-lg shadow-md border-2 border-dashed border-purple-200 w-full">
+                                            <div className="bg-[#111111] p-4 rounded-lg shadow-md border-2 border-dashed border-purple-200 w-full">
                                                 <img
                                                     src={`${NODE_API_URL}/static/addressDoc/${summarydata?.AddressDetail?.address_back_doc}`}
                                                     alt="Address Proof Back"
                                                     className="w-full max-h-48 object-contain rounded"
                                                 />
                                             </div>
-                                            <CustomText className="text-sm text-gray-600 mt-3 font-medium">
+                                            <CustomText className="text-sm text-[#9CA3AF] mt-3 font-medium">
                                                 Back Side Document
                                             </CustomText>
                                         </div>
@@ -62,8 +62,8 @@ function AddressDetail({ nextTabs, backTabs, summarydata }: any) {
 
                     {/* Correspondence Address Aadhaar Documents Section */}
                     {summarydata?.AddressDetail?.corr_aadhaar_front_doc && summarydata?.AddressDetail?.corr_aadhaar_back_doc && !summarydata?.AddressDetail?.same_as_permanent && (
-                        <div className="px-6 py-6 border-t border-gray-200">
-                            <CustomText className="text-lg font-semibold text-gray-900 mb-4">
+                        <div className="px-6 py-6 border-t border-[#2A2A2A]">
+                            <CustomText className="text-lg font-semibold text-[#F9FAFB] mb-4">
                                 Correspondence Address - Aadhaar Documents
                             </CustomText>
                             <div className="flex items-center justify-center">
@@ -71,28 +71,28 @@ function AddressDetail({ nextTabs, backTabs, summarydata }: any) {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                                         {/* Aadhaar Front Document */}
                                         <div className="flex flex-col items-center">
-                                            <div className="bg-white p-4 rounded-lg shadow-md border-2 border-dashed border-green-200 w-full">
+                                            <div className="bg-[#111111] p-4 rounded-lg shadow-md border-2 border-dashed border-green-200 w-full">
                                                 <img
                                                     src={`${NODE_API_URL}/static/aadhaarDoc/${summarydata?.AddressDetail?.corr_aadhaar_front_doc}`}
                                                     alt="Correspondence Aadhaar Front"
                                                     className="w-full max-h-48 object-contain rounded"
                                                 />
                                             </div>
-                                            <CustomText className="text-sm text-gray-600 mt-3 font-medium">
+                                            <CustomText className="text-sm text-[#9CA3AF] mt-3 font-medium">
                                                 Aadhaar Front Side
                                             </CustomText>
                                         </div>
 
                                         {/* Aadhaar Back Document */}
                                         <div className="flex flex-col items-center">
-                                            <div className="bg-white p-4 rounded-lg shadow-md border-2 border-dashed border-green-200 w-full">
+                                            <div className="bg-[#111111] p-4 rounded-lg shadow-md border-2 border-dashed border-green-200 w-full">
                                                 <img
                                                     src={`${NODE_API_URL}/static/aadhaarDoc/${summarydata?.AddressDetail?.corr_aadhaar_back_doc}`}
                                                     alt="Correspondence Aadhaar Back"
                                                     className="w-full max-h-48 object-contain rounded"
                                                 />
                                             </div>
-                                            <CustomText className="text-sm text-gray-600 mt-3 font-medium">
+                                            <CustomText className="text-sm text-[#9CA3AF] mt-3 font-medium">
                                                 Aadhaar Back Side
                                             </CustomText>
                                         </div>
@@ -107,7 +107,7 @@ function AddressDetail({ nextTabs, backTabs, summarydata }: any) {
 
                     {/* Address Information Grid */}
                     <div className="p-6">
-                        <CustomText className="text-lg font-semibold text-gray-900 mb-6">
+                        <CustomText className="text-lg font-semibold text-[#F9FAFB] mb-6">
                             Permanent Address Information
                         </CustomText>
 
@@ -197,7 +197,7 @@ function AddressDetail({ nextTabs, backTabs, summarydata }: any) {
                                     <CustomText className="text-sm font-medium text-secondary mb-2">
                                         Complete Permanent Address
                                     </CustomText>
-                                    <CustomText className="text-sm text-black leading-relaxed">
+                                    <CustomText className="text-sm text-white leading-relaxed">
                                         {summarydata?.AddressDetail?.address1}
                                     </CustomText>
                                 </div>
@@ -207,8 +207,8 @@ function AddressDetail({ nextTabs, backTabs, summarydata }: any) {
 
                     {/* Correspondence Address Section */}
                     {summarydata?.AddressDetail && !summarydata?.AddressDetail?.same_as_permanent && (
-                        <div className="p-6 border-t border-gray-200">
-                            <CustomText className="text-lg font-semibold text-gray-900 mb-6">
+                        <div className="p-6 border-t border-[#2A2A2A]">
+                            <CustomText className="text-lg font-semibold text-[#F9FAFB] mb-6">
                                 Correspondence Address Information
                             </CustomText>
 
@@ -309,7 +309,7 @@ function AddressDetail({ nextTabs, backTabs, summarydata }: any) {
 
                     {/* Same as Permanent Address Notice */}
                     {summarydata?.AddressDetail?.same_as_permanent && (
-                        <div className="p-6 border-t border-gray-200">
+                        <div className="p-6 border-t border-[#2A2A2A]">
                             <div className="p-4  rounded-lg border border-blue-200">
                                 <div className="flex items-center">
                                     <FaIdCard className="text-secondary text-xl mr-3 flex-shrink-0" />
@@ -317,7 +317,7 @@ function AddressDetail({ nextTabs, backTabs, summarydata }: any) {
                                         <CustomText className="text-sm font-medium text-secondary mb-1">
                                             Correspondence Address
                                         </CustomText>
-                                        <CustomText className="text-sm text-gray-700">
+                                        <CustomText className="text-sm text-[#E5E7EB]">
                                             Same as Permanent Address
                                         </CustomText>
                                     </div>
@@ -329,7 +329,7 @@ function AddressDetail({ nextTabs, backTabs, summarydata }: any) {
             </div>
 
             {/* Action Buttons */}
-            <div className="bg-white ">
+            <div className="bg-[#111111] ">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6 py-4">
                     <div className="flex justify-end items-center">
 

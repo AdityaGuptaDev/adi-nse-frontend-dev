@@ -24,7 +24,7 @@ export default function TransactionSuccessPage() {
 
     /* if (!transaction) {
          return (
-             <div className="flex h-screen items-center justify-center text-gray-500">
+             <div className="flex h-screen items-center justify-center text-[#9CA3AF]">
                  Loading transaction data...
              </div>
          )
@@ -49,8 +49,8 @@ export default function TransactionSuccessPage() {
 
     /*if (!orderId) {
         return (
-            <div className="flex h-screen items-center justify-center bg-gray-50">
-                <p className="text-gray-600 text-lg">Missing order ID</p>
+            <div className="flex h-screen items-center justify-center bg-[#1F1A1A]">
+                <p className="text-[#9CA3AF] text-lg">Missing order ID</p>
             </div>
         )
     }*/
@@ -120,7 +120,7 @@ export default function TransactionSuccessPage() {
                 )
             default:
                 return (
-                    <div className="flex flex-col items-center text-gray-500">
+                    <div className="flex flex-col items-center text-[#9CA3AF]">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             className="h-16 w-16 mb-4 animate-spin"
@@ -144,9 +144,9 @@ export default function TransactionSuccessPage() {
 
     return (
         <div className="flex min-h-screen items-center justify-center px-4">
-            <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md text-center animate-fadeIn">
-                <h1 className="text-3xl font-bold text-gray-800 mb-2">Transaction Status</h1>
-                <p className="text-gray-500 mb-6">Reference No: V2025071106740{orderId}</p>
+            <div className="bg-[#111111] rounded-xl shadow-lg p-8 w-full max-w-md text-center animate-fadeIn">
+                <h1 className="text-3xl font-bold text-[#F9FAFB] mb-2">Transaction Status</h1>
+                <p className="text-[#9CA3AF] mb-6">Reference No: V2025071106740{orderId}</p>
                 {renderStatus()}
             </div>
         </div>

@@ -61,7 +61,7 @@ function PersonalDetail({ nextTabs, backTabs, summarydata }: any) {
 
             {/* Main Content */}
             <div className="max-w-7xl mx-auto">
-                <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div className="bg-[#111111] rounded-lg shadow-sm overflow-hidden">
 
                     {/* PAN Verification Banner */}
                     {extractedPAN && (
@@ -81,14 +81,14 @@ function PersonalDetail({ nextTabs, backTabs, summarydata }: any) {
                     {summarydata?.pan_doc && (
                         <div className="px-6 py-8">
                             <div className="flex flex-col items-center">
-                                <div className="bg-white p-4 rounded-lg shadow-md border-2 border-dashed border-blue-200">
+                                <div className="bg-[#111111] p-4 rounded-lg shadow-md border-2 border-dashed border-blue-200">
                                     <img
                                         src={`${NODE_API_URL}/static/panDoc/${summarydata?.pan_doc}`}
                                         alt="PAN Document"
                                         className="max-w-xs max-h-48 object-contain rounded"
                                     />
                                 </div>
-                                <CustomText className="text-sm text-gray-600 mt-3 font-medium">
+                                <CustomText className="text-sm text-[#9CA3AF] mt-3 font-medium">
                                     PAN Card Document
                                 </CustomText>
                             </div>
@@ -97,7 +97,7 @@ function PersonalDetail({ nextTabs, backTabs, summarydata }: any) {
 
                     {/* Personal Information Grid */}
                     <div className="p-6">
-                        <CustomText className="text-lg font-semibold text-gray-900 mb-6">
+                        <CustomText className="text-lg font-semibold text-[#F9FAFB] mb-6">
                             Personal Information
                         </CustomText>
 
@@ -180,7 +180,7 @@ function PersonalDetail({ nextTabs, backTabs, summarydata }: any) {
             </div>
 
             {/* Action Buttons */}
-            <div className="bg-white">
+            <div className="bg-[#111111]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6 py-4">
                     <div className="flex justify-end items-center">
                         <div>

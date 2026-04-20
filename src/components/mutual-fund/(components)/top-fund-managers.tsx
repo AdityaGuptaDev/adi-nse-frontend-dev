@@ -10,6 +10,24 @@ import FullPageLoader from "@/commonUI/FullPageLoader";
 import { convertToCrores, toFixedDataForReturn } from "@/utils/constants";
 import { motion } from "framer-motion";
 
+// Golden Black Theme Constants
+const theme = {
+  primary: "#F59E0B",
+  secondary: "#FBBF24",
+  accent: "#1F1A1A",
+  success: "#10B981",
+  warning: "#F59E0B",
+  danger: "#EF4444",
+  background: "#0A0A0A",
+  cardBg: "#111111",
+  textWhite: "#FFFFFF",
+  textGray: "#9CA3AF",
+  textLight: "#E5E5E5",
+  border: "#2A2A2A",
+  gradient: "linear-gradient(135deg, #F59E0B 0%, #B45309 100%)",
+  hoverBg: "#1F1A1A",
+};
+
 const TopFundManagers = ({ data }: any) => {
   const router = useRouter();
   const [navigateLoader, setNavigateLoader] = useState(false);
@@ -29,7 +47,7 @@ const TopFundManagers = ({ data }: any) => {
     setNavigateLoader(false);
   };
 
-  const getExperienceColor = (years: number) => {
+  const getExperienceGradient = (years: number): string => {
     if (years >= 20) return "from-purple-500 to-indigo-500";
     if (years >= 15) return "from-blue-500 to-cyan-500";
     if (years >= 10) return "from-green-500 to-emerald-500";
@@ -37,19 +55,27 @@ const TopFundManagers = ({ data }: any) => {
     return "from-gray-500 to-slate-500";
   };
 
-  const getAUMColor = (aum: number) => {
-    if (aum >= 100000) return "text-green-600";
-    if (aum >= 50000) return "text-green-500";
-    if (aum >= 10000) return "text-blue-600";
-    if (aum >= 5000) return "text-blue-500";
-    return "text-gray-600";
+  const getAUMColor = (aum: number): React.CSSProperties => {
+    if (aum >= 100000) return { color: "#10B981" };
+    if (aum >= 50000) return { color: "#22C55E" };
+    if (aum >= 10000) return { color: "#F59E0B" };
+    if (aum >= 5000) return { color: "#FBBF24" };
+    return { color: "#9CA3AF" };
+  };
+
+  const getAUMBgColor = (aum: number): React.CSSProperties => {
+    if (aum >= 100000) return { background: `${theme.success}20` };
+    if (aum >= 50000) return { background: `${theme.success}15` };
+    if (aum >= 10000) return { background: `${theme.primary}20` };
+    if (aum >= 5000) return { background: `${theme.secondary}20` };
+    return { background: `${theme.textGray}20` };
   };
 
   return (
     <>
       <FullPageLoader isVisible={navigateLoader} message="Processing..." />
       
-      <div className="bg-white p-4 md:p-5 rounded-xl">
+      <div className="p-4 md:p-5 rounded-xl" style={{ background: theme.cardBg }}>
         {/* Header */}
         <div className="mb-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
@@ -64,12 +90,12 @@ const TopFundManagers = ({ data }: any) => {
                 <FaUserTie className="h-5 w-5 text-white" />
               </motion.div>
               <div>
-                <CustomText className="text-xl font-bold text-gray-900">
+                <div className="text-xl font-bold" style={{ color: theme.textWhite }}>
                   Top Fund Managers
-                </CustomText>
-                <CustomText className="text-sm text-gray-600">
+                </div>
+                <div className="text-sm" style={{ color: theme.textGray }}>
                   Most experienced and successful fund managers
-                </CustomText>
+                </div>
               </div>
             </div>
 
@@ -79,19 +105,18 @@ const TopFundManagers = ({ data }: any) => {
               whileTap={{ scale: 0.98 }}
               className="md:self-start"
             >
-              <CustomButton
-                className="px-4 py-2.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+              <button
+                className="px-4 py-2.5 text-white text-sm font-medium rounded-lg transition-all duration-300 hover:shadow-lg"
+                style={{ background: theme.gradient }}
                 onClick={onChangeViewAll}
               >
                 <span className="flex items-center gap-1.5">
                   View All
                   <FaAngleRight className="h-3.5 w-3.5" />
                 </span>
-              </CustomButton>
+              </button>
             </motion.div>
           </div>
-
-     
         </div>
 
         {/* Fund Managers Grid */}
@@ -103,6 +128,7 @@ const TopFundManagers = ({ data }: any) => {
               const topScheme = manager.topScheme?.SchemeMaster || {};
               const returns3yr = topScheme?.SchemePerformances?.[0]?.Returns3yr || 0;
               const isTopPerformer = index === 0;
+              const experienceGradient = getExperienceGradient(experienceYears);
               
               return (
                 <motion.div
@@ -113,14 +139,18 @@ const TopFundManagers = ({ data }: any) => {
                   whileHover={{ y: -4 }}
                   onMouseEnter={() => setHoveredCard(index)}
                   onMouseLeave={() => setHoveredCard(null)}
-                  className="bg-white border border-gray-200 rounded-lg hover:shadow-md hover:border-indigo-300 transition-all duration-200 overflow-hidden cursor-pointer"
+                  className="rounded-lg transition-all duration-200 overflow-hidden cursor-pointer"
+                  style={{
+                    background: theme.hoverBg,
+                    border: `1px solid ${theme.border}`,
+                  }}
                   onClick={() => onChangeFundManager(manager)}
                 >
                   <div className="p-4">
                     {/* Manager Header */}
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
-                        <div className={`relative p-2.5 rounded-xl bg-gradient-to-r ${getExperienceColor(experienceYears)} shadow-sm`}>
+                        <div className={`relative p-2.5 rounded-xl bg-gradient-to-r ${experienceGradient} shadow-sm`}>
                           <FaUserTie className="h-5 w-5 text-white" />
                           {isTopPerformer && (
                             <div className="absolute -top-1 -right-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center">
@@ -130,12 +160,12 @@ const TopFundManagers = ({ data }: any) => {
                         </div>
                         
                         <div>
-                          <CustomText className="font-bold text-gray-900 text-sm">
+                          <div className="font-bold text-sm" style={{ color: theme.textWhite }}>
                             {manager?.manager_name || 'Fund Manager'}
-                          </CustomText>
-                          <CustomText className="text-xs text-gray-500 mt-0.5">
+                          </div>
+                          <div className="text-xs mt-0.5" style={{ color: theme.textGray }}>
                             {experienceYears}+ years experience
-                          </CustomText>
+                          </div>
                         </div>
                       </div>
                       
@@ -147,53 +177,52 @@ const TopFundManagers = ({ data }: any) => {
                     </div>
 
                     {/* AUM Section */}
-                    <div className="mb-4 p-3 bg-gradient-to-r from-gray-50 to-white rounded-lg border border-gray-100">
+                    <div className="mb-4 p-3 rounded-lg" style={{ background: theme.cardBg, border: `1px solid ${theme.border}` }}>
                       <div className="flex items-center justify-between mb-1.5">
-                        <CustomText className="text-xs font-medium text-gray-700">
+                        <div className="text-xs font-medium" style={{ color: theme.textGray }}>
                           Total AUM Managed
-                        </CustomText>
-                        <FaChartLine className="h-3.5 w-3.5 text-indigo-500" />
+                        </div>
+                        <FaChartLine className="h-3.5 w-3.5" style={{ color: theme.primary }} />
                       </div>
                       <div className="flex items-baseline gap-2">
-                        <CustomText className={`text-xl font-bold ${getAUMColor(aum)}`}>
+                        <div className="text-xl font-bold" style={getAUMColor(aum)}>
                           {convertToCrores(aum)} Cr
-                        </CustomText>
-                   
+                        </div>
                       </div>
                     </div>
 
                     {/* Top Performing Scheme */}
-                    <div className="p-3 bg-gradient-to-r from-indigo-50/50 to-indigo-50/30 rounded-lg border border-indigo-100">
-                      <CustomText className="text-xs font-medium text-gray-700 mb-2">
+                    <div className="p-3 rounded-lg" style={{ background: `${theme.primary}10`, border: `1px solid ${theme.primary}30` }}>
+                      <div className="text-xs font-medium mb-2" style={{ color: theme.textGray }}>
                         Top Performing Scheme
-                      </CustomText>
+                      </div>
                       
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 bg-indigo-100 rounded-full flex items-center justify-center flex-shrink-0">
-                            <span className="text-indigo-600 text-xs font-bold">
+                          <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: `${theme.primary}20` }}>
+                            <span className="text-xs font-bold" style={{ color: theme.primary }}>
                               {topScheme.name?.charAt(0) || 'S'}
                             </span>
                           </div>
                           <div className="flex-1 min-w-0">
-                            <CustomText className="text-sm font-medium text-gray-900 leading-tight line-clamp-2">
+                            <div className="text-sm font-medium leading-tight line-clamp-2" style={{ color: theme.textWhite }}>
                               {topScheme.name || 'Scheme Name'}
-                            </CustomText>
+                            </div>
                           </div>
                         </div>
 
                         <div className="flex items-center gap-1.5">
-                          <IoTriangle className="text-green-600 w-3 h-3" />
-                          <CustomText className="text-sm font-bold text-green-600">
+                          <IoTriangle className="w-3 h-3" style={{ color: theme.success }} />
+                          <div className="text-sm font-bold" style={{ color: theme.success }}>
                             {toFixedDataForReturn(returns3yr)}
-                          </CustomText>
+                          </div>
                         </div>
                       </div>
                       
                       <div className="mt-2">
-                        <CustomText className="text-xs text-gray-500">
+                        <div className="text-xs" style={{ color: theme.textGray }}>
                           3-Year Returns
-                        </CustomText>
+                        </div>
                       </div>
                     </div>
 
@@ -202,11 +231,11 @@ const TopFundManagers = ({ data }: any) => {
                       <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        className="mt-4 pt-3 border-t border-gray-100"
+                        className="mt-4 pt-3" style={{ borderTop: `1px solid ${theme.border}` }}
                       >
-                        <CustomText className="text-xs text-gray-600 text-center">
+                        <div className="text-xs text-center" style={{ color: theme.primary }}>
                           Click to view manager details →
-                        </CustomText>
+                        </div>
                       </motion.div>
                     )}
                   </div>
@@ -216,20 +245,19 @@ const TopFundManagers = ({ data }: any) => {
           ) : (
             <div className="col-span-full">
               <div className="text-center py-12">
-                <div className="inline-block p-4 bg-gray-100 rounded-full mb-4">
-                  <FaUserTie className="h-8 w-8 text-gray-400" />
+                <div className="inline-block p-4 rounded-full mb-4" style={{ background: theme.hoverBg }}>
+                  <FaUserTie className="h-8 w-8 mx-auto" style={{ color: theme.textGray }} />
                 </div>
-                <CustomText className="text-base text-gray-600 mb-2">
+                <div className="text-base mb-2" style={{ color: theme.textWhite }}>
                   No fund manager data available
-                </CustomText>
-                <CustomText className="text-sm text-gray-500">
+                </div>
+                <div className="text-sm" style={{ color: theme.textGray }}>
                   Check back later for fund manager information
-                </CustomText>
+                </div>
               </div>
             </div>
           )}
         </div>
-
       </div>
     </>
   );

@@ -17,13 +17,13 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import CustomBackButton from "@/commonUI/CustomBackButton";
 import { useRouter } from "next/navigation";
 import { setLS } from "@/utils/helpers";
-import { Console } from "console";
+import { AlertCircle, X } from "lucide-react";
 
 type gridProps = {
   headerList: any[];
   apiEndPoint: any;
   actionButtons: any[];
-  checkbox?: boolean; // Optional prop with a default value
+  checkbox?: boolean;
   footer?: any;
   bordered?: boolean;
   clickOnAction?: any;
@@ -34,7 +34,7 @@ type gridProps = {
   refreshKey: any;
   permission: any;
   toggleForm: (pageType: any) => void;
-  pageName: any
+  pageName: any;
   backButton?: boolean;
 };
 
@@ -47,7 +47,7 @@ type SelectionState = {
 function DataGrid({
   headerList,
   actionButtons,
-  checkbox = true, // Default value
+  checkbox = true,
   apiEndPoint,
   bordered,
   clickOnAction,
@@ -59,14 +59,12 @@ function DataGrid({
   permission,
   toggleForm,
   pageName,
-  backButton
+  backButton,
 }: gridProps) {
   const { columns, handleResize, getColumnWidth } = useColumns(headerList, 100);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const router = useRouter();
-  // const [sortKey, setSortKey] = useState<string | null>(null);
-  // const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [sortOrder, setSortOrder] = useState<any>(false);
   const [allSelected, setAllSelected] = useState(false);
   const [gridsSearchFilter, setGridsSearchFilter] = useState<any>(false);
@@ -77,7 +75,6 @@ function DataGrid({
   const [showFilter, setShowFilter] = useState(false);
   const [selectedDeleteData, setSelectedDeleteData] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: any }>({});
-  // const [selectedOption, setSelectedOption] = useState<any>();
 
   const modalRef = useRef<HTMLDialogElement>(null);
 
@@ -89,9 +86,7 @@ function DataGrid({
     modalRef.current?.close();
   };
 
-  // Handle sorting
   const handleSorting = (keyName: string) => {
-    // setSortKey(keyName);
     setSortOrder((prev: any) =>
       prev.name === keyName
         ? prev.sort === "asc"
@@ -103,7 +98,6 @@ function DataGrid({
     );
   };
 
-  // Handle limit change
   const onPageChange = (page: number) => {
     setPage(page);
   };
@@ -121,45 +115,19 @@ function DataGrid({
     if (apiEndPoint) {
       get(param);
     }
-  }, [page, limit, page, sortOrder, gridsSearchFilter, refreshKey]);
+  }, [page, limit, sortOrder, gridsSearchFilter, refreshKey]);
 
-  //   const get = async (param: any) => {
-  //     try {
-  //       let data = await api.get(apiEndPoint, { params: param });
-  //       setTotalCount(data.data.data.count);
-  //       // console.log(data.data.data.rows, "data.data.data.rows")
-  //       setDataList(data.data.data.rows);
-  //     } catch (error) { }
-  //   };
-
-  //   const get = async (param: any) => {
-  //   try {
-  //     let data = await api.get(apiEndPoint, { params: param });
-
-  //     // since backend returns "data.data"
-  //     const rows = data.data.data.data;  
-  //     setTotalCount(rows.length);
-  //     setDataList(rows);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
   const get = async (param: any) => {
     try {
       let data = await api.get(apiEndPoint, { params: param });
 
-
-      // Case 1: API returns { count, rows }
       if (data?.data?.data?.rows) {
         setTotalCount(data.data.data.count ?? data.data.data.rows.length);
         setDataList(data.data.data.rows);
-
-        // Case 2: API returns { data: [...] }
       } else if (Array.isArray(data?.data?.data?.data)) {
         const rows = data.data.data.data;
         setTotalCount(data.data.data.count ?? rows.length);
         setDataList(rows);
-
       } else {
         console.warn("Unexpected API response format:", data);
         setTotalCount(0);
@@ -170,7 +138,6 @@ function DataGrid({
     }
   };
 
-
   const handleDataCheck = (id: number) => {
     if (allSelected) {
       setExcludedEntries((prev) => [...prev, id]);
@@ -178,6 +145,7 @@ function DataGrid({
       setIncludedEntries(toggleInArray(includedEntries, id));
     }
   };
+
   const dataChecked = (id: number): boolean => {
     if (allSelected && !excludedEntries.includes(id)) {
       return true;
@@ -204,7 +172,6 @@ function DataGrid({
     }
   };
 
-  // const handleFilter_Search = (e: React.SyntheticEvent<EventTarget>) => {
   const handleFilter_Search = (e: any) => {
     let searchObj = { ...gridsSearchFilter, [e.target.name]: e.target.value };
     if (Object.keys(searchObj).length) {
@@ -228,12 +195,13 @@ function DataGrid({
   };
 
   const handleClickFilter = () => {
-    setShowFilter((prev) => !prev); // Toggle the value
+    setShowFilter((prev) => !prev);
   };
 
   const handleClickClearFilter = () => {
-    setGridsSearchFilter({}); // Clear filter data
-    setShowFilter(false); // Hide input fields
+    setGridsSearchFilter({});
+    setShowFilter(false);
+    setSelectedOptions({});
   };
 
   const getSelectedOption = (
@@ -247,71 +215,70 @@ function DataGrid({
     if (fieldValue === undefined || fieldValue === null) return null;
     const findOption = header.options.find(
       (opt: any) => String(opt.value) === String(fieldValue)
-    ).value ?? null
-
-    return findOption;
+    );
+    return findOption || null;
   };
 
+  // Function to split action buttons into rows of 3
+  const splitIntoRows = (buttons: any[]) => {
+    const rows = [];
+    for (let i = 0; i < buttons.length; i += 3) {
+      rows.push(buttons.slice(i, i + 3));
+    }
+    return rows;
+  };
 
   return (
     <>
-      <div className="bg-white rounded-xl">
-        <div className="flex justify-between px-3">
+      <div className="bg-[#111111] rounded-xl border border-[#2A2A2A] shadow-lg overflow-hidden">
+        <div className="flex justify-between px-4 py-3 border-b border-[#2A2A2A]">
           {backButton ? (
-            <div className="justify-center mt-3">
-              <CustomBackButton
-
-                onClick={() => window.history.back()}
-              >
-                <IoMdArrowRoundBack className="h-6 w-6 mr-1" />
-
+            <div className="flex items-center">
+              <CustomBackButton onClick={() => window.history.back()}>
+                <IoMdArrowRoundBack className="h-6 w-6 mr-1 text-[#F59E0B] hover:text-[#FBBF24] transition-colors" />
               </CustomBackButton>
             </div>
-          ) : <div className="flex justify-between px-3"></div>
-          }
+          ) : (
+            <div></div>
+          )}
 
-          <div className="my-3 text-end flex justify-end gap-2">
-            <div>
-              <CustomButton
-                className="flex text-proses-secondary normal-case"
-                onClick={handleClickFilter}
+          <div className="flex justify-end gap-3">
+            <button
+              onClick={handleClickFilter}
+              className="px-4 py-2 text-sm font-medium text-[#F59E0B] hover:text-[#FBBF24] transition-colors bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] hover:border-[#F59E0B]/50"
+            >
+              {showFilter ? "Hide Filter" : "Show Filter"}
+            </button>
+            <button
+              onClick={handleClickClearFilter}
+              className="px-4 py-2 text-sm font-medium text-[#9CA3AF] hover:text-[#F59E0B] transition-colors bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] hover:border-[#F59E0B]/50"
+            >
+              Clear Filter
+            </button>
+            {permission?.add ? (
+              <button
+                onClick={(e) => {
+                  toggleForm("add");
+                }}
+                className="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#F59E0B] to-[#B45309] rounded-lg hover:opacity-90 transition-all flex items-center gap-2"
               >
-                {showFilter ? `Hide` : `Show`} Filter
-              </CustomButton>
-            </div>
-            <div>
-              <CustomButton
-                className="flex text-proses-secondary normal-case"
-                onClick={handleClickClearFilter}
-              >
-                Clear Filter
-              </CustomButton>
-            </div>
-            <div >
-              {permission?.add ? (
-                <CustomButton
-                  className="flex text-proses-secondary normal-case justify-end-end"
-                  onClick={(e) => {
-                    toggleForm("add");
-                  }}
-                >
-                  {/* <GoPlusCircle className="h-4 w-4 mr-1" />  */}
-                  Add {pageName}
-                </CustomButton>
-              ) : null}
-            </div>
+                <GoPlusCircle className="h-4 w-4" />
+                Add {pageName}
+              </button>
+            ) : null}
           </div>
         </div>
-        <div className="overflow-x-auto w-full max-w-full overflow-auto tableshadow border border-base-content/5 bg-white xl:h-[calc(100vh-270px)]">
-          <table className={` table table-pin-rows `}>
+
+        <div className="overflow-x-auto w-full max-w-full overflow-auto">
+          <table className="w-full">
             <thead>
-              <tr className="font-montserrat">
+              <tr className="bg-[#1F1A1A] border-b border-[#2A2A2A]">
                 {checkbox ? (
-                  <th className="sticky left-0 w-[10px] min-w-[8px] max-w-[8px] text-center justify-center cursor-pointer border-r-0 border-l-0 border-gray-100 border-t-0  border-y p-2 transition-colors rounded-bl-none z-10 bg-white">
+                  <th className="sticky left-0 w-12 text-center bg-[#1F1A1A] p-3 border-r border-[#2A2A2A]">
                     <CustomCheckbox
                       checked={allSelected && excludedEntries.length === 0}
                       onChange={(e: any) => toggleSelectAll(e.target.checked)}
-                      className="w-4 h-4 min-w-4 min-h-4 rounded-md border-gray-900/20 bg-ray-900/10 transition-all hover:scale-105 !hover:before:opacity-1"
+                      className="w-4 h-4 rounded-md border-[#F59E0B]/30 bg-transparent transition-all hover:scale-105"
                     />
                   </th>
                 ) : null}
@@ -322,7 +289,7 @@ function DataGrid({
                       width={getColumnWidth(header.name)}
                       height={0}
                       handle={
-                        <span className="absolute right-0 top-0 h-full w-px cursor-col-resize bg-white/50" />
+                        <span className="absolute right-0 top-0 h-full w-px cursor-col-resize bg-[#2A2A2A]" />
                       }
                       onResize={(_: any, item: any) => {
                         handleResize(header.name, item.size.width);
@@ -331,85 +298,74 @@ function DataGrid({
                     >
                       <th
                         style={{ width: getColumnWidth(header.name) }}
-                        className="relative overflow-hidden whitespace-nowrap  px-6 py-4 border-r border-gray-100"
+                        className="relative overflow-hidden whitespace-nowrap px-4 py-3 border-r border-[#2A2A2A] text-left"
                       >
-                        <span className="flex justify-between">
-                          <CustomText className="flex items-center text-black justify-between gap-2 font-semibold leading-none opacity-70">
+                        <div className="flex items-center justify-between gap-2">
+                          <CustomText className="flex items-center text-[#F59E0B] font-semibold text-sm">
                             {header.name}
                           </CustomText>
                           {header?.sorting && (
                             <div
-                              className="flex items-center justify-between gap-2 font-normal leading-none opacity-70 cursor-pointer"
+                              className="flex items-center cursor-pointer hover:text-[#FBBF24] transition-colors"
                               onClick={() => handleSorting(header.fieldName)}
                             >
                               {sortOrder.name == header.fieldName ? (
                                 sortOrder.sort == "asc" ? (
-                                  <GoArrowDown
-                                    size={15}
-                                    className="text-black"
-                                  />
+                                  <GoArrowDown size={14} className="text-[#F59E0B]" />
                                 ) : sortOrder.sort == "desc" ? (
-                                  <GoArrowUp size={15} className="text-black" />
+                                  <GoArrowUp size={14} className="text-[#F59E0B]" />
                                 ) : (
-                                  <LuArrowUpDown
-                                    size={15}
-                                    className="text-black"
-                                  />
+                                  <LuArrowUpDown size={14} className="text-[#9CA3AF]" />
                                 )
                               ) : (
-                                <LuArrowUpDown
-                                  size={15}
-                                  className="text-black"
-                                />
+                                <LuArrowUpDown size={14} className="text-[#9CA3AF]" />
                               )}
                             </div>
                           )}
-                        </span>
+                        </div>
 
                         {showFilter && header?.filter && (
-                          <>
-                            <div className="mt-1">
-                              {header.type === 'select' ? (
-                                <CustomReactSelect
-                                  items={header.options}
-                                  className="min-w-40"
-                                  bindName="label"
-                                  bindValue="value"
-                                  isClearable={true}
-                                  value={getSelectedOption(header, selectedOptions)}
-                                  onChange={(selectedOption) => {
-                                    const value = selectedOption ? selectedOption.value : null;
-
-                                    setSelectedOptions((prev: any) => ({
-                                      ...prev,
-                                      [header.fieldName]: value,   // store each filter separately
-                                    }));
-
-                                    handleFilter_Search({
-                                      target: {
-                                        name: header.fieldName,
-                                        value: value ?? "",
-                                      },
-                                    });
-                                  }}
-                                />
-                              ) : (
-                                <CustomInput
-                                  type={header.type ? header.type : "text"}
-                                  name={header.fieldName}
-                                  onChange={handleFilter_Search}
-                                />
-                              )}
-                            </div>
-                          </>
+                          <div className="mt-2">
+                            {header.type === 'select' ? (
+                              <CustomReactSelect
+                                items={header.options}
+                                className="min-w-40"
+                                bindName="label"
+                                bindValue="value"
+                                isClearable={true}
+                                value={getSelectedOption(header, selectedOptions)}
+                                onChange={(selectedOption) => {
+                                  const value = selectedOption ? selectedOption.value : null;
+                                  setSelectedOptions((prev: any) => ({
+                                    ...prev,
+                                    [header.fieldName]: value,
+                                  }));
+                                  handleFilter_Search({
+                                    target: {
+                                      name: header.fieldName,
+                                      value: value ?? "",
+                                    },
+                                  });
+                                }}
+                              />
+                            ) : (
+                              <input
+                                type={header.type ? header.type : "text"}
+                                name={header.fieldName}
+                                onChange={handleFilter_Search}
+                                placeholder={`Filter ${header.name}`}
+                                className="w-full px-3 py-1.5 text-sm bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-1 focus:ring-[#F59E0B] focus:border-transparent"
+                              />
+                            )}
+                          </div>
                         )}
                       </th>
                     </Resizable>
                   );
                 })}
                 {actionButtons.length > 0 ? (
-                  <th className="sticky w-[100px] min-w-[100px] max-w-[100px] right-0 top-0 z-10 p-4 transition-colors rounded-tr-lg border-0 border-t-0 bg-white">
-                    <CustomText className="flex items-center justify-center  text-black gap-2 font-semibold leading-none opacity-70">
+                  <th className="sticky right-0 w-32 bg-[#1F1A1A] p-3 text-center border-l border-[#2A2A2A]">
+                    <CustomText className="flex items-center justify-center text-[#F59E0B] font-semibold text-sm">
                       Actions
                     </CustomText>
                   </th>
@@ -419,91 +375,90 @@ function DataGrid({
             <tbody>
               {dataList && dataList?.length > 0 ? (
                 <>
-                  {dataList.length > 0 &&
-                    dataList.map((d: any, index: number) => {
-                      const isLast = index === totalCount - 1;
-                      const classes = isLast
-                        ? "p-4 border-l"
-                        : "p-4 border-0 border-blue-gray-900 border-l-0";
+                  {dataList.map((d: any, index: number) => {
+                    const actionRows = splitIntoRows(actionButtons.filter(btn => 
+                      typeof btn.show === "function" ? btn.show(d) : btn.show
+                    ));
+                    
+                    return (
+                      <tr
+                        className="border-b border-[#2A2A2A] hover:bg-[#1F1A1A] transition-colors"
+                        key={`data${index}`}
+                      >
+                        {checkbox && (
+                          <td className="sticky left-0 bg-[#111111] p-3 text-center border-r border-[#2A2A2A]">
+                            <CustomCheckbox
+                              checked={dataChecked(d.id)}
+                              onChange={() => handleDataCheck(d.id)}
+                              className="w-4 h-4 rounded-md border-[#F59E0B]/30 bg-transparent transition-all hover:scale-105"
+                            />
+                          </td>
+                        )}
 
-                      return (
-                        <tr
-                          className="border-b border-b-gray-200"
-                          key={`data${index}`}
-                        >
-                          {checkbox && (
-                            <td className=" sticky left-0 bg-white p-2 justify-center pointer text-center border-r-0 border-l-0 border-gray-100">
-                              <CustomCheckbox
-                                checked={dataChecked(d.id)}
-                                onChange={() => handleDataCheck(d.id)}
-                                className="w-4 h-4 min-w-4 min-h-4 rounded-md border-gray-900/20 bg-gray-900/10 transition-all hover:scale-105 !hover:before:opacity-0"
-                              />
-                            </td>
-                          )}
-
-                          {columns.map((header: any, index: number) => (
-                            <td
-                              className="px-5"
-                              key={`${header.fieldName}-${index}`}
+                        {columns.map((header: any, idx: number) => (
+                          <td
+                            className="px-4 py-3 text-sm"
+                            key={`${header.fieldName}-${idx}`}
+                          >
+                            <CustomText
+                              className={`inline-block text-[#F9FAFB] ${header.dataClass
+                                ? header.dataClass(d[header.fieldName])
+                                : ""
+                                }`}
                             >
-                              <CustomText
-                                className={` inline-block ${header.dataClass
-                                  ? header.dataClass(d[header.fieldName])
-                                  : ""
-                                  }`}
-                              >
-                                {header.formatter ? (() => {
-                                  const formattedValue = header.formatter(d[header.fieldName]);
+                              {header.formatter ? (() => {
+                                const formattedValue = header.formatter(d[header.fieldName]);
 
-                                  if (header.fieldName === "isKYCDone" && formattedValue === "Pending") {
-                                    return (
-                                      <span
-                                        className="text-blue-600  cursor-pointer"
-                                        onClick={() => {
-                                          setLS("INVESTOR_USER_ID", d?.user_id);
-                                          console.log("Initial KYC Data-", dataList);
-                                          router.push("/initial-KYC");
-                                        }}
-                                      >
-                                        {formattedValue}
-                                      </span>
-                                    );
-                                  }
+                                if (header.fieldName === "isKYCDone" && formattedValue === "Pending") {
+                                  return (
+                                    <span
+                                      className="text-[#F59E0B] cursor-pointer hover:text-[#FBBF24] transition-colors"
+                                      onClick={() => {
+                                        setLS("INVESTOR_USER_ID", d?.user_id);
+                                        console.log("Initial KYC Data-", dataList);
+                                        router.push("/initial-KYC");
+                                      }}
+                                    >
+                                      {formattedValue}
+                                    </span>
+                                  );
+                                }
 
-                                  return formattedValue;
-                                })() : (
-                                  d[header.fieldName] || "--"
-                                )}
-
-
-
-                              </CustomText>
-                            </td>
-                          ))}
-                          {actionButtons.length > 0 ? (
-                            <td className="sticky z-0 bg-white right-0 w-[1500px] min-w-[150px] max-w-[100px] border-blue-gray-50">
-                              <div className="flex flex-wrap items-center gap-2 justify-center">
-                                {actionButtons.map(
-                                  (btn: any, index: number) => {
-
+                                return formattedValue;
+                              })() : (
+                                d[header.fieldName] || "--"
+                              )}
+                            </CustomText>
+                          </td>
+                        ))}
+                        {actionButtons.length > 0 ? (
+                          <td className="sticky right-0 bg-[#111111] p-3 border-l border-[#2A2A2A]">
+                            <div className="flex flex-col gap-2">
+                              {actionRows.map((row, rowIndex) => (
+                                <div key={`row-${rowIndex}`} className="flex flex-wrap items-center justify-center gap-2">
+                                  {row.map((btn: any, btnIndex: number) => {
                                     const canShow = typeof btn.show === "function" ? btn.show(d) : btn.show;
-
+                                    
                                     return canShow ? (
-                                      <Fragment key={`tooltip-${index}`}>
-                                        {btn.title == "Delete" ? (
+                                      <Fragment key={`tooltip-${rowIndex}-${btnIndex}`}>
+                                        {btn.title === "Delete" ? (
                                           <>
-                                            <div
-                                              // key={`tooltip-${index}`}
-                                              className={`tooltip  tooltip-left btn-square cursor-pointer ${btn.className}`}
-                                              data-tip={btn.tooltip}
-                                              onClick={() => {
-                                                setSelectedDeleteData(d); // <-- make sure 'd' is current row data
-                                                handleOpen();
-                                              }}
-                                            >
-                                              <span className="text-xl">
-                                                {btn.icon}
-                                              </span>
+                                            <div className="relative group">
+                                              <button
+                                                className={`p-2 rounded-lg transition-all hover:scale-110 ${btn.className}`}
+                                                onClick={() => {
+                                                  setSelectedDeleteData(d);
+                                                  handleOpen();
+                                                }}
+                                              >
+                                                <span className="text-xl">{btn.icon}</span>
+                                              </button>
+                                              {btn.tooltip && (
+                                                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-[#1F1A1A] text-[#F9FAFB] text-xs rounded border border-[#2A2A2A] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                                                  {btn.tooltip}
+                                                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 border-4 border-transparent border-t-[#1F1A1A]"></div>
+                                                </div>
+                                              )}
                                             </div>
 
                                             <dialog
@@ -511,80 +466,89 @@ function DataGrid({
                                               className="modal"
                                               ref={modalRef}
                                             >
-                                              <div className="modal-box">
-                                                <h3 className="text-lg font-bold text-center">
-                                                  Are you sure
-                                                </h3>
-                                                <p className="py-4 text-base text-center">
-                                                  You won't be able to revert
-                                                  this
-                                                </p>
-                                                <div className="modal-action justify-center">
-                                                  <form method="dialog" className="flex">
-                                                    <button
-                                                      type="button"
-                                                      className="btn mr-4 bg-primary text-white"
-                                                      onClick={() => {
-                                                        clickOnAction(
-                                                          btn.title,
-                                                          selectedDeleteData
-                                                        );
-                                                        handleClose();
-                                                      }}
-                                                    >
-                                                      Yes
-                                                    </button>
-                                                    <button
-                                                      type="button"
-                                                      className="btn bg-white"
-                                                      onClick={handleClose}
-                                                    >
-                                                      Close
-                                                    </button>
-                                                  </form>
+                                              <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+                                                <div className="bg-[#111111] rounded-xl shadow-2xl max-w-md w-full border border-[#2A2A2A]">
+                                                  <div className="p-6 text-center">
+                                                    <div className="flex justify-center mb-4">
+                                                      <div className="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center">
+                                                        <AlertCircle className="w-8 h-8 text-red-400" />
+                                                      </div>
+                                                    </div>
+                                                    <h3 className="text-xl font-bold text-[#F9FAFB] mb-3">
+                                                      Are you sure?
+                                                    </h3>
+                                                    <p className="text-[#9CA3AF] mb-6">
+                                                      You won't be able to revert this action
+                                                    </p>
+                                                    <div className="flex gap-4 justify-center">
+                                                      <button
+                                                        type="button"
+                                                        className="px-6 py-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white font-semibold rounded-lg hover:opacity-90 transition-all"
+                                                        onClick={() => {
+                                                          clickOnAction(
+                                                            btn.title,
+                                                            selectedDeleteData
+                                                          );
+                                                          handleClose();
+                                                        }}
+                                                      >
+                                                        Yes, Delete
+                                                      </button>
+                                                      <button
+                                                        type="button"
+                                                        className="px-6 py-2 bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] rounded-lg hover:bg-[#2A2A2A] transition-colors"
+                                                        onClick={handleClose}
+                                                      >
+                                                        Cancel
+                                                      </button>
+                                                    </div>
+                                                  </div>
                                                 </div>
                                               </div>
                                             </dialog>
                                           </>
                                         ) : (
-                                          <div
-                                            // key={`tooltip-${index}`}
-                                            className={`tooltip tooltip-left btn-square cursor-pointer  ${btn.className}`}
-                                            data-tip={btn.tooltip}
-                                            onClick={() =>
-                                              clickOnAction(btn.title, d)
-                                            }
-                                          >
-                                            <span className="text-xl">
-                                              {btn.icon}
-                                            </span>
+                                          <div className="relative group">
+                                            <button
+                                              className={`p-2 rounded-lg transition-all hover:scale-110 ${btn.className}`}
+                                              onClick={() => clickOnAction(btn.title, d)}
+                                            >
+                                              <span className="text-xl">{btn.icon}</span>
+                                            </button>
+                                            {btn.tooltip && (
+                                              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-[#1F1A1A] text-[#F9FAFB] text-xs rounded border border-[#2A2A2A] whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+                                                {btn.tooltip}
+                                                <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1 border-4 border-transparent border-t-[#1F1A1A]"></div>
+                                              </div>
+                                            )}
                                           </div>
                                         )}
                                       </Fragment>
                                     ) : null;
-                                  }
-                                )}
-                              </div>
-                            </td>
-                          ) : null}
-                        </tr>
-                      );
-                    })}
+                                  })}
+                                </div>
+                              ))}
+                            </div>
+                          </td>
+                        ) : null}
+                      </tr>
+                    );
+                  })}
                 </>
               ) : (
                 <tr>
                   <td
-                    className="text-center font-semibold text-gray-500 py-4"
-                    colSpan={5}
+                    className="text-center font-semibold text-[#9CA3AF] py-8"
+                    colSpan={columns.length + (checkbox ? 1 : 0) + (actionButtons.length > 0 ? 1 : 0)}
                   >
-                    No data found !!!
+                    No data found
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
-        <div className="mt-4">
+        <div className="border-t border-[#2A2A2A] p-4">
           <Pagination
             totalCount={totalCount}
             limit={limit}

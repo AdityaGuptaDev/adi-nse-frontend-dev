@@ -29,12 +29,11 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import { RiFileExcel2Line } from "react-icons/ri";
 import OrderPopup from "@/components/fund-explore/order";
-import { searchByISIN, searchMorningstarFundByName } from "@/api/transaction";
+import { searchByISIN } from "@/api/transaction";
 import { getInvestor } from "@/api/holder";
 import { Investor } from "@/services/searchReportService";
 
 import { useFundStore } from "@/store/useFundStore";
-import { routeInvestorToOrderForm } from "@/utils/investorOrderRouting";
 
 
 type ReturnColumnKey =
@@ -76,10 +75,10 @@ const MutualFundClassesList = () => {
 
   const [sipData, setSipData] = useState<any[]>([]);
   const [selectedInvestor, setSelectedInvestor] = useState<Investor | null>(null);
-  const { setSchemeData, setInvestors, setDataSource } = useFundStore();
-  const [routingLoading, setRoutingLoading] = useState(false);
+  const { setSchemeData, setInvestors } = useFundStore();
 
-
+  // Add state for search term
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [visibleColumns, setVisibleColumns] = useState<
     Record<ReturnColumnKey, boolean>
@@ -122,6 +121,7 @@ const MutualFundClassesList = () => {
     }
     GetInvestor()
   }, [])
+
   useEffect(() => {
     let debounceTimer: NodeJS.Timeout;
     debounceTimer = setTimeout(async () => {
@@ -221,7 +221,8 @@ const MutualFundClassesList = () => {
     setTotalCount(0);
 
     if (activeTab !== tab) {
-      setFilters(undefined);
+      // Don't clear filters when switching tabs, keep the search filter
+      // Only clear subcategory filter since it's category-specific
       setSelectSubCategory([]);
       const matchedCategory: any = categoryData.find(
         (item: any) => item.categoryName === tab
@@ -307,14 +308,26 @@ const MutualFundClassesList = () => {
 
       setFilters(payloadObj);
     } else {
-      setFilters(undefined); // ✅ clear all filters
+      // Remove subCategory filter but keep search filter
+      const { subCategory, ...restFilters } = filters || {};
+      if (Object.keys(restFilters).length > 0) {
+        setFilters(restFilters);
+      } else {
+        setFilters(undefined);
+      }
     }
     setIsDrawerOpen(false);
   };
 
   const resetFilter = () => {
     setSelectSubCategory([]);
-    setFilters(undefined);
+    // Only clear subCategory filter, preserve search filter
+    const { subCategory, ...restFilters } = filters || {};
+    if (Object.keys(restFilters).length > 0) {
+      setFilters(restFilters);
+    } else {
+      setFilters(undefined);
+    }
     setIsDrawerOpen(false);
   };
 
@@ -352,11 +365,13 @@ const MutualFundClassesList = () => {
   };
 
   const onChangeSearch = (event: any) => {
-    if (event.target.value) {
-      // setSearch(event.target.value);
+    const value = event.target.value;
+    setSearchTerm(value);
+
+    if (value) {
       const payloadObj = {
         ...filters,
-        ...{ ms_fullname: event.target.value },
+        ...{ ms_fullname: value },
       };
       setFilters(payloadObj);
     } else {
@@ -558,40 +573,50 @@ const MutualFundClassesList = () => {
   const handleSchemeClick = (scheme: any) => {
     setSelectedScheme(scheme)
     fetchByISIN(scheme?.schemeISIN);
+    console.log("Investor LIstsss ===", investorList, "count :-", investorList.length)
+
+    //setShowOrderPopup(true)
+
+    // setshowInvestorPicker(true);
+    //return false;
 
     if (investorList.length > 1) {
-      setshowInvestorPopup(true);
-      return;
+
+      setshowInvestorPopup(true)
+
+    } else {
+      if (investorList.length === 1) {
+        // Store in localStorage for persistence across refreshes
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('newOrder_schemeData', JSON.stringify(scheme));
+          localStorage.setItem('newOrder_investorList', JSON.stringify(investorList));
+        }
+
+        router.push("/mutual-fund/new-order");
+      }
+
     }
-    if (investorList.length === 1) {
-      // Unified routing — CAN → MFU new-order, UCC → NSE order form.
-      routeInvestorToOrderForm({
-        router,
-        scheme,
-        investorList,
-        store: { setSchemeData, setInvestors, setDataSource },
-        onStart: () => setRoutingLoading(true),
-        onFinish: () => setRoutingLoading(false),
-      });
-    }
+
+    console.log("Scheme clicked:", scheme);
+    // Handle the clicked scheme here (navigate, show details, etc.)
   };
 
   return (
     <>
       <div className="">
         {/* Header */}
-        <div className=" border-b border-gray-200 px-4 py-3">
+        <div className=" border-b border-[#2A2A2A] px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div onClick={onBack} className="p-1 cursor-pointer">
-                <IoArrowBack className="w-5 h-5 text-gray-600" />
+                <IoArrowBack className="w-5 h-5 text-[#9CA3AF]" />
               </div>
-              <CustomText className="text-lg font-semibold text-gray-900">
+              <CustomText className="text-lg font-semibold text-[#F9FAFB]">
                 Top Performing Schemes
               </CustomText>
             </div>
             {/* <div className="p-2 cursor-pointer">
-            <FiShare2 className="w-5 h-5 text-gray-600" />
+            <FiShare2 className="w-5 h-5 text-[#9CA3AF]" />
           </div> */}
           </div>
         </div>
@@ -610,7 +635,7 @@ const MutualFundClassesList = () => {
                   onClick={() => onActiveTabHandle(tab.categoryName)}
                   className={`px-4 py-3 text-sm font-semibold border-b-2 transition-all cursor-pointer ${activeTab === tab.categoryName
                     ? "text-primary border-primary"
-                    : "text-gray-600 hover:text-gray-800 border-transparent"
+                    : "text-[#9CA3AF] hover:text-[#F9FAFB] border-transparent"
                     }`}
                 >
                   <div className="flex gap-4 items-center">
@@ -647,7 +672,7 @@ const MutualFundClassesList = () => {
                             aria-label="close sidebar"
                             className="drawer-overlay"
                           ></label>
-                          <ul className="menu rounded-l-2xl bg-white text-base-content min-h-full w-96 ">
+                          <ul className="menu rounded-l-2xl bg-[#111111] text-base-content min-h-full w-96 ">
                             <div className="flex justify-between items-center px-4">
                               <h3 className="text-lg font-medium font-montserrat">
                                 {activeTab}
@@ -725,6 +750,7 @@ const MutualFundClassesList = () => {
                 type="search"
                 className="grow bg-transparent border border-accent rounded-xl py-1 focus:outline-none px-3 sm:min-w-80 sm:min-h-10"
                 placeholder="Search"
+                value={searchTerm}
                 onChange={(e) => onChangeSearch(e)}
               />
             </div>
@@ -791,7 +817,7 @@ const MutualFundClassesList = () => {
                       <label key={col.key} className="label my-2">
                         <input
                           type="checkbox"
-                          className="checkbox checkbox-sm checkbox-info border-gray-500 before:bg-white checked:border-info"
+                          className="checkbox checkbox-sm checkbox-info border-gray-500 before:bg-[#111111] checked:border-info"
                           checked={visibleColumns[col.key as ReturnColumnKey]}
                           onChange={() =>
                             handleColumnToggle(col.key as ReturnColumnKey)
@@ -840,7 +866,7 @@ const MutualFundClassesList = () => {
             <div className="modalFooter">
               <div className="text-center">
                 <CustomButton
-                  className="bg-white !text-black !border !border-gray-300 w-28"
+                  className="bg-[#111111] !text-black !border !border-[#3A3A3A] w-28"
                   onClick={() => setSelectedCatIds([])}
                   disabled={!selectedCatIds.length}
                 >
@@ -859,7 +885,7 @@ const MutualFundClassesList = () => {
           </div>
         </dialog> */}
 
-        {/* <div className="bg-white px-4 border-b border-gray-200">
+        {/* <div className="bg-[#111111] px-4 border-b border-[#2A2A2A]">
       </div> */}
 
         {/* Table */}
@@ -1141,11 +1167,11 @@ const MutualFundClassesList = () => {
                   )}
                 </tr>
               </thead>
-              <tbody className="bg-white mb-4">
+              <tbody className="bg-[#111111] mb-4">
                 {activeClass?.schemeList?.rows ? (
                   activeClass?.schemeList?.rows?.map(
                     (fund: any, index: number) => (
-                      <tr key={index} className="hover:bg-gray-50">
+                      <tr key={index} className="hover:bg-[#1F1A1A]">
                         <td className="px-4 py-4">
                           <div>
                             <div
@@ -1164,7 +1190,7 @@ const MutualFundClassesList = () => {
                             <div>
                               {/* <div tabIndex={0} role="button" className="btn m-1">Click  ⬇️</div> */}
                               <div
-                                data-tip="Transact"
+                                data-tip="Buy"
                                 tabIndex={0}
                                 role="button"
                                 className="btn btn-sm btnStyle py-0 px-2 text-sm font-normal border-0 rounded-lg tooltip tooltip-bottom"

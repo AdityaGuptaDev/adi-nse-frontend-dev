@@ -173,16 +173,16 @@ function DigiLocker({ setPOIScreen, mobileNumber }: any) {
   
 
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-200px)] bg-gray-50">
+    <div className="flex items-center justify-center min-h-[calc(100vh-200px)] bg-[#1F1A1A]">
       <div className="max-w-2xl mx-auto p-8">
         {/* Main Card */}
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className="bg-[#111111] rounded-lg shadow-lg p-8">
           {/* Header */}
           <div className="text-center mb-6">
             <CustomText className="text-2xl font-bold text-blue-600 mb-4">
               Aadhaar Based KYC
             </CustomText>
-            <CustomText className="text-gray-700 text-base leading-relaxed">
+            <CustomText className="text-[#E5E7EB] text-base leading-relaxed">
               {hasExistingData
                 ? "Your existing Aadhaar details have been found. Click below to retrieve and continue with your KYC process."
                 : "Your Aadhar card must be linked to a mobile number to receive and confirm the OTP"
@@ -204,7 +204,7 @@ function DigiLocker({ setPOIScreen, mobileNumber }: any) {
 
           {/* How Digilocker Works Section */}
           <div className="mb-8">
-            <CustomText className="text-xl font-semibold text-gray-800 mb-6">
+            <CustomText className="text-xl font-semibold text-[#F9FAFB] mb-6">
               {hasExistingData ? "Retrieve Your Details" : "How Digilocker works"}
             </CustomText>
 
@@ -216,7 +216,7 @@ function DigiLocker({ setPOIScreen, mobileNumber }: any) {
                     <div className="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-1">
                       ✓
                     </div>
-                    <CustomText className="text-gray-700 leading-relaxed">
+                    <CustomText className="text-[#E5E7EB] leading-relaxed">
                       Your Aadhaar details are already linked and verified in our system
                     </CustomText>
                   </div>
@@ -225,7 +225,7 @@ function DigiLocker({ setPOIScreen, mobileNumber }: any) {
                     <div className="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-1">
                       ✓
                     </div>
-                    <CustomText className="text-gray-700 leading-relaxed">
+                    <CustomText className="text-[#E5E7EB] leading-relaxed">
                       Click "Get Details and Continue" to retrieve your information and proceed with KYC
                     </CustomText>
                   </div>
@@ -234,7 +234,7 @@ function DigiLocker({ setPOIScreen, mobileNumber }: any) {
                     <div className="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-1">
                       ✓
                     </div>
-                    <CustomText className="text-gray-700 leading-relaxed">
+                    <CustomText className="text-[#E5E7EB] leading-relaxed">
                       This will save time by auto-filling your verified documents and information
                     </CustomText>
                   </div>
@@ -246,7 +246,7 @@ function DigiLocker({ setPOIScreen, mobileNumber }: any) {
                     <div className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-1">
                       a
                     </div>
-                    <CustomText className="text-gray-700 leading-relaxed">
+                    <CustomText className="text-[#E5E7EB] leading-relaxed">
                       Your KYC related documents are auto-verified using the digilocker and approved instantly
                     </CustomText>
                   </div>
@@ -255,7 +255,7 @@ function DigiLocker({ setPOIScreen, mobileNumber }: any) {
                     <div className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-1">
                       b
                     </div>
-                    <CustomText className="text-gray-700 leading-relaxed">
+                    <CustomText className="text-[#E5E7EB] leading-relaxed">
                       To access digilocker you enter your Aadhar number and confirm the OTP received on the mobile linked to the aadhaar card
                     </CustomText>
                   </div>
@@ -264,7 +264,7 @@ function DigiLocker({ setPOIScreen, mobileNumber }: any) {
                     <div className="flex-shrink-0 w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-4 mt-1">
                       c
                     </div>
-                    <CustomText className="text-gray-700 leading-relaxed">
+                    <CustomText className="text-[#E5E7EB] leading-relaxed">
                       You will be redirected to the digilocker page wherein you need to provide consent for sharing document/information with CRA
                     </CustomText>
                   </div>

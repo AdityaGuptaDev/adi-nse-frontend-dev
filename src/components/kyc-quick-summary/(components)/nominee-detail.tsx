@@ -66,13 +66,13 @@ function NomineeDetail({ nextTabs, summarydata, isKYCDone, isKYCComplete }: any)
               const age = calculateAge(nominee.nominee_DOB);
 
               return (
-                <div key={index} className="bg-white ">
+                <div key={index} className="bg-[#111111] ">
 
                   {/* Nominee Header */}
-                  <div className="bg-gray-50 px-6 py-6">
+                  <div className="bg-[#1F1A1A] px-6 py-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
-                        <div className="bg-white p-3 rounded-full shadow-md border-2 border-purple-200 mr-4">
+                        <div className="bg-[#111111] p-3 rounded-full shadow-md border-2 border-purple-200 mr-4">
                           {isMinor ? (
                             <FaChild className="text-purple-600 text-2xl" />
                           ) : (
@@ -80,10 +80,10 @@ function NomineeDetail({ nextTabs, summarydata, isKYCDone, isKYCComplete }: any)
                           )}
                         </div>
                         <div>
-                          <CustomText className="text-lg font-semibold text-gray-900">
+                          <CustomText className="text-lg font-semibold text-[#F9FAFB]">
                             {nominee?.nominee_name || `Nominee ${index + 1}`}
                           </CustomText>
-                          <CustomText className="text-sm text-gray-600 mt-1">
+                          <CustomText className="text-sm text-[#9CA3AF] mt-1">
                             {formatNomineeType(nominee?.nominee_Type)} • {nominee?.relation || 'N/A'} • {nominee?.percentage_allocation || '0'}% Allocation
                           </CustomText>
                         </div>
@@ -97,7 +97,7 @@ function NomineeDetail({ nextTabs, summarydata, isKYCDone, isKYCComplete }: any)
                           }`}>
                           {isMinor ? 'Minor' : 'Major'}
                         </div>
-                        <CustomText className="text-xs text-gray-600 mt-1">
+                        <CustomText className="text-xs text-[#9CA3AF] mt-1">
                           Age: {age} years
                         </CustomText>
                       </div>
@@ -106,7 +106,7 @@ function NomineeDetail({ nextTabs, summarydata, isKYCDone, isKYCComplete }: any)
 
                   {/* Nominee Information Grid */}
                   <div className="p-6">
-                    <CustomText className="text-lg font-semibold text-gray-900 mb-6">
+                    <CustomText className="text-lg font-semibold text-[#F9FAFB] mb-6">
                       Personal Information
                     </CustomText>
 
@@ -190,7 +190,7 @@ function NomineeDetail({ nextTabs, summarydata, isKYCDone, isKYCComplete }: any)
                     {/* Address Information */}
                     {(nominee?.address_line_1 || nominee?.city || nominee?.state) && (
                       <div className="mt-8">
-                        <CustomText className="text-lg font-semibold text-gray-900 mb-6">
+                        <CustomText className="text-lg font-semibold text-[#F9FAFB] mb-6">
                           Address Information
                         </CustomText>
 
@@ -248,7 +248,7 @@ function NomineeDetail({ nextTabs, summarydata, isKYCDone, isKYCComplete }: any)
                       <div className="mt-8">
                         <div className="flex items-center mb-4">
                           <FaUserTie className="text-orange-600 mr-2" />
-                          <CustomText className="text-lg font-semibold text-gray-900">
+                          <CustomText className="text-lg font-semibold text-[#F9FAFB]">
                             Guardian Information
                           </CustomText>
                         </div>
@@ -319,13 +319,13 @@ function NomineeDetail({ nextTabs, summarydata, isKYCDone, isKYCComplete }: any)
             })
           ) : (
             /* No Nominees Found */
-            <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+            <div className="bg-[#111111] rounded-lg shadow-sm border overflow-hidden">
               <div className="p-12 text-center">
-                <FaUsers className="text-gray-400 text-6xl mx-auto mb-4" />
-                <CustomText className="text-lg font-medium text-gray-900 mb-2">
+                <FaUsers className="text-[#6B7280] text-6xl mx-auto mb-4" />
+                <CustomText className="text-lg font-medium text-[#F9FAFB] mb-2">
                   No Nominees Found
                 </CustomText>
-                <CustomText className="text-gray-600">
+                <CustomText className="text-[#9CA3AF]">
                   No nominee information is available in your profile.
                 </CustomText>
               </div>
@@ -336,7 +336,7 @@ function NomineeDetail({ nextTabs, summarydata, isKYCDone, isKYCComplete }: any)
 
       {/* Action Buttons */}
       {!isKYCDone && (
-        <div className="bg-white ">
+        <div className="bg-[#111111] ">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6 py-4">
             <div className="flex justify-end items-center">
 

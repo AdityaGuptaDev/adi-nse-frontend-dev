@@ -120,6 +120,14 @@ export const getSchemeByName = async (schemeName: string) => {
     return result;
 };
 
+export const getFolioBySchemeName = async (pan: string, scheme: string) => {
+    const result: any = await api.post(`/mfu/folios-by-pan-scheme`, {
+        pan: pan,
+        scheme: scheme
+    });
+    return result;
+};
+
 
 
 

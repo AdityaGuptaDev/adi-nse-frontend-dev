@@ -252,7 +252,7 @@ export default function BrokerageReport() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-[#0A0A0A] p-4">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="mb-6">
@@ -263,7 +263,7 @@ export default function BrokerageReport() {
             {reportData.length > 0 && (
               <button
                 onClick={toggleFilters}
-                className="flex items-center gap-2 px-4 py-2 bg-white text-gray-700 rounded-md hover:bg-gray-50 transition font-medium border border-gray-300 shadow-sm w-fit"
+                className="flex items-center gap-2 px-4 py-2 bg-[#111111] text-[#F9FAFB] rounded-md hover:bg-[#0A0A0A] transition font-medium border border-[#2A2A2A] shadow-sm w-fit"
               >
                 {showFilters ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 {showFilters ? 'Hide Filters' : 'Show Filters'}
@@ -274,35 +274,35 @@ export default function BrokerageReport() {
 
         {/* Filters Section */}
         {showFilters && (
-          <div className="bg-white rounded-lg shadow border border-gray-200 p-6 mb-6">
+          <div className="bg-[#111111] rounded-lg shadow border border-[#2A2A2A] p-6 mb-6">
             <div className="flex items-center gap-2 mb-6">
-              <Filter className="w-5 h-5 text-gray-600" />
-              <h2 className="text-lg font-semibold text-gray-800">Report Configuration</h2>
+              <Filter className="w-5 h-5 text-[#9CA3AF]" />
+              <h2 className="text-lg font-semibold text-[#F9FAFB]">Report Configuration</h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
               {/* Date Range */}
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">From Date</label>
+                  <label className="block text-sm font-medium text-[#F9FAFB] mb-2">From Date</label>
                   <div className="relative">
                     <input
                       type="date"
                       value={filters.in_from_date}
                       onChange={(e) => handleFilterChange('in_from_date', e.target.value)}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                      className="w-full px-3 py-2 text-sm border border-[#2A2A2A] rounded-md focus:ring-2 focus:ring-[#F59E0B] focus:border-[#F59E0B] outline-none transition"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">To Date</label>
+                  <label className="block text-sm font-medium text-[#F9FAFB] mb-2">To Date</label>
                   <div className="relative">
                     <input
                       type="date"
                       value={filters.in_to_date}
                       onChange={(e) => handleFilterChange('in_to_date', e.target.value)}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
+                      className="w-full px-3 py-2 text-sm border border-[#2A2A2A] rounded-md focus:ring-2 focus:ring-[#F59E0B] focus:border-[#F59E0B] outline-none transition"
                     />
                   </div>
                 </div>
@@ -311,11 +311,11 @@ export default function BrokerageReport() {
               {/* Group & Category */}
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Group By</label>
+                  <label className="block text-sm font-medium text-[#F9FAFB] mb-2">Group By</label>
                   <select
                     value={filters.in_group}
                     onChange={(e) => handleFilterChange('in_group', e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white"
+                    className="w-full px-3 py-2 text-sm border border-[#2A2A2A] rounded-md focus:ring-2 focus:ring-[#F59E0B] focus:border-[#F59E0B] outline-none transition bg-[#111111]"
                   >
                     <option value="">Select Group</option>
                     {dropdownOptions.groups.map((group, index) => (
@@ -325,11 +325,11 @@ export default function BrokerageReport() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                  <label className="block text-sm font-medium text-[#F9FAFB] mb-2">Category</label>
                   <select
                     value={filters.in_category}
                     onChange={(e) => handleFilterChange('in_category', e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white"
+                    className="w-full px-3 py-2 text-sm border border-[#2A2A2A] rounded-md focus:ring-2 focus:ring-[#F59E0B] focus:border-[#F59E0B] outline-none transition bg-[#111111]"
                   >
                     <option value="">All Categories</option>
                     {dropdownOptions.categories.map((category, index) => (
@@ -342,11 +342,11 @@ export default function BrokerageReport() {
               {/* Fund & Brokerage Type */}
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Fund</label>
+                  <label className="block text-sm font-medium text-[#F9FAFB] mb-2">Fund</label>
                   <select
                     value={filters.in_fund}
                     onChange={(e) => handleFilterChange('in_fund', e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white"
+                    className="w-full px-3 py-2 text-sm border border-[#2A2A2A] rounded-md focus:ring-2 focus:ring-[#F59E0B] focus:border-[#F59E0B] outline-none transition bg-[#111111]"
                   >
                     <option value="">All Funds</option>
                     {dropdownOptions.funds.map((fund, index) => (
@@ -356,11 +356,11 @@ export default function BrokerageReport() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Brokerage Type</label>
+                  <label className="block text-sm font-medium text-[#F9FAFB] mb-2">Brokerage Type</label>
                   <select
                     value={filters.in_brokerage_type}
                     onChange={(e) => handleFilterChange('in_brokerage_type', e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition bg-white"
+                    className="w-full px-3 py-2 text-sm border border-[#2A2A2A] rounded-md focus:ring-2 focus:ring-[#F59E0B] focus:border-[#F59E0B] outline-none transition bg-[#111111]"
                   >
                     <option value="">All Types</option>
                     {dropdownOptions.brokerageTypes.map((type, index) => (
@@ -378,9 +378,9 @@ export default function BrokerageReport() {
                   <input
                     type="checkbox"
                     id="clawback"
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    className="w-4 h-4 text-[#F59E0B] border-[#2A2A2A] rounded focus:ring-[#F59E0B]"
                   />
-                  <label htmlFor="clawback" className="text-sm text-gray-700">
+                  <label htmlFor="clawback" className="text-sm text-[#F9FAFB]">
                     Claw back Only
                   </label>
                 </div>
@@ -389,9 +389,9 @@ export default function BrokerageReport() {
                   <input
                     type="checkbox"
                     id="payout"
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    className="w-4 h-4 text-[#F59E0B] border-[#2A2A2A] rounded focus:ring-[#F59E0B]"
                   />
-                  <label htmlFor="payout" className="text-sm text-gray-700">
+                  <label htmlFor="payout" className="text-sm text-[#F9FAFB]">
                     Include Payout columns
                   </label>
                 </div>
@@ -399,11 +399,11 @@ export default function BrokerageReport() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200">
+            <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-[#2A2A2A]">
               <button
                 onClick={handleSearch}
                 disabled={loading}
-                className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-[#F59E0B] text-[#F9FAFB] rounded-md hover:bg-[#B45309] transition-all font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
               >
                 <Search className="w-4 h-4" />
                 {loading ? 'Searching...' : 'Build a report'}
@@ -411,7 +411,7 @@ export default function BrokerageReport() {
               <button
                 onClick={handleReset}
                 disabled={loading}
-                className="px-6 py-3 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed border border-gray-300"
+                className="px-6 py-3 bg-[#111111] text-[#F9FAFB] rounded-md hover:bg-[#1A1A1A] transition font-medium disabled:opacity-50 disabled:cursor-not-allowed border border-[#2A2A2A]"
               >
                 Reset Filters
               </button>
@@ -419,7 +419,7 @@ export default function BrokerageReport() {
               <button
                 onClick={handleExport}
                 disabled={reportData.length === 0}
-                className="flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-[#F9FAFB] rounded-md hover:bg-green-700 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
               >
                 <Download className="w-4 h-4" />
                 Export Report
@@ -427,8 +427,8 @@ export default function BrokerageReport() {
             </div>
 
             {/* Helper Text */}
-            <div className="mt-4 p-3 bg-blue-50 rounded-md border border-blue-200">
-              <p className="text-sm text-blue-700">
+            <div className="mt-4 p-3 bg-[#1F1A1A] rounded-md border border-blue-200">
+              <p className="text-sm text-[#F59E0B]">
                 Use the form above to generate a report
               </p>
             </div>
@@ -438,36 +438,36 @@ export default function BrokerageReport() {
         {/* Summary Cards */}
         {reportData.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-white rounded-lg shadow border border-gray-200 p-4">
+            <div className="bg-[#111111] rounded-lg shadow border border-[#2A2A2A] p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-600 text-sm font-medium mb-1">Total Transactions</p>
-                  <p className="text-2xl font-bold text-gray-800">{summary.totalTransactions.toLocaleString()}</p>
+                  <p className="text-[#9CA3AF] text-sm font-medium mb-1">Total Transactions</p>
+                  <p className="text-2xl font-bold text-[#F9FAFB]">{summary.totalTransactions.toLocaleString()}</p>
                 </div>
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Calendar className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-[#1F1A1A] rounded-lg flex items-center justify-center">
+                  <Calendar className="w-5 h-5 text-[#F59E0B]" />
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-lg shadow border border-gray-200 p-4">
+            <div className="bg-[#111111] rounded-lg shadow border border-[#2A2A2A] p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-600 text-sm font-medium mb-1">Total Amount</p>
-                  <p className="text-2xl font-bold text-gray-800">{formatCurrency(summary.totalAmount)}</p>
+                  <p className="text-[#9CA3AF] text-sm font-medium mb-1">Total Amount</p>
+                  <p className="text-2xl font-bold text-[#F9FAFB]">{formatCurrency(summary.totalAmount)}</p>
                 </div>
                 <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                   <span className="text-lg font-bold text-green-600">₹</span>
                 </div>
               </div>
             </div>
-            <div className="bg-white rounded-lg shadow border border-gray-200 p-4">
+            <div className="bg-[#111111] rounded-lg shadow border border-[#2A2A2A] p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-gray-600 text-sm font-medium mb-1">Total Brokerage</p>
-                  <p className="text-2xl font-bold text-gray-800">{formatCurrency(summary.totalBrokerage)}</p>
+                  <p className="text-[#9CA3AF] text-sm font-medium mb-1">Total Brokerage</p>
+                  <p className="text-2xl font-bold text-[#F9FAFB]">{formatCurrency(summary.totalBrokerage)}</p>
                 </div>
-                <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <span className="text-lg font-bold text-purple-600">₹</span>
+                <div className="w-10 h-10 bg-[#2A1F0A] rounded-lg flex items-center justify-center">
+                  <span className="text-lg font-bold text-[#F59E0B]">₹</span>
                 </div>
               </div>
             </div>
@@ -476,18 +476,18 @@ export default function BrokerageReport() {
 
         {/* Report Table */}
         {reportData.length > 0 && (
-          <div className="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
-            <div className="p-4 border-b border-gray-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="bg-[#111111] rounded-lg shadow border border-[#2A2A2A] overflow-hidden">
+            <div className="p-4 border-b border-[#2A2A2A] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div>
-                <h2 className="text-lg font-semibold text-gray-800">Transaction Details</h2>
-                <p className="text-gray-600 text-sm">
+                <h2 className="text-lg font-semibold text-[#F9FAFB]">Transaction Details</h2>
+                <p className="text-[#9CA3AF] text-sm">
                   Showing {indexOfFirstItem + 1}-{Math.min(indexOfLastItem, reportData.length)} of {reportData.length.toLocaleString()} transactions
                 </p>
               </div>
               <div className="flex items-center gap-3">
                 <button
                   onClick={handleExport}
-                  className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition font-medium text-sm shadow-sm"
+                  className="flex items-center gap-2 px-4 py-2 bg-green-600 text-[#F9FAFB] rounded-md hover:bg-green-700 transition font-medium text-sm shadow-sm"
                 >
                   <Download className="w-4 h-4" />
                   Export CSV
@@ -496,39 +496,39 @@ export default function BrokerageReport() {
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-[#0A0A0A] border-b border-[#2A2A2A]">
                   <tr>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Date</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Folio No</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Scheme</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Client</th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Amount</th>
-                    <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Brokerage</th>
-                    <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">PAN</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">Date</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">Folio No</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">Scheme</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">Client</th>
+                    <th className="px-4 py-3 text-right text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">Amount</th>
+                    <th className="px-4 py-3 text-right text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">Brokerage</th>
+                    <th className="px-4 py-3 text-left text-xs font-semibold text-[#9CA3AF] uppercase tracking-wider">PAN</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-200">
+                <tbody className="divide-y divide-[#2A2A2A]">
                   {currentItems.map((transaction, index) => (
-                    <tr key={index} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 font-medium">
+                    <tr key={index} className="hover:bg-[#0A0A0A] transition-colors">
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-[#F9FAFB] font-medium">
                         {formatDate(transaction.txn_date)}
                       </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 font-mono">
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-[#F9FAFB] font-mono">
                         {transaction.folio_no || '-'}
                       </td>
-                      <td className="px-4 py-3 text-sm text-gray-700 max-w-[200px] truncate" title={transaction.scheme_name}>
+                      <td className="px-4 py-3 text-sm text-[#F9FAFB] max-w-[200px] truncate" title={transaction.scheme_name}>
                         {transaction.scheme_name || '-'}
                       </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 max-w-[150px] truncate" title={transaction.client_name}>
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-[#F9FAFB] max-w-[150px] truncate" title={transaction.client_name}>
                         {transaction.client_name || '-'}
                       </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 text-right font-medium">
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-[#F9FAFB] text-right font-medium">
                         {formatCurrency(transaction.txn_amount)}
                       </td>
                       <td className="px-4 py-3 whitespace-nowrap text-sm text-green-600 text-right font-semibold">
                         {formatCurrency(transaction.brokerage_amount)}
                       </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700 font-mono">
+                      <td className="px-4 py-3 whitespace-nowrap text-sm text-[#F9FAFB] font-mono">
                         {transaction.pan || '-'}
                       </td>
                     </tr>
@@ -539,15 +539,15 @@ export default function BrokerageReport() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="px-4 py-3 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
-                <div className="text-sm text-gray-700">
+              <div className="px-4 py-3 border-t border-[#2A2A2A] bg-[#0A0A0A] flex items-center justify-between">
+                <div className="text-sm text-[#F9FAFB]">
                   Page {currentPage} of {totalPages}
                 </div>
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="p-2 rounded-md border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    className="p-2 rounded-md border border-[#2A2A2A] bg-[#111111] hover:bg-[#0A0A0A] disabled:opacity-50 disabled:cursor-not-allowed transition"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
@@ -570,8 +570,8 @@ export default function BrokerageReport() {
                         onClick={() => handlePageChange(pageNumber)}
                         className={`min-w-[2rem] px-2 py-1 text-sm rounded-md border transition ${
                           currentPage === pageNumber
-                            ? 'bg-blue-600 text-white border-blue-600'
-                            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                            ? 'bg-[#F59E0B] text-[#F9FAFB] border-[#F59E0B]'
+                            : 'bg-[#111111] text-[#F9FAFB] border-[#2A2A2A] hover:bg-[#0A0A0A]'
                         }`}
                       >
                         {pageNumber}
@@ -582,7 +582,7 @@ export default function BrokerageReport() {
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className="p-2 rounded-md border border-gray-300 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    className="p-2 rounded-md border border-[#2A2A2A] bg-[#111111] hover:bg-[#0A0A0A] disabled:opacity-50 disabled:cursor-not-allowed transition"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </button>
@@ -594,23 +594,23 @@ export default function BrokerageReport() {
 
         {/* Empty State */}
         {reportData.length === 0 && !loading && !showFilters && (
-          <div className="bg-white rounded-lg shadow border border-gray-200 p-8 text-center">
-            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Search className="w-6 h-6 text-gray-400" />
+          <div className="bg-[#111111] rounded-lg shadow border border-[#2A2A2A] p-8 text-center">
+            <div className="w-12 h-12 bg-[#111111] rounded-full flex items-center justify-center mx-auto mb-3">
+              <Search className="w-6 h-6 text-[#9CA3AF]" />
             </div>
-            <h3 className="text-base font-semibold text-gray-800 mb-1">No Data Found</h3>
-            <p className="text-gray-600 text-sm">Select filters and click "Build a report" to view transactions</p>
+            <h3 className="text-base font-semibold text-[#F9FAFB] mb-1">No Data Found</h3>
+            <p className="text-[#9CA3AF] text-sm">Select filters and click "Build a report" to view transactions</p>
           </div>
         )}
 
         {/* Loading State */}
         {loading && (
-          <div className="bg-white rounded-lg shadow border border-gray-200 p-8 text-center">
-            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+          <div className="bg-[#111111] rounded-lg shadow border border-[#2A2A2A] p-8 text-center">
+            <div className="w-12 h-12 bg-[#1F1A1A] rounded-full flex items-center justify-center mx-auto mb-3">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#F59E0B]"></div>
             </div>
-            <h3 className="text-base font-semibold text-gray-800 mb-1">Loading Report Data</h3>
-            <p className="text-gray-600 text-sm">Please wait while we fetch your brokerage information...</p>
+            <h3 className="text-base font-semibold text-[#F9FAFB] mb-1">Loading Report Data</h3>
+            <p className="text-[#9CA3AF] text-sm">Please wait while we fetch your brokerage information...</p>
           </div>
         )}
       </div>

@@ -17,6 +17,24 @@ import { GrTransaction } from 'react-icons/gr';
 import { IoCartOutline } from 'react-icons/io5';
 import { motion } from 'framer-motion';
 
+// Golden Black Theme Constants
+const theme = {
+  primary: "#F59E0B",
+  secondary: "#FBBF24",
+  accent: "#1F1A1A",
+  success: "#10B981",
+  warning: "#F59E0B",
+  danger: "#EF4444",
+  background: "#0A0A0A",
+  cardBg: "#111111",
+  textWhite: "#FFFFFF",
+  textGray: "#9CA3AF",
+  textLight: "#E5E5E5",
+  border: "#2A2A2A",
+  gradient: "linear-gradient(135deg, #F59E0B 0%, #B45309 100%)",
+  hoverBg: "#1F1A1A",
+};
+
 function NewFundOffers({ data }: any) {
     const router = useRouter();
     const [navigateLoader, setNavigateLoader] = useState(false);
@@ -63,16 +81,25 @@ function NewFundOffers({ data }: any) {
         }
     };
 
-    const getStatusBadge = (status: string) => {
-        const statusColors: { [key: string]: string } = {
-            'Open': 'bg-green-100 text-green-800',
-            'Closed': 'bg-red-100 text-red-800',
-            'Upcoming': 'bg-blue-100 text-blue-800',
-            'Active': 'bg-emerald-100 text-emerald-800',
-            'Completed': 'bg-gray-100 text-gray-800'
+    const getStatusBadgeStyle = (status: string): React.CSSProperties => {
+        const statusStyles: Record<string, React.CSSProperties> = {
+            'Open': { background: `${theme.success}20`, color: theme.success },
+            'Closed': { background: `${theme.danger}20`, color: theme.danger },
+            'Upcoming': { background: `${theme.primary}20`, color: theme.primary },
+            'Active': { background: `${theme.success}20`, color: theme.success },
+            'Completed': { background: `${theme.textGray}20`, color: theme.textGray }
         };
-        
-        return statusColors[status] || 'bg-gray-100 text-gray-800';
+        return statusStyles[status] || { background: `${theme.textGray}20`, color: theme.textGray };
+    };
+
+    const riskColorStyle = (risk: string): React.CSSProperties => {
+        const riskMap: Record<string, React.CSSProperties> = {
+            'Low': { background: '#10B98120', color: '#10B981' },
+            'Moderate': { background: '#F59E0B20', color: '#F59E0B' },
+            'High': { background: '#EF444420', color: '#EF4444' },
+            'Very High': { background: '#EF444440', color: '#EF4444' },
+        };
+        return riskMap[risk] || { background: '#9CA3AF20', color: '#9CA3AF' };
     };
 
     // Mock investor data for InvestorPopup
@@ -95,7 +122,7 @@ function NewFundOffers({ data }: any) {
         <>
             <FullPageLoader isVisible={navigateLoader} message="Processing..." />
             
-            <div className="bg-white p-4 md:p-5 rounded-xl">
+            <div className="p-4 md:p-5 rounded-xl" style={{ background: theme.cardBg }}>
                 {/* Header */}
                 <div className="mb-6">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
@@ -105,17 +132,17 @@ function NewFundOffers({ data }: any) {
                                 initial={{ scale: 0 }}
                                 animate={{ scale: 1 }}
                                 transition={{ type: "spring", delay: 0.1 }}
-                                className="bg-gradient-to-r from-green-500 to-emerald-600 p-2.5 rounded-xl shadow-sm"
+                                className="bg-gradient-to-r from-emerald-500 to-green-600 p-2.5 rounded-xl shadow-sm"
                             >
                                 <FaGift className="h-5 w-5 text-white" />
                             </motion.div>
                             <div>
-                                <CustomText className="text-xl font-bold text-gray-900">
+                                <div className="text-xl font-bold" style={{ color: theme.textWhite }}>
                                     New Fund Offers (NFO)
-                                </CustomText>
-                                <CustomText className="text-sm text-gray-600">
+                                </div>
+                                <div className="text-sm" style={{ color: theme.textGray }}>
                                     Latest mutual fund launches and opportunities
-                                </CustomText>
+                                </div>
                             </div>
                         </div>
 
@@ -125,25 +152,26 @@ function NewFundOffers({ data }: any) {
                             whileTap={{ scale: 0.98 }}
                             className="md:self-start"
                         >
-                            <CustomButton
-                                className="px-4 py-2.5 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
+                            <button
+                                className="px-4 py-2.5 text-white text-sm font-medium rounded-lg transition-all duration-300 hover:shadow-lg"
+                                style={{ background: theme.gradient }}
                                 onClick={onChangeViewAll}
                             >
                                 <span className="flex items-center gap-1.5">
                                     View All
                                     <FaAngleRight className="h-3.5 w-3.5" />
                                 </span>
-                            </CustomButton>
+                            </button>
                         </motion.div>
                     </div>
 
                     {/* Info Bar */}
-                    <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-3 mb-4">
+                    <div className="rounded-lg p-3 mb-4" style={{ background: `${theme.success}10`, border: `1px solid ${theme.success}30` }}>
                         <div className="flex items-start gap-2">
-                            <FaInfo className="h-4 w-4 text-emerald-600 mt-0.5 flex-shrink-0" />
-                            <CustomText className="text-xs text-emerald-700">
+                            <FaInfo className="h-4 w-4 mt-0.5 flex-shrink-0" style={{ color: theme.success }} />
+                            <div className="text-xs" style={{ color: theme.textGray }}>
                                 New Fund Offers are mutual fund schemes launched for the first time. Invest early for potential benefits.
-                            </CustomText>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -158,14 +186,19 @@ function NewFundOffers({ data }: any) {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: index * 0.1 }}
                                 whileHover={{ y: -4 }}
-                                className="bg-white border border-gray-200 rounded-lg hover:shadow-md hover:border-emerald-300 transition-all duration-200 overflow-hidden"
+                                className="rounded-lg transition-all duration-200 overflow-hidden"
+                                style={{
+                                    background: theme.hoverBg,
+                                    border: `1px solid ${theme.border}`,
+                                }}
                             >
                                 <div className="p-4">
                                     {/* Fund Header */}
                                     <div className="flex items-start justify-between mb-3">
                                         <div className="flex items-center gap-3">
                                             <div 
-                                                className={`relative p-2.5 rounded-lg ${schemeColors[index % schemeColors.length]?.bg || 'bg-emerald-500'} cursor-pointer`}
+                                                className="relative p-2.5 rounded-lg cursor-pointer"
+                                                style={{ background: schemeColors[index % schemeColors.length]?.bg || theme.primary }}
                                                 onClick={() => handleNavigateFundDetail(fund)}
                                             >
                                                 <div className="text-white font-bold text-base w-6 h-6 flex items-center justify-center">
@@ -174,49 +207,58 @@ function NewFundOffers({ data }: any) {
                                             </div>
                                             
                                             <div>
-                                                <div className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusBadge(fund.fundStatus)}`}>
+                                                <span 
+                                                    className="px-2 py-1 rounded-full text-xs font-medium"
+                                                    style={getStatusBadgeStyle(fund.fundStatus || 'Active')}
+                                                >
                                                     {fund.fundStatus || 'Active'}
-                                                </div>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Fund Name */}
-                                    <CustomText 
-                                        className="font-semibold text-gray-900 text-sm leading-tight line-clamp-2 mb-3 cursor-pointer hover:text-emerald-600 transition-colors"
+                                    <div 
+                                        className="font-semibold text-sm leading-tight line-clamp-2 mb-3 cursor-pointer transition-colors"
+                                        style={{ color: theme.textWhite }}
                                         onClick={() => handleNavigateFundDetail(fund)}
+                                        onMouseEnter={(e) => e.currentTarget.style.color = theme.primary}
+                                        onMouseLeave={(e) => e.currentTarget.style.color = theme.textWhite}
                                     >
                                         {fund.name || 'New Fund Offer'}
-                                    </CustomText>
+                                    </div>
 
                                     {/* NFO Period */}
-                                    <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                                    <div className="mb-4 p-3 rounded-lg" style={{ background: theme.cardBg, border: `1px solid ${theme.border}` }}>
                                         <div className="flex items-center gap-2 mb-1.5">
-                                            <FaCalendar className="h-3.5 w-3.5 text-gray-500" />
-                                            <CustomText className="text-xs font-medium text-gray-700">
+                                            <FaCalendar className="h-3.5 w-3.5" style={{ color: theme.textGray }} />
+                                            <div className="text-xs font-medium" style={{ color: theme.textGray }}>
                                                 NFO Period
-                                            </CustomText>
+                                            </div>
                                         </div>
-                                        <CustomText className="text-sm font-semibold text-gray-900">
+                                        <div className="text-sm font-semibold" style={{ color: theme.textWhite }}>
                                             {convertDate(fund.nfo_start_date, fund.nfo_end_date) || 'Not specified'}
-                                        </CustomText>
+                                        </div>
                                     </div>
 
                                     {/* Details Section */}
                                     <div className="flex justify-between items-center mb-4">
                                         <div>
-                                            <CustomText className="text-xs text-gray-500 mb-0.5">
+                                            <div className="text-xs mb-0.5" style={{ color: theme.textGray }}>
                                                 Min. Investment
-                                            </CustomText>
-                                            <CustomText className="text-sm font-semibold text-gray-900">
+                                            </div>
+                                            <div className="text-sm font-semibold" style={{ color: theme.textWhite }}>
                                                 ₹{fund.min_amount ? convertNumberIndian(fund.min_amount) : "5,000"}
-                                            </CustomText>
+                                            </div>
                                         </div>
                                         <div className="text-right">
-                                            <CustomText className="text-xs text-gray-500 mb-0.5">
+                                            <div className="text-xs mb-0.5" style={{ color: theme.textGray }}>
                                                 Risk Level
-                                            </CustomText>
-                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${RISK_COLOR(fund.riskLevel || 'Medium')}`}>
+                                            </div>
+                                            <span 
+                                                className="px-2 py-1 rounded-full text-xs font-medium"
+                                                style={riskColorStyle(fund.riskLevel || 'Medium')}
+                                            >
                                                 {fund.riskLevel || 'Medium'}
                                             </span>
                                         </div>
@@ -231,7 +273,8 @@ function NewFundOffers({ data }: any) {
                                                 setSelectedScheme(fund);
                                                 setShowInvestorPopup(true);
                                             }}
-                                            className="flex-1 bg-emerald-600 text-white py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-1.5 hover:bg-emerald-700 transition-colors"
+                                            className="flex-1 text-white py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-1.5 transition-all duration-300 hover:shadow-lg"
+                                            style={{ background: theme.gradient }}
                                         >
                                             <GrTransaction className="h-3.5 w-3.5" />
                                             Transact
@@ -241,7 +284,20 @@ function NewFundOffers({ data }: any) {
                                             whileHover={{ scale: 1.05 }}
                                             whileTap={{ scale: 0.95 }}
                                             onClick={() => addToCart(fund?.id)}
-                                            className="px-3 border border-emerald-600 text-emerald-600 py-2 rounded-lg text-sm font-medium flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-colors"
+                                            className="px-3 py-2 rounded-lg text-sm font-medium flex items-center justify-center transition-all duration-300"
+                                            style={{
+                                                border: `1px solid ${theme.primary}`,
+                                                color: theme.primary,
+                                                background: 'transparent'
+                                            }}
+                                            onMouseEnter={(e) => {
+                                                e.currentTarget.style.background = theme.gradient;
+                                                e.currentTarget.style.color = 'white';
+                                            }}
+                                            onMouseLeave={(e) => {
+                                                e.currentTarget.style.background = 'transparent';
+                                                e.currentTarget.style.color = theme.primary;
+                                            }}
                                         >
                                             <IoCartOutline className="h-4 w-4" />
                                         </motion.button>
@@ -252,38 +308,38 @@ function NewFundOffers({ data }: any) {
                     ) : (
                         <div className="col-span-full">
                             <div className="text-center py-12">
-                                <div className="inline-block p-4 bg-gray-100 rounded-full mb-4">
-                                    <FaGift className="h-8 w-8 text-gray-400" />
+                                <div className="inline-block p-4 rounded-full mb-4" style={{ background: theme.hoverBg }}>
+                                    <FaGift className="h-8 w-8 mx-auto" style={{ color: theme.textGray }} />
                                 </div>
-                                <CustomText className="text-base text-gray-600 mb-2">
+                                <div className="text-base mb-2" style={{ color: theme.textWhite }}>
                                     No New Fund Offers available
-                                </CustomText>
-                                <CustomText className="text-sm text-gray-500">
+                                </div>
+                                <div className="text-sm" style={{ color: theme.textGray }}>
                                     Check back later for new fund launches
-                                </CustomText>
+                                </div>
                             </div>
                         </div>
                     )}
                 </div>
 
                 {/* NFO Status Guide */}
-                <div className="mt-6 pt-4 border-t border-gray-200">
-                    <CustomText className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                        <FaInfo className="h-3.5 w-3.5 text-emerald-600" />
+                <div className="mt-6 pt-4" style={{ borderTop: `1px solid ${theme.border}` }}>
+                    <div className="text-sm font-semibold mb-2 flex items-center gap-2" style={{ color: theme.textWhite }}>
+                        <FaInfo className="h-3.5 w-3.5" style={{ color: theme.primary }} />
                         NFO Status Guide:
-                    </CustomText>
+                    </div>
                     <div className="flex flex-wrap gap-3 text-xs">
                         <div className="flex items-center gap-1.5">
-                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                            <CustomText className="text-gray-600">Open - Available for investment</CustomText>
+                            <div className="w-2 h-2 rounded-full" style={{ background: theme.success }}></div>
+                            <div style={{ color: theme.textGray }}>Open - Available for investment</div>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                            <CustomText className="text-gray-600">Upcoming - Launching soon</CustomText>
+                            <div className="w-2 h-2 rounded-full" style={{ background: theme.primary }}></div>
+                            <div style={{ color: theme.textGray }}>Upcoming - Launching soon</div>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                            <CustomText className="text-gray-600">Closed - Subscription ended</CustomText>
+                            <div className="w-2 h-2 rounded-full" style={{ background: theme.danger }}></div>
+                            <div style={{ color: theme.textGray }}>Closed - Subscription ended</div>
                         </div>
                     </div>
                 </div>
@@ -307,7 +363,7 @@ function NewFundOffers({ data }: any) {
             {showInvestorPopup && selectedScheme && (
                 <InvestorPopup
                     schemeData={selectedScheme}
-                    investor={mockInvestorData} // Added investor prop
+                    investor={mockInvestorData}
                     open={showInvestorPopup}
                     onClose={() => setShowInvestorPopup(false)}
                 />

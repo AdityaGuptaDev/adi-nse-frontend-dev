@@ -113,10 +113,10 @@ export default function RegisterDialog({ open, onClose }: RegisterDialogProps) {
             className="fixed inset-0 z-50 m-0 p-0 bg-black/50 w-full flex items-center justify-center"
             onCancel={onClose}
         >
-            <div className="bg-white w-[350px] p-6 space-y-5 relative">
+            <div className="bg-[#111111] w-[350px] p-6 space-y-5 relative">
                 <button
                     onClick={onClose}
-                    className="absolute right-4 top-4 text-gray-500 hover:text-black"
+                    className="absolute right-4 top-4 text-[#9CA3AF] hover:text-[#F59E0B]"
                 >
                     ✕
                 </button>

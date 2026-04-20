@@ -1561,8 +1561,8 @@ const resendAadhaarOTP = async () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-4" />
-          <p className="text-gray-600">Loading partner data...</p>
+          <Loader2 className="w-8 h-8 animate-spin text-[#F59E0B] mx-auto mb-4" />
+          <p className="text-[#9CA3AF]">Loading partner data...</p>
         </div>
       </div>
     );
@@ -1572,17 +1572,17 @@ const resendAadhaarOTP = async () => {
   // if (error || !mobileFromUrl) {
   //   return (
   //     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
-  //       <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-6 text-center">
+  //       <div className="max-w-md w-full bg-[#111111] rounded-xl shadow-lg p-6 text-center">
   //         <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
   //           <Smartphone className="w-8 h-8 text-red-600" />
   //         </div>
-  //         <h1 className="text-xl font-bold text-gray-900 mb-2">Mobile Number Required</h1>
-  //         <p className="text-gray-600 mb-4">
+  //         <h1 className="text-xl font-bold text-[#F9FAFB] mb-2">Mobile Number Required</h1>
+  //         <p className="text-[#9CA3AF] mb-4">
   //           {error || 'Please provide a valid mobile number in the URL parameter (?mobile=xxxxxxxxxx)'}
   //         </p>
   //         <button
   //           onClick={() => router.push('/')}
-  //           className="w-full bg-blue-600 text-white rounded-lg py-3 font-semibold hover:bg-blue-700 transition-colors"
+  //           className="w-full bg-[#F59E0B] text-[#F9FAFB] rounded-lg py-3 font-semibold hover:bg-[#B45309] transition-colors"
   //         >
   //           Go Back
   //         </button>
@@ -1595,38 +1595,38 @@ const resendAadhaarOTP = async () => {
   if (currentScreen === 'completion') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
-        <div className="w-full max-w-2xl bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 text-center border border-gray-200">
+        <div className="w-full max-w-2xl bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl p-6 text-center border border-[#2A2A2A]">
           <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-green-600" />
           </div>
 
-          <h1 className="text-xl font-bold text-gray-900 mb-3">Registration Completed Successfully!</h1>
-          <p className="text-gray-600 text-sm mb-4">
+          <h1 className="text-xl font-bold text-[#F9FAFB] mb-3">Registration Completed Successfully!</h1>
+          <p className="text-[#9CA3AF] text-sm mb-4">
             Your Business Correspondent account has been created successfully. You can now login to access your dashboard.
           </p>
 
-          <div className="bg-white/60 rounded-lg p-4 mb-4 text-left border border-gray-200/50">
-            <h3 className="text-sm font-semibold text-gray-900 mb-3">Account Details</h3>
+          <div className="bg-[#111111]/60 rounded-lg p-4 mb-4 text-left border border-[#2A2A2A]/50">
+            <h3 className="text-sm font-semibold text-[#F9FAFB] mb-3">Account Details</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
               <div>
-                <p className="text-gray-600">Mobile Number</p>
-                <p className="font-semibold text-gray-900">{partnerData.phone}</p>
+                <p className="text-[#9CA3AF]">Mobile Number</p>
+                <p className="font-semibold text-[#F9FAFB]">{partnerData.phone}</p>
               </div>
               {/* <div>
-                <p className="text-gray-600">Email</p>
-                <p className="font-semibold text-gray-900">{loginEmailId}</p>
+                <p className="text-[#9CA3AF]">Email</p>
+                <p className="font-semibold text-[#F9FAFB]">{loginEmailId}</p>
               </div> */}
               {/* <div>
-                <p className="text-gray-600">Name</p>
-                <p className="font-semibold text-gray-900">{partnerData.name}</p>
+                <p className="text-[#9CA3AF]">Name</p>
+                <p className="font-semibold text-[#F9FAFB]">{partnerData.name}</p>
               </div> */}
               {/* <div>
-                <p className="text-gray-600">Date of Birth</p>
-                <p className="font-semibold text-gray-900">{partnerData.dob || 'Not available'}</p>
+                <p className="text-[#9CA3AF]">Date of Birth</p>
+                <p className="font-semibold text-[#F9FAFB]">{partnerData.dob || 'Not available'}</p>
               </div>
               <div>
-                <p className="text-gray-600">PAN Number</p>
-                <p className="font-semibold text-gray-900">{verification.pan.value}</p>
+                <p className="text-[#9CA3AF]">PAN Number</p>
+                <p className="font-semibold text-[#F9FAFB]">{verification.pan.value}</p>
               </div> */}
             </div>
           </div>
@@ -1662,14 +1662,14 @@ const resendAadhaarOTP = async () => {
                 <ShieldUser className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-gray-900">Business Correspondent Onboading Process</h1>
-                <p className="text-gray-600 text-xs mt-0.5">Complete verification steps to activate your BC account</p>
+                <h1 className="text-lg font-bold text-[#F9FAFB]">Business Correspondent Onboading Process</h1>
+                <p className="text-[#9CA3AF] text-xs mt-0.5">Complete verification steps to activate your BC account</p>
                 
                 {/* Progress Stats */}
                 <div className="flex items-center gap-4 mt-1">
                   <div className="flex items-center">
                     <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5"></div>
-                    <span className="text-xs text-gray-700">
+                    <span className="text-xs text-[#E5E7EB]">
                       <span className="font-semibold">{calculateOverallProgress()}%</span> Complete
                     </span>
                   </div>
@@ -1683,19 +1683,19 @@ const resendAadhaarOTP = async () => {
                 <div className="flex items-center justify-end mb-0.5">
                   <CheckCircle className="w-3 h-3 text-green-500 mr-1" />
                   <span className="text-xs font-semibold text-green-700">Mobile Verified-</span>
-                  <p className="font-bold text-gray-900 text-base">{partnerData.phone}</p>
+                  <p className="font-bold text-[#F9FAFB] text-base">{partnerData.phone}</p>
                 </div>
                  <div className="flex items-center justify-end mb-0.5">
                   {/* <CheckCircle className="w-3 h-3 text-green-500 mr-1" />
                   <span className="text-xs font-semibold text-green-700">Email Verified-</span>
-                  <p className="font-bold text-gray-900 text-base">{loginEmailId}</p> */}
+                  <p className="font-bold text-[#F9FAFB] text-base">{loginEmailId}</p> */}
  {loginEmailId !== "admin@gmail.com" && (
   <div className="flex items-center justify-end mb-0.5">
     <CheckCircle className="w-3 h-3 text-green-500 mr-1" />
     <span className="text-xs font-semibold text-green-700">
       Email Verified -
     </span>
-    <p className="font-bold text-gray-900 text-base">
+    <p className="font-bold text-[#F9FAFB] text-base">
       {loginEmailId}
     </p>
   </div>
@@ -1723,15 +1723,15 @@ const resendAadhaarOTP = async () => {
         {/* Verification Steps Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
           {/* Personal Details Card */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center">
                 <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3">
                   <User className="w-5 h-5 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">Personal Details</h3>
-                  <p className="text-gray-600 text-xs">Your personal information</p>
+                  <h3 className="text-sm font-semibold text-[#F9FAFB]">Personal Details</h3>
+                  <p className="text-[#9CA3AF] text-xs">Your personal information</p>
                 </div>
               </div>
               <button
@@ -1747,68 +1747,68 @@ const resendAadhaarOTP = async () => {
 
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Full Name</label>
+                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Full Name</label>
                 {isEditing.personal ? (
                   <input
                     type="text"
                     value={partnerData.name}
                     onChange={(e) => handlePartnerInputChange('name', e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 ) : (
-                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">{partnerData.name || 'Not available'}</p>
+                  <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">{partnerData.name || 'Not available'}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Date of Birth</label>
+                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Date of Birth</label>
                 {isEditing.personal ? (
                   <input
                     type="date"
                     value={partnerData.dob}
                     onChange={(e) => handlePartnerInputChange('dob', e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 ) : (
-                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">{partnerData.dob || 'Not available'}</p>
+                  <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">{partnerData.dob || 'Not available'}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Address</label>
+                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Address</label>
                 {isEditing.personal ? (
                   <textarea
                     value={partnerData.address}
                     onChange={(e) => handlePartnerInputChange('address', e.target.value)}
                     rows={2}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                   />
                 ) : (
-                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm whitespace-pre-wrap">{partnerData.address || 'Not available'}</p>
+                  <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm whitespace-pre-wrap">{partnerData.address || 'Not available'}</p>
                 )}
               </div>
 
               {/* PINCODE FIELD ADDED */}
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">Pincode</label>
+                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Pincode</label>
                 {isEditing.personal ? (
                   <input
                     type="text"
                     value={partnerData.pincode}
                     onChange={(e) => handlePartnerInputChange('pincode', e.target.value)}
                     placeholder="Enter pincode"
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     maxLength={6}
                   />
                 ) : (
-                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">{partnerData.pincode || 'Not available'}</p>
+                  <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">{partnerData.pincode || 'Not available'}</p>
                 )}
               </div>
             </div>
           </div>
 
           {/* Aadhaar Verification Card */}
-         <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
+         <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
   <div className="flex items-center justify-between mb-3">
     <div className="flex items-center">
       <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${
@@ -1819,8 +1819,8 @@ const resendAadhaarOTP = async () => {
         }`} />
       </div>
       <div>
-        <h3 className="text-sm font-semibold text-gray-900">Aadhaar Details</h3>
-        <p className="text-gray-600 text-xs">Auto-filled from your details</p>
+        <h3 className="text-sm font-semibold text-[#F9FAFB]">Aadhaar Details</h3>
+        <p className="text-[#9CA3AF] text-xs">Auto-filled from your details</p>
       </div>
     </div>
     <button
@@ -1837,18 +1837,18 @@ const resendAadhaarOTP = async () => {
 
   <div className="space-y-3">
     <div>
-      <label className="block text-xs font-medium text-gray-700 mb-1">Aadhaar Number</label>
+      <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Aadhaar Number</label>
       {isEditing.aadhaar ? (
         <input
           type="text"
           value={verification.aadhaar.value}
           onChange={(e) => handleAadhaarChange(e.target.value)}
           placeholder="Enter 12-digit Aadhaar"
-          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           maxLength={14}
         />
       ) : (
-        <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+        <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
           {verification.aadhaar.value ? verification.aadhaar.value : 'Not available'}
         </p>
       )}
@@ -1879,7 +1879,7 @@ const resendAadhaarOTP = async () => {
         ) : (
           <div className="space-y-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
             <div className="text-center">
-              <label className="block text-xs font-medium text-gray-700 mb-2">
+              <label className="block text-xs font-medium text-[#E5E7EB] mb-2">
                 6-digit Aadhaar OTP
               </label>
               <div className="flex justify-center space-x-2 mb-3">
@@ -1898,7 +1898,7 @@ const resendAadhaarOTP = async () => {
                     }}
                     onKeyDown={(e) => handleAadhaarKeyDown(e, index)}
                     onPaste={handleAadhaarPaste}
-                    className="w-10 h-10 text-center text-lg font-bold border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white shadow-sm"
+                    className="w-10 h-10 text-center text-lg font-bold border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-[#111111] shadow-sm"
                     disabled={aadhaarOtpState.verifying}
                   />
                 ))}
@@ -1928,7 +1928,7 @@ const resendAadhaarOTP = async () => {
                     aadhaar: { ...prev.aadhaar, error: '' }
                   }));
                 }}
-                className="text-gray-600 hover:text-gray-800 font-medium"
+                className="text-[#9CA3AF] hover:text-[#F9FAFB] font-medium"
               >
                 Cancel
               </button>
@@ -1936,7 +1936,7 @@ const resendAadhaarOTP = async () => {
               <button
                 onClick={resendAadhaarOTP}
                 disabled={!aadhaarOtpState.canResend || aadhaarOtpState.loading}
-                className="text-blue-600 hover:text-blue-700 font-medium disabled:text-gray-400"
+                className="text-blue-600 hover:text-blue-700 font-medium disabled:text-[#6B7280]"
               >
                 {aadhaarOtpState.loading ? 'Resending...' : 
                  aadhaarOtpState.timer > 0 ? `Resend in ${aadhaarOtpState.timer}s` : 'Resend OTP'}
@@ -1974,7 +1974,7 @@ const resendAadhaarOTP = async () => {
 </div>
 
           {/* PAN Verification Card - Now Separate */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center">
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${
@@ -1985,8 +1985,8 @@ const resendAadhaarOTP = async () => {
                   }`} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">PAN Verification</h3>
-                  <p className="text-gray-600 text-xs">Auto-filled from your details</p>
+                  <h3 className="text-sm font-semibold text-[#F9FAFB]">PAN Verification</h3>
+                  <p className="text-[#9CA3AF] text-xs">Auto-filled from your details</p>
                 </div>
               </div>
 
@@ -2007,18 +2007,18 @@ const resendAadhaarOTP = async () => {
 
             <div className="space-y-3">
               <div>
-                <label className="block text-xs font-medium text-gray-700 mb-1">PAN Number</label>
+                <label className="block text-xs font-medium text-[#E5E7EB] mb-1">PAN Number</label>
                 {isEditing.pan ? (
                   <input
                     type="text"
                     value={verification.pan.value}
                     onChange={(e) => handlePanChange(e.target.value)}
                     placeholder="ABCDE1234F"
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                    className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
                     maxLength={10}
                   />
                 ) : (
-                  <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                  <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                     {verification.pan.value || 'Not available'}
                   </p>
                 )}
@@ -2058,32 +2058,32 @@ const resendAadhaarOTP = async () => {
 
                {/* Show Email Input ONLY when loginEmailId is "admin@gmail.com" */}
                   {loginEmailId === "admin@gmail.com" || loginEmailId===0 && (
-                    <div className="bg-gray-50/60 rounded-lg p-3 border border-gray-200">
+                    <div className="bg-[#1F1A1A]/60 rounded-lg p-3 border border-[#2A2A2A]">
                       <div className="flex items-center mb-3">
                         <div className={`w-8 h-8 rounded-lg flex items-center justify-center mr-3 ${
-                          verification.email.value ? 'bg-blue-100' : 'bg-gray-100'
+                          verification.email.value ? 'bg-blue-100' : 'bg-[#1F1A1A]'
                         }`}>
                           <Mail className={`w-4 h-4 ${
-                            verification.email.value ? 'text-blue-600' : 'text-gray-400'
+                            verification.email.value ? 'text-blue-600' : 'text-[#6B7280]'
                           }`} />
                         </div>
                         <div>
-                          <h3 className="text-sm font-semibold text-gray-900">Email Address</h3>
-                          <p className="text-gray-600 text-xs">Will be used for registration</p>
+                          <h3 className="text-sm font-semibold text-[#F9FAFB]">Email Address</h3>
+                          <p className="text-[#9CA3AF] text-xs">Will be used for registration</p>
                         </div>
                       </div>
               
                       <div className="space-y-3">
                         <div>
-                          <label className="block text-xs font-medium text-gray-700 mb-1">Email Address</label>
+                          <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Email Address</label>
                           <input
                             type="email"
                             value={verification.email.value}
                             onChange={(e) => handleEmailChange(e.target.value)}
                             placeholder="Enter your email address"
-                            className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           />
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className="text-xs text-[#9CA3AF] mt-1">
                             This email will be passed during registration
                           </p>
                         </div>
@@ -2114,7 +2114,7 @@ const resendAadhaarOTP = async () => {
           </div>
            
           {/* Bank Verification Card */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center">
                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${
@@ -2125,8 +2125,8 @@ const resendAadhaarOTP = async () => {
                   }`} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">Bank Verification</h3>
-                  <p className="text-gray-600 text-xs">Auto-filled from your details</p>
+                  <h3 className="text-sm font-semibold text-[#F9FAFB]">Bank Verification</h3>
+                  <p className="text-[#9CA3AF] text-xs">Auto-filled from your details</p>
                 </div>
               </div>
               <button
@@ -2145,17 +2145,17 @@ const resendAadhaarOTP = async () => {
               <div className="grid grid-cols-1 gap-3">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Account Number</label>
+                    <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Account Number</label>
                     {isEditing.bank ? (
                       <input
                         type="text"
                         value={verification.bank.accountNumber}
                         onChange={(e) => handleBankChange('accountNumber', e.target.value)}
                         placeholder="Enter account number"
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     ) : (
-                      <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                      <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                         {verification.bank.accountNumber || 'Not available'}
                       </p>
                     )}
@@ -2165,18 +2165,18 @@ const resendAadhaarOTP = async () => {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">IFSC Code</label>
+                    <label className="block text-xs font-medium text-[#E5E7EB] mb-1">IFSC Code</label>
                     {isEditing.bank ? (
                       <input
                         type="text"
                         value={verification.bank.ifsc}
                         onChange={(e) => handleBankChange('ifsc', e.target.value)}
                         placeholder="Enter IFSC code"
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                        className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
                         maxLength={11}
                       />
                     ) : (
-                      <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                      <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                         {verification.bank.ifsc || 'Not available'}
                       </p>
                     )}
@@ -2212,35 +2212,35 @@ const resendAadhaarOTP = async () => {
                 {/* New Bank Name and MICR Fields */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">Bank Name</label>
+                    <label className="block text-xs font-medium text-[#E5E7EB] mb-1">Bank Name</label>
                     {isEditing.bank ? (
                       <input
                         type="text"
                         value={verification.bank.bankName}
                         onChange={(e) => handleBankChange('bankName', e.target.value)}
                         placeholder="Bank name"
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       />
                     ) : (
-                      <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                      <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                         {verification.bank.bankName || 'Not available'}
                       </p>
                     )}
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-gray-700 mb-1">MICR Code</label>
+                    <label className="block text-xs font-medium text-[#E5E7EB] mb-1">MICR Code</label>
                     {isEditing.bank ? (
                       <input
                         type="text"
                         value={verification.bank.micr}
                         onChange={(e) => handleBankChange('micr', e.target.value)}
                         placeholder="MICR code"
-                        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-3 py-2 text-sm border border-[#3A3A3A] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         maxLength={9}
                       />
                     ) : (
-                      <p className="px-3 py-2 bg-gray-50 rounded-lg border border-gray-200 text-sm">
+                      <p className="px-3 py-2 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A] text-sm">
                         {verification.bank.micr || 'Not available'}
                       </p>
                     )}
@@ -2263,7 +2263,7 @@ const resendAadhaarOTP = async () => {
          
 
           {/* Complete Registration Card */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-gray-200">
+          <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-md p-4 border border-[#2A2A2A]">
             <div className="flex items-center mb-3">
               <div className={`w-10 h-10 rounded-lg flex items-center justify-center mr-3 ${
                 isAllVerified ? 'bg-green-100' : 'bg-yellow-100'
@@ -2273,8 +2273,8 @@ const resendAadhaarOTP = async () => {
                 }`} />
               </div>
               <div>
-                <h3 className="text-sm font-semibold text-gray-900">Complete Registration</h3>
-                <p className="text-gray-600 text-xs">{calculateOverallProgress()}% Complete</p>
+                <h3 className="text-sm font-semibold text-[#F9FAFB]">Complete Registration</h3>
+                <p className="text-[#9CA3AF] text-xs">{calculateOverallProgress()}% Complete</p>
               </div>
             </div>
 
@@ -2292,7 +2292,7 @@ const resendAadhaarOTP = async () => {
                         <span className="text-lg font-bold">×</span>
                       </div>
                     )}
-                    <span className="text-xs font-medium text-gray-900">Mobile</span>
+                    <span className="text-xs font-medium text-[#F9FAFB]">Mobile</span>
                   </div>
                 </div>
 
@@ -2306,7 +2306,7 @@ const resendAadhaarOTP = async () => {
                         <span className="text-lg font-bold">×</span>
                       </div>
                     )}
-                    <span className="text-xs font-medium text-gray-900">Aadhaar</span>
+                    <span className="text-xs font-medium text-[#F9FAFB]">Aadhaar</span>
                   </div>
                 </div>
 
@@ -2320,7 +2320,7 @@ const resendAadhaarOTP = async () => {
                         <span className="text-lg font-bold">×</span>
                       </div>
                     )}
-                    <span className="text-xs font-medium text-gray-900">Email</span>
+                    <span className="text-xs font-medium text-[#F9FAFB]">Email</span>
                   </div>
                 </div> */}
               </div>
@@ -2337,7 +2337,7 @@ const resendAadhaarOTP = async () => {
                         <span className="text-lg font-bold">×</span>
                       </div>
                     )}
-                    <span className="text-xs font-medium text-gray-900">Personal</span>
+                    <span className="text-xs font-medium text-[#F9FAFB]">Personal</span>
                   </div>
                 </div>
 
@@ -2351,7 +2351,7 @@ const resendAadhaarOTP = async () => {
                         <span className="text-lg font-bold">×</span>
                       </div>
                     )}
-                    <span className="text-xs font-medium text-gray-900">PAN</span>
+                    <span className="text-xs font-medium text-[#F9FAFB]">PAN</span>
                   </div>
                 </div>
 
@@ -2365,7 +2365,7 @@ const resendAadhaarOTP = async () => {
                         <span className="text-lg font-bold">×</span>
                       </div>
                     )}
-                    <span className="text-xs font-medium text-gray-900">Bank</span>
+                    <span className="text-xs font-medium text-[#F9FAFB]">Bank</span>
                   </div>
                 </div>
               </div>

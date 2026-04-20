@@ -383,7 +383,7 @@ const [otp, setOtp] = useState("");
       <div className="myContainer w-full !px-0 !mx-3">
         <div className="mt-10 mb-2 w-full sm:w-96 md:w-[400px] max-w-screen-lg mx-auto bg-white/80 p-8 rounded-3xl backdrop-blur-lg border-8 border-white shadow-2xl">
           <div className="relative">
-            <Link href="/" className="absolute -top-2 -left-2 text-gray-500 hover:text-primary transition-colors duration-200">
+            <Link href="/" className="absolute -top-2 -left-2 text-[#9CA3AF] hover:text-primary transition-colors duration-200">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
@@ -402,7 +402,7 @@ const [otp, setOtp] = useState("");
 </CustomText>
 
 <div className="flex justify-center mb-6">
-  <div className="flex bg-gray-100 rounded-xl p-1 w-full">
+  <div className="flex bg-[#1F1A1A] rounded-xl p-1 w-full">
     <button
       type="button"
       onClick={() => {
@@ -412,8 +412,8 @@ const [otp, setOtp] = useState("");
       }}
       className={`flex-1 py-2 text-sm font-semibold rounded-lg transition ${
         loginMode === "otp"
-          ? "bg-white shadow text-primary"
-          : "text-gray-500"
+          ? "bg-[#111111] shadow text-primary"
+          : "text-[#9CA3AF]"
       }`}
     >
       Login with Code
@@ -424,8 +424,8 @@ const [otp, setOtp] = useState("");
       onClick={() => setLoginMode("password")}
       className={`flex-1 py-2 text-sm font-semibold rounded-lg transition ${
         loginMode === "password"
-          ? "bg-white shadow text-primary"
-          : "text-gray-500"
+          ? "bg-[#111111] shadow text-primary"
+          : "text-[#9CA3AF]"
       }`}
     >
       Login with Password
@@ -517,8 +517,8 @@ const [otp, setOtp] = useState("");
 
             </form>
             {isOpenOtpModal && (
-              <div id="my_modal" className="modal modal-open !bg-white" ref={modalRef} >
-                <div className="modal-box shadow-none rounded-3xl bg-white sm:w-96 md:w-[400px] max-w-screen-lg" onClick={(e) => e.stopPropagation()}>
+              <div id="my_modal" className="modal modal-open !bg-[#111111]" ref={modalRef} >
+                <div className="modal-box shadow-none rounded-3xl bg-[#111111] sm:w-96 md:w-[400px] max-w-screen-lg" onClick={(e) => e.stopPropagation()}>
                  <OTPScreen
   userData={userData}
   setUserData={setUserData}
@@ -532,11 +532,11 @@ const [otp, setOtp] = useState("");
             )}
 
             {showUserTypeSelection && (
-              <div className="modal modal-open !bg-white">
-                <div className="modal-box shadow-none rounded-3xl bg-white sm:w-96 md:w-[400px] max-w-screen-lg" onClick={(e) => e.stopPropagation()}>
+              <div className="modal modal-open !bg-[#111111]">
+                <div className="modal-box shadow-none rounded-3xl bg-[#111111] sm:w-96 md:w-[400px] max-w-screen-lg" onClick={(e) => e.stopPropagation()}>
                   <div className="text-center">
                     <h3 className="font-bold text-lg mb-4">Select User Type</h3>
-                    <p className="text-sm text-gray-600 mb-6">
+                    <p className="text-sm text-[#9CA3AF] mb-6">
                       Multiple user types found for this account. Please select how you want to login:
                     </p>
 
@@ -545,10 +545,10 @@ const [otp, setOtp] = useState("");
                         <button
                           key={index}
                           onClick={() => handleUserTypeSelection(userType)}
-                          className="w-full p-4 border-2 border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-all duration-200 text-left"
+                          className="w-full p-4 border-2 border-[#2A2A2A] rounded-lg hover:border-primary hover:bg-primary/5 transition-all duration-200 text-left"
                           disabled={loginLoading}
                         >
-                          <div className="font-medium text-gray-800">
+                          <div className="font-medium text-[#F9FAFB]">
                             {userType.userType}
                           </div>
                         </button>
@@ -560,7 +560,7 @@ const [otp, setOtp] = useState("");
                         setShowUserTypeSelection(false);
                         setLoginLoading(false);
                       }}
-                      className="mt-4 text-gray-500 hover:text-gray-700 text-sm"
+                      className="mt-4 text-[#9CA3AF] hover:text-[#E5E7EB] text-sm"
                       disabled={loginLoading}
                     >
                       Cancel

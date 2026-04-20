@@ -130,9 +130,9 @@ export const getMobileToAccountDetails = async (
 
 // Card Component for better organization
 const InfoCard = ({ title, children, className = "" }: { title: string; children: React.ReactNode; className?: string }) => (
-  <div className={`bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden ${className}`}>
-    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-gray-200">
-      <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+  <div className={`bg-[#111111] rounded-xl border border-[#2A2A2A] shadow-sm overflow-hidden ${className}`}>
+    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-6 py-4 border-b border-[#2A2A2A]">
+      <h3 className="text-lg font-semibold text-[#F9FAFB] flex items-center gap-2">
         <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
         {title}
       </h3>
@@ -146,8 +146,8 @@ const InfoCard = ({ title, children, className = "" }: { title: string; children
 // Compact Field Display Component
 const CompactField = ({ label, value, span = 1 }: { label: string; value: string; span?: number }) => (
   <div className={`flex flex-col gap-1 ${span > 1 ? `col-span-${span}` : ''}`}>
-    <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">{label}</label>
-    <div className="text-sm text-gray-900 font-medium bg-gray-50 px-3 py-2 rounded-lg border border-gray-200 min-h-[42px] flex items-center">
+    <label className="text-xs font-medium text-[#9CA3AF] uppercase tracking-wide">{label}</label>
+    <div className="text-sm text-[#F9FAFB] font-medium bg-[#1F1A1A] px-3 py-2 rounded-lg border border-[#2A2A2A] min-h-[42px] flex items-center">
       {value || "N/A"}
     </div>
   </div>
@@ -337,10 +337,10 @@ function MobileNumberSection({ setKYCSFlow, setKYCFlowScreen }: any) {
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#1F1A1A] flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <p className="mt-4 text-[#9CA3AF]">Loading...</p>
         </div>
       </div>
     );
@@ -361,15 +361,15 @@ function MobileNumberSection({ setKYCSFlow, setKYCFlowScreen }: any) {
                     </svg>
                   </div>
                   <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Secure Verification</h1>
-                    <p className="text-sm text-gray-600 mt-1">Bank-level security verification process</p>
+                    <h1 className="text-2xl font-bold text-[#F9FAFB]">Secure Verification</h1>
+                    <p className="text-sm text-[#9CA3AF] mt-1">Bank-level security verification process</p>
                   </div>
                 </div>
 
                 {/* Mobile Number Section */}
-                <div className="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 mb-6">
+                <div className="bg-[#111111] rounded-2xl p-6 shadow-lg border border-[#2A2A2A] mb-6">
                   <div className="flex items-center justify-between mb-3">
-                    <label className="block text-sm font-semibold text-gray-700">
+                    <label className="block text-sm font-semibold text-[#E5E7EB]">
                       Verification Mobile Number
                     </label>
                     {mobileNumber && !isEditingMobile && (
@@ -399,7 +399,7 @@ function MobileNumberSection({ setKYCSFlow, setKYCFlowScreen }: any) {
                       <div className="flex gap-2 justify-end">
                         <button
                           onClick={handleMobileCancel}
-                          className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-200"
+                          className="px-4 py-2 text-sm font-medium text-[#E5E7EB] bg-[#1F1A1A] hover:bg-[#2A2A2A] rounded-lg transition-colors duration-200"
                         >
                           Cancel
                         </button>
@@ -413,10 +413,10 @@ function MobileNumberSection({ setKYCSFlow, setKYCFlowScreen }: any) {
                     </div>
                   ) : mobileNumber ? (
                     <>
-                      <div className="text-xl font-bold text-gray-900 text-center py-3 bg-gray-50 rounded-lg border border-gray-200">
+                      <div className="text-xl font-bold text-[#F9FAFB] text-center py-3 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A]">
                         +91 {mobileNumber}
                       </div>
-                      <p className="text-xs text-gray-500 text-center mt-2">
+                      <p className="text-xs text-[#9CA3AF] text-center mt-2">
                         {storedMobileNumber
                           ? "Linked to your bank account for verification"
                           : "Entered mobile number for verification"
@@ -425,7 +425,7 @@ function MobileNumberSection({ setKYCSFlow, setKYCFlowScreen }: any) {
                     </>
                   ) : (
                     <div className="space-y-4">
-                      <div className="text-center py-4 text-gray-500">
+                      <div className="text-center py-4 text-[#9CA3AF]">
                         No mobile number found. Please add your mobile number for verification.
                       </div>
                       <div className="flex gap-3">
@@ -453,38 +453,38 @@ function MobileNumberSection({ setKYCSFlow, setKYCFlowScreen }: any) {
 
                 {/* Features Grid */}
                 <div className="grid grid-cols-3 gap-3 mb-6">
-                  <div className="bg-white rounded-xl p-4 text-center border border-gray-100 shadow-sm">
+                  <div className="bg-[#111111] rounded-xl p-4 text-center border border-[#2A2A2A] shadow-sm">
                     <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-2">
                       <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                       </svg>
                     </div>
-                    <p className="text-xs font-medium text-gray-700">256-bit SSL</p>
+                    <p className="text-xs font-medium text-[#E5E7EB]">256-bit SSL</p>
                   </div>
 
-                  <div className="bg-white rounded-xl p-4 text-center border border-gray-100 shadow-sm">
+                  <div className="bg-[#111111] rounded-xl p-4 text-center border border-[#2A2A2A] shadow-sm">
                     <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-2">
                       <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                       </svg>
                     </div>
-                    <p className="text-xs font-medium text-gray-700">RBI Compliant</p>
+                    <p className="text-xs font-medium text-[#E5E7EB]">RBI Compliant</p>
                   </div>
 
-                  <div className="bg-white rounded-xl p-4 text-center border border-gray-100 shadow-sm">
+                  <div className="bg-[#111111] rounded-xl p-4 text-center border border-[#2A2A2A] shadow-sm">
                     <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-2">
                       <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                       </svg>
                     </div>
-                    <p className="text-xs font-medium text-gray-700">Secure</p>
+                    <p className="text-xs font-medium text-[#E5E7EB]">Secure</p>
                   </div>
                 </div>
               </div>
 
               {/* Right Side - Action Panel */}
               <div className="flex-1 max-w-md">
-                <div className="bg-white rounded-2xl p-8 shadow-xl border border-gray-100">
+                <div className="bg-[#111111] rounded-2xl p-8 shadow-xl border border-[#2A2A2A]">
                   {/* Consent Notice */}
                   <div className="flex items-start gap-3 mb-6">
                     <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -493,8 +493,8 @@ function MobileNumberSection({ setKYCSFlow, setKYCFlowScreen }: any) {
                       </svg>
                     </div>
                     <div>
-                      <h3 className="text-sm font-semibold text-gray-900 mb-2">Verification Consent</h3>
-                      <p className="text-xs text-gray-600 leading-relaxed">
+                      <h3 className="text-sm font-semibold text-[#F9FAFB] mb-2">Verification Consent</h3>
+                      <p className="text-xs text-[#9CA3AF] leading-relaxed">
                         You consent to share details for KYC verification as per RBI guidelines.
                         Your information is encrypted and processed securely.
                       </p>
@@ -519,11 +519,11 @@ function MobileNumberSection({ setKYCSFlow, setKYCFlowScreen }: any) {
                   </CustomButton>
 
                   {/* Security Badge */}
-                  <div className="flex items-center justify-center gap-2 mt-4 pt-4 border-t border-gray-100">
+                  <div className="flex items-center justify-center gap-2 mt-4 pt-4 border-t border-[#2A2A2A]">
                     <svg className="w-3 h-3 text-green-500" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
-                    <span className="text-xs text-gray-500">256-bit SSL Encrypted Connection</span>
+                    <span className="text-xs text-[#9CA3AF]">256-bit SSL Encrypted Connection</span>
                   </div>
                 </div>
               </div>
@@ -536,7 +536,7 @@ function MobileNumberSection({ setKYCSFlow, setKYCFlowScreen }: any) {
             <div className="bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl shadow-lg p-6 text-white max-w-md">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-[#111111] bg-opacity-20 rounded-full flex items-center justify-center">
                     <svg
                       className="w-6 h-6"
                       fill="none"
@@ -643,14 +643,14 @@ function MobileNumberSection({ setKYCSFlow, setKYCFlowScreen }: any) {
                 <InfoCard title="Email Information">
                   <div className="space-y-3">
                     {extractedData.financialData.emailInfo.map((email, index) => (
-                      <div key={index} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <div key={index} className="bg-[#1F1A1A] rounded-lg p-4 border border-[#2A2A2A]">
                         <div className="flex justify-between items-start mb-2">
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                             Email {email.sequence}
                           </span>
-                          <span className="text-xs text-gray-500">{email.reportedDate}</span>
+                          <span className="text-xs text-[#9CA3AF]">{email.reportedDate}</span>
                         </div>
-                        <div className="font-medium text-gray-900 text-sm">{email.emailAddress}</div>
+                        <div className="font-medium text-[#F9FAFB] text-sm">{email.emailAddress}</div>
                       </div>
                     ))}
                   </div>
@@ -718,32 +718,32 @@ function MobileNumberSection({ setKYCSFlow, setKYCFlowScreen }: any) {
                 <InfoCard title="Address Details" className="xl:col-span-2">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {extractedData.financialData.addressInfo.map((address, index) => (
-                      <div key={index} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <div key={index} className="bg-[#1F1A1A] rounded-lg p-4 border border-[#2A2A2A]">
                         <div className="flex items-start justify-between mb-3">
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                             Address {address.sequence}
                           </span>
-                          <span className="text-xs text-gray-500">{address.reportedDate}</span>
+                          <span className="text-xs text-[#9CA3AF]">{address.reportedDate}</span>
                         </div>
                         <div className="space-y-2">
                           <div>
-                            <div className="text-xs text-gray-500 uppercase font-medium">Address</div>
-                            <div className="text-sm font-medium text-gray-900">{address.address}</div>
+                            <div className="text-xs text-[#9CA3AF] uppercase font-medium">Address</div>
+                            <div className="text-sm font-medium text-[#F9FAFB]">{address.address}</div>
                           </div>
                           <div className="grid grid-cols-2 gap-2">
                             <div>
-                              <div className="text-xs text-gray-500 uppercase font-medium">State</div>
-                              <div className="text-sm font-medium text-gray-900">{address.state}</div>
+                              <div className="text-xs text-[#9CA3AF] uppercase font-medium">State</div>
+                              <div className="text-sm font-medium text-[#F9FAFB]">{address.state}</div>
                             </div>
                             <div>
-                              <div className="text-xs text-gray-500 uppercase font-medium">Postal Code</div>
-                              <div className="text-sm font-medium text-gray-900">{address.postal}</div>
+                              <div className="text-xs text-[#9CA3AF] uppercase font-medium">Postal Code</div>
+                              <div className="text-sm font-medium text-[#F9FAFB]">{address.postal}</div>
                             </div>
                           </div>
                           {address.type && (
                             <div>
-                              <div className="text-xs text-gray-500 uppercase font-medium">Type</div>
-                              <div className="text-sm font-medium text-gray-900">{address.type}</div>
+                              <div className="text-xs text-[#9CA3AF] uppercase font-medium">Type</div>
+                              <div className="text-sm font-medium text-[#F9FAFB]">{address.type}</div>
                             </div>
                           )}
                         </div>
@@ -755,7 +755,7 @@ function MobileNumberSection({ setKYCSFlow, setKYCFlowScreen }: any) {
             </div>
 
             {/* Action Section */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+            <div className="bg-[#111111] rounded-2xl shadow-lg border border-[#2A2A2A] p-6">
               <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
@@ -764,8 +764,8 @@ function MobileNumberSection({ setKYCSFlow, setKYCFlowScreen }: any) {
                     </svg>
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">All details verified successfully</p>
-                    <p className="text-sm text-gray-600">Proceed to complete your KYC process</p>
+                    <p className="font-medium text-[#F9FAFB]">All details verified successfully</p>
+                    <p className="text-sm text-[#9CA3AF]">Proceed to complete your KYC process</p>
                   </div>
                 </div>
                 <CustomButton

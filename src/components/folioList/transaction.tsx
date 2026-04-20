@@ -2,13 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import { getTransactions } from "@/services/transactionService";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Eye, FileText, Download, Trash2, AlertCircle, Loader2 } from "lucide-react";
 import { FaFileExcel, FaFilePdf, FaEnvelope, FaWhatsapp } from "react-icons/fa";
 import * as XLSX from "xlsx";
-
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-
 
 interface TransactionProps {
   pan: string;
@@ -72,7 +70,7 @@ export default function Transaction({ pan, pageType, selectedFolios }: Transacti
                 txnDate: txn.traddate || "-",
                 appId: txn.application_number || "-",
                 scheme: txn.scheme || "-",
-                mutual_fund:txn.mutual_fund || "-",
+                mutual_fund: txn.mutual_fund || "-",
                 nature: txn.trxn_type_ || "-",
                 type: txn.trxntype || "-",
                 units: txn.units || "-",
@@ -91,10 +89,7 @@ export default function Transaction({ pan, pageType, selectedFolios }: Transacti
               return {
                 ...folio,
                 loading: false,
-                error:
-                  err instanceof Error
-                    ? err.message
-                    : "Failed to fetch transactions",
+                error: err instanceof Error ? err.message : "Failed to fetch transactions",
               };
             }
           })
@@ -113,104 +108,91 @@ export default function Transaction({ pan, pageType, selectedFolios }: Transacti
 
   const toggleTransactionSelection = (id: string) => {
     setSelectedTransactions((prev) =>
-      prev.includes(id)
-        ? prev.filter((txnId) => txnId !== id)
-        : [...prev, id]
+      prev.includes(id) ? prev.filter((txnId) => txnId !== id) : [...prev, id]
     );
   };
 
-
   const handleExportPDF = () => {
-  try {
-    const doc = new jsPDF("landscape");
+    try {
+      const doc = new jsPDF("landscape");
 
-    // Title
-    doc.setFontSize(16);
-    doc.setTextColor(40, 40, 90);
-    doc.text("Transaction Report", 14, 15);
+      doc.setFontSize(16);
+      doc.setTextColor(245, 158, 11);
+      doc.text("Transaction Report", 14, 15);
 
-    // PAN Info
-    doc.setFontSize(11);
-    doc.setTextColor(80, 80, 80);
-    doc.text(`PAN: ${pan}`, 14, 25);
-    doc.text(`Total Folios: ${folioData.length}`, 14, 32);
+      doc.setFontSize(11);
+      doc.setTextColor(156, 163, 175);
+      doc.text(`PAN: ${pan}`, 14, 25);
+      doc.text(`Total Folios: ${folioData.length}`, 14, 32);
 
-    // Gather all transactions across folios
-    const tableColumn = [
-      "Folio",
-      "ARN",
-      "Txn Date",
-      // "App ID",
-      "Mutual Fund",
-      "Scheme",
-      "Txn Nature",
-      "Units",
-      "Rate",
-      "Amount",
-      "Credit To",
-    ];
+      const tableColumn = [
+        "Folio",
+        "ARN",
+        "Txn Date",
+        "Mutual Fund",
+        "Scheme",
+        "Txn Nature",
+        "Units",
+        "Rate",
+        "Amount",
+        "Credit To",
+      ];
 
-    const tableRows = folioData.flatMap((folio) =>
-      folio.transactions.map((txn) => [
-        folio.folio || "-",
-        txn.arn,
-        txn.txnDate,
-        txn.appId,
-        txn.mutual_fund,
-        txn.scheme,
-        txn.nature,
-        txn.units,
-        txn.rate,
-        txn.amount,
-        txn.creditTo,
-      ])
-    );
+      const tableRows = folioData.flatMap((folio) =>
+        folio.transactions.map((txn) => [
+          folio.folio || "-",
+          txn.arn,
+          txn.txnDate,
+          txn.mutual_fund,
+          txn.scheme,
+          txn.nature,
+          txn.units,
+          txn.rate,
+          txn.amount,
+          txn.creditTo,
+        ])
+      );
 
-    if (tableRows.length === 0) {
-      alert("No transactions to export");
-      return;
+      if (tableRows.length === 0) {
+        alert("No transactions to export");
+        return;
+      }
+
+      autoTable(doc, {
+        head: [tableColumn],
+        body: tableRows,
+        startY: 40,
+        styles: { fontSize: 8, cellPadding: 2, textColor: [0, 0, 0] },
+        headStyles: { fillColor: [245, 158, 11], textColor: [255, 255, 255], fontStyle: 'bold' },
+        alternateRowStyles: { fillColor: [240, 240, 240] },
+      });
+
+      const pageHeight = doc.internal.pageSize.height;
+      doc.setFontSize(9);
+      doc.setTextColor(100);
+      doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, pageHeight - 10);
+
+      doc.save(`Transaction_Data_${pan}.pdf`);
+    } catch (error) {
+      console.error("PDF Export Error:", error);
+      alert("Failed to export PDF. Please try again.");
     }
-
-    // ✅ Correct usage of autoTable
-    autoTable(doc, {
-      head: [tableColumn],
-      body: tableRows,
-      startY: 40,
-      styles: { fontSize: 8, cellPadding: 2 },
-      headStyles: { fillColor: [47, 128, 185], textColor: [255, 255, 255] },
-      alternateRowStyles: { fillColor: [245, 245, 245] },
-    });
-
-    // Footer
-    const pageHeight = doc.internal.pageSize.height;
-    doc.setFontSize(9);
-    doc.setTextColor(100);
-    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, pageHeight - 10);
-
-    doc.save(`Transaction_Data_${pan}.pdf`);
-  } catch (error) {
-    console.error("PDF Export Error:", error);
-    alert("Failed to export PDF. Please try again.");
-  }
-};
+  };
 
   const handleExportExcel = () => {
     try {
-      const allTransactions = folioData.flatMap(data => 
-        data.transactions.map(txn => ({
-          "Folio": data.folio,
-          "ARN": txn.arn,
+      const allTransactions = folioData.flatMap((data) =>
+        data.transactions.map((txn) => ({
+          Folio: data.folio,
+          ARN: txn.arn,
           "Txn Date": txn.txnDate,
-          // "App ID": txn.appId,
           "Mutual Fund": txn.mutual_fund,
-          "Scheme": txn.scheme,
+          Scheme: txn.scheme,
           "Txn Nature": txn.nature,
-      
-          "Units": txn.units,
-          "Rate": txn.rate,
-          "Amount": txn.amount,
-          
-          "Credit To": txn.creditTo
+          Units: txn.units,
+          Rate: txn.rate,
+          Amount: txn.amount,
+          "Credit To": txn.creditTo,
         }))
       );
 
@@ -229,28 +211,16 @@ export default function Transaction({ pan, pageType, selectedFolios }: Transacti
     }
   };
 
-
-
-  // const handleEmail = () => {
-  //   const subject = `Transaction Data for PAN: ${pan}`;
-  //   const body = `Please find the transaction data for PAN ${pan} attached.`;
-  //   window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  // };
-
-  // const handleWhatsApp = () => {
-  //   const transactionCount = folioData.reduce((count, data) => count + data.transactions.length, 0);
-  //   const message = `Transaction details for PAN: ${pan}\n\n` +
-  //     `Total Transactions: ${transactionCount}\n` +
-  //     `Folios: ${folioData.map(data => data.folio).join(", ")}`;
-  //   window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-  // };
-
   const handleDeleteTransactions = () => {
     if (selectedTransactions.length === 0) {
       alert("Please select at least one transaction to delete");
       return;
     }
-    if (confirm(`Are you sure you want to delete ${selectedTransactions.length} selected transaction(s)?`)) {
+    if (
+      confirm(
+        `Are you sure you want to delete ${selectedTransactions.length} selected transaction(s)?`
+      )
+    ) {
       alert("Delete functionality to be implemented");
       setSelectedTransactions([]);
     }
@@ -258,168 +228,176 @@ export default function Transaction({ pan, pageType, selectedFolios }: Transacti
 
   if (selectedFolios.length === 0) {
     return (
-      <div className="p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 rounded">
-        <p>No folios selected. Please go back and select folios to view transactions.</p>
+      <div className="p-4 bg-yellow-500/10 border-l-4 border-yellow-500 rounded-lg">
+        <div className="flex items-center gap-3">
+          <AlertCircle className="w-5 h-5 text-yellow-400" />
+          <p className="text-yellow-400">No folios selected. Please go back and select folios to view transactions.</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="p-4">
-      <button 
+    <div className="min-h-screen bg-[#0A0A0A] p-4">
+      {/* Back Button */}
+      <button
         onClick={() => window.history.back()}
-        className="flex items-center text-blue-600 hover:text-blue-800 mb-6 transition-colors"
+        className="flex items-center gap-2 text-[#F59E0B] hover:text-[#FBBF24] transition-colors mb-6 group"
       >
-        <ChevronLeft className="w-5 h-5 mr-2" />
-        Back 
+        <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+        <span className="font-medium">Back</span>
       </button>
-      
-      <div className="mt-6 border rounded-lg shadow-md bg-white overflow-x-auto">
-        <div className="p-4 bg-gray-50 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <h3 className="font-medium text-gray-700">
-            Showing transactions for PAN: <span className="text-blue-700">{pan}</span>
-          </h3>
-          <div className="flex flex-wrap gap-3">
-            <button 
-              onClick={handleExportExcel}
-              className="flex items-center px-3 py-1.5 bg-green-100 text-green-700 hover:bg-green-200 rounded-md transition-colors"
-              title="Download Excel"
-            >
-              <FaFileExcel className="mr-2" size={16} />
-              <span>Excel</span>
-            </button>
-            <button 
-              onClick={handleExportPDF}
-              className="flex items-center px-3 py-1.5 bg-red-100 text-red-700 hover:bg-red-200 rounded-md transition-colors"
-              title="Download PDF"
-            >
-              <FaFilePdf className="mr-2" size={16} />
-              <span>PDF</span>
-            </button>
-            {/* <button 
-              onClick={handleEmail}
-              className="flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 hover:bg-blue-200 rounded-md transition-colors"
-              title="Email"
-            >
-              <FaEnvelope className="mr-2" size={16} />
-              <span>Email</span>
-            </button> */}
-            {/* <button 
-              onClick={handleWhatsApp}
-              className="flex items-center px-3 py-1.5 bg-green-100 text-green-700 hover:bg-green-200 rounded-md transition-colors"
-              title="Share via WhatsApp"
-            >
-              <FaWhatsapp className="mr-2" size={16} />
-              <span>WhatsApp</span>
-            </button> */}
+
+      {/* Main Container */}
+      <div className="rounded-xl shadow-lg bg-[#111111] border border-[#2A2A2A] overflow-hidden">
+        {/* Header Section */}
+        <div className="p-4 bg-gradient-to-r from-[#1F1A1A] to-[#111111] border-b border-[#2A2A2A]">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-[#F59E0B]/20 rounded-lg">
+                <FileText className="w-5 h-5 text-[#F59E0B]" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-white">
+                  Transaction Details
+                </h3>
+                <p className="text-sm text-white/60">
+                  PAN: <span className="text-[#F59E0B] font-mono">{pan}</span> • Total Folios:{" "}
+                  <span className="text-[#F59E0B]">{folioData.length}</span>
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={handleExportExcel}
+                className="flex items-center gap-2 px-3 py-1.5 bg-[#10B981]/10 text-[#10B981] hover:bg-[#10B981]/20 rounded-lg transition-all duration-200 border border-[#10B981]/30"
+                title="Download Excel"
+              >
+                <FaFileExcel size={16} />
+                <span className="text-sm font-medium">Excel</span>
+              </button>
+              <button
+                onClick={handleExportPDF}
+                className="flex items-center gap-2 px-3 py-1.5 bg-[#EF4444]/10 text-[#EF4444] hover:bg-[#EF4444]/20 rounded-lg transition-all duration-200 border border-[#EF4444]/30"
+                title="Download PDF"
+              >
+                <FaFilePdf size={16} />
+                <span className="text-sm font-medium">PDF</span>
+              </button>
+            </div>
           </div>
         </div>
-        
+
+        {/* Folio Data Section */}
         {folioData.map((data, index) => (
-          <div key={index} className="border-t">
-            <table className="w-full text-sm border-t">
-              <thead className="bg-gray-100 text-left">
+          <div key={index} className="border-t border-[#2A2A2A]">
+            {/* Folio Details Table */}
+            <table className="w-full text-sm">
+              <thead className="bg-[#1F1A1A]">
                 <tr>
-                  <th className="p-2">Folio No</th>
-                  <th>Inv Name1</th>
-                  <th>Inv Name2</th>
-                  <th>Bank</th>
-                  <th>Branch</th>
-                  <th>A/C Type</th>
-                  <th>A/C Number</th>
-                  <th>Holding</th>
+                  <th className="p-3 text-left text-white font-semibold border-r border-[#2A2A2A]">Folio No</th>
+                  <th className="p-3 text-left text-white font-semibold border-r border-[#2A2A2A]">Inv Name1</th>
+                  <th className="p-3 text-left text-white font-semibold border-r border-[#2A2A2A]">Inv Name2</th>
+                  <th className="p-3 text-left text-white font-semibold border-r border-[#2A2A2A]">Bank</th>
+                  <th className="p-3 text-left text-white font-semibold border-r border-[#2A2A2A]">Branch</th>
+                  <th className="p-3 text-left text-white font-semibold border-r border-[#2A2A2A]">A/C Type</th>
+                  <th className="p-3 text-left text-white font-semibold border-r border-[#2A2A2A]">A/C Number</th>
+                  <th className="p-3 text-left text-white font-semibold">Holding</th>
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-t">
-                  <td className="p-2">{data.folio}</td>
-                  <td>{data.investor1}</td>
-                  <td>{data.investor2}</td>
-                  <td>{data.bank}</td>
-                  <td>{data.branch}</td>
-                  <td>{data.acType}</td>
-                  <td>{data.acNumber}</td>
-                  <td>{data.holding}</td>
+                <tr className="border-t border-[#2A2A2A] hover:bg-[#1F1A1A] transition-colors">
+                  <td className="p-3 text-white/90 font-mono">{data.folio}</td>
+                  <td className="p-3 text-white/90">{data.investor1}</td>
+                  <td className="p-3 text-white/90">{data.investor2}</td>
+                  <td className="p-3 text-white/90">{data.bank}</td>
+                  <td className="p-3 text-white/90">{data.branch}</td>
+                  <td className="p-3 text-white/90">{data.acType}</td>
+                  <td className="p-3 text-white/90 font-mono">{data.acNumber}</td>
+                  <td className="p-3 text-white/90">{data.holding}</td>
                 </tr>
               </tbody>
             </table>
-            
-            <div className="px-4 py-2 bg-gray-100 font-medium flex justify-between items-center">
+
+            {/* View Transactions Button */}
+            <div className="px-4 py-3 bg-[#1F1A1A] border-t border-[#2A2A2A] flex justify-between items-center">
               <button
-                className="text-sm text-blue-600 underline"
+                className="text-sm text-[#F59E0B] hover:text-[#FBBF24] transition-colors font-medium flex items-center gap-2"
                 onClick={() => toggleFolio(data.folio)}
                 disabled={data.loading}
               >
+                <Eye className="w-4 h-4" />
                 {data.loading
                   ? "Loading..."
                   : expandedFolio === data.folio
                   ? "Hide Transactions"
                   : "View Transactions"}
               </button>
+              {data.error && (
+                <span className="text-xs text-red-400">{data.error}</span>
+              )}
             </div>
 
+            {/* Transactions Section */}
             {expandedFolio === data.folio && (
-              <div className="mt-2 overflow-x-auto p-2">
+              <div className="mt-0 overflow-x-auto p-4 bg-[#0F0F0F]">
                 {data.loading ? (
-                  <div className="flex justify-center items-center p-4">
-                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
+                  <div className="flex justify-center items-center p-8">
+                    <Loader2 className="w-8 h-8 text-[#F59E0B] animate-spin" />
                   </div>
                 ) : data.transactions.length === 0 ? (
-                  <div className="p-4 bg-yellow-100 text-yellow-700">
-                    No transactions found for this folio.
+                  <div className="p-4 bg-yellow-500/10 rounded-lg border border-yellow-500/30">
+                    <p className="text-yellow-400 text-center">No transactions found for this folio.</p>
                   </div>
                 ) : (
                   <>
-                    <table className="min-w-[1200px] text-sm border-collapse border border-gray-300">
-                      <thead className="bg-gray-100 text-gray-700">
+                    <table className="min-w-[1200px] text-sm border-collapse">
+                      <thead className="bg-[#1F1A1A]">
                         <tr>
-                          <th className="border px-2 py-1">Select</th>
-                          <th className="border px-2 py-2 text-center whitespace-nowrap">ARN#</th>
-                          <th className="border px-2 py-2 text-center whitespace-nowrap">Txn Date</th>
-                          {/* <th className="border px-2 py-2 text-center whitespace-nowrap">AppId</th> */}
-                          <th className="border px-2 py-2 text-center whitespace-nowrap">Mutual Fund</th>
-                          <th className="border px-2 py-2 text-center whitespace-nowrap">Scheme</th>
-                          <th className="border px-2 py-2 text-center whitespace-nowrap">Txn Nature</th>
-                    
-                          <th className="border px-2 py-2 text-center whitespace-nowrap">Units</th>
-                          <th className="border px-2 py-2 text-center whitespace-nowrap">Rate</th>
-                          <th className="border px-2 py-2 text-center whitespace-nowrap">Amount</th>
-                          {/* <th className="border px-2 py-2 text-center whitespace-nowrap">AUM Under</th> */}
-                          <th className="border px-2 py-2 text-center whitespace-nowrap">Credit To</th>
+                          <th className="border border-[#2A2A2A] px-3 py-2 text-center text-white font-semibold">Select</th>
+                          <th className="border border-[#2A2A2A] px-3 py-2 text-center text-white font-semibold whitespace-nowrap">ARN#</th>
+                          <th className="border border-[#2A2A2A] px-3 py-2 text-center text-white font-semibold whitespace-nowrap">Txn Date</th>
+                          <th className="border border-[#2A2A2A] px-3 py-2 text-center text-white font-semibold whitespace-nowrap">Mutual Fund</th>
+                          <th className="border border-[#2A2A2A] px-3 py-2 text-center text-white font-semibold whitespace-nowrap">Scheme</th>
+                          <th className="border border-[#2A2A2A] px-3 py-2 text-center text-white font-semibold whitespace-nowrap">Txn Nature</th>
+                          <th className="border border-[#2A2A2A] px-3 py-2 text-center text-white font-semibold whitespace-nowrap">Units</th>
+                          <th className="border border-[#2A2A2A] px-3 py-2 text-center text-white font-semibold whitespace-nowrap">Rate</th>
+                          <th className="border border-[#2A2A2A] px-3 py-2 text-center text-white font-semibold whitespace-nowrap">Amount</th>
+                          <th className="border border-[#2A2A2A] px-3 py-2 text-center text-white font-semibold whitespace-nowrap">Credit To</th>
                         </tr>
                       </thead>
                       <tbody>
                         {data.transactions.map((txn, i) => (
-                          <tr key={i} className="hover:bg-gray-50">
-                            <td className="border px-2 py-1 text-center">
-                              <input 
-                                type="checkbox" 
+                          <tr key={i} className="hover:bg-[#1F1A1A] transition-colors even:bg-[#0F0F0F]">
+                            <td className="border border-[#2A2A2A] px-3 py-2 text-center">
+                              <input
+                                type="checkbox"
                                 checked={selectedTransactions.includes(txn.id)}
                                 onChange={() => toggleTransactionSelection(txn.id)}
-                                className="h-4 w-4"
+                                className="h-4 w-4 rounded border-[#2A2A2A] bg-[#1F1A1A] text-[#F59E0B] focus:ring-[#F59E0B] focus:ring-offset-0"
                               />
                             </td>
-                            <td className="border px-2 py-2 text-center whitespace-nowrap">{txn.arn}</td>
-                            <td className="border px-2 py-2 text-center whitespace-nowrap">{txn.txnDate}</td>
-                            {/* <td className="border px-2 py-2 text-center whitespace-nowrap">{txn.appId}</td> */}
-                            <td className="border px-2 py-2 text-center whitespace-nowrap">{txn.mutual_fund}</td>
-                            <td className="border px-2 py-2 text-center whitespace-nowrap">{txn.scheme}</td>
-                            <td className="border px-2 py-2 text-center whitespace-nowrap">{txn.nature}</td>
-                       
-                            <td className="border px-2 py-2 text-center whitespace-nowrap">{txn.units}</td>
-                            <td className="border px-2 py-2 text-center whitespace-nowrap">{txn.rate}</td>
-                            <td className="border px-2 py-2 text-center whitespace-nowrap">{txn.amount}</td>
-                            {/* <td className="border px-2 py-2 text-center whitespace-nowrap">{txn.aumUnder}</td> */}
-                            <td className="border px-2 py-2 text-center whitespace-nowrap">{txn.creditTo}</td>
+                            <td className="border border-[#2A2A2A] px-3 py-2 text-center text-white/90 font-mono whitespace-nowrap">{txn.arn}</td>
+                            <td className="border border-[#2A2A2A] px-3 py-2 text-center text-white/90 whitespace-nowrap">{txn.txnDate}</td>
+                            <td className="border border-[#2A2A2A] px-3 py-2 text-center text-white/90">{txn.mutual_fund}</td>
+                            <td className="border border-[#2A2A2A] px-3 py-2 text-center text-white/90">{txn.scheme}</td>
+                            <td className="border border-[#2A2A2A] px-3 py-2 text-center text-white/90">{txn.nature}</td>
+                            <td className="border border-[#2A2A2A] px-3 py-2 text-center text-white/90">{txn.units}</td>
+                            <td className="border border-[#2A2A2A] px-3 py-2 text-center text-white/90">{txn.rate}</td>
+                            <td className="border border-[#2A2A2A] px-3 py-2 text-center text-white/90">{txn.amount}</td>
+                            <td className="border border-[#2A2A2A] px-3 py-2 text-center text-white/90">{txn.creditTo}</td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
-                    <div className="flex justify-end mt-2">
-                      <button 
+                    
+                    {/* Delete Button */}
+                    <div className="flex justify-end mt-4">
+                      <button
                         onClick={handleDeleteTransactions}
-                        className="px-3 py-1 bg-[#2f80b9] text-white rounded hover:bg-red-700 text-sm"
+                        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#EF4444] to-[#DC2626] text-white rounded-lg hover:opacity-90 transition-all duration-200 text-sm font-medium shadow-lg"
                       >
+                        <Trash2 className="w-4 h-4" />
                         Delete Selected Transaction(s)
                       </button>
                     </div>

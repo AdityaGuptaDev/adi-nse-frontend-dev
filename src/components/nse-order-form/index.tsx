@@ -158,7 +158,7 @@ function AofUploadModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
       <div
-        className="bg-white rounded-2xl w-full max-w-md mx-4 shadow-2xl"
+        className="bg-[#111111] rounded-2xl w-full max-w-md mx-4 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="bg-gradient-to-r from-[#F59E0B] to-[#D97706] px-6 py-4 rounded-t-2xl flex items-center justify-between">
@@ -168,7 +168,7 @@ function AofUploadModal({
           </button>
         </div>
         <div className="p-6 space-y-4">
-          <div className="text-xs text-gray-500 bg-amber-50 border border-amber-200 rounded-lg p-3">
+          <div className="text-xs text-[#9CA3AF] bg-amber-50 border border-amber-200 rounded-lg p-3">
             NSE requires a signed Account Opening Form (AOF) on file before any
             transaction can be placed. Upload the scanned signed AOF below —
             JPG / JPEG only, up to 4 MB.
@@ -177,18 +177,18 @@ function AofUploadModal({
           <div className="grid grid-cols-2 gap-3 text-xs">
             {investorName && (
               <div>
-                <div className="text-gray-400 uppercase tracking-wider text-[10px]">Investor</div>
-                <div className="font-medium text-gray-800">{investorName}</div>
+                <div className="text-[#6B7280] uppercase tracking-wider text-[10px]">Investor</div>
+                <div className="font-medium text-[#F9FAFB]">{investorName}</div>
               </div>
             )}
             <div>
-              <div className="text-gray-400 uppercase tracking-wider text-[10px]">UCC</div>
-              <div className="font-mono font-medium text-gray-800">{clientCode}</div>
+              <div className="text-[#6B7280] uppercase tracking-wider text-[10px]">UCC</div>
+              <div className="font-mono font-medium text-[#F9FAFB]">{clientCode}</div>
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+            <label className="block text-xs font-semibold text-[#9CA3AF] mb-1.5">
               Document Type
             </label>
             <div className="flex items-center gap-4">
@@ -201,7 +201,7 @@ function AofUploadModal({
                   onChange={() => setDocumentType("NRM")}
                   className="w-4 h-4 text-[#F59E0B]"
                 />
-                <span className="text-sm text-gray-700">Normal (NRM)</span>
+                <span className="text-sm text-[#E5E7EB]">Normal (NRM)</span>
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -212,31 +212,31 @@ function AofUploadModal({
                   onChange={() => setDocumentType("RIA")}
                   className="w-4 h-4 text-[#F59E0B]"
                 />
-                <span className="text-sm text-gray-700">RIA</span>
+                <span className="text-sm text-[#E5E7EB]">RIA</span>
               </label>
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1.5">
+            <label className="block text-xs font-semibold text-[#9CA3AF] mb-1.5">
               Signed AOF File
             </label>
             <input
               type="file"
               accept={AOF_UPLOAD_ACCEPT}
               onChange={handleFileChange}
-              className="block w-full text-xs text-gray-700 file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-[#F59E0B]/10 file:text-[#D97706] hover:file:bg-[#F59E0B]/20 cursor-pointer"
+              className="block w-full text-xs text-[#E5E7EB] file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-[#F59E0B]/10 file:text-[#D97706] hover:file:bg-[#F59E0B]/20 cursor-pointer"
             />
             {file && (
-              <div className="mt-2 text-[11px] text-gray-500">
-                Selected: <span className="font-medium text-gray-700">{file.name}</span>{" "}
+              <div className="mt-2 text-[11px] text-[#9CA3AF]">
+                Selected: <span className="font-medium text-[#E5E7EB]">{file.name}</span>{" "}
                 ({(file.size / 1024).toFixed(1)} KB)
               </div>
             )}
           </div>
         </div>
 
-        <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-center gap-3">
+        <div className="px-6 py-4 border-t border-[#2A2A2A] flex items-center justify-center gap-3">
           <button
             onClick={handleSubmit}
             disabled={submitting || !file}
@@ -246,7 +246,7 @@ function AofUploadModal({
           </button>
           <button
             onClick={onClose}
-            className="px-8 py-2.5 border border-gray-300 text-gray-600 rounded-full text-sm font-semibold hover:bg-gray-50 transition-colors"
+            className="px-8 py-2.5 border border-[#3A3A3A] text-[#9CA3AF] rounded-full text-sm font-semibold hover:bg-[#1F1A1A] transition-colors"
           >
             Cancel
           </button>
@@ -545,8 +545,8 @@ export default function NseOrderForm() {
   // ══════════════════════════════════════════
   if (orderSuccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-        <div className="bg-white rounded-2xl shadow-lg w-full max-w-lg overflow-hidden">
+      <div className="min-h-screen flex items-center justify-center bg-[#1F1A1A] p-4">
+        <div className="bg-[#111111] rounded-2xl shadow-lg w-full max-w-lg overflow-hidden">
           <div className="bg-gradient-to-r from-[#F59E0B] to-[#D97706] px-6 py-4 text-center">
             <h2 className="text-white text-lg font-semibold">Order Status</h2>
           </div>
@@ -556,7 +556,7 @@ export default function NseOrderForm() {
                 <FiCheck className="w-10 h-10 text-green-500" />
               </div>
             </div>
-            <h3 className="text-lg font-bold text-gray-800 mb-6">Order Successfully placed to NSE Invest</h3>
+            <h3 className="text-lg font-bold text-[#F9FAFB] mb-6">Order Successfully placed to NSE Invest</h3>
 
             <div className="bg-blue-50 rounded-xl p-5 text-left space-y-3 mb-6">
               {[
@@ -568,18 +568,18 @@ export default function NseOrderForm() {
                 { label: "Date", value: orderSuccess.date },
               ].map((item) => (
                 <div key={item.label} className="flex justify-between text-sm">
-                  <span className="text-gray-500">{item.label}</span>
-                  <span className="font-medium text-gray-800 text-right">{item.value}</span>
+                  <span className="text-[#9CA3AF]">{item.label}</span>
+                  <span className="font-medium text-[#F9FAFB] text-right">{item.value}</span>
                 </div>
               ))}
             </div>
 
             {orderSuccess.paymentLink && (
-              <div className="flex items-center gap-2 bg-gray-50 rounded-lg p-3 mb-6">
+              <div className="flex items-center gap-2 bg-[#1F1A1A] rounded-lg p-3 mb-6">
                 <input
                   readOnly
                   value={orderSuccess.paymentLink}
-                  className="flex-1 text-xs text-gray-600 bg-transparent truncate outline-none"
+                  className="flex-1 text-xs text-[#9CA3AF] bg-transparent truncate outline-none"
                 />
                 <button
                   onClick={() => copyToClipboard(orderSuccess.paymentLink)}
@@ -600,7 +600,7 @@ export default function NseOrderForm() {
               </button>
               <button
                 onClick={() => { setOrderSuccess(null); setAmount(""); }}
-                className="px-6 py-2.5 border border-gray-300 text-gray-600 rounded-full text-sm font-semibold hover:bg-gray-50"
+                className="px-6 py-2.5 border border-[#3A3A3A] text-[#9CA3AF] rounded-full text-sm font-semibold hover:bg-[#1F1A1A]"
               >
                 New Order
               </button>
@@ -624,24 +624,24 @@ export default function NseOrderForm() {
         <h2 className="text-white text-lg font-semibold">Order Application Form</h2>
       </div>
 
-      <div className="bg-white rounded-b-2xl shadow-lg p-6">
+      <div className="bg-[#111111] rounded-b-2xl shadow-lg p-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* LEFT - Scheme & Investor Info */}
           <div className="space-y-4">
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Scheme</span>
-                <span className="font-medium text-gray-800 text-right max-w-[300px]">{schemeName || "--"}</span>
+                <span className="text-[#9CA3AF]">Scheme</span>
+                <span className="font-medium text-[#F9FAFB] text-right max-w-[300px]">{schemeName || "--"}</span>
               </div>
               {isin && (
                 <div className="flex justify-between text-xs">
-                  <span className="text-gray-400">ISIN</span>
-                  <span className="font-mono text-gray-600">{isin}</span>
+                  <span className="text-[#6B7280]">ISIN</span>
+                  <span className="font-mono text-[#9CA3AF]">{isin}</span>
                 </div>
               )}
               {schemeResolving && (
-                <div className="flex items-center gap-2 rounded-lg bg-gray-50 border border-gray-200 px-3 py-2 text-xs text-gray-500">
-                  <svg className="animate-spin h-3.5 w-3.5 text-gray-400" viewBox="0 0 24 24">
+                <div className="flex items-center gap-2 rounded-lg bg-[#1F1A1A] border border-[#2A2A2A] px-3 py-2 text-xs text-[#9CA3AF]">
+                  <svg className="animate-spin h-3.5 w-3.5 text-[#6B7280]" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                   </svg>
@@ -660,9 +660,9 @@ export default function NseOrderForm() {
                 </div>
               )}
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">UCC</span>
+                <span className="text-[#9CA3AF]">UCC</span>
                 <select
-                  className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-[#F59E0B] font-medium focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
+                  className="border border-[#2A2A2A] rounded-lg px-3 py-1.5 text-sm text-[#F59E0B] font-medium focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
                   value={selectedInvestorId || ""}
                   onChange={(e) => setSelectedInvestorId(Number(e.target.value))}
                 >
@@ -675,15 +675,15 @@ export default function NseOrderForm() {
                 </select>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">Folio</span>
+                <span className="text-[#9CA3AF]">Folio</span>
                 <span className="font-medium text-green-600">NEW</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">First Holder</span>
-                <span className="font-medium text-gray-800">{selectedInvestor?.name || "--"}</span>
+                <span className="text-[#9CA3AF]">First Holder</span>
+                <span className="font-medium text-[#F9FAFB]">{selectedInvestor?.name || "--"}</span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-gray-500">EUIN Declaration</span>
+                <span className="text-[#9CA3AF]">EUIN Declaration</span>
                 <div className="flex items-center gap-3">
                   <label className="flex items-center gap-1 cursor-pointer">
                     <input type="radio" name="euin_decl" value="Y" checked={euinDeclaration === "Y"} onChange={() => setEuinDeclaration("Y")} className="w-3.5 h-3.5 text-[#F59E0B]" />
@@ -697,13 +697,13 @@ export default function NseOrderForm() {
               </div>
               {euinDeclaration === "Y" && (
                 <div className="flex justify-between text-sm items-center">
-                  <span className="text-gray-500">EUIN Number</span>
+                  <span className="text-[#9CA3AF]">EUIN Number</span>
                   <input
                     type="text"
                     value={euinNumber}
                     onChange={(e) => setEuinNumber(e.target.value.toUpperCase())}
                     placeholder="E123456"
-                    className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm w-32 focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
+                    className="border border-[#2A2A2A] rounded-lg px-3 py-1.5 text-sm w-32 focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
                   />
                 </div>
               )}
@@ -714,7 +714,7 @@ export default function NseOrderForm() {
           <div className="space-y-5">
             {/* Mode */}
             <div>
-              <label className="text-sm text-gray-600 font-medium mb-2 block">Mode :</label>
+              <label className="text-sm text-[#9CA3AF] font-medium mb-2 block">Mode :</label>
               <div className="flex items-center gap-4">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="radio" name="mode" value="P" checked={mode === "P"} onChange={() => setMode("P")} className="w-4 h-4 text-[#F59E0B]" />
@@ -729,11 +729,11 @@ export default function NseOrderForm() {
 
             {/* Transaction Type */}
             <div>
-              <label className="text-sm text-gray-600 font-medium mb-2 block">Transaction Type</label>
+              <label className="text-sm text-[#9CA3AF] font-medium mb-2 block">Transaction Type</label>
               <select
                 value={transactionType}
                 onChange={(e) => setTransactionType(e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
+                className="w-full border border-[#2A2A2A] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
               >
                 <option value="P">Purchase</option>
                 <option value="R">Redemption</option>
@@ -742,7 +742,7 @@ export default function NseOrderForm() {
 
             {/* Scheme Type */}
             <div>
-              <label className="text-sm text-gray-600 font-medium mb-2 block">Scheme Type :</label>
+              <label className="text-sm text-[#9CA3AF] font-medium mb-2 block">Scheme Type :</label>
               <div className="flex items-center gap-4">
                 {[
                   { value: "GR", label: "Growth" },
@@ -760,21 +760,21 @@ export default function NseOrderForm() {
             {/* Amount */}
             <div>
               <div className="flex justify-between items-center mb-2">
-                <label className="text-sm text-gray-600 font-medium">Amount:</label>
-                <span className="text-xs text-gray-400">Min: ₹{Number(minAmount).toLocaleString("en-IN")}</span>
+                <label className="text-sm text-[#9CA3AF] font-medium">Amount:</label>
+                <span className="text-xs text-[#6B7280]">Min: ₹{Number(minAmount).toLocaleString("en-IN")}</span>
               </div>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">₹</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-sm">₹</span>
                 <input
                   type="number"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
                   placeholder={minAmount}
-                  className="w-full pl-7 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
+                  className="w-full pl-7 pr-4 py-2.5 border border-[#2A2A2A] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
                 />
               </div>
               {amount && parseFloat(amount) > 0 && (
-                <p className="text-xs text-gray-400 mt-1">{numberToWords(Math.floor(parseFloat(amount)))}</p>
+                <p className="text-xs text-[#6B7280] mt-1">{numberToWords(Math.floor(parseFloat(amount)))}</p>
               )}
             </div>
 
@@ -796,11 +796,11 @@ export default function NseOrderForm() {
                   <>
                     {/* Payment Mode */}
                     <div>
-                      <label className="text-sm text-gray-600 font-medium mb-2 block">Payment Modes :</label>
+                      <label className="text-sm text-[#9CA3AF] font-medium mb-2 block">Payment Modes :</label>
                       <select
                         value={paymentMode}
                         onChange={(e) => setPaymentMode(e.target.value)}
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
+                        className="w-full border border-[#2A2A2A] rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
                       >
                         {PAYMENT_MODES.map((pm) => (
                           <option key={pm.value} value={pm.value}>{pm.label}</option>
@@ -810,10 +810,10 @@ export default function NseOrderForm() {
 
                     {/* Bank Selection (for Mandate, Cheque, UPI, NetBanking) */}
                     {["MANDATE", "CHEQUE", "UPI", "NETBANKING"].includes(paymentMode) && banks.length > 0 && (
-                      <div className="border border-gray-200 rounded-xl overflow-hidden">
+                      <div className="border border-[#2A2A2A] rounded-xl overflow-hidden">
                         <table className="w-full text-sm">
                           <thead>
-                            <tr className="bg-gray-50 text-xs text-gray-500 uppercase">
+                            <tr className="bg-[#1F1A1A] text-xs text-[#9CA3AF] uppercase">
                               <th className="px-3 py-2 text-left w-8">Select</th>
                               <th className="px-3 py-2 text-left">Bank Name</th>
                               <th className="px-3 py-2 text-left">Account No</th>
@@ -827,9 +827,9 @@ export default function NseOrderForm() {
                                 <td className="px-3 py-2">
                                   <input type="radio" name="pay_bank" value={bank.account_no} checked={selectedBank === bank.account_no} onChange={() => setSelectedBank(bank.account_no)} className="w-4 h-4 text-[#F59E0B]" />
                                 </td>
-                                <td className="px-3 py-2 text-gray-700">{bank.bank_name || "--"}</td>
+                                <td className="px-3 py-2 text-[#E5E7EB]">{bank.bank_name || "--"}</td>
                                 <td className="px-3 py-2 font-mono text-xs">{bank.account_no}</td>
-                                <td className="px-3 py-2 text-gray-500 text-xs">{bank.branch_name || "--"}</td>
+                                <td className="px-3 py-2 text-[#9CA3AF] text-xs">{bank.branch_name || "--"}</td>
                                 <td className="px-3 py-2 text-center">{bank.default_bank_flag || "N"}</td>
                               </tr>
                             ))}
@@ -841,16 +841,16 @@ export default function NseOrderForm() {
                     {/* Cheque fields */}
                     {paymentMode === "CHEQUE" && (
                       <div className="space-y-3">
-                        <p className="text-xs text-gray-500">Cheque to be made in favour of</p>
+                        <p className="text-xs text-[#9CA3AF]">Cheque to be made in favour of</p>
                         <p className="text-sm font-medium">Beneficiary Name : NSE INVEST PLATFORM NCL SETTLEMENT A/C</p>
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="text-xs text-gray-500 mb-1 block">Cheque Number</label>
-                            <input type="text" value={chequeNo} onChange={(e) => setChequeNo(e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]" />
+                            <label className="text-xs text-[#9CA3AF] mb-1 block">Cheque Number</label>
+                            <input type="text" value={chequeNo} onChange={(e) => setChequeNo(e.target.value)} className="w-full border border-[#2A2A2A] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]" />
                           </div>
                           <div>
-                            <label className="text-xs text-gray-500 mb-1 block">Cheque Date</label>
-                            <input type="date" value={chequeDate} onChange={(e) => setChequeDate(e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]" />
+                            <label className="text-xs text-[#9CA3AF] mb-1 block">Cheque Date</label>
+                            <input type="date" value={chequeDate} onChange={(e) => setChequeDate(e.target.value)} className="w-full border border-[#2A2A2A] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]" />
                           </div>
                         </div>
                       </div>
@@ -859,15 +859,15 @@ export default function NseOrderForm() {
                     {/* UPI fields */}
                     {paymentMode === "UPI" && (
                       <div>
-                        <label className="text-xs text-gray-500 mb-1 block">UPI ID</label>
-                        <input type="text" value={upiId} onChange={(e) => setUpiId(e.target.value)} placeholder="name@upi" className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]" />
+                        <label className="text-xs text-[#9CA3AF] mb-1 block">UPI ID</label>
+                        <input type="text" value={upiId} onChange={(e) => setUpiId(e.target.value)} placeholder="name@upi" className="w-full border border-[#2A2A2A] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]" />
                       </div>
                     )}
 
                     {/* NEFT/RTGS fields */}
                     {paymentMode === "NEFT" && (
                       <div className="space-y-3">
-                        <div className="bg-gray-50 rounded-xl p-4 space-y-2 text-sm">
+                        <div className="bg-[#1F1A1A] rounded-xl p-4 space-y-2 text-sm">
                           {[
                             { label: "Beneficiary Name", value: "NSE INVEST PLATFORM NCL SETTLEMENT AC" },
                             { label: "Bank Name", value: "HDFC BANK LTD" },
@@ -876,14 +876,14 @@ export default function NseOrderForm() {
                             { label: "Virtual Account No", value: `NSEMF${selectedInvestor?.client_code || "XXXXXX"}` },
                           ].map((item) => (
                             <div key={item.label} className="flex justify-between">
-                              <span className="text-gray-500">{item.label}</span>
-                              <span className="font-medium text-gray-800">{item.value}</span>
+                              <span className="text-[#9CA3AF]">{item.label}</span>
+                              <span className="font-medium text-[#F9FAFB]">{item.value}</span>
                             </div>
                           ))}
                         </div>
                         <div>
-                          <label className="text-xs text-gray-500 mb-1 block">NEFT / RTGS UTR Number (Optional)</label>
-                          <input type="text" value={neftUtr} onChange={(e) => setNeftUtr(e.target.value)} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]" />
+                          <label className="text-xs text-[#9CA3AF] mb-1 block">NEFT / RTGS UTR Number (Optional)</label>
+                          <input type="text" value={neftUtr} onChange={(e) => setNeftUtr(e.target.value)} className="w-full border border-[#2A2A2A] rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]" />
                         </div>
                       </div>
                     )}
@@ -900,28 +900,28 @@ export default function NseOrderForm() {
             className={`mt-6 rounded-xl border p-4 flex items-start gap-3 ${
               aofStatus === "missing" || aofStatus === "error"
                 ? "bg-amber-50 border-amber-200"
-                : "bg-gray-50 border-gray-200"
+                : "bg-[#1F1A1A] border-[#2A2A2A]"
             }`}
           >
             <FiAlertTriangle
               className={`w-5 h-5 mt-0.5 flex-shrink-0 ${
                 aofStatus === "missing" || aofStatus === "error"
                   ? "text-amber-500"
-                  : "text-gray-400"
+                  : "text-[#6B7280]"
               }`}
             />
             <div className="flex-1 min-w-0">
-              <div className="text-sm font-semibold text-gray-800">
+              <div className="text-sm font-semibold text-[#F9FAFB]">
                 {aofStatus === "checking" && "Verifying AOF image..."}
                 {aofStatus === "missing" && "AOF image required"}
                 {aofStatus === "error" && "Could not verify AOF status"}
                 {aofStatus === "unknown" && "Select an investor to verify AOF"}
               </div>
               {aofErrorRemark && (
-                <div className="text-xs text-gray-500 mt-0.5">{aofErrorRemark}</div>
+                <div className="text-xs text-[#9CA3AF] mt-0.5">{aofErrorRemark}</div>
               )}
               {(aofStatus === "missing" || aofStatus === "error") && (
-                <div className="text-xs text-gray-500 mt-0.5">
+                <div className="text-xs text-[#9CA3AF] mt-0.5">
                   NSE requires a signed AOF on file before this order can be placed.
                 </div>
               )}
@@ -936,7 +936,7 @@ export default function NseOrderForm() {
               </button>
             )}
             {aofStatus === "checking" && (
-              <span className="text-xs text-gray-400 flex-shrink-0">Checking...</span>
+              <span className="text-xs text-[#6B7280] flex-shrink-0">Checking...</span>
             )}
           </div>
         )}
@@ -957,7 +957,7 @@ export default function NseOrderForm() {
         )}
 
         {/* Actions */}
-        <div className="flex items-center justify-center gap-4 mt-6 pt-6 border-t border-gray-100">
+        <div className="flex items-center justify-center gap-4 mt-6 pt-6 border-t border-[#2A2A2A]">
           <button
             onClick={handlePlaceOrder}
             disabled={
@@ -982,13 +982,13 @@ export default function NseOrderForm() {
           </button>
           <button
             onClick={() => router.back()}
-            className="px-8 py-2.5 border border-gray-300 text-gray-600 rounded-full text-sm font-semibold hover:bg-gray-50"
+            className="px-8 py-2.5 border border-[#3A3A3A] text-[#9CA3AF] rounded-full text-sm font-semibold hover:bg-[#1F1A1A]"
           >
             Cancel
           </button>
         </div>
 
-        <p className="text-xs text-gray-400 text-center mt-4">
+        <p className="text-xs text-[#6B7280] text-center mt-4">
           By clicking on Place Order, I confirm that I have read all the Scheme Information Documents.
         </p>
       </div>

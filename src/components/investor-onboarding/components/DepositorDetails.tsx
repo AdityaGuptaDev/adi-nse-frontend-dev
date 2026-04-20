@@ -72,53 +72,52 @@ export default function DepositoryDetails({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="p-6 bg-white">
-
-            <h2 className="text-xl font-semibold mb-6">Depository Details</h2>
+        <form onSubmit={handleSubmit} className="p-6 bg-[#111111] rounded-xl border border-[#2A2A2A] shadow-xl">
+            <h2 className="text-xl font-semibold bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent mb-6">Depository Details</h2>
 
             {/* NSDL SECTION */}
-            <div className="border p-4 rounded bg-gray-50 mb-6">
-                <h3 className="font-semibold text-gray-800 mb-4">NSDL</h3>
+            <div className="border border-[#2A2A2A] p-4 rounded-lg bg-[#1F1A1A] mb-6">
+                <h3 className="font-semibold text-[#F9FAFB] mb-4">NSDL</h3>
 
                 <div className="grid grid-cols-3 gap-4">
 
                     <div>
-                        <label className="text-sm">Depository Type</label>
+                        <label className="text-sm text-[#9CA3AF] block mb-2">Depository Type</label>
                         <input
                             value="NSDL"
                             readOnly
-                            className="w-full border rounded px-3 py-2 bg-gray-200"
+                            className="w-full border border-[#2A2A2A] rounded-lg px-3 py-2 bg-[#111111] text-[#F9FAFB] cursor-not-allowed opacity-70"
                         />
                     </div>
 
                     <div>
-                        <label className="text-sm">DP ID</label>
+                        <label className="text-sm text-[#9CA3AF] block mb-2">DP ID</label>
                         <input
                             type="text"
                             maxLength={8}
                             value={formData.nsdlDpId}
                             onChange={(e) => handleChange("nsdlDpId", e.target.value.toUpperCase())}
-                            className="w-full border rounded px-3 py-2"
+                            className="w-full border border-[#2A2A2A] rounded-lg px-3 py-2 bg-[#111111] text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                         />
                     </div>
 
                     <div>
-                        <label className="text-sm">Client ID</label>
+                        <label className="text-sm text-[#9CA3AF] block mb-2">Client ID</label>
                         <input
                             type="text"
                             maxLength={8}
                             value={formData.nsdlClientId}
                             onChange={(e) => handleChange("nsdlClientId", e.target.value.toUpperCase())}
-                            className="w-full border rounded px-3 py-2"
+                            className="w-full border border-[#2A2A2A] rounded-lg px-3 py-2 bg-[#111111] text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                         />
                     </div>
 
                     <div className="col-span-3">
-                        <label className="text-sm">NSDL Account Proof</label>
+                        <label className="text-sm text-[#9CA3AF] block mb-2">NSDL Account Proof</label>
                         <select
                             value={formData.nsdlProfId}
                             onChange={(e) => handleChange("nsdlProfId", e.target.value)}
-                            className="w-full border rounded px-3 py-2"
+                            className="w-full border border-[#2A2A2A] rounded-lg px-3 py-2 bg-[#111111] text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                         >
                             <option value="">Select</option>
                             <option value="34">Statement of Accounts</option>
@@ -129,48 +128,48 @@ export default function DepositoryDetails({
             </div>
 
             {/* CDSL SECTION */}
-            <div className="border p-4 rounded bg-gray-50 mb-6">
-                <h3 className="font-semibold text-gray-800 mb-4">CDSL</h3>
+            <div className="border border-[#2A2A2A] p-4 rounded-lg bg-[#1F1A1A] mb-6">
+                <h3 className="font-semibold text-[#F9FAFB] mb-4">CDSL</h3>
 
                 <div className="grid grid-cols-3 gap-4">
 
                     <div>
-                        <label className="text-sm">Depository Type</label>
+                        <label className="text-sm text-[#9CA3AF] block mb-2">Depository Type</label>
                         <input
                             value="CDSL"
                             readOnly
-                            className="w-full border rounded px-3 py-2 bg-gray-200"
+                            className="w-full border border-[#2A2A2A] rounded-lg px-3 py-2 bg-[#111111] text-[#F9FAFB] cursor-not-allowed opacity-70"
                         />
                     </div>
 
                     <div>
-                        <label className="text-sm">DP ID</label>
+                        <label className="text-sm text-[#9CA3AF] block mb-2">DP ID</label>
                         <input
                             type="text"
                             maxLength={8}
                             value={formData.cdslDpId}
                             onChange={(e) => handleChange("cdslDpId", e.target.value.toUpperCase())}
-                            className="w-full border rounded px-3 py-2"
+                            className="w-full border border-[#2A2A2A] rounded-lg px-3 py-2 bg-[#111111] text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                         />
                     </div>
 
                     <div>
-                        <label className="text-sm">Client ID</label>
+                        <label className="text-sm text-[#9CA3AF] block mb-2">Client ID</label>
                         <input
                             type="text"
                             maxLength={8}
                             value={formData.cdslClientId}
                             onChange={(e) => handleChange("cdslClientId", e.target.value.toUpperCase())}
-                            className="w-full border rounded px-3 py-2"
+                            className="w-full border border-[#2A2A2A] rounded-lg px-3 py-2 bg-[#111111] text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                         />
                     </div>
 
                     <div className="col-span-3">
-                        <label className="text-sm">CDSL Account Proof</label>
+                        <label className="text-sm text-[#9CA3AF] block mb-2">CDSL Account Proof</label>
                         <select
                             value={formData.cdslProfId}
                             onChange={(e) => handleChange("cdslProfId", e.target.value)}
-                            className="w-full border rounded px-3 py-2"
+                            className="w-full border border-[#2A2A2A] rounded-lg px-3 py-2 bg-[#111111] text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                         >
                             <option value="">Select</option>
                             <option value="34">Statement of Accounts</option>
@@ -181,11 +180,11 @@ export default function DepositoryDetails({
             </div>
 
             {/* NAV BUTTONS */}
-            <div className="flex justify-between pt-6 border-t">
+            <div className="flex justify-between pt-6 border-t border-[#2A2A2A]">
                 <button
                     type="button"
                     onClick={onPrevious}
-                    className="px-6 py-2 bg-gray-600 text-white rounded"
+                    className="px-6 py-2 bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] rounded-lg hover:bg-[#2A2A2A] hover:border-[#F59E0B] transition-all font-medium"
                 >
                     Previous
                 </button>
@@ -193,7 +192,11 @@ export default function DepositoryDetails({
                 <button
                     type="submit"
                     disabled={!isValid}
-                    className={`px-6 py-2 rounded ${isValid ? "bg-blue-600 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`}
+                    className={`px-6 py-2 rounded-lg font-medium transition-all ${
+                        isValid
+                            ? "bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white hover:opacity-90 shadow-lg"
+                            : "bg-[#2A2A2A] text-[#9CA3AF] cursor-not-allowed"
+                    }`}
                 >
                     {isLastStep ? "Submit" : "Next"}
                 </button>

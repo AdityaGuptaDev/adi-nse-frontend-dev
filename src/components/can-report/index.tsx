@@ -433,8 +433,8 @@ export default function CANReport() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-slate-600">Loading CAN reports...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#F59E0B] mx-auto"></div>
+          <p className="mt-4 text-[#9CA3AF]">Loading CAN reports...</p>
         </div>
       </div>
     );
@@ -444,13 +444,13 @@ export default function CANReport() {
   if (error && reports.length === 0) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
-        <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 text-center">
+        <div className="max-w-4xl mx-auto bg-[#111111] rounded-xl shadow-lg p-8 text-center">
           <AlertCircle className="w-16 h-16 text-rose-500 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-slate-800 mb-2">Error Loading Data</h2>
-          <p className="text-slate-600 mb-6">{error}</p>
+          <h2 className="text-2xl font-bold text-[#F9FAFB] mb-2">Error Loading Data</h2>
+          <p className="text-[#9CA3AF] mb-6">{error}</p>
           <button
             onClick={fetchAllReports}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#F59E0B] hover:bg-[#B45309] text-[#F9FAFB] font-medium rounded-lg transition-colors"
           >
             <RefreshCw size={18} />
             Retry Loading
@@ -468,63 +468,63 @@ export default function CANReport() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-6">
 
             <div className="lg:col-span-8 grid grid-cols-4 gap-3">
-              <div className="bg-white rounded-lg p-3 shadow-sm border border-slate-200">
+              <div className="bg-[#111111] rounded-lg p-3 shadow-sm border border-[#2A2A2A]">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-50 rounded-lg">
-                    <FileText className="text-blue-600" size={16} />
+                  <div className="p-2 bg-[#1F1A1A] rounded-lg">
+                    <FileText className="text-[#F59E0B]" size={16} />
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500">Total</p>
-                    <p className="text-base font-bold text-slate-800">{stats.total}</p>
+                    <p className="text-xs text-[#9CA3AF]">Total</p>
+                    <p className="text-base font-bold text-[#F9FAFB]">{stats.total}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-lg p-3 shadow-sm border border-slate-200">
+              <div className="bg-[#111111] rounded-lg p-3 shadow-sm border border-[#2A2A2A]">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-emerald-50 rounded-lg">
                     <CheckCircle className="text-emerald-600" size={16} />
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500">Success</p>
+                    <p className="text-xs text-[#9CA3AF]">Success</p>
                     <p className="text-base font-bold text-emerald-600">{stats.success}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-lg p-3 shadow-sm border border-slate-200">
+              <div className="bg-[#111111] rounded-lg p-3 shadow-sm border border-[#2A2A2A]">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-rose-50 rounded-lg">
                     <XCircle className="text-rose-600" size={16} />
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500">Errors</p>
+                    <p className="text-xs text-[#9CA3AF]">Errors</p>
                     <p className="text-base font-bold text-rose-600">{stats.errors}</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-lg p-3 shadow-sm border border-slate-200">
+              <div className="bg-[#111111] rounded-lg p-3 shadow-sm border border-[#2A2A2A]">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-purple-50 rounded-lg">
-                    <UserCheck className="text-purple-600" size={16} />
+                  <div className="p-2 bg-[#1F1A0A] rounded-lg">
+                    <UserCheck className="text-[#F59E0B]" size={16} />
                   </div>
                   <div>
-                    <p className="text-xs text-slate-500">Entities</p>
-                    <p className="text-base font-bold text-purple-600">{stats.uniqueEntities}</p>
+                    <p className="text-xs text-[#9CA3AF]">Entities</p>
+                    <p className="text-base font-bold text-[#F59E0B]">{stats.uniqueEntities}</p>
                   </div>
                 </div>
               </div>
             </div>
 
 
-            <div className="lg:col-span-3 bg-white rounded-lg p-3 shadow-sm border border-slate-200">
+            <div className="lg:col-span-3 bg-[#111111] rounded-lg p-3 shadow-sm border border-[#2A2A2A]">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={16} />
                 <input
                   type="text"
                   placeholder="Search all fields..."
-                  className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-sm"
+                  className="w-full pl-9 pr-4 py-2 border border-[#2A2A2A] rounded-lg focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent outline-none transition-all text-sm"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -534,7 +534,7 @@ export default function CANReport() {
             <div className="lg:col-span-1">
               <button
                 onClick={handleExportExcel}
-                className="w-full h-full flex items-center justify-center gap-2 px-3 py-2.5 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-white font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                className="w-full h-full flex items-center justify-center gap-2 px-3 py-2.5 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 text-[#F9FAFB] font-medium rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                 disabled={loading || reports.length === 0}
               >
                 <Download size={14} />
@@ -543,25 +543,25 @@ export default function CANReport() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg p-4 shadow-sm border border-slate-200 mb-6">
+          <div className="bg-[#111111] rounded-lg p-4 shadow-sm border border-[#2A2A2A] mb-6">
             <div className="flex flex-col md:flex-row gap-3 items-start md:items-center">
 
               <div className="flex gap-1">
                 <button
                   onClick={() => setStatusFilter('ALL')}
-                  className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${statusFilter === 'ALL' ? 'bg-indigo-100 text-indigo-700 border border-indigo-200' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                  className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${statusFilter === 'ALL' ? 'bg-[#2A1F0A] text-[#D97706] border border-[#F59E0B]' : 'bg-[#111111] text-[#9CA3AF] hover:bg-slate-200'}`}
                 >
                   All
                 </button>
                 <button
                   onClick={() => setStatusFilter('SUCCESS')}
-                  className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${statusFilter === 'SUCCESS' ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                  className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${statusFilter === 'SUCCESS' ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 'bg-[#111111] text-[#9CA3AF] hover:bg-slate-200'}`}
                 >
                   Success
                 </button>
                 <button
                   onClick={() => setStatusFilter('ERROR')}
-                  className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${statusFilter === 'ERROR' ? 'bg-rose-100 text-rose-700 border border-rose-200' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+                  className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${statusFilter === 'ERROR' ? 'bg-rose-100 text-rose-700 border border-rose-200' : 'bg-[#111111] text-[#9CA3AF] hover:bg-slate-200'}`}
                 >
                   Errors
                 </button>
@@ -574,7 +574,7 @@ export default function CANReport() {
                   <input
                     type="text"
                     placeholder="CAN ID"
-                    className="w-full pl-9 pr-4 py-1.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-sm"
+                    className="w-full pl-9 pr-4 py-1.5 border border-[#2A2A2A] rounded-lg focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent outline-none transition-all text-sm"
                     value={canSearch}
                     onChange={(e) => setCanSearch(e.target.value)}
                     onKeyPress={handleKeyPress}
@@ -588,7 +588,7 @@ export default function CANReport() {
                   <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={16} />
                   <input
                     type="date"
-                    className="w-full pl-9 pr-4 py-1.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-sm"
+                    className="w-full pl-9 pr-4 py-1.5 border border-[#2A2A2A] rounded-lg focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent outline-none transition-all text-sm"
                     value={dateFilter}
                     onChange={(e) => setDateFilter(e.target.value)}
                     max={new Date().toISOString().split('T')[0]}
@@ -600,7 +600,7 @@ export default function CANReport() {
               <div className="flex gap-2">
                 <button
                   onClick={applyFilters}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors whitespace-nowrap"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#F59E0B] hover:bg-[#B45309] text-[#F9FAFB] text-sm font-medium rounded-lg transition-colors whitespace-nowrap"
                 >
                   <Filter size={14} />
                   Apply
@@ -609,7 +609,7 @@ export default function CANReport() {
                 {(isFiltering || canSearch || dateFilter) && (
                   <button
                     onClick={clearFilters}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm font-medium rounded-lg transition-colors whitespace-nowrap"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-[#F9FAFB] text-sm font-medium rounded-lg transition-colors whitespace-nowrap"
                   >
                     <X size={14} />
                     Clear
@@ -619,15 +619,15 @@ export default function CANReport() {
             </div>
 
             {(canSearch || dateFilter) && (
-              <div className="mt-3 pt-3 border-t border-slate-200">
+              <div className="mt-3 pt-3 border-t border-[#2A2A2A]">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-xs font-medium text-slate-600">Active filters:</span>
+                  <span className="text-xs font-medium text-[#9CA3AF]">Active filters:</span>
                   {canSearch && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-50 text-blue-700 rounded text-xs border border-blue-100">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#1F1A1A] text-[#F59E0B] rounded text-xs border border-blue-100">
                       CAN: {canSearch}
                       <button
                         onClick={() => setCanSearch('')}
-                        className="ml-0.5 p-0.5 hover:bg-blue-100 rounded"
+                        className="ml-0.5 p-0.5 hover:bg-[#1F1A1A] rounded"
                       >
                         <X size={10} />
                       </button>
@@ -651,19 +651,19 @@ export default function CANReport() {
         </div>
 
 
-        <div className="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+        <div className="bg-[#111111] rounded-xl shadow-lg border border-[#2A2A2A] overflow-hidden">
 
-          <div className="px-6 py-3 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-white">
+          <div className="px-6 py-3 border-b border-[#2A2A2A] bg-gradient-to-r from-slate-50 to-white">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <h2 className="text-base font-semibold text-slate-800">Transaction Details</h2>
-                <p className="text-xs text-slate-500">
+                <h2 className="text-base font-semibold text-[#F9FAFB]">Transaction Details</h2>
+                <p className="text-xs text-[#9CA3AF]">
                   Showing {paginatedReports.length} of {filteredReports.length} records
                   {searchTerm && ` for "${searchTerm}"`}
                   {isFiltering && ' (Server-side filtered)'}
                 </p>
               </div>
-              <div className="flex items-center gap-3 text-xs text-slate-600">
+              <div className="flex items-center gap-3 text-xs text-[#9CA3AF]">
                 <div className="flex items-center gap-2">
                   <span className="inline-flex items-center gap-1">
                     <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
@@ -676,10 +676,10 @@ export default function CANReport() {
                 </div>
                 <button
                   onClick={fetchAllReports}
-                  className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors"
+                  className="p-1.5 hover:bg-[#111111] rounded-lg transition-colors"
                   title="Refresh data"
                 >
-                  <RefreshCw size={14} className={`text-slate-600 ${loading ? 'animate-spin' : ''}`} />
+                  <RefreshCw size={14} className={`text-[#9CA3AF] ${loading ? 'animate-spin' : ''}`} />
                 </button>
               </div>
             </div>
@@ -687,8 +687,8 @@ export default function CANReport() {
 
           {loading && (
             <div className="p-6 text-center">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-600 mx-auto"></div>
-              <p className="mt-2 text-sm text-slate-600">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[#F59E0B] mx-auto"></div>
+              <p className="mt-2 text-sm text-[#9CA3AF]">
                 {isFiltering ? 'Applying filters...' : 'Updating data...'}
               </p>
             </div>
@@ -714,11 +714,11 @@ export default function CANReport() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[1200px]">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200">
+                <tr className="bg-[#0A0A0A] border-b border-[#2A2A2A]">
                   {columns.map((column) => (
                     <th
                       key={String(column.key)}
-                      className="px-3 py-2 text-left text-xs font-semibold text-slate-700 uppercase tracking-wider cursor-pointer hover:bg-slate-100 transition-colors"
+                      className="px-3 py-2 text-left text-xs font-semibold text-[#F9FAFB] uppercase tracking-wider cursor-pointer hover:bg-[#111111] transition-colors"
                       onClick={() => column.sortable && handleSort(column.key)}
                       style={{ width: column.width }}
                     >
@@ -738,26 +738,26 @@ export default function CANReport() {
               <tbody className="divide-y divide-slate-100">
                 {paginatedReports.map((report, index) => (
                   <React.Fragment key={report.id}>
-                    <tr className="hover:bg-slate-50/80 transition-colors duration-150 group">
+                    <tr className="hover:bg-[#0A0A0A]/80 transition-colors duration-150 group">
                       <td className="px-3 py-2">
-                        <div className="text-sm font-mono text-slate-900">
+                        <div className="text-sm font-mono text-[#F9FAFB]">
                           {((currentPage - 1) * itemsPerPage) + index + 1}
                         </div>
                       </td>
                       <td className="px-3 py-2">
-                        <div className="text-sm font-mono text-slate-900">#{report.id}</div>
+                        <div className="text-sm font-mono text-[#F9FAFB]">#{report.id}</div>
                       </td>
                       <td className="px-3 py-2">
                         <div className="flex items-center">
                           <div className="flex-shrink-0 w-6 h-6 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-lg flex items-center justify-center mr-2">
-                            <span className="text-white text-xs font-bold">C</span>
+                            <span className="text-[#F9FAFB] text-xs font-bold">C</span>
                           </div>
                           <div>
-                            <div className="font-medium text-slate-900 text-sm">
+                            <div className="font-medium text-[#F9FAFB] text-sm">
                               {report.can === 'N/A' || report.can === ' ' || !report.can.trim() ? 'Not Assigned' : report.can}
                             </div>
                             {report.can_number && (
-                              <div className="text-xs text-slate-500 mt-0.5">
+                              <div className="text-xs text-[#9CA3AF] mt-0.5">
                                 DB: {report.can_number}
                               </div>
                             )}
@@ -788,61 +788,61 @@ export default function CANReport() {
                         </span>
                       </td>
                       <td className="px-3 py-2">
-                        <div className="text-sm text-slate-900 truncate max-w-[160px]" title={report.resMsg}>
+                        <div className="text-sm text-[#F9FAFB] truncate max-w-[160px]" title={report.resMsg}>
                           {report.resMsg}
                         </div>
                       </td>
                       <td className="px-3 py-2">
-                        <div className="text-sm text-slate-900 font-medium">{report.entityId}</div>
+                        <div className="text-sm text-[#F9FAFB] font-medium">{report.entityId}</div>
                       </td>
                       <td className="px-3 py-2">
-                        <div className="text-sm text-slate-900 truncate max-w-[140px]" title={report.investor_name || 'N/A'}>
+                        <div className="text-sm text-[#F9FAFB] truncate max-w-[140px]" title={report.investor_name || 'N/A'}>
                           {report.investor_name || 'N/A'}
                         </div>
                       </td>
                       <td className="px-3 py-2">
-                        <div className="text-sm font-mono text-slate-900" title={report.investor_pan || 'N/A'}>
+                        <div className="text-sm font-mono text-[#F9FAFB]" title={report.investor_pan || 'N/A'}>
                           {report.investor_pan || 'N/A'}
                         </div>
                         {report.response_pan && report.response_pan !== report.investor_pan && (
-                          <div className="text-xs text-slate-500 mt-0.5">
+                          <div className="text-xs text-[#9CA3AF] mt-0.5">
                             Resp: {report.response_pan}
                           </div>
                         )}
                       </td>
                       <td className="px-3 py-2">
-                        <div className="text-sm font-mono text-slate-900 truncate max-w-[130px]" title={report.uniqueId}>
+                        <div className="text-sm font-mono text-[#F9FAFB] truncate max-w-[130px]" title={report.uniqueId}>
                           {report.uniqueId}
                         </div>
                       </td>
                       <td className="px-3 py-2">
-                        <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 text-sm font-medium">
+                        <span className="inline-flex items-center px-1.5 py-0.5 rounded bg-[#111111] text-[#F9FAFB] text-sm font-medium">
                           v{report.versionNo}
                         </span>
                       </td>
                       <td className="px-3 py-2">
-                        <div className="text-sm text-slate-900">{formatDate(report.created_at)}</div>
+                        <div className="text-sm text-[#F9FAFB]">{formatDate(report.created_at)}</div>
                       </td>
                       <td className="px-3 py-2">
                         <div className="flex items-center gap-1">
                           <button
                             onClick={() => setExpandedRow(expandedRow === report.id ? null : report.id)}
-                            className="p-1 hover:bg-slate-100 rounded transition-colors"
+                            className="p-1 hover:bg-[#111111] rounded transition-colors"
                             title="View details"
                             aria-label="View details"
                           >
-                            <Eye size={12} className="text-slate-600" />
+                            <Eye size={12} className="text-[#9CA3AF]" />
                           </button>
                           {report.nomLinkH1 && (
                             <a
                               href={report.nomLinkH1}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="p-1 hover:bg-blue-50 rounded transition-colors"
+                              className="p-1 hover:bg-[#1F1A1A] rounded transition-colors"
                               title="Open Nomination Link"
                               aria-label="Open nomination link"
                             >
-                              <ExternalLink size={12} className="text-blue-600" />
+                              <ExternalLink size={12} className="text-[#F59E0B]" />
                             </a>
                           )}
                         </div>
@@ -851,72 +851,72 @@ export default function CANReport() {
 
 
                     {expandedRow === report.id && (
-                      <tr className="bg-slate-50/50">
+                      <tr className="bg-[#0A0A0A]/50">
                         <td colSpan={columns.length} className="px-3 py-3">
-                          <div className="bg-white rounded-lg p-4 border border-slate-200">
+                          <div className="bg-[#111111] rounded-lg p-4 border border-[#2A2A2A]">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                               <div>
-                                <h4 className="text-sm font-semibold text-slate-700 mb-2">Response Details</h4>
+                                <h4 className="text-sm font-semibold text-[#F9FAFB] mb-2">Response Details</h4>
                                 <div className="space-y-1.5">
                                   <p className="text-sm">
-                                    <span className="text-slate-500">Response Code: </span>
+                                    <span className="text-[#9CA3AF]">Response Code: </span>
                                     <span className="font-medium">{report.resCode}</span>
                                   </p>
                                   <p className="text-sm">
-                                    <span className="text-slate-500">Message: </span>
+                                    <span className="text-[#9CA3AF]">Message: </span>
                                     <span className="font-medium">{report.resMsg}</span>
                                   </p>
                                   <p className="text-sm">
-                                    <span className="text-slate-500">Request Type: </span>
+                                    <span className="text-[#9CA3AF]">Request Type: </span>
                                     <span className="font-medium">{report.requestType}</span>
                                   </p>
                                   <p className="text-sm">
-                                    <span className="text-slate-500">Timestamp: </span>
+                                    <span className="text-[#9CA3AF]">Timestamp: </span>
                                     <span className="font-medium">{formatDate(report.timestamp)}</span>
                                   </p>
                                 </div>
                               </div>
                               <div>
-                                <h4 className="text-sm font-semibold text-slate-700 mb-2">System Info</h4>
+                                <h4 className="text-sm font-semibold text-[#F9FAFB] mb-2">System Info</h4>
                                 <div className="space-y-1.5">
                                   <p className="text-sm">
-                                    <span className="text-slate-500">Investor ID: </span>
+                                    <span className="text-[#9CA3AF]">Investor ID: </span>
                                     <span className="font-medium">{report.investor_id || 'N/A'}</span>
                                   </p>
                                   <p className="text-sm">
-                                    <span className="text-slate-500"> Name: </span>
+                                    <span className="text-[#9CA3AF]"> Name: </span>
                                     <span className="font-medium">{report.investor_name || 'N/A'}</span>
                                   </p>
                                   <p className="text-sm">
-                                    <span className="text-slate-500"> PAN: </span>
+                                    <span className="text-[#9CA3AF]"> PAN: </span>
                                     <span className="font-medium">{report.investor_pan || 'N/A'}</span>
                                   </p>
                                   <p className="text-sm">
-                                    <span className="text-slate-500">Response PAN: </span>
+                                    <span className="text-[#9CA3AF]">Response PAN: </span>
                                     <span className="font-medium">{report.response_pan || 'N/A'}</span>
                                   </p>
                                   <p className="text-sm">
-                                    <span className="text-slate-500">CAN Number (DB): </span>
+                                    <span className="text-[#9CA3AF]">CAN Number (DB): </span>
                                     <span className="font-medium">{report.can_number || 'N/A'}</span>
                                   </p>
                                   <p className="text-sm">
-                                    <span className="text-slate-500">Created: </span>
+                                    <span className="text-[#9CA3AF]">Created: </span>
                                     <span className="font-medium">{formatDate(report.created_at)}</span>
                                   </p>
                                 </div>
                               </div>
                               <div>
                                 <div className="flex items-center justify-between mb-2">
-                                  <h4 className="text-sm font-semibold text-slate-700">Raw Response</h4>
+                                  <h4 className="text-sm font-semibold text-[#F9FAFB]">Raw Response</h4>
                                   <button
                                     onClick={() => navigator.clipboard.writeText(JSON.stringify(report.rawData, null, 2))}
-                                    className="text-xs px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded"
+                                    className="text-xs px-2 py-1 bg-[#111111] hover:bg-slate-200 text-[#9CA3AF] rounded"
                                   >
                                     Copy
                                   </button>
                                 </div>
-                                <div className="bg-slate-50 rounded p-3 h-32 overflow-auto">
-                                  <pre className="text-xs font-mono text-slate-700 whitespace-pre-wrap">
+                                <div className="bg-[#0A0A0A] rounded p-3 h-32 overflow-auto">
+                                  <pre className="text-xs font-mono text-[#F9FAFB] whitespace-pre-wrap">
                                     {JSON.stringify(report.rawData, null, 2)}
                                   </pre>
                                 </div>
@@ -936,8 +936,8 @@ export default function CANReport() {
           {filteredReports.length === 0 && !loading && (
             <div className="p-8 text-center">
               <Search className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-              <h3 className="text-base font-medium text-slate-700 mb-1">No transactions found</h3>
-              <p className="text-sm text-slate-500">
+              <h3 className="text-base font-medium text-[#F9FAFB] mb-1">No transactions found</h3>
+              <p className="text-sm text-[#9CA3AF]">
                 {searchTerm || canSearch || dateFilter
                   ? `No results for the applied filters`
                   : 'No transaction data available'}
@@ -945,7 +945,7 @@ export default function CANReport() {
               {(searchTerm || canSearch || dateFilter) && (
                 <button
                   onClick={clearFilters}
-                  className="mt-3 text-xs px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors"
+                  className="mt-3 text-xs px-3 py-1.5 bg-[#F59E0B] hover:bg-[#B45309] text-[#F9FAFB] rounded-lg transition-colors"
                 >
                   Clear All Filters
                 </button>
@@ -954,20 +954,20 @@ export default function CANReport() {
           )}
 
 
-          <div className="px-6 py-3 border-t border-slate-200 bg-slate-50">
+          <div className="px-6 py-3 border-t border-[#2A2A2A] bg-[#0A0A0A]">
             <div className="flex flex-col md:flex-row items-center justify-between gap-3">
-              <div className="text-xs text-slate-600">
-                Showing <span className="font-semibold text-slate-900">
+              <div className="text-xs text-[#9CA3AF]">
+                Showing <span className="font-semibold text-[#F9FAFB]">
                   {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, filteredReports.length)}
                 </span> of{' '}
-                <span className="font-semibold text-slate-900">{filteredReports.length}</span> records
-                {isFiltering && <span className="ml-1 text-indigo-600">(Server-side filtered)</span>}
+                <span className="font-semibold text-[#F9FAFB]">{filteredReports.length}</span> records
+                {isFiltering && <span className="ml-1 text-[#F59E0B]">(Server-side filtered)</span>}
               </div>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
-                  className="px-2.5 py-1 text-xs border border-slate-200 rounded-lg text-slate-700 hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-2.5 py-1 text-xs border border-[#2A2A2A] rounded-lg text-[#F9FAFB] hover:bg-[#111111] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   aria-label="Previous page"
                 >
                   Prev
@@ -990,8 +990,8 @@ export default function CANReport() {
                         key={pageNum}
                         onClick={() => setCurrentPage(pageNum)}
                         className={`px-2 py-1 text-xs rounded-lg min-w-[32px] ${currentPage === pageNum
-                          ? 'bg-indigo-600 text-white'
-                          : 'border border-slate-200 text-slate-700 hover:bg-white'
+                          ? 'bg-[#F59E0B] text-[#F9FAFB]'
+                          : 'border border-[#2A2A2A] text-[#F9FAFB] hover:bg-[#111111]'
                           }`}
                         aria-label={`Page ${pageNum}`}
                         aria-current={currentPage === pageNum ? 'page' : undefined}
@@ -1000,18 +1000,18 @@ export default function CANReport() {
                       </button>
                     );
                   })}
-                  {totalPages > 5 && <span className="px-1 text-slate-500">...</span>}
+                  {totalPages > 5 && <span className="px-1 text-[#9CA3AF]">...</span>}
                 </div>
                 <button
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
-                  className="px-2.5 py-1 text-xs border border-slate-200 rounded-lg text-slate-700 hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-2.5 py-1 text-xs border border-[#2A2A2A] rounded-lg text-[#F9FAFB] hover:bg-[#111111] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   aria-label="Next page"
                 >
                   Next
                 </button>
               </div>
-              <div className="flex items-center gap-1 text-xs text-slate-600">
+              <div className="flex items-center gap-1 text-xs text-[#9CA3AF]">
                 <ChevronRight size={12} />
                 <span>Updated {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
               </div>
@@ -1020,12 +1020,12 @@ export default function CANReport() {
         </div>
 
 
-        <div className="mt-4 text-center text-xs text-slate-500">
+        <div className="mt-4 text-center text-xs text-[#9CA3AF]">
           <p>Data refreshes automatically. Last fetched: {new Date().toLocaleTimeString()}</p>
           {isFiltering && (
-            <p className="mt-1 text-indigo-600">
+            <p className="mt-1 text-[#F59E0B]">
               Currently showing server-side filtered results.
-              <button onClick={clearFilters} className="ml-1 text-indigo-700 hover:underline">
+              <button onClick={clearFilters} className="ml-1 text-[#D97706] hover:underline">
                 Show all records
               </button>
             </p>

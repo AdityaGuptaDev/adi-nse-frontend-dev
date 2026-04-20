@@ -128,7 +128,7 @@ const Summary = ({ summaryData }: any) => {
   console.log(summaryData, "summaryData")
 
   return (
-    <div className="bg-white rounded-lg ">
+    <div className="bg-[#111111] rounded-lg ">
       <div className="space-y-2 ">
         {SummaryData.map((item, index) => {
           const value = summaryData[item.type] || 0;
@@ -142,7 +142,7 @@ const Summary = ({ summaryData }: any) => {
                 }`}
             >
               {/* Category Name */}
-              <div className="col-span-4 text-sm text-gray-700 font-medium pr-2">
+              <div className="col-span-4 text-sm text-[#E5E7EB] font-medium pr-2">
                 {item.category}
               </div>
 
@@ -186,12 +186,12 @@ const Summary = ({ summaryData }: any) => {
       </div>
 
       {/* Summary Section */}
-      {/* <div className="mt-4 pt-4 border-t border-gray-200 px-4 pb-4">
+      {/* <div className="mt-4 pt-4 border-t border-[#2A2A2A] px-4 pb-4">
         <div className="flex justify-between items-center text-sm">
-          <span className="text-gray-600 font-medium">
+          <span className="text-[#9CA3AF] font-medium">
             Total Portfolio Allocation
           </span>
-          <span className="font-semibold text-gray-900">
+          <span className="font-semibold text-[#F9FAFB]">
             {SummaryData.reduce(
               (sum, item) => sum + item.percentage,
               0

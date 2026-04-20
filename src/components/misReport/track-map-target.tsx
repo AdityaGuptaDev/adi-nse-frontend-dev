@@ -6,7 +6,7 @@ const VedantAssetInterface = () => {
   const [showInactive, setShowInactive] = useState(false);
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-[#111111]">
       {/* Header */}
       <div className="px-4 py-2 flex justify-between items-center" style={{ backgroundColor: '#3166AE' }}>
         <div className="flex items-center">
@@ -20,12 +20,12 @@ const VedantAssetInterface = () => {
       </div>
 
       {/* Navigation Icons */}
-      <div className="bg-gray-100 px-4 py-1 flex justify-end space-x-2">
+      <div className="bg-[#1F1A1A] px-4 py-1 flex justify-end space-x-2">
         <FileText className="w-5 h-5 text-red-600 cursor-pointer" />
         <div className="w-5 h-5 bg-teal-500 rounded cursor-pointer"></div>
         <Phone className="w-5 h-5 text-green-600 cursor-pointer" />
         <div className="w-5 h-5 bg-gray-400 rounded cursor-pointer"></div>
-        <Printer className="w-5 h-5 text-gray-600 cursor-pointer" />
+        <Printer className="w-5 h-5 text-[#9CA3AF] cursor-pointer" />
       </div>
 
       {/* Main Content */}
@@ -64,7 +64,7 @@ const VedantAssetInterface = () => {
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
             <thead>
-              <tr className="bg-gray-200">
+              <tr className="bg-[#2A2A2A]">
                 <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">Sno</th>
                 <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">Investor</th>
                 <th className="border border-gray-400 px-2 py-2 text-xs font-medium text-left">AMC</th>

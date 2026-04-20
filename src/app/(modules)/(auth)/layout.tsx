@@ -19,11 +19,11 @@ export default function AuthLayout({
     }
   }, []);
 
+  // The auth pages now carry their own Golden-Black themed background (full-bleed
+  // gradient + animated layers). The layout just needs to provide a dark shell so
+  // the viewport around the page doesn't flash white.
   return (
-    <div
-      className="flex justify-center items-center min-h-screen bg-[url('/bg.png')] bg-no-repeat bg-cover bg-[position:Right_bottom] xl:bg-[length:120%]"
-      data-theme="light"
-    >
+    <div className="min-h-screen bg-[#0A0A0A]" data-theme="light">
       {children}
     </div>
   );

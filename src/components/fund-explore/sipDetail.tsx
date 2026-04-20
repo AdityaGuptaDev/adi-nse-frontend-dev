@@ -100,7 +100,7 @@ const SipPopup: React.FC<SipPopupProps> = ({
           <div className="flex justify-between items-center border-b border-accent pb-4 mb-4">
             <h3 className="font-semibold text-md text-gray-950">SIP Detail</h3>
             <button onClick={onClose} className="btn btn-circle border-none">
-              <RxCross2 className="text-gray-500 text-2xl" />
+              <RxCross2 className="text-[#9CA3AF] text-2xl" />
             </button>
           </div>
 
@@ -144,7 +144,7 @@ const SipPopup: React.FC<SipPopupProps> = ({
                 {/* <div className="dropdown">
                 <label
                   tabIndex={1}
-                  className="btn w-full justify-between bg-white  border border-accent text-placeholder font-normal rounded-lg hover:bg-white"
+                  className="btn w-full justify-between bg-[#111111]  border border-accent text-placeholder font-normal rounded-lg hover:bg-[#111111]"
                 >
                   {selectedAccount || "Select"} <FaChevronDown />
                 </label>

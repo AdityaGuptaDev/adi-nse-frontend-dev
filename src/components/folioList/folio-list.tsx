@@ -4,11 +4,9 @@ import React, { useState, useEffect } from "react";
 import { getFolioDetails, FolioItem } from "@/services/folioService";
 import { FaFileExcel, FaFilePdf, FaEnvelope, FaWhatsapp } from "react-icons/fa";
 import * as XLSX from "xlsx";
-
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-
-
+import { FileText, Download, Eye, AlertCircle, Loader2 } from 'lucide-react';
 
 interface FolioListProps {
   panNo: string;
@@ -31,7 +29,6 @@ export default function FolioList({ panNo, schName }: FolioListProps) {
         const data = await getFolioDetails(params);
         setFolioData(data);
         
-        // Extract investor name from the first record if available
         if (data.length > 0 && data[0].inv_name) {
           setInvestorName(data[0].inv_name);
         }
@@ -75,250 +72,212 @@ export default function FolioList({ panNo, schName }: FolioListProps) {
     }
   };
 
-const handleExportPDF = () => {
-  const doc = new jsPDF("landscape");
+  const handleExportPDF = () => {
+    const doc = new jsPDF("landscape");
 
-  // Header
-  doc.setFontSize(16);
-  doc.text("Folio Report", 14, 15);
+    doc.setFontSize(18);
+    doc.setTextColor(245, 158, 11);
+    doc.text("Folio Report", 14, 15);
 
-  // Investor info
-  doc.setFontSize(11);
-  doc.text(`Investor: ${investorName || "N/A"}`, 14, 25);
-  doc.text(`PAN: ${panNo}`, 14, 32);
-  doc.text(`Total Folios: ${folioData.length}`, 14, 39);
+    doc.setFontSize(12);
+    doc.setTextColor(156, 163, 175);
+    doc.text(`Investor: ${investorName || "N/A"}`, 14, 28);
+    doc.text(`PAN: ${panNo}`, 14, 36);
+    doc.text(`Total Folios: ${folioData.length}`, 14, 44);
 
-  // Columns
-  const tableColumn = [
-    "ARN#",
-    "Folio#",
-    "Fund",
-    "Scheme",
-    "Holding",
-    "Joint-1",
-    "Joint-2",
-    "Nominee(s)",
-    "Source",
-  ];
+    const tableColumn = [
+      "ARN#",
+      "Folio#",
+      "Fund",
+      "Scheme",
+      "Holding",
+      "Joint-1",
+      "Joint-2",
+      "Nominee(s)",
+      "Source",
+    ];
 
-  // Rows
-  const tableRows = folioData.map((folio) => [
-    folio.broker_cod || "-",
-    folio.foliochk,
-    folio.mutual_fund,
-    folio.sch_name,
-    folio.holding_na || "-",
-    folio.jnt_name1 || "-",
-    folio.jnt_name2 || "-",
-    [folio.nom_name, folio.nom2_name, folio.nom3_name].filter(Boolean).join(", ") || "-",
-    folio.source_table,
-  ]);
+    const tableRows = folioData.map((folio) => [
+      folio.broker_cod || "-",
+      folio.foliochk,
+      folio.mutual_fund,
+      folio.sch_name,
+      folio.holding_na || "-",
+      folio.jnt_name1 || "-",
+      folio.jnt_name2 || "-",
+      [folio.nom_name, folio.nom2_name, folio.nom3_name].filter(Boolean).join(", ") || "-",
+      folio.source_table,
+    ]);
 
-  // ✅ Correct way to call
-  autoTable(doc, {
-    head: [tableColumn],
-    body: tableRows,
-    startY: 45,
-    styles: { fontSize: 8, cellPadding: 2 },
-    headStyles: { fillColor: [41, 128, 185], textColor: [255, 255, 255] },
-    alternateRowStyles: { fillColor: [245, 245, 245] },
-  });
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 50,
+      styles: { fontSize: 10, cellPadding: 3 },
+      headStyles: { fillColor: [245, 158, 11], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 11 },
+      alternateRowStyles: { fillColor: [240, 240, 240] },
+    });
 
-  // Footer
-  const pageHeight = doc.internal.pageSize.height;
-  doc.setFontSize(9);
-  doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, pageHeight - 10);
+    const pageHeight = doc.internal.pageSize.height;
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, pageHeight - 10);
 
-  // Save file
-  doc.save(`Folio_Data_${panNo}.pdf`);
-};
-
-
-
-  // const handleEmail = () => {
-  //   const subject = `Folio Details for ${investorName || 'Investor'} - PAN: ${panNo}`;
-  //   const body = `Please find the folio details for ${investorName || 'the investor'} (PAN: ${panNo}) attached.`;
-  //   window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  // };
-
-  // const handleWhatsApp = () => {
-  //   const message = `Folio details for ${investorName || 'Investor'} - PAN: ${panNo}\n\n` +
-  //     `Total Folios: ${folioData.length}\n` +
-  //     `Schemes: ${[...new Set(folioData.map(item => item.sch_name))].join(", ")}`;
-  //   window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-  // };
+    doc.save(`Folio_Data_${panNo}.pdf`);
+  };
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+      <div className="flex flex-col justify-center items-center h-80 bg-[#111111] rounded-xl border border-[#2A2A2A]">
+        <Loader2 className="w-12 h-12 text-[#F59E0B] animate-spin" />
+        <p className="mt-4 text-base text-white/70">Loading folio data...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded">
-        <p>{error}</p>
+      <div className="p-5 bg-red-500/10 border-l-4 border-red-500 rounded-lg">
+        <div className="flex items-center gap-3">
+          <AlertCircle className="w-5 h-5 text-red-400" />
+          <p className="text-base text-red-400">{error}</p>
+        </div>
       </div>
     );
   }
 
   if (folioData.length === 0) {
     return (
-      <div className="p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 rounded">
-        <p>No folio data found for this client.</p>
+      <div className="p-5 bg-yellow-500/10 border-l-4 border-yellow-500 rounded-lg">
+        <div className="flex items-center gap-3">
+          <AlertCircle className="w-5 h-5 text-yellow-400" />
+          <p className="text-base text-yellow-400">No folio data found for this client.</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="mt-4 border rounded-lg shadow bg-white">
+    <div className="mt-6 rounded-xl shadow-lg bg-[#111111] border border-[#2A2A2A] overflow-hidden">
       {/* Header Section */}
-      <div className="p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-        <div>
-          <h3 className="text-base font-semibold text-gray-800">
-            Investor: {investorName || 'N/A'} | Pan: {panNo}
-          </h3>
-          <p className="text-xs text-gray-600 mt-1">
-            {folioData.length} folio{folioData.length !== 1 ? 's' : ''} found
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <button 
-            onClick={handleExportExcel}
-            className="flex items-center px-2 py-1.5 bg-green-500 text-white hover:bg-green-600 rounded text-xs font-medium shadow-sm"
-            title="Download Excel"
-          >
-            <FaFileExcel className="mr-1" size={12} />
-            Excel
-          </button>
-          <button 
-            onClick={handleExportPDF}
-            className="flex items-center px-2 py-1.5 bg-red-500 text-white hover:bg-red-600 rounded text-xs font-medium shadow-sm"
-            title="Download PDF"
-          >
-            <FaFilePdf className="mr-1" size={12} />
-            PDF
-          </button>
-          {/* <button 
-            onClick={handleEmail}
-            className="flex items-center px-2 py-1.5 bg-blue-500 text-white hover:bg-blue-600 rounded text-xs font-medium shadow-sm"
-            title="Email"
-          >
-            <FaEnvelope className="mr-1" size={12} />
-            Email
-          </button> */}
-          {/* <button 
-            onClick={handleWhatsApp}
-            className="flex items-center px-2 py-1.5 bg-green-600 text-white hover:bg-green-700 rounded text-xs font-medium shadow-sm"
-            title="Share via WhatsApp"
-          >
-            <FaWhatsapp className="mr-1" size={12} />
-            WhatsApp
-          </button> */}
+      <div className="p-5 bg-gradient-to-r from-[#1F1A1A] to-[#111111] border-b border-[#2A2A2A]">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div className="flex items-center gap-4">
+            <div className="p-2.5 bg-[#F59E0B]/20 rounded-xl">
+              <FileText className="w-6 h-6 text-[#F59E0B]" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold text-white">
+                Folio Details
+              </h3>
+              <p className="text-sm text-white/60 mt-1">
+                Investor: <span className="text-[#F59E0B] font-semibold">{investorName || 'N/A'}</span> | PAN: <span className="text-[#F59E0B] font-mono">{panNo}</span>
+              </p>
+              <p className="text-xs text-white/40 mt-0.5">
+                Total {folioData.length} folio{folioData.length !== 1 ? 's' : ''} found
+              </p>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <button 
+              onClick={handleExportExcel}
+              className="flex items-center gap-2 px-4 py-2 bg-[#10B981]/10 text-[#10B981] hover:bg-[#10B981]/20 rounded-lg transition-all duration-200 border border-[#10B981]/30"
+              title="Download Excel"
+            >
+              <FaFileExcel size={16} />
+              <span className="text-sm font-medium">Excel</span>
+            </button>
+            <button 
+              onClick={handleExportPDF}
+              className="flex items-center gap-2 px-4 py-2 bg-[#EF4444]/10 text-[#EF4444] hover:bg-[#EF4444]/20 rounded-lg transition-all duration-200 border border-[#EF4444]/30"
+              title="Download PDF"
+            >
+              <FaFilePdf size={16} />
+              <span className="text-sm font-medium">PDF</span>
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Compact Table Section */}
+      {/* Table Section */}
       <div className="overflow-x-auto">
-        <table className="w-full text-xs border-collapse">
-          <thead className="bg-gray-800 text-white">
+        <table className="w-full text-sm border-collapse">
+          <thead className="bg-[#1F1A1A]">
             <tr>
-              <th className="px-2 py-2 border-r border-gray-600 text-left font-medium w-12">ARN</th>
-              <th className="px-2 py-2 border-r border-gray-600 text-left font-medium w-16">Folio#</th>
-              <th className="px-2 py-2 border-r border-gray-600 text-left font-medium w-20">Fund</th>
-              <th className="px-2 py-2 border-r border-gray-600 text-left font-medium w-28">Scheme</th>
-              <th className="px-2 py-2 border-r border-gray-600 text-left font-medium w-16">Holding</th>
-              <th className="px-2 py-2 border-r border-gray-600 text-left font-medium w-20">Joint-1</th>
-              <th className="px-2 py-2 border-r border-gray-600 text-left font-medium w-20">Joint-2</th>
-              <th className="px-2 py-2 border-r border-gray-600 text-left font-medium w-24">Nominees</th>
-              <th className="px-2 py-2 border-r border-gray-600 text-left font-medium w-16">Source</th>
-              {/* <th className="px-2 py-2 border-r border-gray-600 text-left font-medium w-16">Dist.</th> */}
-              {/* <th className="px-2 py-2 text-left font-medium w-24">Actions</th> */}
+              <th className="px-4 py-3 border-r border-[#2A2A2A] text-left text-white font-semibold">ARN</th>
+              <th className="px-4 py-3 border-r border-[#2A2A2A] text-left text-white font-semibold">Folio #</th>
+              <th className="px-4 py-3 border-r border-[#2A2A2A] text-left text-white font-semibold">Mutual Fund</th>
+              <th className="px-4 py-3 border-r border-[#2A2A2A] text-left text-white font-semibold">Scheme Name</th>
+              <th className="px-4 py-3 border-r border-[#2A2A2A] text-right text-white font-semibold">Holding (Units)</th>
+              <th className="px-4 py-3 border-r border-[#2A2A2A] text-left text-white font-semibold">Joint Holder 1</th>
+              <th className="px-4 py-3 border-r border-[#2A2A2A] text-left text-white font-semibold">Joint Holder 2</th>
+              <th className="px-4 py-3 border-r border-[#2A2A2A] text-left text-white font-semibold">Nominees</th>
+              <th className="px-4 py-3 text-left text-white font-semibold">Source</th>
             </tr>
           </thead>
           <tbody>
             {folioData.map((folio, index) => (
               <tr 
                 key={index} 
-                className={`hover:bg-blue-50 transition-colors duration-150 ${
-                  index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
+                className={`hover:bg-[#1F1A1A] transition-colors duration-150 ${
+                  index % 2 === 0 ? 'bg-[#111111]' : 'bg-[#0A0A0A]'
                 }`}
               >
-                <td className="px-2 py-1.5 border-r border-gray-200 truncate" title={folio.broker_cod || "-"}>
-                  <span className="text-xs text-gray-700">{folio.broker_cod || "-"}</span>
+                <td className="px-4 py-3 border-r border-[#2A2A2A] align-middle">
+                  <span className="text-sm text-white/90 font-mono">{folio.broker_cod || "-"}</span>
                 </td>
-                <td className="px-2 py-1.5 border-r border-gray-200 truncate font-medium" title={folio.foliochk}>
-                  <span className="text-xs text-blue-700">{folio.foliochk}</span>
+                <td className="px-4 py-3 border-r border-[#2A2A2A] align-middle">
+                  <span className="text-sm text-[#F59E0B] font-semibold font-mono">{folio.foliochk}</span>
                 </td>
-                <td className="px-2 py-1.5 border-r border-gray-200 truncate" title={folio.mutual_fund}>
-                  <span className="text-xs text-gray-700">{folio.mutual_fund}</span>
+                <td className="px-4 py-3 border-r border-[#2A2A2A] align-middle">
+                  <span className="text-sm text-white/90">{folio.mutual_fund}</span>
                 </td>
-                <td className="px-2 py-1.5 border-r border-gray-200" title={folio.sch_name}>
-                  <div className="text-xs text-gray-700 leading-tight">
-                    {folio.sch_name && folio.sch_name.length > 25 
-                      ? `${folio.sch_name.substring(0, 25)}...` 
-                      : folio.sch_name
-                    }
+                <td className="px-4 py-3 border-r border-[#2A2A2A] align-middle">
+                  <div className="text-sm text-white/90 leading-relaxed">
+                    {folio.sch_name}
                   </div>
                 </td>
-                <td className="px-2 py-1.5 border-r border-gray-200 truncate" title={folio.holding_na || "-"}>
-                  <span className="text-xs text-gray-700">{folio.holding_na || "-"}</span>
+                <td className="px-4 py-3 border-r border-[#2A2A2A] text-right align-middle">
+                  <span className="text-sm text-white/90 font-medium">{folio.holding_na || "-"}</span>
                 </td>
-                <td className="px-2 py-1.5 border-r border-gray-200 truncate" title={folio.jnt_name1 || "-"}>
-                  <span className="text-xs text-gray-700">{folio.jnt_name1 || "-"}</span>
+                <td className="px-4 py-3 border-r border-[#2A2A2A] align-middle">
+                  <span className="text-sm text-white/90">{folio.jnt_name1 || "-"}</span>
                 </td>
-                <td className="px-2 py-1.5 border-r border-gray-200 truncate" title={folio.jnt_name2 || "-"}>
-                  <span className="text-xs text-gray-700">{folio.jnt_name2 || "-"}</span>
+                <td className="px-4 py-3 border-r border-[#2A2A2A] align-middle">
+                  <span className="text-sm text-white/90">{folio.jnt_name2 || "-"}</span>
                 </td>
-                <td className="px-2 py-1.5 border-r border-gray-200">
-                  <div className="text-xs text-gray-700 leading-tight">
+                <td className="px-4 py-3 border-r border-[#2A2A2A] align-middle">
+                  <div className="text-sm text-white/90 leading-relaxed">
                     {[folio.nom_name, folio.nom2_name, folio.nom3_name]
                       .filter(Boolean)
                       .map((nom, i) => (
-                        <div key={i} className="truncate" title={`Nominee ${i+1}: ${nom}`}>
-                          N{i+1}: {nom && nom.length > 10 ? `${nom.substring(0, 10)}...` : nom}
+                        <div key={i} className="mb-0.5">
+                          <span className="text-white/60">N{i+1}:</span> {nom}
                         </div>
                       ))}
                     {![folio.nom_name, folio.nom2_name, folio.nom3_name].some(Boolean) && (
-                      <span className="text-gray-400">-</span>
+                      <span className="text-white/40">-</span>
                     )}
                   </div>
                 </td>
-                <td className="px-2 py-1.5 border-r border-gray-200 truncate" title={folio.source_table}>
-                  <span className="text-xs text-gray-700">{folio.source_table}</span>
+                <td className="px-4 py-3 align-middle">
+                  <span className="text-sm text-white/90">{folio.source_table}</span>
                 </td>
-                {/* <td className="px-2 py-1.5 border-r border-gray-200">
-                  <span className="text-xs font-medium text-green-700 bg-green-100 px-1 py-0.5 rounded">HO</span>
-                </td> */}
-                {/* <td className="px-2 py-1.5">
-                  <div className="flex flex-wrap gap-1">
-                    <button className="text-xs text-blue-600 hover:text-blue-800 hover:bg-blue-50 px-1 py-0.5 rounded transition-colors">
-                      Buy
-                    </button>
-                    <button className="text-xs text-red-600 hover:text-red-800 hover:bg-red-50 px-1 py-0.5 rounded transition-colors">
-                      Sell
-                    </button>
-                    <button className="text-xs text-orange-600 hover:text-orange-800 hover:bg-orange-50 px-1 py-0.5 rounded transition-colors">
-                      Switch
-                    </button>
-                    <button className="text-xs text-green-600 hover:text-green-800 hover:bg-green-50 px-1 py-0.5 rounded transition-colors">
-                      Update
-                    </button>
-                  </div>
-                </td> */}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      {/* Footer */}
-      <div className="px-3 py-2 bg-gray-50 border-t text-xs text-gray-600">
-        <div className="flex justify-between items-center">
-          <span>Total: {folioData.length} records</span>
-          <span>Generated: {new Date().toLocaleString()}</span>
+      {/* Footer Section */}
+      <div className="px-5 py-4 bg-[#0A0A0A] border-t border-[#2A2A2A]">
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
+          <span className="text-sm text-white/60">
+            Total Records: <span className="text-[#F59E0B] font-bold text-base">{folioData.length}</span>
+          </span>
+          <span className="text-xs text-white/40">
+            Generated on: {new Date().toLocaleString()}
+          </span>
         </div>
       </div>
     </div>

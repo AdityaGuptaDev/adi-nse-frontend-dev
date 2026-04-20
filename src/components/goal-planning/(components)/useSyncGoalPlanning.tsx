@@ -141,6 +141,7 @@ const useSyncGoalPlanning = (props: any) => {
   return {
     handleCalculations,
     riskListData,
+    setRiskList,
     firstModal,
     secondModal,
     setFirstModal,

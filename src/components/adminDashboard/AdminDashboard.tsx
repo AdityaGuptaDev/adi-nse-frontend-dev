@@ -39,9 +39,22 @@ import { cookieStorageKeys, removeCookieData, removeCookieToken } from "@/servic
 import RegisterDialog from "../investor-onboarding/RegisterDialog";
 import { get } from "http";
 
-
-
-
+// Golden Black Theme Constants
+const theme = {
+  primary: "#F59E0B",
+  secondary: "#FBBF24",
+  accent: "#1F1A1A",
+  success: "#10B981",
+  warning: "#F59E0B",
+  danger: "#EF4444",
+  background: "#0A0A0A",
+  cardBg: "#111111",
+  textPrimary: "#F9FAFB",
+  textSecondary: "#9CA3AF",
+  border: "#2A2A2A",
+  gradient: "linear-gradient(135deg, #F59E0B 0%, #B45309 100%)",
+  hoverBg: "#1F1A1A",
+};
 
 const env = (process.env.NODE_ENV as 'development' | 'staging' | 'production') || 'development';
 const { ApiUrl } = getConfig(env);
@@ -148,33 +161,37 @@ const AdminStatsOverview = () => {
       label: "Total Partners",
       value: statsData.loading ? "..." : statsData.totalPartners,
       icon: User,
-      color: "bg-blue-100 text-blue-600",
+      color: "bg-[#1F1A1A] text-[#F59E0B]",
       trend: "+5.2%",
     },
     {
       label: "Total Investors",
       value: statsData.loading ? "..." : formatNumber(statsData.totalInvestors),
       icon: Users,
-      color: "bg-purple-100 text-purple-600",
+      color: "bg-[#2A1F0A] text-[#F59E0B]",
       trend: "+12.8%",
     },
     {
       label: "Total AUM",
       value: statsData.loading ? "..." : `₹${formatNumber(statsData.totalAUM)}`,
       icon: PieChart,
-      color: "bg-indigo-100 text-indigo-600",
+      color: "bg-[#2A1F0A] text-[#F59E0B]",
       trend: "+15.6%",
     },
   ];
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-4">
+    <div className="px-4 sm:px-6 lg:px-8 py-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-bold text-gray-900">Quick Overview</h2>
+        <h2 className="text-xl font-bold" style={{ color: theme.textPrimary }}>Quick Overview</h2>
         <div className="flex items-center space-x-3">
           <button
             onClick={() => router.push("/admin-setting")}
-            className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
+            className="flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg"
+            style={{
+              background: theme.gradient,
+              color: "white",
+            }}
           >
             <Plus className="w-4 h-4" />
             <span>Admin Settings</span>
@@ -183,29 +200,39 @@ const AdminStatsOverview = () => {
       </div>
 
       {statsData.error && (
-        <div className="bg-red-100 text-red-700 p-3 rounded-lg mb-4">
+        <div className="p-3 rounded-lg mb-4" style={{ background: `${theme.danger}20`, color: theme.danger }}>
           {statsData.error}
         </div>
       )}
 
-      {/* Fixed Grid Layout - 4 columns on all screens */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {stats.map((stat, idx) => (
           <div
             key={idx}
-            className="flex items-center bg-white rounded-xl shadow-md p-4 border border-gray-100 hover:shadow-lg transition-all"
+            className="group relative overflow-hidden rounded-xl transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+            style={{
+              background: theme.cardBg,
+              border: `1px solid ${theme.border}`,
+            }}
           >
-            <div
-              className={`w-12 h-12 rounded-lg flex items-center justify-center mr-3 flex-shrink-0 ${stat.color}`}
-            >
-              <stat.icon className="w-6 h-6" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-xl font-bold text-gray-900 truncate">
-                {stat.value}
+            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#F59E0B]/5 to-transparent rounded-full blur-2xl group-hover:bg-[#F59E0B]/10 transition-all"></div>
+            <div className="flex items-center p-5">
+              <div
+                className={`w-12 h-12 rounded-xl flex items-center justify-center mr-4 flex-shrink-0 transition-all duration-300 group-hover:scale-110`}
+                style={{
+                  background: `linear-gradient(135deg, ${theme.primary}20 0%, ${theme.secondary}10 100%)`,
+                }}
+              >
+                <stat.icon className="w-6 h-6" style={{ color: theme.primary }} />
               </div>
-              <div className="text-gray-500 text-sm truncate">{stat.label}</div>
+              <div className="min-w-0 flex-1">
+                <div className="text-2xl font-bold truncate" style={{ color: theme.textPrimary }}>
+                  {stat.value}
+                </div>
+                <div className="text-sm truncate mt-1" style={{ color: theme.textSecondary }}>{stat.label}</div>
+              </div>
             </div>
+            <div className="h-1 w-full bg-gradient-to-r from-[#F59E0B]/0 via-[#F59E0B]/50 to-[#F59E0B]/0 group-hover:via-[#F59E0B] transition-all"></div>
           </div>
         ))}
       </div>
@@ -216,7 +243,7 @@ const AdminStatsOverview = () => {
 interface QuickActionsProps {
   setOpenRegister: (open: boolean) => void;
 }
-// Quick Actions Component
+
 const QuickActions: React.FC<QuickActionsProps> = ({ setOpenRegister }) => {
 
   const router = useRouter();
@@ -243,14 +270,13 @@ const QuickActions: React.FC<QuickActionsProps> = ({ setOpenRegister }) => {
     {
       icon: Users,
       label: "Partners",
-      color: "bg-blue-100 text-blue-600",
+      color: theme.primary,
       onClick: () => router.push('/partnerList')
     },
     {
       icon: Plus,
       label: "Add Partners",
-      color: "bg-orange-100 text-orange-600",
-      // onClick: () => handleRegister('Partner')
+      color: theme.warning,
       onClick: () => router.push('/partnerRegisterThroughAdmin')
     },
     // {
@@ -269,25 +295,25 @@ const QuickActions: React.FC<QuickActionsProps> = ({ setOpenRegister }) => {
     {
       icon: Shield,
       label: "RMs",
-      color: "bg-gray-100 text-gray-600",
+      color: theme.textSecondary,
       onClick: () => router.push('/rm-list-dtl')
     },
     {
       icon: Plus,
       label: "Add RMs",
-      color: "bg-green-100 text-green-600",
+      color: theme.success,
       onClick: () => router.push('/user-management/user')
     },
     {
       icon: Users,
       label: "Investors",
-      color: "bg-green-100 text-green-600",
+      color: theme.success,
       onClick: () => router.push("/investor-list")
     },
     {
       icon: Plus,
       label: "Add Investor",
-      color: "bg-green-100 text-slate-600",
+      color: theme.textSecondary,
       onClick: () => {
         const getUser = getLS(USER_DATA);
         delete getUser.InvestorRegistration;
@@ -303,45 +329,40 @@ const QuickActions: React.FC<QuickActionsProps> = ({ setOpenRegister }) => {
     {
       icon: Search,
       label: "Fund Finder",
-      color: "bg-red-100 text-red-600",
+      color: theme.danger,
       onClick: () => router.push('/mutual-fund')
     },
     {
       icon: Calculator,
       label: "Calculator",
-      color: "bg-indigo-100 text-indigo-600",
+      color: "#6366F1",
       onClick: () => router.push('/sip-calculator')
     },
   ];
 
   return (
-    <div className="px-5 md:px-5 py-4">
-
-
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-gray-900">Quick Actions</h2>
-      </div>
-
-
-
-
-
-      {/* Single line */}
-      <div className="flex justify-between items-center gap-1">
+    <div className="px-5 md:px-8 py-4">
+      <h2 className="text-xl font-bold mb-5" style={{ color: theme.textPrimary }}>Quick Actions</h2>
+      <div className="grid grid-cols-4 sm:grid-cols-8 gap-3">
         {actions.map((action, index) => (
           <button
             key={index}
             onClick={action.onClick}
-            className="flex-1 flex flex-col items-center p-3 bg-white rounded-lg border border-gray-200 hover:shadow-lg transition-all duration-200 min-w-0 mx-0.5"
+            className="group flex flex-col items-center p-4 rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-xl"
+            style={{
+              background: theme.cardBg,
+              border: `1px solid ${theme.border}`,
+            }}
             tabIndex={0}
             aria-label={action.label}
           >
             <div
-              className={`w-8 h-8 rounded-lg ${action.color} flex items-center justify-center mb-1`}
+              className="w-10 h-10 rounded-xl flex items-center justify-center mb-2 transition-all duration-300 group-hover:scale-110"
+              style={{ background: `${action.color}20` }}
             >
-              <action.icon className="w-4 h-4" />
+              <action.icon className="w-5 h-5" style={{ color: action.color }} />
             </div>
-            <span className="text-[12px] font-semibold text-gray-800 text-center leading-tight break-words">
+            <span className="text-xs font-medium text-center" style={{ color: theme.textSecondary }}>
               {action.label}
             </span>
           </button>
@@ -433,7 +454,7 @@ const CalendarWidget = () => {
 
     const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
     const emptyCells = Array.from({ length: firstDayOfMonth }, (_, i) => (
-      <div key={`empty-${i}`} className="h-6"></div>
+      <div key={`empty-${i}`} className="h-8"></div>
     ));
 
     const monthBirthdays = getBirthdaysForMonth(month);
@@ -453,20 +474,30 @@ const CalendarWidget = () => {
         return (
           <div
             key={day}
-            className={`h-6 w-6 text-xs flex items-center justify-center rounded-full relative group ${isBirthday
-              ? "bg-gradient-to-br from-pink-100 to-purple-100 font-medium text-purple-800"
-              : "text-gray-700 hover:bg-gray-100"
+            className={`h-8 w-8 text-xs flex items-center justify-center rounded-full relative group transition-all duration-200 ${isBirthday
+              ? "font-medium"
+              : ""
               } ${day === new Date().getDate() && month === new Date().getMonth()
-                ? "ring-1 ring-blue-500"
+                ? "ring-2 ring-offset-1"
                 : ""
               }`}
+            style={{
+              background: isBirthday ? `${theme.primary}20` : "transparent",
+              color: isBirthday ? theme.primary : theme.textSecondary,
+              ringColor: isBirthday ? theme.primary : "transparent",
+            }}
           >
             {day}
             {isBirthday && (
-              <div className="absolute z-50 hidden group-hover:block w-64 bg-white shadow-xl rounded-lg p-3 left-1/2 top-full transform -translate-x-1/2 mt-1 border border-gray-200">
-                <div className="flex items-center mb-2">
-                  <CalendarIcon className="w-3 h-3 mr-1 text-purple-500" />
-                  <h4 className="font-semibold text-gray-800 text-xs">
+              <div className="absolute z-50 hidden group-hover:block w-72 rounded-xl shadow-2xl p-4 left-1/2 top-full transform -translate-x-1/2 mt-2"
+                style={{
+                  background: theme.cardBg,
+                  border: `1px solid ${theme.border}`,
+                  boxShadow: `0 10px 40px rgba(0, 0, 0, 0.4)`,
+                }}>
+                <div className="flex items-center mb-3">
+                  <CalendarIcon className="w-4 h-4 mr-2" style={{ color: theme.primary }} />
+                  <h4 className="font-semibold text-sm" style={{ color: theme.textPrimary }}>
                     {new Date(currentYear, month, day).toLocaleDateString('en-US', {
                       weekday: 'short',
                       month: 'short',
@@ -474,16 +505,17 @@ const CalendarWidget = () => {
                     })}
                   </h4>
                 </div>
-                <div className="space-y-2 max-h-48 overflow-y-auto text-xs">
+                <div className="space-y-2 max-h-48 overflow-y-auto">
                   {dayBirthdays.map((bday, idx) => (
-                    <div key={`${bday.inv_name}-${idx}`} className="p-1.5 bg-gray-50 rounded">
+                    <div key={`${bday.inv_name}-${idx}`} className="p-2 rounded-lg transition-all hover:translate-x-1"
+                      style={{ background: theme.hoverBg }}>
                       <div className="flex items-center">
-                        <User className="w-3 h-3 mr-1 text-blue-500" />
-                        <span className="font-medium text-gray-800 truncate">{bday.inv_name}</span>
+                        <User className="w-3 h-3 mr-2" style={{ color: theme.primary }} />
+                        <span className="font-medium text-sm truncate" style={{ color: theme.textPrimary }}>{bday.inv_name}</span>
                       </div>
-                      <div className="flex items-center mt-0.5">
-                        <Phone className="w-3 h-3 mr-1 text-green-500" />
-                        <span className="text-gray-600 truncate">{bday.mobile_no}</span>
+                      <div className="flex items-center mt-1 text-xs" style={{ color: theme.textSecondary }}>
+                        <Phone className="w-3 h-3 mr-1" style={{ color: theme.success }} />
+                        <span className="truncate">{bday.mobile_no}</span>
                       </div>
                     </div>
                   ))}
@@ -497,19 +529,22 @@ const CalendarWidget = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-visible w-full h-full min-h-[500px] flex flex-col">
-      <div className="p-4 flex-1">
-        <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center">
-          <CalendarIcon className="w-4 h-4 mr-2 text-purple-600" />
+    <div className="rounded-xl shadow-lg overflow-visible w-full h-full min-h-[500px] flex flex-col transition-all duration-300 hover:shadow-xl"
+      style={{
+        background: theme.cardBg,
+        border: `1px solid ${theme.border}`,
+      }}>
+      <div className="p-5 flex-1">
+        <h3 className="text-lg font-bold mb-5 flex items-center" style={{ color: theme.textPrimary }}>
+          <CalendarIcon className="w-5 h-5 mr-2" style={{ color: theme.primary }} />
           {monthName} {currentYear}
         </h3>
 
-        {/* Calendar */}
         <div className="mb-4">
           <div className="text-center">
-            <div className="grid grid-cols-7 gap-1 text-[10px] mb-1 font-medium text-gray-500">
+            <div className="grid grid-cols-7 gap-1 text-xs mb-2 font-medium" style={{ color: theme.textSecondary }}>
               {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-                <div key={day} className="p-0.5">
+                <div key={day} className="p-1">
                   {day[0]}
                 </div>
               ))}
@@ -518,7 +553,7 @@ const CalendarWidget = () => {
             {loading ? (
               <div className="grid grid-cols-7 gap-1 min-h-[168px]">
                 {Array.from({ length: 42 }).map((_, i) => (
-                  <div key={i} className="animate-pulse h-6 bg-gray-100 rounded"></div>
+                  <div key={i} className="h-8 rounded-lg animate-pulse" style={{ background: theme.hoverBg }}></div>
                 ))}
               </div>
             ) : (
@@ -531,14 +566,14 @@ const CalendarWidget = () => {
 
         {/* Upcoming Birthdays Section */}
         {!loading && (
-          <div className="mt-4">
-            <h4 className="text-xs font-semibold text-gray-700 mb-2 flex items-center">
-              <Clock className="w-3 h-3 mr-1 text-blue-500" />
+          <div className="mt-5">
+            <h4 className="text-xs font-semibold mb-3 flex items-center" style={{ color: theme.textSecondary }}>
+              <Clock className="w-3 h-3 mr-1" style={{ color: theme.primary }} />
               UPCOMING BIRTHDAYS
             </h4>
 
             {upcomingBirthdays.length > 0 ? (
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 {upcomingBirthdays.map((birthday, index) => {
                   const formattedDate = birthday.nextOccurrence.toLocaleDateString('en-US', {
                     month: 'short',
@@ -548,15 +583,21 @@ const CalendarWidget = () => {
                   return (
                     <div
                       key={`upcoming-${index}`}
-                      className="flex items-center p-2 bg-gray-50 rounded-md border border-gray-100 hover:bg-gray-100 transition-colors"
+                      className="flex items-center p-2 rounded-lg transition-all duration-300 hover:translate-x-1 hover:shadow-md"
+                      style={{ background: theme.hoverBg }}
                     >
-                      <div className="flex-shrink-0 w-10 h-10 text-center px-1 rounded-full bg-white border border-gray-200 flex items-center justify-center mr-2 text-xs font-medium text-purple-700">
+                      <div className="flex-shrink-0 w-10 h-10 text-center rounded-full flex items-center justify-center mr-3 text-xs font-medium"
+                        style={{
+                          background: `${theme.primary}20`,
+                          color: theme.primary,
+                          border: `1px solid ${theme.border}`,
+                        }}>
                         {formattedDate}
                       </div>
                       <div className="flex-grow min-w-0">
-                        <h5 className="text-xs font-medium text-gray-800 truncate">{birthday.inv_name}</h5>
-                        <p className="text-[10px] text-gray-500 truncate">{birthday.email}</p>
-                        <p className="text-[10px] text-blue-500">
+                        <h5 className="text-sm font-medium truncate" style={{ color: theme.textPrimary }}>{birthday.inv_name}</h5>
+                        <p className="text-xs truncate" style={{ color: theme.textSecondary }}>{birthday.email}</p>
+                        <p className="text-xs mt-0.5" style={{ color: theme.primary }}>
                           {birthday.daysUntil === 0
                             ? "Today"
                             : `${birthday.daysUntil} day${birthday.daysUntil !== 1 ? 's' : ''} away`
@@ -568,7 +609,7 @@ const CalendarWidget = () => {
                 })}
               </div>
             ) : (
-              <div className="text-center py-2 bg-gray-50 rounded text-xs text-gray-500">
+              <div className="text-center py-4 rounded-lg text-sm" style={{ background: theme.hoverBg, color: theme.textSecondary }}>
                 No upcoming birthdays
               </div>
             )}
@@ -576,7 +617,7 @@ const CalendarWidget = () => {
         )}
 
         {!loading && getBirthdaysForMonth(currentMonth).length === 0 && (
-          <div className="mt-4 text-center py-2 bg-gray-50 rounded text-xs text-gray-500">
+          <div className="mt-4 text-center py-2 bg-[#1F1A1A] rounded text-xs text-[#9CA3AF]">
             No birthdays this month
           </div>
         )}
@@ -588,22 +629,25 @@ const CalendarWidget = () => {
 // Real-time Market Overview Component
 const MarketOverview = () => {
   return (
-    <div className="px-5 sm:px-5 md:px-5 lg:px-5 xl:px-0 py-4">
-      <div className="bg-gradient-to-br from-white to-blue-50 rounded-xl shadow-lg border border-blue-100 p-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
+    <div className="px-5 sm:px-8 py-4">
+      <div className="rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl"
+        style={{
+          background: theme.cardBg,
+          border: `1px solid ${theme.border}`,
+        }}>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5 gap-3">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
+            <div className="p-2 rounded-lg" style={{ background: `${theme.primary}20` }}>
+              <TrendingUp className="w-6 h-6" style={{ color: theme.primary }} />
             </div>
-            <h3 className="text-xl font-bold text-gray-800">
+            <h3 className="text-xl font-bold" style={{ color: theme.textPrimary }}>
               Live Market Overview
             </h3>
           </div>
-          <div className="flex items-center space-x-2 bg-green-50 px-3 py-1 rounded-full">
-            <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse"></div>
-            <span className="text-sm font-medium text-green-700">Real-time Data</span>
+          <div className="flex items-center space-x-2 px-3 py-1.5 rounded-full"
+            style={{ background: `${theme.success}20` }}>
+            <div className="w-2.5 h-2.5 rounded-full animate-pulse" style={{ background: theme.success }}></div>
+            <span className="text-sm font-medium" style={{ color: theme.success }}>Real-time Data</span>
           </div>
         </div>
 
@@ -618,15 +662,15 @@ const MarketOverview = () => {
 const getRiskColor = (risk: string) => {
   switch (risk) {
     case 'Low Risk':
-      return 'text-green-600 bg-green-100';
+      return { bg: '#10B98120', text: '#10B981' };
     case 'Moderate Risk':
-      return 'text-yellow-600 bg-yellow-100';
+      return { bg: '#F59E0B20', text: '#F59E0B' };
     case 'High Risk':
-      return 'text-orange-600 bg-orange-100';
+      return { bg: '#EF444420', text: '#EF4444' };
     case 'Very High Risk':
-      return 'text-red-600 bg-red-100';
+      return { bg: '#EF444440', text: '#EF4444' };
     default:
-      return 'text-gray-600 bg-gray-100';
+      return { bg: '#9CA3AF20', text: '#9CA3AF' };
   }
 };
 
@@ -824,7 +868,7 @@ const SipCalendar = () => {
     const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
     const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
     const emptyCells = Array.from({ length: firstDay }, (_, i) => (
-      <div key={`empty-${i}`} className="h-8"></div>
+      <div key={`empty-${i}`} className="h-10"></div>
     ));
 
     const today = new Date();
@@ -832,7 +876,7 @@ const SipCalendar = () => {
 
     if (loading) {
       return Array.from({ length: 42 }).map((_, i) => (
-        <div key={i} className="h-8 bg-gray-100 rounded-lg animate-pulse"></div>
+        <div key={i} className="h-10 rounded-lg animate-pulse" style={{ background: theme.hoverBg }}></div>
       ));
     }
 
@@ -851,7 +895,7 @@ const SipCalendar = () => {
         return (
           <div
             key={day}
-            className="calendar-day relative h-8 flex items-center justify-center rounded-lg transition-all cursor-pointer group"
+            className="calendar-day relative h-10 flex items-center justify-center rounded-lg transition-all cursor-pointer group"
             onMouseEnter={() => setHoveredDay(day)}
             onMouseLeave={() => setHoveredDay(null)}
             onClick={() => handleDateClick(day)}
@@ -859,31 +903,36 @@ const SipCalendar = () => {
             <div className={`
               absolute inset-0 rounded-lg transition-all z-10 border-2
               ${isToday
-                ? 'bg-blue-500 border-blue-600'
+                ? 'border-opacity-100'
                 : hasSip
-                  ? 'bg-green-50 border-green-200 hover:border-green-300'
-                  : 'bg-gray-50 border-transparent'
+                  ? 'border-opacity-50'
+                  : 'border-transparent'
               }
-              ${isSelected ? 'ring-2 ring-blue-400 ring-opacity-50' : ''}
+              ${isSelected ? 'ring-2 ring-opacity-50' : ''}
               ${isPast ? 'opacity-60' : ''}
               group-hover:shadow-md
-            `}></div>
+            `}
+              style={{
+                background: isToday ? `${theme.primary}` : (hasSip ? `${theme.primary}20` : theme.hoverBg),
+                borderColor: isToday ? 'white' : (hasSip ? theme.primary : 'transparent'),
+              }}
+            ></div>
 
             <span className={`
               relative z-20 text-sm font-medium
-              ${isToday ? 'text-white' : 'text-gray-700'}
+              ${isToday ? 'text-[#F9FAFB]' : ''}
               ${isSelected ? 'font-bold' : ''}
-            `}>
+            `} style={{ color: isToday ? 'white' : (hasSip ? theme.primary : theme.textSecondary) }}>
               {day}
             </span>
 
             {hasSip && !isToday && (
-              <div className="absolute top-1 right-1 w-1.5 h-1.5 bg-green-500 rounded-full z-20"></div>
+              <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full z-20" style={{ background: theme.primary }}></div>
             )}
 
             {isSelected && (
-              <div className="absolute top-0 right-0 w-3 h-3 bg-blue-500 rounded-full z-20 transform translate-x-1 -translate-y-1">
-                <div className="absolute inset-0.5 bg-white rounded-full"></div>
+              <div className="absolute top-0 right-0 w-3 h-3 rounded-full z-20 transform translate-x-1 -translate-y-1" style={{ background: theme.primary }}>
+                <div className="absolute inset-0.5 rounded-full" style={{ background: theme.cardBg }}></div>
               </div>
             )}
           </div>
@@ -903,15 +952,28 @@ const SipCalendar = () => {
     return (
       <div className={`
         absolute z-50 sip-tooltip ${tooltipPosition} bottom-full mb-3
-        min-w-80 max-w-sm bg-white shadow-2xl rounded-xl border border-gray-200
+        min-w-80 max-w-sm rounded-xl shadow-2xl
         animate-in fade-in-0 zoom-in-95 duration-200
-      `}>
-        <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white border-r border-b border-gray-200 rotate-45"></div>
+      `}
+        style={{
+          background: theme.cardBg,
+          border: `1px solid ${theme.border}`,
+        }}>
+        <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-3 h-3 rotate-45"
+          style={{
+            background: theme.cardBg,
+            borderRight: `1px solid ${theme.border}`,
+            borderBottom: `1px solid ${theme.border}`,
+          }}></div>
 
-        <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-gradient-to-r from-green-50 to-blue-50 rounded-t-xl">
+        <div className="flex items-center justify-between p-4 rounded-t-xl"
+          style={{
+            background: `linear-gradient(135deg, ${theme.primary}20 0%, transparent 100%)`,
+            borderBottom: `1px solid ${theme.border}`,
+          }}>
           <div className="flex items-center space-x-2">
-            <Calendar className="w-4 h-4 text-green-600" />
-            <span className="font-semibold text-gray-800 text-sm">
+            <Calendar className="w-4 h-4" style={{ color: theme.primary }} />
+            <span className="font-semibold text-sm" style={{ color: theme.textPrimary }}>
               {new Date(currentYear, currentMonth, selectedDate).toLocaleDateString('en-US', {
                 weekday: 'long',
                 month: 'long',
@@ -921,15 +983,15 @@ const SipCalendar = () => {
             </span>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+            <div className="px-2 py-1 rounded-full text-xs font-medium" style={{ background: `${theme.primary}20`, color: theme.primary }}>
               {sips.length} SIP{sips.length > 1 ? 's' : ''}
             </div>
             <button
               onClick={() => setSelectedDate(null)}
-              className="p-1 hover:bg-white rounded-full transition-colors"
+              className="p-1 rounded-full transition-colors hover:bg-white/10"
               aria-label="Close tooltip"
             >
-              <svg className="w-3 h-3 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3 h-3" style={{ color: theme.textSecondary }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -941,30 +1003,31 @@ const SipCalendar = () => {
             {sips.map((sip, index) => (
               <div
                 key={`${sip.pan}-${index}`}
-                className="p-3 bg-gray-50 rounded-lg border border-gray-100 hover:bg-white transition-colors"
+                className="p-3 rounded-lg transition-all duration-300 hover:translate-x-1"
+                style={{ background: theme.hoverBg }}
               >
                 <div className="flex justify-between items-start mb-2">
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-gray-800 text-sm truncate mb-1">
+                    <h4 className="font-semibold text-sm truncate mb-1" style={{ color: theme.textPrimary }}>
                       {sip.scheme}
                     </h4>
-                    <div className="flex items-center space-x-2 text-xs text-gray-600">
-                      <User className="w-3 h-3" />
+                    <div className="flex items-center space-x-2 text-xs" style={{ color: theme.textSecondary }}>
+                      <User className="w-3 h-3" style={{ color: theme.primary }} />
                       <span className="truncate">{sip.inv_name}</span>
                     </div>
                   </div>
-                  <span className="font-bold text-green-600 text-sm whitespace-nowrap ml-2">
+                  <span className="font-bold text-sm whitespace-nowrap ml-2" style={{ color: theme.primary }}>
                     ₹{parseFloat(sip.sip_amount).toLocaleString('en-IN')}
                   </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 text-xs text-gray-500 mt-2">
+                <div className="grid grid-cols-2 gap-2 text-xs mt-2" style={{ color: theme.textSecondary }}>
                   <div className="flex items-center space-x-1">
-                    <FileText className="w-3 h-3" />
+                    <FileText className="w-3 h-3" style={{ color: theme.textSecondary }} />
                     <span className="truncate">Folio: {sip.folio_no}</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <Shield className="w-3 h-3" />
+                    <Shield className="w-3 h-3" style={{ color: theme.textSecondary }} />
                     <span className="truncate">PAN: {sip.pan}</span>
                   </div>
                 </div>
@@ -973,8 +1036,8 @@ const SipCalendar = () => {
           </div>
         </div>
 
-        <div className="p-3 border-t border-gray-100 bg-gray-50 rounded-b-xl">
-          <div className="flex justify-between items-center text-xs text-gray-600">
+        <div className="p-3 rounded-b-xl" style={{ background: theme.hoverBg, borderTop: `1px solid ${theme.border}` }}>
+          <div className="flex justify-between items-center text-xs" style={{ color: theme.textSecondary }}>
             <span>Total Amount: ₹{sips.reduce((sum, sip) => sum + parseFloat(sip.sip_amount), 0).toLocaleString('en-IN')}</span>
           </div>
         </div>
@@ -983,35 +1046,45 @@ const SipCalendar = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-visible w-full h-full min-h-[600px] flex flex-col">
+    <div className="rounded-xl shadow-lg overflow-visible w-full h-full min-h-[600px] flex flex-col transition-all duration-300 hover:shadow-xl"
+      style={{
+        background: theme.cardBg,
+        border: `1px solid ${theme.border}`,
+      }}>
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-t-xl">
+      <div className="p-5 rounded-t-xl"
+        style={{
+          background: `linear-gradient(135deg, ${theme.primary}10 0%, transparent 100%)`,
+          borderBottom: `1px solid ${theme.border}`,
+        }}>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="p-2 bg-white rounded-lg shadow-sm">
-              <Calendar className="w-5 h-5 text-blue-600" />
+            <div className="p-2 rounded-lg" style={{ background: `${theme.primary}20` }}>
+              <Calendar className="w-5 h-5" style={{ color: theme.primary }} />
             </div>
             <div>
-              <h3 className="font-bold text-lg text-gray-900">SIP Calendar</h3>
+              <h3 className="font-bold text-lg" style={{ color: theme.textPrimary }}>SIP Calendar</h3>
             </div>
           </div>
           <div className="flex items-center space-x-2">
             <button
               onClick={() => navigateMonth('prev')}
-              className="p-2 hover:bg-white rounded-lg transition-all shadow-sm hover:shadow-md"
+              className="p-2 rounded-lg transition-all shadow-sm hover:shadow-md hover:scale-110"
+              style={{ background: theme.hoverBg }}
             >
-              <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" style={{ color: theme.textSecondary }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            <span className="font-semibold text-gray-700 text-sm min-w-[120px] text-center">
+            <span className="font-semibold text-sm min-w-[120px] text-center" style={{ color: theme.textPrimary }}>
               {monthName} {currentYear}
             </span>
             <button
               onClick={() => navigateMonth('next')}
-              className="p-2 hover:bg-white rounded-lg transition-all shadow-sm hover:shadow-md"
+              className="p-2 rounded-lg transition-all shadow-sm hover:shadow-md hover:scale-110"
+              style={{ background: theme.hoverBg }}
             >
-              <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4" style={{ color: theme.textSecondary }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>
@@ -1021,7 +1094,7 @@ const SipCalendar = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="mx-4 mt-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm border border-red-200">
+        <div className="mx-4 mt-4 p-3 rounded-lg text-sm" style={{ background: `${theme.danger}20`, color: theme.danger }}>
           <div className="flex items-center space-x-2">
             <AlertCircle className="w-4 h-4" />
             <span>{error}</span>
@@ -1030,10 +1103,10 @@ const SipCalendar = () => {
       )}
 
       {/* Calendar Grid Container with Tooltip */}
-      <div className="p-4 relative flex-1">
+      <div className="p-5 relative flex-1">
         <div className="grid grid-cols-7 gap-2 mb-3">
           {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-            <div key={day} className="text-center text-xs font-semibold text-gray-500 py-2">
+            <div key={day} className="text-center text-xs font-semibold py-2" style={{ color: theme.textSecondary }}>
               {day.substring(0, 1)}
             </div>
           ))}
@@ -1053,76 +1126,75 @@ const SipCalendar = () => {
         </div>
 
         {/* Legend */}
-        <div className="flex items-center justify-center space-x-6 mt-3 pt-2 border-t border-gray-100">
-
+        <div className="flex items-center justify-center space-x-6 mt-4 pt-3 border-t" style={{ borderTopColor: theme.border }}>
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-blue-500 rounded"></div>
-            <span className="text-xs text-gray-600">Today</span>
+            <div className="w-3 h-3 rounded" style={{ background: theme.primary }}></div>
+            <span className="text-xs" style={{ color: theme.textSecondary }}>Today</span>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-green-100 border border-green-300 rounded"></div>
-            <span className="text-xs text-gray-600">SIP Date</span>
+            <div className="w-3 h-3 rounded" style={{ background: `${theme.primary}20`, border: `1px solid ${theme.primary}` }}></div>
+            <span className="text-xs" style={{ color: theme.textSecondary }}>SIP Date</span>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <span className="text-xs text-gray-600">Active SIP</span>
+            <div className="w-2 h-2 rounded-full" style={{ background: theme.primary }}></div>
+            <span className="text-xs" style={{ color: theme.textSecondary }}>Active SIP</span>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-blue-400 rounded-full relative">
-              <div className="absolute inset-0.5 bg-white rounded-full"></div>
+            <div className="w-3 h-3 rounded-full relative" style={{ background: theme.primary }}>
+              <div className="absolute inset-0.5 rounded-full" style={{ background: theme.cardBg }}></div>
             </div>
-            <span className="text-xs text-gray-600">Selected</span>
+            <span className="text-xs" style={{ color: theme.textSecondary }}>Selected</span>
           </div>
         </div>
       </div>
 
       {/* Upcoming SIPs */}
-      <div className="border-t border-gray-200 p-4 bg-gradient-to-r from-gray-50 to-blue-50 rounded-b-xl">
-        <h4 className="font-semibold text-gray-800 text-sm mb-3 flex items-center">
-          <TrendingUp className="w-4 h-4 mr-2 text-blue-500" />
+      <div className="border-t p-5 rounded-b-xl" style={{ borderTopColor: theme.border, background: `linear-gradient(135deg, ${theme.primary}05 0%, transparent 100%)` }}>
+        <h4 className="font-semibold text-sm mb-3 flex items-center" style={{ color: theme.textPrimary }}>
+          <TrendingUp className="w-4 h-4 mr-2" style={{ color: theme.primary }} />
           Upcoming SIPs This Month
         </h4>
 
         {loading ? (
           <div className="space-y-3">
             {[...Array(3)].map((_, i) => (
-              <div key={i} className="animate-pulse h-14 bg-gray-200 rounded-lg"></div>
+              <div key={i} className="h-14 rounded-lg animate-pulse" style={{ background: theme.hoverBg }}></div>
             ))}
           </div>
         ) : upcomingSips.length > 0 ? (
           <div className="space-y-3">
             {upcomingSips.map((sip, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-all">
+              <div key={index} className="flex items-center justify-between p-3 rounded-lg shadow-sm transition-all duration-300 hover:shadow-md hover:translate-x-1"
+                style={{ background: theme.hoverBg, border: `1px solid ${theme.border}` }}>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
+                    <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: theme.primary }}></div>
                     <div className="min-w-0">
-
-                      <span className=" font-bold truncate">{sip.investor}</span>
-                      <div className="flex items-center space-x-2 mt-1 text-xs text-gray-500">
-                        <Calendar className="w-3 h-3" />
+                      <span className="font-bold truncate text-sm" style={{ color: theme.textPrimary }}>{sip.investor}</span>
+                      <div className="flex items-center space-x-2 mt-1 text-xs" style={{ color: theme.textSecondary }}>
+                        <Calendar className="w-3 h-3" style={{ color: theme.primary }} />
                         <span>Due on {monthName} {sip.date}</span>
                         <span>•</span>
 
 
                         <span className="truncate">{sip.pan}</span>
                       </div>
-                      <h5 className="font-medium text-gray-800 text-[11px] truncate">
+                      <h5 className="font-medium text-xs truncate mt-0.5" style={{ color: theme.textSecondary }}>
                         {sip.name}
                       </h5>
 
                     </div>
                   </div>
                 </div>
-                <span className="font-bold text-green-600 text-sm whitespace-nowrap ml-3">
+                <span className="font-bold text-sm whitespace-nowrap ml-3" style={{ color: theme.primary }}>
                   {sip.amount}
                 </span>
               </div>
             ))}
           </div>
         ) : (
-          <div className="text-center py-6 text-gray-500 text-sm bg-white rounded-lg border border-gray-200">
-            <Calendar className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+          <div className="text-center py-6 rounded-lg text-sm" style={{ background: theme.hoverBg, color: theme.textSecondary }}>
+            <Calendar className="w-8 h-8 mx-auto mb-2 opacity-30" style={{ color: theme.textSecondary }} />
             <p>No upcoming SIPs this month</p>
           </div>
         )}
@@ -1138,10 +1210,11 @@ export const TopPerformingFunds = () => {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 w-full h-full min-h-[500px]">
+      <div className="rounded-xl shadow-lg p-6 w-full h-full min-h-[500px]"
+        style={{ background: theme.cardBg, border: `1px solid ${theme.border}` }}>
         <div className="animate-pulse space-y-4">
           {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-16 bg-gray-100 rounded-lg"></div>
+            <div key={i} className="h-16 rounded-lg" style={{ background: theme.hoverBg }}></div>
           ))}
         </div>
       </div>
@@ -1150,21 +1223,24 @@ export const TopPerformingFunds = () => {
 
   if (error) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 w-full h-full min-h-[500px]">
-        <div className="text-red-500 p-4">{error}</div>
+      <div className="rounded-xl shadow-lg p-6 w-full h-full min-h-[500px]"
+        style={{ background: theme.cardBg, border: `1px solid ${theme.border}` }}>
+        <div className="p-4 rounded-lg" style={{ color: theme.danger }}>{error}</div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 w-full h-full min-h-[500px] flex flex-col">
+    <div className="rounded-xl shadow-lg p-6 w-full h-full min-h-[500px] flex flex-col transition-all duration-300 hover:shadow-xl"
+      style={{ background: theme.cardBg, border: `1px solid ${theme.border}` }}>
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-gray-900">
+        <h3 className="text-lg font-semibold" style={{ color: theme.textPrimary }}>
           Top Performing Funds
         </h3>
         <button
           onClick={() => router.push('/mutual-fund')}
-          className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+          className="text-sm font-medium transition-all duration-300 hover:scale-105"
+          style={{ color: theme.primary }}
         >
           View All Funds
         </button>
@@ -1174,52 +1250,48 @@ export const TopPerformingFunds = () => {
         {funds.slice(0, 5).map((fund) => {
           const Icon = getFundIcon(fund.SchemeMaster.SchemeCategory.Name);
           const rating = fund.OverallRating || fund.performanceRating || 0;
+          const riskColors = getRiskColor(fund.SchemeMaster.riskLevel);
 
           return (
             <div
               key={fund.id}
-              className="flex gap-2 items-center justify-between p-3 rounded-lg border border-gray-100 hover:border-gray-200 transition-colors cursor-pointer"
+              className="flex gap-3 items-center justify-between p-4 rounded-lg transition-all duration-300 cursor-pointer hover:translate-x-1 hover:shadow-md"
+              style={{ background: theme.hoverBg, border: `1px solid ${theme.border}` }}
               onClick={() => router.push(`/scheme-detail?id=${fund.scheme_id}&tab=NAV`)}
             >
-              <div className="flex items-center space-x-4">
-                <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center">
-                  <Icon className="w-5 h-5" />
+              <div className="flex items-center space-x-4 flex-1 min-w-0">
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
+                  style={{ background: `${theme.primary}20` }}>
+                  <Icon className="w-5 h-5" style={{ color: theme.primary }} />
                 </div>
-                <div>
-                  <h4 className="font-medium text-gray-900 text-sm">
+                <div className="min-w-0 flex-1">
+                  <h4 className="font-medium text-sm truncate" style={{ color: theme.textPrimary }}>
                     {fund.SchemeMaster.name}
                   </h4>
-                  <div className="flex items-center space-x-2 mt-1">
-                    <span className="text-xs text-gray-600">
+                  <div className="flex items-center space-x-2 mt-1 flex-wrap gap-1">
+                    <span className="text-xs" style={{ color: theme.textSecondary }}>
                       {fund.SchemeMaster.SchemeSubcategory.Name}
                     </span>
-                    <span
-                      className={`text-xs px-2 py-1 rounded-full ${getRiskColor(
-                        fund.SchemeMaster.riskLevel
-                      )}`}
-                    >
+                    <span className={`text-xs px-2 py-0.5 rounded-full`}
+                      style={{ background: riskColors.bg, color: riskColors.text }}>
                       {fund.SchemeMaster.riskLevel}
                     </span>
                   </div>
                 </div>
               </div>
-              <div className="text-right">
-                <div
-                  className={`font-semibold text-sm ${fund.Return1yr >= 0 ? 'text-green-600' : 'text-red-600'
-                    }`}
-                >
+              <div className="text-right flex-shrink-0">
+                <div className={`font-semibold text-sm ${fund.Return1yr >= 0 ? 'text-green-500' : 'text-red-500'}`}>
                   {fund.Return1yr >= 0 ? '+' : ''}
                   {fund.Return1yr.toFixed(2)}%
                 </div>
-                <div className="text-xs text-gray-600">
+                <div className="text-xs mt-0.5" style={{ color: theme.textSecondary }}>
                   {formatAUM(fund.AUM)} AUM
                 </div>
                 <div className="flex items-center justify-end mt-1">
                   {[...Array(5)].map((_, i) => (
                     <span
                       key={i}
-                      className={`text-xs ${i < rating ? 'text-yellow-400' : 'text-gray-300'
-                        }`}
+                      className={`text-xs ${i < rating ? 'text-yellow-500' : 'text-[#9CA3AF]'}`}
                     >
                       ★
                     </span>
@@ -1240,16 +1312,13 @@ const AdminDashboard = () => {
   const [openRegister, setOpenRegister] = useState(false);
 
   return (
-    <div className="min-h-screen bg-mainbackground">
+    <div className="min-h-screen" style={{ background: theme.background }}>
       <AdminStatsOverview />
       <QuickActions setOpenRegister={setOpenRegister} />
 
       <MarketOverview />
 
-
-
-      <div className="px-4 sm:px-0 lg:px-0 py-6">
-
+      <div className="px-4 sm:px-0 lg:px-8 py-6">
         {/* Desktop Layout - Three columns with consistent heights */}
         <div className="hidden lg:grid lg:grid-cols-3 gap-6">
           {/* Column 1: Top Performing Funds */}

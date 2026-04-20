@@ -640,9 +640,9 @@ export default function Nominees({
         const dateValue = nominee?.dateOfBirth ? new Date(nominee.dateOfBirth) : null;
 
         return (
-            <div className="mb-8 p-6 border border-gray-200 rounded-lg bg-gray-50">
-                <h4 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                    <span className="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">
+            <div className="mb-8 p-6 border border-[#2A2A2A] rounded-lg bg-[#111111]">
+                <h4 className="text-lg font-semibold text-[#F9FAFB] mb-4 flex items-center">
+                    <span className="bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white w-6 h-6 rounded-full flex items-center justify-center text-sm mr-2">
                         {index + 1}
                     </span>
                     {title}
@@ -650,31 +650,31 @@ export default function Nominees({
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                     {/* Name */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Name of Nominee {isRequired && <span className="text-red-500">*</span>}
+                        <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                            Name of Nominee {isRequired && <span className="text-[#F59E0B]">*</span>}
                         </label>
                         <input
                             type="text"
                             value={nominee?.name}
                             onChange={(e) => handleNomineeChange(index, 'name', e.target.value.toUpperCase())}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                            className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase"
                             maxLength={40}
                             placeholder="Enter full name"
                         />
                         {getError('name') && (
-                            <p className="text-red-500 text-xs mt-1">{getError('name')}</p>
+                            <p className="text-red-400 text-xs mt-1">{getError('name')}</p>
                         )}
                     </div>
 
                     {/* Relationship */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Relationship {isRequired && <span className="text-red-500">*</span>}
+                        <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                            Relationship {isRequired && <span className="text-[#F59E0B]">*</span>}
                         </label>
                         <select
                             value={nominee?.relationship}
                             onChange={(e) => handleNomineeChange(index, 'relationship', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-3 py-2 border border-[#3A3A3A] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         >
                             <option value="">Select</option>
                             {data?.relationship_types.map((option: any) => (
@@ -684,32 +684,32 @@ export default function Nominees({
                             ))}
                         </select>
                         {getError('relationship') && (
-                            <p className="text-red-500 text-xs mt-1">{getError('relationship')}</p>
+                            <p className="text-red-400 text-xs mt-1">{getError('relationship')}</p>
                         )}
                     </div>
 
                     {/* Percentage */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Percentage(%) {isRequired && <span className="text-red-500">*</span>}
+                        <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                            Percentage(%) {isRequired && <span className="text-[#F59E0B]">*</span>}
                         </label>
                         <input
                             type="text"
                             value={nominee?.percentage}
                             onChange={(e) => handleNomineeChange(index, 'percentage', e.target.value.replace(/\D/g, ''))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             maxLength={3}
                             placeholder="0-100"
                         />
                         {getError('percentage') && (
-                            <p className="text-red-500 text-xs mt-1">{getError('percentage')}</p>
+                            <p className="text-red-400 text-xs mt-1">{getError('percentage')}</p>
                         )}
                     </div>
 
                     {/* Date of Birth - Enhanced with react-datepicker */}
                     <div className="relative">
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Date of Birth {isRequired && <span className="text-red-500">*</span>}
+                        <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                            Date of Birth {isRequired && <span className="text-[#F59E0B]">*</span>}
                         </label>
                         <div className="date-picker-wrapper">
                             <DatePicker
@@ -721,7 +721,7 @@ export default function Nominees({
                                 showYearDropdown
                                 showMonthDropdown
                                 dropdownMode="select"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                                 wrapperClassName="w-full"
                                 popperClassName="react-datepicker-enhanced"
                                 onKeyDown={(e) => {
@@ -756,12 +756,13 @@ export default function Nominees({
                                 }
                                 .react-datepicker {
                                     font-family: inherit;
-                                    border: 1px solid #e2e8f0;
+                                    border: 1px solid #2A2A2A;
                                     border-radius: 0.5rem;
-                                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+                                    background-color: #1F1A1A;
+                                    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
                                 }
                                 .react-datepicker__header {
-                                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                    background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
                                     border-bottom: none;
                                     border-top-left-radius: 0.5rem;
                                     border-top-right-radius: 0.5rem;
@@ -771,16 +772,21 @@ export default function Nominees({
                                 .react-datepicker__day-name {
                                     color: white;
                                 }
-                                .react-datepicker__day-name {
-                                    font-weight: 500;
+                                .react-datepicker__day {
+                                    color: #F9FAFB;
+                                }
+                                .react-datepicker__day:hover {
+                                    background-color: #2A2A2A;
+                                    border-radius: 50%;
                                 }
                                 .react-datepicker__day--selected,
                                 .react-datepicker__day--in-range {
-                                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                                    background: linear-gradient(135deg, #F59E0B 0%, #B45309 100%);
                                     border-radius: 50%;
+                                    color: white;
                                 }
                                 .react-datepicker__day--keyboard-selected {
-                                    background: rgba(102, 126, 234, 0.3);
+                                    background: rgba(245, 158, 11, 0.3);
                                     border-radius: 50%;
                                 }
                                 .react-datepicker__day:hover {
@@ -788,32 +794,38 @@ export default function Nominees({
                                 }
                                 .react-datepicker__year-dropdown,
                                 .react-datepicker__month-dropdown {
-                                    background-color: white;
-                                    border: 1px solid #e2e8f0;
+                                    background-color: #1F1A1A;
+                                    border: 1px solid #2A2A2A;
                                     border-radius: 0.375rem;
-                                }
-                                .react-datepicker__navigation {
-                                    top: 0.75rem;
+                                    color: #F9FAFB;
                                 }
                                 .react-datepicker__navigation-icon::before {
                                     border-color: white;
                                 }
+                                .react-datepicker__year-dropdown-option,
+                                .react-datepicker__month-dropdown-option {
+                                    color: #F9FAFB;
+                                }
+                                .react-datepicker__year-dropdown-option:hover,
+                                .react-datepicker__month-dropdown-option:hover {
+                                    background-color: #2A2A2A;
+                                }
                             `}</style>
                         </div>
                         {getError('dateOfBirth') && (
-                            <p className="text-red-500 text-xs mt-1">{getError('dateOfBirth')}</p>
+                            <p className="text-red-400 text-xs mt-1">{getError('dateOfBirth')}</p>
                         )}
                     </div>
 
                     {/* Personal Identifier Type */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Personal Identifier Type {isRequired && <span className="text-red-500">*</span>}
+                        <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                            Personal Identifier Type {isRequired && <span className="text-[#F59E0B]">*</span>}
                         </label>
                         <select
                             value={nominee.personalIdentifierType}
                             onChange={(e) => handleNomineeChange(index, 'personalIdentifierType', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                         >
                             <option value="">Select</option>
 
@@ -824,38 +836,37 @@ export default function Nominees({
                             ))}
                         </select>
                         {getError('personalIdentifierType') && (
-                            <p className="text-red-500 text-xs mt-1">{getError('personalIdentifierType')}</p>
+                            <p className="text-red-400 text-xs mt-1">{getError('personalIdentifierType')}</p>
                         )}
                     </div>
 
                     {/* Personal Identifier Number */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Personal Identifier Number {isRequired && <span className="text-red-500">*</span>}
+                        <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                            Personal Identifier Number {isRequired && <span className="text-[#F59E0B]">*</span>}
                         </label>
                         <input
                             type="text"
                             value={nominee.personalIdentifierNumber}
                             onChange={(e) => handleNomineeChange(index, 'personalIdentifierNumber', e.target.value.toUpperCase())}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                            className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase"
                             placeholder="Enter identifier number"
                         />
                         {getError('personalIdentifierNumber') && (
-                            <p className="text-red-500 text-xs mt-1">{getError('personalIdentifierNumber')}</p>
+                            <p className="text-red-400 text-xs mt-1">{getError('personalIdentifierNumber')}</p>
                         )}
                     </div>
 
                     {/* Mobile */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Mobile {isRequired && <span className="text-red-500">*</span>}
+                        <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                            Mobile {isRequired && <span className="text-[#F59E0B]">*</span>}
                         </label>
                         <input
                             type="tel"
                             value={nominee.mobile}
                             onChange={(e) => handleNomineeChange(index, 'mobile', e.target.value.replace(/\D/g, ''))}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-
+                            className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             maxLength={10}
                             placeholder="Enter 10-digit mobile number"
 
@@ -863,25 +874,25 @@ export default function Nominees({
 
                         />
                         {getError('mobile') && (
-                            <p className="text-red-500 text-xs mt-1">{getError('mobile')}</p>
+                            <p className="text-red-400 text-xs mt-1">{getError('mobile')}</p>
                         )}
                     </div>
 
                     {/* Email */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Email {isRequired && <span className="text-red-500">*</span>}
+                        <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                            Email {isRequired && <span className="text-[#F59E0B]">*</span>}
                         </label>
                         <input
                             type="email"
                             value={nominee.email}
                             onChange={(e) => handleNomineeChange(index, 'email', e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             maxLength={100}
                             placeholder="Enter email address"
                         />
                         {getError('email') && (
-                            <p className="text-red-500 text-xs mt-1">{getError('email')}</p>
+                            <p className="text-red-400 text-xs mt-1">{getError('email')}</p>
                         )}
                     </div>
                 </div>
@@ -890,40 +901,39 @@ export default function Nominees({
                 {(index === 0 || !nominee.sameAddressAsFirst) && (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         <div className="md:col-span-3">
-                            <h5 className="text-md font-medium text-gray-700 mb-4 flex items-center">
-
+                            <h5 className="text-md font-medium text-[#F9FAFB] mb-4 flex items-center">
                                 Address Details
                             </h5>
                         </div>
 
                         {/* Address Line 1 */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Address Line 1 {isRequired && <span className="text-red-500">*</span>}
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Address Line 1 {isRequired && <span className="text-[#F59E0B]">*</span>}
                             </label>
                             <input
                                 type="text"
                                 value={nominee.addressLine1}
                                 onChange={(e) => handleNomineeChange(index, 'addressLine1', e.target.value.toUpperCase())}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase"
                                 maxLength={40}
                                 placeholder="House no., Building name"
                             />
                             {getError('addressLine1') && (
-                                <p className="text-red-500 text-xs mt-1">{getError('addressLine1')}</p>
+                                <p className="text-red-400 text-xs mt-1">{getError('addressLine1')}</p>
                             )}
                         </div>
 
                         {/* Address Line 2 */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
                                 Address Line 2
                             </label>
                             <input
                                 type="text"
                                 value={nominee.addressLine2}
                                 onChange={(e) => handleNomineeChange(index, 'addressLine2', e.target.value.toUpperCase())}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase"
                                 maxLength={40}
                                 placeholder="Street, Area"
                             />
@@ -931,14 +941,14 @@ export default function Nominees({
 
                         {/* Address Line 3 */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
                                 Address Line 3
                             </label>
                             <input
                                 type="text"
                                 value={nominee.addressLine3}
                                 onChange={(e) => handleNomineeChange(index, 'addressLine3', e.target.value.toUpperCase())}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase"
                                 maxLength={40}
                                 placeholder="Landmark"
                             />
@@ -946,49 +956,49 @@ export default function Nominees({
 
                         {/* Pin Code */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Pin code {isRequired && <span className="text-red-500">*</span>}
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Pin code {isRequired && <span className="text-[#F59E0B]">*</span>}
                             </label>
                             <input
                                 type="text"
                                 value={nominee.pinCode}
                                 onChange={(e) => handleNomineeChange(index, 'pinCode', e.target.value.replace(/\D/g, ''))}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                                 maxLength={9}
                                 placeholder="Enter pin code"
                             />
                             {getError('pinCode') && (
-                                <p className="text-red-500 text-xs mt-1">{getError('pinCode')}</p>
+                                <p className="text-red-400 text-xs mt-1">{getError('pinCode')}</p>
                             )}
                         </div>
 
                         {/* City */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                City {isRequired && <span className="text-red-500">*</span>}
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                City {isRequired && <span className="text-[#F59E0B]">*</span>}
                             </label>
                             <input
                                 type="text"
                                 value={nominee.city}
                                 onChange={(e) => handleNomineeChange(index, 'city', e.target.value.toUpperCase())}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase"
                                 maxLength={30}
                                 placeholder="Enter city"
                             />
                             {getError('city') && (
-                                <p className="text-red-500 text-xs mt-1">{getError('city')}</p>
+                                <p className="text-red-400 text-xs mt-1">{getError('city')}</p>
                             )}
                         </div>
 
                         {/* Country */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Country {isRequired && <span className="text-red-500">*</span>}
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Country {isRequired && <span className="text-[#F59E0B]">*</span>}
                             </label>
                             <select
                                 value={nominee.country}
                                 onChange={(e) => handleNomineeChange(index, 'country', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             >
                                 <option value="">Select</option>
 
@@ -999,7 +1009,7 @@ export default function Nominees({
                                 ))}
                             </select>
                             {getError('country') && (
-                                <p className="text-red-500 text-xs mt-1">{getError('country')}</p>
+                                <p className="text-red-400 text-xs mt-1">{getError('country')}</p>
                             )}
                         </div>
                     </div>
@@ -1013,19 +1023,19 @@ export default function Nominees({
                                 type="checkbox"
                                 checked={nominee.sameAddressAsFirst}
                                 onChange={(e) => handleNomineeChange(index, 'sameAddressAsFirst', e.target.checked)}
-                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                className="h-4 w-4 text-[#F59E0B] focus:ring-[#F59E0B] border-[#2A2A2A] rounded bg-[#1F1A1A]"
                             />
-                            <span className="ml-2 text-sm text-gray-700">Same address as primary holder</span>
+                            <span className="ml-2 text-sm text-[#F9FAFB]">Same address as primary holder</span>
                         </label>
                     </div>
                 )}
 
                 {/* Guardian Section (if minor) */}
                 {isMinor && (
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 border-t pt-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 border-t border-[#2A2A2A] pt-6">
                         <div className="md:col-span-3">
-                            <h5 className="text-md font-medium text-gray-700 mb-4 flex items-center">
-                                <span className="bg-purple-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs mr-2">
+                            <h5 className="text-md font-medium text-[#F9FAFB] mb-4 flex items-center">
+                                <span className="bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white w-5 h-5 rounded-full flex items-center justify-center text-xs mr-2">
                                     👤
                                 </span>
                                 Guardian Details (Nominee is Minor)
@@ -1034,14 +1044,14 @@ export default function Nominees({
 
                         {/* Guardian Name */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
                                 Name of Guardian
                             </label>
                             <input
                                 type="text"
                                 value={nominee.guardianName}
                                 onChange={(e) => handleNomineeChange(index, 'guardianName', e.target.value.toUpperCase())}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent uppercase"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase"
                                 maxLength={40}
                                 placeholder="Enter guardian name"
                             />
@@ -1049,13 +1059,13 @@ export default function Nominees({
 
                         {/* Guardian Relationship */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
                                 Guardian Relationship
                             </label>
                             <select
                                 value={nominee.guardianRelationship}
                                 onChange={(e) => handleNomineeChange(index, 'guardianRelationship', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             >
                                 <option value="">Select</option>
                                 {data?.nominee_guardian_relationship_types.map(option => (
@@ -1068,14 +1078,14 @@ export default function Nominees({
 
                         {/* Guardian Date of Birth */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
                                 Guardian Date of Birth
                             </label>
                             <input
                                 type="date"
                                 value={nominee.guardianDateOfBirth}
                                 onChange={(e) => handleNomineeChange(index, 'guardianDateOfBirth', e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             />
                         </div>
                     </div>
@@ -1099,19 +1109,19 @@ export default function Nominees({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">Nominee Details</h2>
+        <form onSubmit={handleSubmit} className="p-6 bg-[#111111] rounded-xl border border-[#2A2A2A] shadow-xl">
+            <h2 className="text-xl font-semibold bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent mb-6">Nominee Details</h2>
 
             {/* Nomination Option Section */}
-            <div className="bg-white rounded-lg border border-gray-200 mb-6 shadow-sm">
-                <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3 border-b border-gray-200 rounded-t-lg">
-                    <h3 className="text-lg font-medium text-gray-900">Nominee details</h3>
+            <div className="bg-[#111111] rounded-lg border border-[#2A2A2A] mb-6 shadow-sm">
+                <div className="bg-gradient-to-r from-[#1F1A1A] to-[#1F1A1A] px-4 py-3 border-b border-[#2A2A2A] rounded-t-lg">
+                    <h3 className="text-lg font-medium text-[#F9FAFB]">Nominee details</h3>
                 </div>
                 <div className="p-6">
                     {/* SEBI Disclaimer */}
                     <div className="mb-6">
-                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-md p-4 shadow-sm">
-                            <p className="text-blue-800 text-sm">
+                        <div className="bg-gradient-to-r from-[#F59E0B]/10 to-[#B45309]/10 border border-[#F59E0B]/30 rounded-md p-4 shadow-sm">
+                            <p className="text-[#F59E0B] text-sm">
                                 Pursuant to SEBI circular(s) No. SEBI/HO/IMD/-II DOF3/P/CIR/2022/82 dated 15-Jun-2022 on the nomination for mutual fund investment, it is mandatory to either register nominee/opt-out of nominee registration for every NEW folio created effective 1st October 2022.
                             </p>
                         </div>
@@ -1120,13 +1130,13 @@ export default function Nominees({
                     {/* Nomination Option */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Nomination Option <span className="text-red-500">*</span>
+                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                Nomination Option <span className="text-[#F59E0B]">*</span>
                             </label>
                             <select
                                 value={nominationOption}
                                 onChange={(e) => handleNominationOptionChange(e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
                             >
                                 {nominationOptions.map(option => (
                                     <option key={option.value} value={option.value}>
@@ -1135,7 +1145,7 @@ export default function Nominees({
                                 ))}
                             </select>
                             {errors.nominationOption && (
-                                <p className="text-red-500 text-xs mt-1">{errors.nominationOption}</p>
+                                <p className="text-red-400 text-xs mt-1">{errors.nominationOption}</p>
                             )}
                         </div>
                     </div>
@@ -1145,7 +1155,7 @@ export default function Nominees({
                         <>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
                                         Nominee Registration Display in Folio SOA
                                     </label>
                                     <div className="flex space-x-6">
@@ -1156,9 +1166,9 @@ export default function Nominees({
                                                 value="Y"
                                                 checked={folioSOA === 'Y'}
                                                 onChange={(e) => handleFolioSOAChange(e.target.value)}
-                                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                                                className="h-4 w-4 text-[#F59E0B] focus:ring-[#F59E0B] border-[#2A2A2A] bg-[#1F1A1A]"
                                             />
-                                            <span className="ml-2 text-sm text-gray-700">Yes</span>
+                                            <span className="ml-2 text-sm text-[#F9FAFB]">Yes</span>
                                         </label>
                                         <label className="flex items-center cursor-pointer">
                                             <input
@@ -1167,9 +1177,9 @@ export default function Nominees({
                                                 value="N"
                                                 checked={folioSOA === 'N'}
                                                 onChange={(e) => handleFolioSOAChange(e.target.value)}
-                                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                                                className="h-4 w-4 text-[#F59E0B] focus:ring-[#F59E0B] border-[#2A2A2A] bg-[#1F1A1A]"
                                             />
-                                            <span className="ml-2 text-sm text-gray-700">No</span>
+                                            <span className="ml-2 text-sm text-[#F9FAFB]">No</span>
                                         </label>
                                     </div>
                                 </div>
@@ -1178,8 +1188,8 @@ export default function Nominees({
                             {/* Folio SOA Disclaimer */}
                             {showFolioSOADisclaimer && (
                                 <div className="mb-6">
-                                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-md p-4">
-                                        <p className="text-blue-800 text-sm">
+                                    <div className="bg-gradient-to-r from-[#F59E0B]/10 to-[#B45309]/10 border border-[#F59E0B]/30 rounded-md p-4">
+                                        <p className="text-[#F59E0B] text-sm">
                                             If "Yes", then only the registration status will be displayed and if it is "No", then the name of all the nominees will be displayed.
                                         </p>
                                     </div>
@@ -1192,9 +1202,9 @@ export default function Nominees({
 
             {/* Nominee Details Section */}
             {showNomineeSection && (
-                <div className="bg-white rounded-lg border border-gray-200 shadow-sm">
-                    <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-4 py-3 border-b border-gray-200 rounded-t-lg">
-                        <h3 className="text-lg font-medium text-gray-900">Nominee Information</h3>
+                <div className="bg-[#111111] rounded-lg border border-[#2A2A2A] shadow-sm">
+                    <div className="bg-gradient-to-r from-[#1F1A1A] to-[#1F1A1A] px-4 py-3 border-b border-[#2A2A2A] rounded-t-lg">
+                        <h3 className="text-lg font-medium text-[#F9FAFB]">Nominee Information</h3>
                     </div>
                     <div className="p-6">
                         {/* First Nominee (Required) */}
@@ -1217,7 +1227,7 @@ export default function Nominees({
                                         onClick={() => {
                                             setVisibleAccounts(visibleAccounts + 1)
                                         }}
-                                        className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors shadow-sm"
+                                        className="px-4 py-2 bg-gradient-to-r from-[#10B981] to-[#059669] text-white rounded-lg hover:opacity-90 transition-all shadow-sm"
                                     >
                                         + Add More
                                     </button>
@@ -1229,7 +1239,7 @@ export default function Nominees({
                                     <button
                                         type="button"
                                         onClick={() => setVisibleAccounts(visibleAccounts - 1)}
-                                        className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors shadow-sm"
+                                        className="px-4 py-2 bg-gradient-to-r from-[#EF4444] to-[#DC2626] text-white rounded-lg hover:opacity-90 transition-all shadow-sm"
                                     >
                                         <Trash className="h-4 w-4" />
                                     </button>
@@ -1247,7 +1257,7 @@ export default function Nominees({
                         {/* Total Percentage Error */}
                         {errors.percentageTotal && (
                             <div className="mb-6">
-                                <p className="text-red-500 text-sm font-medium">{errors.percentageTotal}</p>
+                                <p className="text-red-400 text-sm font-medium">{errors.percentageTotal}</p>
                             </div>
                         )}
                     </div>
@@ -1255,15 +1265,16 @@ export default function Nominees({
             )}
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between items-center pt-6 border-t border-gray-200 mt-6">
+            <div className="flex justify-between items-center pt-6 border-t border-[#2A2A2A] mt-6">
                 <button
                     type="button"
                     onClick={onPrevious}
                     disabled={isFirstStep}
-                    className={`px-6 py-2 rounded-md transition-colors shadow-sm ${isFirstStep
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        : 'bg-gray-600 text-white hover:bg-gray-700'
-                        }`}
+                    className={`px-6 py-2 rounded-lg transition-all font-medium shadow-sm ${
+                        isFirstStep
+                            ? 'bg-[#2A2A2A] text-[#9CA3AF] cursor-not-allowed'
+                            : 'bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] hover:bg-[#2A2A2A] hover:border-[#F59E0B] transition-all'
+                    }`}
                 >
                     Previous
                 </button>
@@ -1271,10 +1282,11 @@ export default function Nominees({
                 <button
                     type="submit"
                     disabled={!isFormValid}
-                    className={`px-6 py-2 rounded-md transition-colors shadow-sm ${isFormValid
-                        ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700'
-                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                        }`}
+                    className={`px-6 py-2 rounded-lg transition-all font-medium shadow-sm ${
+                        isFormValid
+                            ? 'bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white hover:opacity-90'
+                            : 'bg-[#2A2A2A] text-[#9CA3AF] cursor-not-allowed'
+                    }`}
                 >
                     {isLastStep ? 'Submit' : 'Next'}
                 </button>

@@ -722,12 +722,12 @@ function PersonVerification({ steps, setSteps }: any) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 2xl:grid-cols-4 gap-4 mt-6">
           {/* Signature Upload */}
           {/* Recommended Size: (150 px * 150 px) */}
-          <div className="bg-white border-0 border-gray-200 rounded-lg shadow-none h-fit">
+          <div className="bg-[#111111] border-0 border-[#2A2A2A] rounded-lg shadow-none h-fit">
             <div className="text-center mb-0">
-              <CustomText className="text-lg font-semibold text-gray-800 mb-2">
+              <CustomText className="text-lg font-semibold text-[#F9FAFB] mb-2">
                 Upload Signature
               </CustomText>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-[#9CA3AF]">
                 Recommended Size: (150 px * 150 px)
               </p>
             </div>
@@ -735,13 +735,13 @@ function PersonVerification({ steps, setSteps }: any) {
           </div>
 
           {/* Live Photo Capture */}
-          <div className="bg-white border-0 border-gray-200 rounded-lg shadow-none h-fit">
+          <div className="bg-[#111111] border-0 border-[#2A2A2A] rounded-lg shadow-none h-fit">
             <div className="p-0">
               <div className="text-center mb-3">
-                <CustomText className="text-lg font-semibold text-gray-800 mb-2">
+                <CustomText className="text-lg font-semibold text-[#F9FAFB] mb-2">
                   {isAdminUser ? "Investor Photo Capture" : "Live Photo Capture"}
                 </CustomText>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-[#9CA3AF]">
                   {isAdminUser ? "Generate link for investor photo capture" : "Capture your photo with blink validation"}
                 </p>
               </div>
@@ -749,7 +749,7 @@ function PersonVerification({ steps, setSteps }: any) {
               {isAdminUser ? (
                 <>
                   {/* // Admin interface for generating photo capture link */}
-                  <div className="text-center border border-gray-200 rounded-lg p-4 h-52">
+                  <div className="text-center border border-[#2A2A2A] rounded-lg p-4 h-52">
                     {investorPhoto ? (
                       <div className="relative mb-2">
                         <img
@@ -762,8 +762,8 @@ function PersonVerification({ steps, setSteps }: any) {
                         </div>
                       </div>
                     ) : (
-                      <div className="h-44 bg-gray-100 rounded-lg mx-auto flex items-center justify-center mb-4">
-                        <span className="text-gray-400">Waiting for investor photo</span>
+                      <div className="h-44 bg-[#1F1A1A] rounded-lg mx-auto flex items-center justify-center mb-4">
+                        <span className="text-[#6B7280]">Waiting for investor photo</span>
                       </div>
                     )}
                   </div>
@@ -792,7 +792,7 @@ function PersonVerification({ steps, setSteps }: any) {
                             Preview
                           </CustomButton>
                         </div>
-                        {/* <p className="text-xs text-gray-500">Link generated and ready to share</p> */}
+                        {/* <p className="text-xs text-[#9CA3AF]">Link generated and ready to share</p> */}
                       </div>
                     )}
                   </div>
@@ -800,7 +800,7 @@ function PersonVerification({ steps, setSteps }: any) {
               ) : !openPhotoCamera ? (
                 // Regular user interface for photo capture
                 <>
-                  <div className="text-center border border-gray-200 rounded-lg p-0 h-52 ">
+                  <div className="text-center border border-[#2A2A2A] rounded-lg p-0 h-52 ">
                     {investorPhoto ? (
                       <div className="relative mb-2">
                         <img
@@ -813,9 +813,9 @@ function PersonVerification({ steps, setSteps }: any) {
                         </div>
                       </div>
                     ) : (
-                      <p className="text-sm mt-2 text-gray-400 h-52 flex items-center justify-center">
-                        <div className="w-32 h-32 bg-gray-100 rounded-lg mx-auto flex items-center justify-center">
-                          <span className="text-gray-400 ">No Photo</span>
+                      <p className="text-sm mt-2 text-[#6B7280] h-52 flex items-center justify-center">
+                        <div className="w-32 h-32 bg-[#1F1A1A] rounded-lg mx-auto flex items-center justify-center">
+                          <span className="text-[#6B7280] ">No Photo</span>
                         </div>
                       </p>
                     )}
@@ -823,7 +823,7 @@ function PersonVerification({ steps, setSteps }: any) {
                     {faceApiLoading && (
                       <div className="text-center mt-2">
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500 mx-auto"></div>
-                        <p className="text-xs text-gray-500 mt-1">Loading AI models...</p>
+                        <p className="text-xs text-[#9CA3AF] mt-1">Loading AI models...</p>
                       </div>
                     )}
 
@@ -941,16 +941,16 @@ function PersonVerification({ steps, setSteps }: any) {
               <div className="">
                 <div className="p-0">
                   <div className="text-center mb-3">
-                    <CustomText className="text-lg font-semibold text-gray-800 mb-2">
+                    <CustomText className="text-lg font-semibold text-[#F9FAFB] mb-2">
                       Video Verification
                     </CustomText>
-                    <CustomText className="text-sm text-gray-600 mb-2">
+                    <CustomText className="text-sm text-[#9CA3AF] mb-2">
                       Record a video for identity verification
                     </CustomText>
                   </div>
 
                   {/* Video Display Area */}
-                  <div className="bg-white border border-gray-200 h-fitrelative overflow-hidden mb-3 rounded-lg h-52">
+                  <div className="bg-[#111111] border border-[#2A2A2A] h-fitrelative overflow-hidden mb-3 rounded-lg h-52">
                     {existingVideo && !openVideoCamera ? (
                       // Existing Video from API
                       <div className="relative">
@@ -1018,7 +1018,7 @@ function PersonVerification({ steps, setSteps }: any) {
                           />
                           {capturing && (
                             <div className="absolute top-2 left-2 bg-red-500 text-white px-3 py-1 rounded-full text-sm flex items-center">
-                              <div className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></div>
+                              <div className="w-2 h-2 bg-[#111111] rounded-full mr-2 animate-pulse"></div>
                               Recording... {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
                             </div>
                           )}
@@ -1043,10 +1043,10 @@ function PersonVerification({ steps, setSteps }: any) {
                         >
                           <IoMdVideocam size="2rem" />
                         </div>
-                        <CustomText className="text-gray-600 font-medium text-sm">
+                        <CustomText className="text-[#9CA3AF] font-medium text-sm">
                           Click to Start Recording
                         </CustomText>
-                        <CustomText className="text-xs text-gray-500 mt-1">
+                        <CustomText className="text-xs text-[#9CA3AF] mt-1">
                           Max: 60 seconds
                         </CustomText>
                       </div>
@@ -1057,7 +1057,7 @@ function PersonVerification({ steps, setSteps }: any) {
                   {loader && (
                     <div className="flex items-center justify-center py-4">
                       <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-                      <CustomText className="ml-2 text-sm text-gray-600">
+                      <CustomText className="ml-2 text-sm text-[#9CA3AF]">
                         Initializing video recording...
                       </CustomText>
                     </div>

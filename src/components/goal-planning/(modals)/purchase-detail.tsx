@@ -78,24 +78,24 @@ const PurchaseDetailPopup: React.FC<PurchaseDetailPopupProps> = ({
   return (
     <>
       <dialog ref={modalRef} className="modal" id={modalId}>
-        <div className="modal-box max-w-2xl w-full rounded-3xl">
+        <div className="modal-box max-w-2xl w-full rounded-3xl bg-[#111111] border border-[#2A2A2A]">
           {/* Header */}
-          <div className="flex justify-between items-center border-b border-accent pb-4 mb-4">
-            <h3 className="font-semibold text-md text-gray-950">
+          <div className="flex justify-between items-center border-b border-[#2A2A2A] pb-4 mb-4">
+            <h3 className="font-semibold text-md text-[#F9FAFB]">
               Purchase Detail
             </h3>
-            <button onClick={closeModal} className="btn btn-circle border-none">
-              <RxCross2 className="text-gray-500 text-2xl" />
+            <button onClick={closeModal} className="btn btn-circle border-none bg-transparent hover:bg-[#1F1A1A]">
+              <RxCross2 className="text-[#9CA3AF] text-2xl" />
             </button>
           </div>
 
           {/* Fund Info */}
-          <div className="mb-6 border-b border-accent pb-6 ">
-            <h2 className="text-sm text-base-content font-medium mb-2">
+          <div className="mb-6 border-b border-[#2A2A2A] pb-6 ">
+            <h2 className="text-sm text-[#F9FAFB] font-medium mb-2">
               {/* {schemeData?.ms_fullname} */}
               HDFC Mid-Cap Opportunities Gr
             </h2>
-            <p className="text-base-content text-xs  flex gap-2">
+            <p className="text-[#9CA3AF] text-xs  flex gap-2">
               <span>{/* {schemeData?.SchemeCategory?.Name} */} Equity</span> -
               <span>{/* {schemeData?.SchemeSubcategory?.Name} */} Mid-Cap</span>
             </p>
@@ -105,7 +105,7 @@ const PurchaseDetailPopup: React.FC<PurchaseDetailPopupProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Investor Dropdown */}
             <div className="form-control flex flex-col gap-2">
-              <label className="label text-black text-sm">Investor</label>
+              <label className="label text-[#F9FAFB] text-sm">Investor</label>
 
               <CustomSelect
                 items={investorOptions}
@@ -124,7 +124,7 @@ const PurchaseDetailPopup: React.FC<PurchaseDetailPopupProps> = ({
 
             {/* Account Holding Dropdown */}
             <div className="form-control flex flex-col gap-2">
-              <label className="label text-black text-sm">
+              <label className="label text-[#F9FAFB] text-sm">
                 Account Holding
               </label>
 
@@ -144,13 +144,13 @@ const PurchaseDetailPopup: React.FC<PurchaseDetailPopupProps> = ({
           </div>
 
           {/* Folio Type Radio */}
-          <CustomLabel className="label text-base-content  mt-6">
+          <CustomLabel className="label text-[#F9FAFB]  mt-6">
             Existing Folio
           </CustomLabel>
           <div className="form-control  ">
             <div className="flex gap-6 h-14 items-center ">
               <div className="flex gap-6 ">
-                <CustomLabel className="text-gray-950 cursor-pointer gap-2 ">
+                <CustomLabel className="text-[#F9FAFB] cursor-pointer gap-2 ">
                   <CustomCheckbox
                     label="New"
                     name="folioType"
@@ -159,7 +159,7 @@ const PurchaseDetailPopup: React.FC<PurchaseDetailPopupProps> = ({
                     onChange={() => setFolioType("new")}
                   />
                 </CustomLabel>
-                <CustomLabel className="text-gray-950 cursor-pointer gap-2">
+                <CustomLabel className="text-[#F9FAFB] cursor-pointer gap-2">
                   <CustomCheckbox
                     label="Existing"
                     name="folioType"
@@ -194,7 +194,7 @@ const PurchaseDetailPopup: React.FC<PurchaseDetailPopupProps> = ({
           {/* Amount Input */}
           <div className="form-control   w-3xs">
             <CustomLabel className="label">
-              <span className="label-text  text-sm text-base-content mb-2">
+              <span className="label-text  text-sm text-[#F9FAFB] mb-2">
                 Amount
               </span>
             </CustomLabel>
@@ -216,9 +216,9 @@ const PurchaseDetailPopup: React.FC<PurchaseDetailPopupProps> = ({
           </div>
 
           {/* Actions */}
-          <div className="modal-action flex justify-center border-t pt-6 border-accent">
+          <div className="modal-action flex justify-center border-t pt-6 border-[#2A2A2A]">
             <button
-              className="btn btn-primary w-1/3 rounded-2xl text-lg font-normal text-white"
+              className="btn bg-[#F59E0B] hover:bg-[#B45309] border-none w-1/3 rounded-2xl text-lg font-normal text-white"
               onClick={() => {
                 console.log({
                   investor: selectedInvestor,

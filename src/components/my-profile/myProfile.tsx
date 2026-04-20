@@ -34,7 +34,7 @@ const ProfessionalProfileScreen = () => {
         <div className="flex items-center space-x-4">
           {/* Avatar */}
           <motion.div
-            className="w-16 h-16 bg-white text-indigo-500 rounded-full flex items-center justify-center text-2xl font-bold"
+            className="w-16 h-16 bg-[#111111] text-indigo-500 rounded-full flex items-center justify-center text-2xl font-bold"
             whileHover={{ scale: 1.1 }}
           >
             AJ
@@ -113,16 +113,16 @@ const ProfessionalProfileScreen = () => {
 // Reusable Components
 const ProfileCard = ({ title, children }:any) => (
   <motion.div
-    className="bg-white bg-opacity-90 backdrop-blur-lg shadow-lg rounded-xl p-5 hover:shadow-2xl transition"
+    className="bg-[#111111] bg-opacity-90 backdrop-blur-lg shadow-lg rounded-xl p-5 hover:shadow-2xl transition"
     whileHover={{ scale: 1.02 }}
   >
-    {title && <h2 className="font-semibold text-gray-700 mb-4">{title}</h2>}
+    {title && <h2 className="font-semibold text-[#E5E7EB] mb-4">{title}</h2>}
     <div className="space-y-2">{children}</div>
   </motion.div>
 );
 
 const ProfileItem = ({ icon, text }:any) => (
-  <div className="flex items-start space-x-3 text-gray-600 text-sm">
+  <div className="flex items-start space-x-3 text-[#9CA3AF] text-sm">
     <span className="text-orange-300 mt-1">{icon}</span>
     <span>{text}</span>
   </div>

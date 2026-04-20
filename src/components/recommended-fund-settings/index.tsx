@@ -6,12 +6,12 @@ import { useRouter } from "next/navigation";
 import SchemeConfigurationService, { VedantFunctionFund, SavedVedantFund } from "@/services/schemeConfiguration";
 
 const Button = ({ children, className = "", ...props }: any) => (
-  <button {...props} className={`px-4 py-2 rounded text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 ${className}`}>
+  <button {...props} className={`px-4 py-2 rounded text-[#F9FAFB] bg-gradient-to-r from-[#F59E0B] to-[#B45309] hover:opacity-90 disabled:opacity-50 transition-all ${className}`}>
     {children}
   </button>
 );
 
-const Input = (props: any) => <input {...props} className="border rounded px-3 py-2 w-full" />;
+const Input = (props: any) => <input {...props} className="border border-[#2A2A2A] rounded-lg px-3 py-2 w-full bg-[#1F1A1A] text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent" />;
 
 // Only orange category for Vedant Recommended Funds
 const VEDANT_CATEGORIES = [
@@ -100,15 +100,15 @@ export default function VedantRecommendedFundsPage() {
 
   const getColorButtonClass = (colorName: string) => {
     switch (colorName.toLowerCase()) {
-      case 'orange': return 'bg-[#f5862e] hover:bg-[#e07828]';
-      default: return 'bg-gray-600 hover:bg-gray-700';
+      case 'orange': return 'bg-gradient-to-r from-[#F59E0B] to-[#B45309] hover:opacity-90';
+      default: return 'bg-gradient-to-r from-[#F59E0B] to-[#B45309] hover:opacity-90';
     }
   };
 
   const getModalHeaderClass = (colorName: string) => {
     switch (colorName.toLowerCase()) {
-      case 'orange': return 'bg-gradient-to-r from-[#f5862e] to-[#e07828]';
-      default: return 'bg-gradient-to-r from-blue-600 to-blue-700';
+      case 'orange': return 'bg-gradient-to-r from-[#F59E0B] to-[#B45309]';
+      default: return 'bg-gradient-to-r from-[#F59E0B] to-[#B45309]';
     }
   };
 
@@ -223,194 +223,196 @@ export default function VedantRecommendedFundsPage() {
   };
 
   const getSelectionStyle = (isSelected: boolean, categoryColor: string) => {
-    const baseStyle = "p-2 border rounded transition-all duration-200 cursor-pointer";
+    const baseStyle = "p-3 border rounded-lg transition-all duration-200 cursor-pointer";
     
     if (isSelected) {
-      switch (categoryColor) {
-        case 'orange': return `${baseStyle} border-[#f5862e] bg-orange-50 ring-1 ring-orange-200`;
-        default: return `${baseStyle} border-blue-500 bg-blue-50 ring-1 ring-blue-200`;
-      }
+      return `${baseStyle} border-[#F59E0B] bg-[#F59E0B]/10 ring-1 ring-[#F59E0B]/30`;
     }
     
-    return `${baseStyle} border-gray-200 hover:border-gray-300 hover:bg-gray-50`;
+    return `${baseStyle} border-[#2A2A2A] hover:border-[#F59E0B]/50 hover:bg-[#1F1A1A]`;
   };
 
   const getCheckboxStyle = (isSelected: boolean, categoryColor: string) => {
-    const baseStyle = "w-4 h-4 rounded-full border flex items-center justify-center cursor-pointer transition-colors duration-200 flex-shrink-0";
+    const baseStyle = "w-5 h-5 rounded-full border flex items-center justify-center cursor-pointer transition-colors duration-200 flex-shrink-0";
     
     if (isSelected) {
-      switch (categoryColor) {
-        case 'orange': return `${baseStyle} bg-[#f5862e] border-[#f5862e]`;
-        default: return `${baseStyle} bg-blue-500 border-blue-500`;
-      }
+      return `${baseStyle} bg-gradient-to-r from-[#F59E0B] to-[#B45309] border-transparent`;
     }
     
-    return `${baseStyle} border-gray-300 bg-white hover:border-gray-400`;
+    return `${baseStyle} border-[#2A2A2A] bg-[#1F1A1A] hover:border-[#F59E0B]`;
+  };
+
+  const getRiskBadgeClass = (riskLevel: string | undefined) => {
+    if (!riskLevel) return 'bg-[#0A0A0A]0/20 text-[#9CA3AF]';
+    if (riskLevel.includes('High')) return 'bg-red-500/20 text-red-400';
+    if (riskLevel.includes('Low')) return 'bg-green-500/20 text-green-400';
+    return 'bg-yellow-500/20 text-yellow-400';
   };
 
   const VedantFundSelectionModal = () => {
     const categoryColor = VEDANT_CATEGORIES.find(c => c.id === selectedCategoryId)?.color || 'orange';
     
     return (
-      <div className="absolute top-0 left-0 right-0 z-10 bg-white rounded-lg shadow-lg border border-gray-300 mx-auto w-full max-w-2xl">
-        {/* Modal Header - Compressed and Centered */}
-        <div className={`p-3 text-white ${getModalHeaderClass(categoryColor)} rounded-t-lg`}>
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <button
-                onClick={closeModal}
-                className="text-white hover:bg-black hover:bg-opacity-20 transition-colors p-1 rounded flex items-center gap-1 text-sm"
-              >
-                <ArrowLeft size={14} />
-                <span className="text-xs">Back</span>
-              </button>
-              <div>
-                <h2 className="text-sm font-bold">
-                  {`${selectedCategory} - Select Funds`}
-                </h2>
-                <p className="opacity-90 text-xs">
-                  Choose one or multiple funds from available list
-                </p>
+      <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+        <div className="bg-[#111111] rounded-xl shadow-2xl w-full max-w-3xl max-h-[85vh] overflow-hidden border border-[#2A2A2A]">
+          {/* Modal Header */}
+          <div className={`p-4 text-[#F9FAFB] ${getModalHeaderClass(categoryColor)}`}>
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={closeModal}
+                  className="text-[#F9FAFB] hover:bg-black hover:bg-opacity-20 transition-colors p-1 rounded flex items-center gap-1 text-sm"
+                >
+                  <ArrowLeft size={16} />
+                  <span className="text-sm">Back</span>
+                </button>
+                <div>
+                  <h2 className="text-lg font-bold">
+                    {`${selectedCategory} - Select Funds`}
+                  </h2>
+                  <p className="opacity-90 text-xs">
+                    Choose one or multiple funds from available list
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="text-xs opacity-90 font-semibold">
-                Selected: <span className="text-white font-bold">{selectedFunds.length}</span>
+              <div className="flex items-center gap-3">
+                <div className="text-sm opacity-90 font-semibold">
+                  Selected: <span className="text-[#F9FAFB] font-bold">{selectedFunds.length}</span>
+                </div>
+                <button
+                  onClick={addSelectedFunds}
+                  disabled={selectedFunds.length === 0}
+                  className="bg-[#111111] text-[#F9FAFB] px-4 py-1.5 rounded-lg text-sm font-semibold hover:bg-[#111111] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow"
+                >
+                  <Check size={14} />
+                  {`Add ${selectedFunds.length} Fund${selectedFunds.length !== 1 ? 's' : ''}`}
+                </button>
+                <button
+                  onClick={closeModal}
+                  className="text-[#F9FAFB] hover:bg-black hover:bg-opacity-20 transition-colors p-1 rounded"
+                >
+                  <X size={18} />
+                </button>
               </div>
-              <button
-                onClick={addSelectedFunds}
-                disabled={selectedFunds.length === 0}
-                className="bg-white text-gray-800 px-3 py-1 rounded text-xs font-semibold hover:bg-gray-100 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 shadow"
-              >
-                <Check size={12} />
-                {`Add ${selectedFunds.length} Fund${selectedFunds.length !== 1 ? 's' : ''}`}
-              </button>
-              <button
-                onClick={closeModal}
-                className="text-white hover:bg-black hover:bg-opacity-20 transition-colors p-1 rounded"
-              >
-                <X size={14} />
-              </button>
             </div>
           </div>
-        </div>
 
-        {/* Search and Filter Section - Compressed */}
-        <div className="p-3 border-b border-gray-200 bg-gray-50">
-          <div className="flex flex-col sm:flex-row gap-2">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-400" size={14} />
-                <Input
-                  type="text"
-                  placeholder="Search by scheme name or ISIN..."
-                  value={modalSearchTerm}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setModalSearchTerm(e.target.value)}
-                  className="pl-8 pr-3 py-1.5 text-sm border border-gray-300 rounded focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                />
+          {/* Search and Filter Section */}
+          <div className="p-4 border-b border-[#2A2A2A] bg-[#1F1A1A]">
+            <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex-1">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#9CA3AF]" size={16} />
+                  <Input
+                    type="text"
+                    placeholder="Search by scheme name or ISIN..."
+                    value={modalSearchTerm}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setModalSearchTerm(e.target.value)}
+                    className="pl-10 pr-3 py-2 text-sm border border-[#2A2A2A] rounded-lg focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent bg-[#111111] text-[#F9FAFB] placeholder:text-[#9CA3AF]"
+                  />
+                </div>
+              </div>
+              <div className="w-full sm:w-48">
+                <select
+                  value={selectedRiskLevel}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedRiskLevel(e.target.value)}
+                  className="w-full text-sm border border-[#2A2A2A] rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent bg-[#111111] text-[#F9FAFB]"
+                >
+                  <option value="">All Risk Levels</option>
+                  {uniqueRiskLevels.map(level => (
+                    <option key={level} value={level}>{level}</option>
+                  ))}
+                </select>
               </div>
             </div>
-            <div className="w-full sm:w-40">
-              <select
-                value={selectedRiskLevel}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedRiskLevel(e.target.value)}
-                className="w-full text-sm border border-gray-300 rounded px-2 py-1.5 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
-              >
-                <option value="">All Risk Levels</option>
-                {uniqueRiskLevels.map(level => (
-                  <option key={level} value={level}>{level}</option>
-                ))}
-              </select>
+            <div className="mt-2 text-xs text-[#9CA3AF]">
+              <span>{filteredModalFunds.length} funds available</span>
             </div>
           </div>
-        </div>
 
-        {/* Modal Content - Compressed */}
-        <div className="overflow-y-auto max-h-[300px]">
-          {filteredModalFunds.length === 0 ? (
-            <div className="p-4 text-center text-gray-500">
-              <Search size={24} className="mx-auto mb-2 text-gray-300" />
-              <p className="text-xs">No funds found matching your criteria</p>
-              <p className="text-xs text-gray-400 mt-1">Try adjusting your search or filters</p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 gap-1.5 p-3">
-              {filteredModalFunds.map((fund) => {
-                const isSelected = selectedFunds.some(f => f.isin === fund.isin);
-                
-                return (
-                  <div
-                    key={`${fund.isin}-${fund.scheme_id}`}
-                    onClick={() => toggleFundSelection(fund)}
-                    className={`${getSelectionStyle(isSelected, categoryColor)}`}
-                  >
-                    <div className="flex items-center gap-2">
-                      <div 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleFundSelection(fund);
-                        }}
-                        className={getCheckboxStyle(isSelected, categoryColor)}
-                      >
-                        {isSelected && <Check size={10} className="text-white" />}
-                      </div>
-                      
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h3 className="font-semibold text-gray-900 text-xs mb-0.5 truncate">
-                              {fund.scheme_name}
-                            </h3>
-                            <div className="flex flex-wrap items-center gap-2 text-xs text-gray-600">
-                              <div className="flex items-center gap-0.5">
-                                <strong className="text-gray-700 text-xs">ISIN:</strong> 
-                                <span className="truncate max-w-[80px] font-mono text-xs">{fund.isin}</span>
-                              </div>
-                              <div className="flex items-center gap-0.5">
-                                <strong className="text-gray-700 text-xs">ID:</strong> 
-                                <span className="text-xs">{fund.scheme_id}</span>
-                              </div>
-                            </div>
-                            
-                            {/* Returns Display - Compressed */}
-                            <div className="mt-1 grid grid-cols-2 gap-1 text-xs">
-                              <div className="text-center">
-                                <div className="text-gray-500 text-xs">1D Return</div>
-                                <div className={`font-semibold text-xs ${
-                                  (getReturn1D(fund) || 0) > 0 ? 'text-green-600' : 
-                                  (getReturn1D(fund) || 0) < 0 ? 'text-red-600' : 'text-gray-600'
-                                }`}>
-                                  {formatReturn(getReturn1D(fund))}
+          {/* Modal Content */}
+          <div className="overflow-y-auto max-h-[500px] custom-scrollbar">
+            {filteredModalFunds.length === 0 ? (
+              <div className="p-8 text-center text-[#9CA3AF]">
+                <Search size={32} className="mx-auto mb-3 text-[#2A2A2A]" />
+                <p className="text-sm">No funds found matching your criteria</p>
+                <p className="text-xs text-[#9CA3AF] mt-1">Try adjusting your search or filters</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-2 p-4">
+                {filteredModalFunds.map((fund) => {
+                  const isSelected = selectedFunds.some(f => f.isin === fund.isin);
+                  
+                  return (
+                    <div
+                      key={`${fund.isin}-${fund.scheme_id}`}
+                      onClick={() => toggleFundSelection(fund)}
+                      className={getSelectionStyle(isSelected, categoryColor)}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleFundSelection(fund);
+                          }}
+                          className={getCheckboxStyle(isSelected, categoryColor)}
+                        >
+                          {isSelected && <Check size={12} className="text-[#F9FAFB]" />}
+                        </div>
+                        
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1">
+                              <h3 className="font-semibold text-[#F9FAFB] text-sm mb-1">
+                                {fund.scheme_name}
+                              </h3>
+                              <div className="flex flex-wrap items-center gap-3 text-xs text-[#9CA3AF]">
+                                <div className="flex items-center gap-1">
+                                  <strong className="text-[#9CA3AF]">ISIN:</strong> 
+                                  <span className="font-mono">{fund.isin}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <strong className="text-[#9CA3AF]">ID:</strong> 
+                                  <span>{fund.scheme_id}</span>
                                 </div>
                               </div>
-                              <div className="text-center">
-                                <div className="text-gray-500 text-xs">1Y Return</div>
-                                <div className={`font-semibold text-xs ${
-                                  (getReturn1Y(fund) || 0) > 0 ? 'text-green-600' : 
-                                  (getReturn1Y(fund) || 0) < 0 ? 'text-red-600' : 'text-gray-600'
-                                }`}>
-                                  {formatReturn(getReturn1Y(fund))}
+                              
+                              {/* Returns Display */}
+                              <div className="mt-2 flex gap-4 text-xs">
+                                <div>
+                                  <span className="text-[#9CA3AF]">1D Return:</span>
+                                  <span className={`ml-1 font-semibold ${
+                                    (getReturn1D(fund) || 0) > 0 ? 'text-green-400' : 
+                                    (getReturn1D(fund) || 0) < 0 ? 'text-red-400' : 'text-[#9CA3AF]'
+                                  }`}>
+                                    {formatReturn(getReturn1D(fund))}
+                                  </span>
+                                </div>
+                                <div>
+                                  <span className="text-[#9CA3AF]">1Y Return:</span>
+                                  <span className={`ml-1 font-semibold ${
+                                    (getReturn1Y(fund) || 0) > 0 ? 'text-green-400' : 
+                                    (getReturn1Y(fund) || 0) < 0 ? 'text-red-400' : 'text-[#9CA3AF]'
+                                  }`}>
+                                    {formatReturn(getReturn1Y(fund))}
+                                  </span>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                          <div className="text-right ml-1">
-                            <div className={`px-1.5 py-0.5 rounded text-xs font-medium ${
-                              fund.risk_level?.includes('High') ? 'bg-red-100 text-red-800' :
-                              fund.risk_level?.includes('Low') ? 'bg-green-100 text-green-800' :
-                              'bg-yellow-100 text-yellow-800'
-                            }`}>
-                              {fund.risk_level || 'N/A'}
+                            <div className="text-right flex-shrink-0">
+                              <span className={`px-2 py-1 rounded text-xs font-medium ${getRiskBadgeClass(fund.risk_level)}`}>
+                                {fund.risk_level || 'N/A'}
+                              </span>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -420,21 +422,22 @@ export default function VedantRecommendedFundsPage() {
 
   if (loading) {
     return (
-      <div className="p-6 bg-gray-50 min-h-screen">
-        <div className="mb-6">
-          <button
-            onClick={() => router.push('/admin-setting')} 
-            className="flex items-center px-4 py-2 text-white rounded-lg transition-colors mb-4 cursor-pointer hover:opacity-90"
-            style={{ backgroundColor: '#f5862e' }}
-          >
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            Back
-          </button>
-        </div>
-        <div className="flex justify-center items-center py-12">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#f5862e] mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading funds...</p>
+      <div className="min-h-screen bg-[#0A0A0A] w-full">
+        <div className="max-w-7xl mx-auto p-6">
+          <div className="mb-6">
+            <button
+              onClick={() => router.push('/admin-setting')} 
+              className="flex items-center px-4 py-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-[#F9FAFB] rounded-lg transition-all duration-300 mb-4 cursor-pointer hover:opacity-90 hover:shadow-lg group"
+            >
+              <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
+              Back
+            </button>
+          </div>
+          <div className="flex justify-center items-center py-12">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#F59E0B] mx-auto"></div>
+              <p className="mt-4 text-[#9CA3AF]">Loading funds...</p>
+            </div>
           </div>
         </div>
       </div>
@@ -443,154 +446,169 @@ export default function VedantRecommendedFundsPage() {
 
   if (error) {
     return (
-      <div className="p-6 bg-gray-50 min-h-screen">
-        <div className="mb-6">
-          <button
-            onClick={() => router.push('/admin-setting')} 
-            className="flex items-center px-4 py-2 text-white rounded-lg transition-colors mb-4 cursor-pointer hover:opacity-90"
-            style={{ backgroundColor: '#f5862e' }}
-          >
-            <ArrowLeft className="w-5 h-5 mr-2" />
-            Back
-          </button>
-        </div>
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-          <p className="text-red-600 mb-4">{error}</p>
-          <button
-            onClick={fetchData}
-            className="px-4 py-2 bg-[#f5862e] text-white rounded hover:bg-[#e07828] transition-colors"
-          >
-            Retry
-          </button>
+      <div className="min-h-screen bg-[#0A0A0A] w-full">
+        <div className="max-w-7xl mx-auto p-6">
+          <div className="mb-6">
+            <button
+              onClick={() => router.push('/admin-setting')} 
+              className="flex items-center px-4 py-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-[#F9FAFB] rounded-lg transition-all duration-300 mb-4 cursor-pointer hover:opacity-90 hover:shadow-lg group"
+            >
+              <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
+              Back
+            </button>
+          </div>
+          <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-6 text-center">
+            <p className="text-red-400 mb-4">{error}</p>
+            <button
+              onClick={fetchData}
+              className="px-4 py-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-[#F9FAFB] rounded-lg hover:opacity-90 transition-colors"
+            >
+              Retry
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      {/* Back Button */}
-      <div className="mb-6">
-        <button
-          onClick={() => router.push('/admin-setting')} 
-          className="flex items-center px-4 py-2 text-white rounded-lg transition-colors mb-4 cursor-pointer hover:opacity-90"
-          style={{ backgroundColor: '#f5862e' }}
-        >
-          <ArrowLeft className="w-5 h-5 mr-2" />
-          Back
-        </button>
-        
-        <h1 className="text-2xl font-bold text-gray-800">Vedant Recommended Funds</h1>
-        <p className="text-gray-600">Manage and organize recommended funds in High Return category.</p>
-      </div>
-
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6 relative">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-xl font-bold text-gray-700">Recommended Funds</h2>
-            <p className="text-gray-600">Funds with highest historical returns</p>
-          </div>
+    <div className="min-h-screen bg-[#0A0A0A] w-full">
+      <div className="max-w-7xl mx-auto p-6">
+        {/* Back Button */}
+        <div className="mb-6">
           <button
-            onClick={() => openModal(VEDANT_CATEGORIES[0])}
-            className="flex items-center gap-2 px-4 py-2 text-white rounded-lg font-semibold transition-colors duration-200 bg-[#f5862e] hover:bg-[#e07828]"
+            onClick={() => router.push('/admin-setting')} 
+            className="flex items-center px-4 py-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-[#F9FAFB] rounded-lg transition-all duration-300 mb-4 cursor-pointer hover:opacity-90 hover:shadow-lg group"
           >
-            <Plus size={18} />
-            Add Fund
+            <ArrowLeft className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform" />
+            Back
           </button>
+          
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent">Vedant Recommended Funds</h1>
+          <p className="text-[#9CA3AF] mt-1">Manage and organize recommended funds in High Return category.</p>
         </div>
 
-        {/* Table Format - ALWAYS VISIBLE, even when modal is open */}
-        {categoryFunds.length === 0 ? (
-          <div className="text-center py-12 text-gray-500 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-            <Plus size={48} className="mx-auto mb-4 text-gray-300" />
-            <h3 className="text-lg font-semibold mb-2">No funds added yet</h3>
-            <p className="text-gray-600 mb-4">Get started by adding your first recommended fund</p>
+        <div className="bg-[#111111] rounded-xl border border-[#2A2A2A] shadow-lg p-6 mb-6 relative">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-xl font-bold text-[#F9FAFB]">Recommended Funds</h2>
+              <p className="text-[#9CA3AF]">Funds with highest historical returns</p>
+            </div>
             <button
               onClick={() => openModal(VEDANT_CATEGORIES[0])}
-              className="inline-flex items-center gap-2 px-6 py-3 text-white rounded-lg font-semibold transition-colors duration-200 bg-[#f5862e] hover:bg-[#e07828]"
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-[#F9FAFB] rounded-lg font-semibold transition-all duration-200 hover:opacity-90 hover:shadow-lg"
             >
               <Plus size={18} />
-              Add Your First Fund
+              Add Fund
             </button>
           </div>
-        ) : (
-          <div className={`overflow-hidden rounded-lg border border-gray-200 ${showModal ? 'opacity-30' : ''}`}>
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Scheme Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    ISIN
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Risk Level
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    1D Return
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    1Y Return
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {categoryFunds.map((fund) => (
-                  <tr key={`${fund.id}-${fund.scheme_isin}`} className="hover:bg-gray-50 transition-colors duration-150">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{fund.scheme_name}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900 font-mono">{fund.scheme_isin}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        fund.risk_level?.includes('High') ? 'bg-red-100 text-red-800' :
-                        fund.risk_level?.includes('Low') ? 'bg-green-100 text-green-800' :
-                        'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {fund.risk_level || 'N/A'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className={`text-sm font-semibold ${
-                        (getReturn1D(fund) || 0) > 0 ? 'text-green-600' : 
-                        (getReturn1D(fund) || 0) < 0 ? 'text-red-600' : 'text-gray-600'
-                      }`}>
-                        {formatReturn(getReturn1D(fund))}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className={`text-sm font-semibold ${
-                        (getReturn1Y(fund) || 0) > 0 ? 'text-green-600' : 
-                        (getReturn1Y(fund) || 0) < 0 ? 'text-red-600' : 'text-gray-600'
-                      }`}>
-                        {formatReturn(getReturn1Y(fund))}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={() => deleteFund(fund.id)}
-                        className="flex items-center gap-1 px-3 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700 transition-colors duration-200"
-                      >
-                        <Trash2 size={12} />
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
 
-        {/* Modal appears as absolute positioned inside the card */}
-        {showModal && <VedantFundSelectionModal />}
+          {/* Table Format */}
+          {categoryFunds.length === 0 ? (
+            <div className="text-center py-12 text-[#9CA3AF] bg-[#1F1A1A] rounded-lg border-2 border-dashed border-[#2A2A2A]">
+              <Plus size={48} className="mx-auto mb-4 text-[#2A2A2A]" />
+              <h3 className="text-lg font-semibold text-[#F9FAFB] mb-2">No funds added yet</h3>
+              <p className="text-[#9CA3AF] mb-4">Get started by adding your first recommended fund</p>
+              <button
+                onClick={() => openModal(VEDANT_CATEGORIES[0])}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-[#F9FAFB] rounded-lg font-semibold transition-all duration-200 hover:opacity-90"
+              >
+                <Plus size={18} />
+                Add Your First Fund
+              </button>
+            </div>
+          ) : (
+            <div className={`overflow-hidden rounded-lg border border-[#2A2A2A] ${showModal ? 'opacity-30 pointer-events-none' : ''}`}>
+              <table className="min-w-full divide-y divide-[#2A2A2A]">
+                <thead className="bg-[#1F1A1A]">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#F59E0B] uppercase tracking-wider">
+                      Scheme Name
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#F59E0B] uppercase tracking-wider">
+                      ISIN
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#F59E0B] uppercase tracking-wider">
+                      Risk Level
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#F59E0B] uppercase tracking-wider">
+                      1D Return
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#F59E0B] uppercase tracking-wider">
+                      1Y Return
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-[#F59E0B] uppercase tracking-wider">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-[#111111] divide-y divide-[#2A2A2A]">
+                  {categoryFunds.map((fund) => (
+                    <tr key={`${fund.id}-${fund.scheme_isin}`} className="hover:bg-[#1F1A1A] transition-colors duration-150">
+                      <td className="px-6 py-4">
+                        <div className="text-sm font-medium text-[#F9FAFB]">{fund.scheme_name}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="text-sm text-[#9CA3AF] font-mono">{fund.scheme_isin}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getRiskBadgeClass(fund.risk_level)}`}>
+                          {fund.risk_level || 'N/A'}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className={`text-sm font-semibold ${
+                          (getReturn1D(fund) || 0) > 0 ? 'text-green-400' : 
+                          (getReturn1D(fund) || 0) < 0 ? 'text-red-400' : 'text-[#9CA3AF]'
+                        }`}>
+                          {formatReturn(getReturn1D(fund))}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className={`text-sm font-semibold ${
+                          (getReturn1Y(fund) || 0) > 0 ? 'text-green-400' : 
+                          (getReturn1Y(fund) || 0) < 0 ? 'text-red-400' : 'text-[#9CA3AF]'
+                        }`}>
+                          {formatReturn(getReturn1Y(fund))}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <button
+                          onClick={() => deleteFund(fund.id)}
+                          className="flex items-center gap-1 px-3 py-1 text-xs bg-red-600 text-[#F9FAFB] rounded-lg hover:bg-red-700 transition-colors duration-200"
+                        >
+                          <Trash2 size={12} />
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Modal */}
+      {showModal && <VedantFundSelectionModal />}
+
+      <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: #2A2A2A;
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: #F59E0B;
+          border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: #B45309;
+        }
+      `}</style>
     </div>
   );
 }
