@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tasklist)",
+      "Bash(cmd //c \"wmic process where \\\\\"name='node.exe'\\\\\" get processid,commandline\")",
+      "Bash(cmd //c \"netstat -ano | findstr :3000\")",
+      "Bash(cmd //c \"netstat -ano | findstr :3002\")",
+      "Bash(cmd //c \"rmdir /s /q \\\\\"C:\\\\Users\\\\user\\\\Desktop\\\\NSE  Module Completee Code By Aditya\\\\adi-nse-frontend-dev\\\\.next\\\\\"\")",
+      "Bash(cmd //c \"rmdir /s /q .next\")",
+      "Bash(cmd //c \"powershell -Command \\\\\"Remove-Item -Path 'C:\\\\Users\\\\user\\\\Desktop\\\\NSE  Module Completee Code By Aditya\\\\adi-nse-frontend-dev\\\\.next' -Recurse -Force\\\\\"\")",
+      "Bash(cmd //c 'powershell -Command \"Get-Process | Where-Object { $_.Path -like '\\\\''*NSE*'\\\\'' -or $_.Path -like '\\\\''*next*'\\\\'' } | Select-Object Id, ProcessName, Path | Format-Table -AutoSize\"')",
+      "Bash(cmd //c \"handle.exe \\\\\"trace\\\\\" 2>nul\")",
+      "Bash(cmd //c 'powershell -Command \"\\(Get-Process\\).Where\\({ try { $_.Modules.FileName -match '\\\\''trace'\\\\'' } catch {} }\\) | Select-Object Id, Name\"')",
+      "Bash(where pandoc:*)",
+      "Bash(where wkhtmltopdf:*)",
+      "Bash(where chrome:*)",
+      "Bash(node -e \"console.log\\('node available'\\)\")",
+      "Bash(npm list:*)",
+      "Bash(npx --yes md-to-pdf --version)",
+      "Bash(where powershell:*)",
+      "Bash(node generate-pdf.js)",
+      "Bash(where msedge:*)",
+      "Bash(where \"C:/Program Files \\(x86\\)/Microsoft/Edge/Application/msedge.exe\")",
+      "Read(//c/Program Files \\(x86\\)/Microsoft/Edge/Application/**)",
+      "Read(//c/Program Files/Google/Chrome/Application/**)",
+      "Bash(\"C:/Program Files/Google/Chrome/Application/chrome.exe\" --headless --disable-gpu --print-to-pdf=\"C:/Users/user/Desktop/NSE  Module Completee Code By Aditya/adi-nse-frontend-dev/NSE_API_DOCUMENTATION.pdf\" --no-margins \"file:///C:/Users/user/Desktop/NSE  Module Completee Code By Aditya/adi-nse-frontend-dev/NSE_API_DOCUMENTATION.html\")",
+      "Bash(grep \"^\\\\${NSE_BASE_URL}\" -o)",
+      "Bash(grep -E \"\\\\.\\(ts|js\\)$\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\user\\Desktop\\NSE  Module Completee Code By Aditya\\adi-nse-backend-dev\\src\\routes\\investor",
+      "c:\\Users\\user\\Desktop\\NSE  Module Completee Code By Aditya\\adi-nse-backend-dev\\src\\routes\\user"
+    ]
+  }
+}

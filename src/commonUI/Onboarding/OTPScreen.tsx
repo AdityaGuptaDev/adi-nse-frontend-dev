@@ -31,7 +31,7 @@ interface OTPScreenProps {
     closeModal: () => void;
     mobile: string;
     parentData?: any | null;
-
+    onShowOnBoarding?: () => void;
 }
  const userData = getLS(USER_DATA);
 
@@ -41,6 +41,7 @@ export default function OTPScreen({
     closeModal,
     mobile,
     parentData,
+    onShowOnBoarding,
 }: OTPScreenProps) {
     const router = useRouter();
     const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -103,13 +104,14 @@ export default function OTPScreen({
  
     const verifyRegisterOTP = async () => {
         console.log(userData, "userData");
+        const isPartnerAddInvestor = !!parentData?.userId;
         const payload = {
             mobile,
             mobileOTP: otp,
             userId: userData.id,
             userTypeId: userData.userTypeId,
             parentData,
-            ...(parentData?.userId && { source: "partner-add-investor" }),
+            ...(isPartnerAddInvestor && { source: "partner-add-investor" }),
         };
 
         const res = await api.post(`/user/verify-otp`, payload);
@@ -118,12 +120,21 @@ export default function OTPScreen({
         if (!data) return;
 
         toastAlert("success", res.data.msg);
-        closeModal();
-        //setLS("INVESTOR_DATA", data);
         setLS("INVESTOR_USER_ID", data?.id);
 
-         router.push(`/initial-KYC`);
-
+        if (isPartnerAddInvestor && onShowOnBoarding) {
+            // Store the new investor's data so create-ucc page can read investor_id
+            const existingUserData = getLS(USER_DATA);
+            setLS(USER_DATA, {
+                ...existingUserData,
+                InvestorRegistration: data?.InvestorRegistration || null,
+            });
+            closeModal();
+            onShowOnBoarding();
+        } else {
+            closeModal();
+            router.push(`/initial-KYC`);
+        }
     };
 
 

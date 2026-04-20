@@ -11,7 +11,7 @@ import AccountContext from "@/context/AccountContext/Account.context";
 import { useContext, useEffect, useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import { FiCheck } from "react-icons/fi";
+import { FiCheck, FiCheckCircle, FiEdit2 } from "react-icons/fi";
 import OTPInput from "react-otp-input";
 
 // ── Dropdown Options ──
@@ -549,6 +549,12 @@ function CreateUCC() {
     clientCode?: string;
   }>({ open: false, success: false, title: "", message: "" });
 
+  // Existing-UCC summary view — when the investor already has a UCC we show
+  // a read-only summary (with an Edit toggle) instead of sending them back
+  // through the 4-step form.
+  const [existingUccRecord, setExistingUccRecord] = useState<any>(null);
+  const [uccViewMode, setUccViewMode] = useState<"summary" | "form">("form");
+
   // Aadhaar verification state
   const [aadhaarCheckLoader, setAadhaarCheckLoader] = useState(false);
   const [aadhaarOtpResponse, setAadhaarOtpResponse] = useState<any>(null);
@@ -613,17 +619,29 @@ function CreateUCC() {
     })();
     getCountryList();
 
-    // Prefill mobile number from localStorage if available, then fetch existing UCC record
-    const userData: any = getLS(USER_DATA);
-    const storedMobile =
-      userData?.InvestorRegistration?.reg_mobile ||
-      userData?.InvestorRegistration?.mobile ||
-      userData?.InvestorRegistration?.mobile_no ||
-      userData?.mobile ||
-      userData?.mobile_no ||
-      "";
-    if (storedMobile) {
-      const cleaned = String(storedMobile).replace(/\D/g, "").slice(-10);
+    // Prefill mobile number: a ?mobile= query param wins so partners can open
+    // a client's UCC record without us having to overwrite USER_DATA. Falls
+    // back to the logged-in investor's own stored mobile.
+    let sourceMobile = "";
+    if (typeof window !== "undefined") {
+      try {
+        sourceMobile = new URLSearchParams(window.location.search).get("mobile") || "";
+      } catch {
+        // ignore
+      }
+    }
+    if (!sourceMobile) {
+      const userData: any = getLS(USER_DATA);
+      sourceMobile =
+        userData?.InvestorRegistration?.reg_mobile ||
+        userData?.InvestorRegistration?.mobile ||
+        userData?.InvestorRegistration?.mobile_no ||
+        userData?.mobile ||
+        userData?.mobile_no ||
+        "";
+    }
+    if (sourceMobile) {
+      const cleaned = String(sourceMobile).replace(/\D/g, "").slice(-10);
       if (cleaned) {
         setValue("indian_mobile_no", cleaned, { shouldValidate: true });
         prefillFromExistingUCC(cleaned);
@@ -670,6 +688,18 @@ function CreateUCC() {
       // Restore step the user previously reached, if any
       if (typeof record.formStep === "number" && record.formStep >= 0 && record.formStep <= 3) {
         setCurrentStep(record.formStep);
+      }
+
+      // If the UCC is fully registered (clientCode assigned or uccCreated=1),
+      // default to the summary view — the investor shouldn't re-do the 4-step
+      // form unless they explicitly click "Edit".
+      const isUccCompleted =
+        record.uccCreated === 1 ||
+        record.uccCreated === true ||
+        !!record.clientCode;
+      if (isUccCompleted) {
+        setExistingUccRecord(record);
+        setUccViewMode("summary");
       }
     } catch (err) {
       // 404 / not found is expected for first-time users — silently ignore
@@ -2481,6 +2511,136 @@ const onSubmit = async (data: any) => {
   };
 
   const stepRenderers = [renderStep0, renderStep1, renderStep2, renderStep3];
+
+  // ─── Read-only summary for an already-created UCC ───
+  const renderUccSummary = () => {
+    const r = existingUccRecord || {};
+    const fullName = [r.primaryHolderFirstName, r.primaryHolderMiddleName, r.primaryHolderLastName]
+      .filter((p: any) => p && `${p}`.trim() !== "")
+      .join(" ");
+    const fullAddress = [r.address1, r.address2, r.address3, r.city, r.state, r.pincode]
+      .filter((p: any) => p && `${p}`.trim() !== "")
+      .join(", ");
+    const genderMap: Record<string, string> = { M: "Male", F: "Female", O: "Other", T: "Transgender" };
+    const maritalMap: Record<string, string> = { M: "Married", U: "Unmarried", O: "Others" };
+    const occupationMap: Record<string, string> = {
+      "01": "Business", "02": "Service", "03": "Professional", "04": "Agriculture",
+      "05": "Retired", "06": "Housewife", "07": "Student", "08": "Others",
+    };
+    const incomeMap: Record<string, string> = {
+      "01": "Below 1 Lac", "02": "> 1 <= 5 Lacs", "03": "> 5 <= 10 Lacs",
+      "04": "> 10 <= 25 Lacs", "05": "> 25 Lacs <= 1 Crore", "06": "> 1 Crore",
+    };
+
+    const Field = ({ label, value }: { label: string; value: any }) => (
+      <div>
+        <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">{label}</div>
+        <div className="font-semibold text-gray-800 break-words">{value && `${value}`.trim() !== "" ? value : "—"}</div>
+      </div>
+    );
+
+    const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
+      <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+        <h3 className="text-sm font-semibold text-gray-700 mb-3 pb-2 border-b border-gray-100">{title}</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">{children}</div>
+      </div>
+    );
+
+    return (
+      <div className="nse-module p-4 space-y-4">
+        {/* Hero card with client code + Edit button */}
+        <div className="rounded-2xl bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 p-5 flex flex-wrap items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-green-600 text-white flex items-center justify-center flex-shrink-0">
+            <FiCheckCircle className="w-6 h-6" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-[11px] uppercase tracking-wider text-green-700 font-semibold">NSE UCC (Unique Client Code)</div>
+            <div className="text-2xl font-bold font-mono text-green-800 tracking-wide">
+              {r.clientCode || "Created"}
+            </div>
+            <div className="text-xs text-gray-600 mt-1">
+              UCC is registered — the fields below are read-only. Use Edit to modify.
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setUccViewMode("form")}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-primary)] text-white text-sm font-semibold hover:opacity-90 transition"
+          >
+            <FiEdit2 className="w-4 h-4" /> Edit UCC
+          </button>
+        </div>
+
+        <Section title="Personal Details">
+          <Field label="Full Name" value={fullName} />
+          <Field label="PAN" value={r.primaryHolderPan} />
+          <Field label="Date of Birth" value={r.primaryHolderDobIncorporation} />
+          <Field label="Gender" value={genderMap[r.gender] || r.gender} />
+          <Field label="Marital Status" value={maritalMap[r.maritalStatus] || r.maritalStatus} />
+          <Field label="Occupation" value={occupationMap[r.occupationCode] || r.occupationCode} />
+          <Field label="Income Slab" value={incomeMap[r.incomeSlab] || r.incomeSlab} />
+          <Field label="Aadhaar (last 4)" value={r.aadhaarNo ? `XXXX-XXXX-${String(r.aadhaarNo).slice(-4)}` : ""} />
+          <Field label="Tax Status" value={r.taxStatus} />
+        </Section>
+
+        <Section title="Contact & Address">
+          <Field label="Mobile" value={r.indianMobileNo} />
+          <Field label="Email" value={r.email} />
+          <Field label="City" value={r.city} />
+          <Field label="State" value={r.state} />
+          <Field label="Pincode" value={r.pincode} />
+          <div className="sm:col-span-2 lg:col-span-3">
+            <Field label="Full Address" value={fullAddress} />
+          </div>
+        </Section>
+
+        <Section title="Primary Bank">
+          <Field label="Bank Name" value={r.bankName1} />
+          <Field
+            label="Account No."
+            value={r.accountNo1 ? `****${String(r.accountNo1).slice(-4)}` : ""}
+          />
+          <Field label="IFSC" value={r.ifscCode1} />
+          <Field label="Branch" value={r.branchName1} />
+          <Field label="Account Type" value={r.accountType1} />
+          <Field label="Default Bank" value={r.defaultBankFlag1} />
+        </Section>
+
+        {(r.bankName2 || r.accountNo2) && (
+          <Section title="Secondary Bank">
+            <Field label="Bank Name" value={r.bankName2} />
+            <Field
+              label="Account No."
+              value={r.accountNo2 ? `****${String(r.accountNo2).slice(-4)}` : ""}
+            />
+            <Field label="IFSC" value={r.ifscCode2} />
+            <Field label="Branch" value={r.branchName2} />
+          </Section>
+        )}
+
+        <Section title="Nominee">
+          <Field label="Nominee 1 Name" value={r.nominee1Name} />
+          <Field label="Relationship" value={r.nominee1Relationship} />
+          <Field label="Applicable %" value={r.nominee1ApplicablePercentage} />
+          <Field label="ID Type" value={r.nominee1IdentityType} />
+          <Field label="DOB" value={r.nominee1Dob} />
+        </Section>
+
+        <Section title="FATCA / Tax Residency">
+          <Field label="Place of Birth" value={r.placeOfBirth} />
+          <Field label="Country of Birth" value={r.countryOfBirth} />
+          <Field label="Tax Residence" value={r.taxResidence1} />
+          <Field label="Source of Wealth" value={r.sourceOfWealth} />
+          <Field label="PEP Status" value={r.pepStatus} />
+          <Field label="Holding Nature" value={r.holdingNature} />
+        </Section>
+      </div>
+    );
+  };
+
+  if (uccViewMode === "summary" && existingUccRecord) {
+    return renderUccSummary();
+  }
 
   return (
     <div className="nse-module p-4">

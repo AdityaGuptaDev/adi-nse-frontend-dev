@@ -32,6 +32,8 @@ function MyProfile() {
     const [onBoardingModal, setOnBoardingModal] = useState(false);
     const [expandedMembers, setExpandedMembers] = useState<{ [key: string]: boolean }>({});
     const [investorList, setInvestorList] = useState<any>([]);
+    const [partnerInvestors, setPartnerInvestors] = useState<any[]>([]);
+    const [expandedPartnerInvestor, setExpandedPartnerInvestor] = useState<{ [key: string]: boolean }>({});
     const [kycVerifyLoder, setKycVerifyLoder] = useState<any>(false);
     const [memberToRemove, setMemberToRemove] = useState<any>(null);
     const [isRemoving, setIsRemoving] = useState<boolean>(false);
@@ -45,27 +47,42 @@ function MyProfile() {
     const [uccDetails, setUccDetails] = useState<any>(null);
     const removeModalRef = useRef<HTMLDialogElement>(null);
 
+    const fetchUccByMobile = async (mobile: string) => {
+        if (!mobile) return;
+        try {
+            const res = await api.get(`/nse/ucc/search-by-mobile/${mobile}`);
+            const payload = res?.data?.data ?? res?.data ?? {};
+            if (payload?.status === "S" && payload?.data) {
+                setUccDetails(payload.data);
+            }
+        } catch {
+            // UCC not found - that's fine
+        }
+    };
+
     useEffect(() => {
         const userDataLS = getLS(USER_DATA);
         setUserData(userDataLS);
-        setUserType(userDataLS?.userTypeId ?? 0);
 
-        // Fetch UCC details if investor mobile is available
-        const fetchUccDetails = async () => {
-            const investor = userDataLS?.InvestorRegistration;
-            if (investor?.reg_mobile) {
-                try {
-                    const res = await api.get(`/nse/ucc/search-by-mobile/${investor.reg_mobile}`);
-                    const payload = res?.data?.data ?? res?.data ?? {};
-                    if (payload?.status === "S" && payload?.data) {
-                        setUccDetails(payload.data);
-                    }
-                } catch {
-                    // UCC not found - that's fine
-                }
-            }
-        };
-        fetchUccDetails();
+        // Determine userType from the mapping data, not Users.userTypeId
+        // (a single Users record can have both partner + investor mappings)
+        let resolvedUserType = 0;
+        if (userDataLS?.InvestorRegistration?.userType_id) {
+            resolvedUserType = userDataLS.InvestorRegistration.userType_id;
+        } else if (userDataLS?.partner?.userType_id) {
+            resolvedUserType = userDataLS.partner.userType_id;
+        } else if (userDataLS?.BC?.userType_id) {
+            resolvedUserType = userDataLS.BC.userType_id;
+        } else {
+            resolvedUserType = userDataLS?.userTypeId ?? 0;
+        }
+        setUserType(resolvedUserType);
+
+        // Initial UCC fetch from localStorage (may be stale, refreshed later)
+        const investor = userDataLS?.InvestorRegistration;
+        if (investor?.reg_mobile) {
+            fetchUccByMobile(investor.reg_mobile);
+        }
     }, []);
 
     const toggleMemberExpansion = (pan: string) => {
@@ -106,14 +123,15 @@ function MyProfile() {
     const investorListFuncInvestorList = async () => {
         const userData = getLS(USER_DATA);
 
-        //getting user type Id 
+        // Determine userType from the mapping data
         let userType;
-
-if (userData?.partner?.userType_id) {
-  userType = userData.partner.userType_id;
-} else {
-  userType = userData?.userTypeId ?? 0;
-}
+        if (userData?.InvestorRegistration?.userType_id) {
+            userType = userData.InvestorRegistration.userType_id;
+        } else if (userData?.partner?.userType_id) {
+            userType = userData.partner.userType_id;
+        } else {
+            userType = userData?.userTypeId ?? 0;
+        }
 
         //const userType = userData?.userTypeId ?? 0;
         
@@ -124,16 +142,43 @@ if (userData?.partner?.userType_id) {
             if (!userData?.InvestorRegistration?.id) return;
 
             investor = await api.post(`/investor/kyc-users`, { investor_id: userData?.InvestorRegistration?.id });
-            if (investor) {
-                setInvestorList(investor?.data?.data);
+            if (investor?.data?.data) {
+                setInvestorList(investor.data.data);
+
+                // Refresh InvestorRegistration in localStorage with latest DB data
+                const freshInvestor = investor.data.data;
+                const currentUserData = getLS(USER_DATA);
+                const updatedUserData = {
+                    ...currentUserData,
+                    InvestorRegistration: { ...currentUserData?.InvestorRegistration, ...freshInvestor },
+                };
+                setLS(USER_DATA, updatedUserData);
+                setUserData(updatedUserData);
+
+                // Fetch UCC details with the fresh mobile from DB
+                const freshMobile = freshInvestor?.reg_mobile;
+                if (freshMobile) {
+                    fetchUccByMobile(freshMobile);
+                }
             }
         }
         if (userType === 4) {
             investor = await api.post(`/investor/partner-kyc-users`, { partnerId });
-            console.log("investor partner data -", investor);
-            console.log("investor?.data?.data-", investor?.data?.data)
-            if (investor) {
-                setInvestorList(investor?.data?.data);
+            if (investor?.data?.data) {
+                const data = investor.data.data;
+                setInvestorList(data);
+                setPartnerInvestors(data?.investors || []);
+
+                // Refresh partner profile from the latest DB data
+                const freshPartner = { ...data };
+                delete freshPartner.investors;
+                const currentUserData = getLS(USER_DATA);
+                const updatedUserData = {
+                    ...currentUserData,
+                    partner: { ...currentUserData?.partner, ...freshPartner },
+                };
+                setLS(USER_DATA, updatedUserData);
+                setUserData(updatedUserData);
             }
         }
 
@@ -291,7 +336,15 @@ if (userData?.partner?.userType_id) {
     useEffect(() => {
         const checkOnboarding = async () => {
             const userData = getLS(USER_DATA);
-            const userTypeVal = userData?.userTypeId ?? 0;
+            // Resolve userType from mapping data, not Users.userTypeId
+            let userTypeVal = 0;
+            if (userData?.InvestorRegistration?.userType_id) {
+                userTypeVal = userData.InvestorRegistration.userType_id;
+            } else if (userData?.partner?.userType_id) {
+                userTypeVal = userData.partner.userType_id;
+            } else {
+                userTypeVal = userData?.userTypeId ?? 0;
+            }
 
             // Partners/admins never see onboarding popup
             if (userTypeVal === 4 || userTypeVal === 6) {
@@ -412,6 +465,13 @@ if (userData?.partner?.userType_id) {
             uccDetails.uccCreated === true ||
             !!uccDetails.clientCode);
 
+    const genderMap: Record<string, string> = { M: "Male", F: "Female", O: "Other", T: "Transgender" };
+    const maritalMap: Record<string, string> = { M: "Married", U: "Unmarried", O: "Others" };
+    const occupationMap: Record<string, string> = {
+        "01": "Business", "02": "Service", "03": "Professional", "04": "Agriculture",
+        "05": "Retired", "06": "Housewife", "07": "Student", "08": "Others",
+    };
+
     const profileView = {
         name: pickFirst(investorList?.name, uccFullName, userData?.name),
         pan: pickFirst(investorList?.pan_no, uccDetails?.primaryHolderPan),
@@ -426,7 +486,13 @@ if (userData?.partner?.userType_id) {
         bankName: pickFirst(uccDetails?.bankName1, uccDetails?.bankName2),
         bankAccountNo: pickFirst(uccDetails?.accountNo1, uccDetails?.accountNo2),
         bankIfsc: pickFirst(uccDetails?.ifscCode1, uccDetails?.ifscCode2),
+        bankBranch: pickFirst(uccDetails?.branchName1, uccDetails?.branchName2),
         uccClientCode: pickFirst(uccDetails?.clientCode),
+        gender: genderMap[uccDetails?.gender] || pickFirst(uccDetails?.gender),
+        maritalStatus: maritalMap[uccDetails?.maritalStatus] || pickFirst(uccDetails?.maritalStatus),
+        occupation: occupationMap[uccDetails?.occupationCode] || pickFirst(uccDetails?.occupationCode),
+        aadhaarNo: pickFirst(uccDetails?.aadhaarNo),
+        holdingNature: pickFirst(uccDetails?.holdingNature),
         isCanRegistered: !!investorList?.is_CAN_registered,
         isKycDone: !!investorList?.isKYCDone,
         isKycComplete: !!investorList?.is_kyc_complete,
@@ -436,6 +502,11 @@ if (userData?.partner?.userType_id) {
     };
 
     const profileCompleted = profileView.percentage === 100 || hasUcc;
+
+    // NSE UCC creation requires a successful KYC check, so treat UCC-holders
+    // as KYC-verified even when the CAN-based investor record still shows
+    // isKYCDone=false (UCC-only onboarding path).
+    const kycVerified = profileView.isKycDone || hasUcc;
 
     return (
         <>
@@ -493,6 +564,104 @@ if (userData?.partner?.userType_id) {
                         <div className='mt-5'>
                             <div className="">
                                 
+                                {/* Investor Profile Section (userType === 2) */}
+                                {userType === 2 && (
+                                    <div className="bg-white rounded-2xl p-6 mb-6">
+                                        <CustomText tag="h2" className="text-2xl font-semibold text-secondary mb-4">
+                                            Investor Profile
+                                        </CustomText>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            {/* Left Column */}
+                                            <div className="space-y-4">
+                                                <div className="flex">
+                                                    <span className="text-gray-600 w-1/3">Investor Name:</span>
+                                                    <span className="font-semibold">{profileView.name || 'N/A'}</span>
+                                                </div>
+                                                <div className="flex">
+                                                    <span className="text-gray-600 w-1/3">PAN Number:</span>
+                                                    <span className="font-semibold">{profileView.pan || 'N/A'}</span>
+                                                </div>
+                                                <div className="flex">
+                                                    <span className="text-gray-600 w-1/3">Mobile Number:</span>
+                                                    <span className="font-semibold">{profileView.mobile || 'N/A'}</span>
+                                                </div>
+                                                <div className="flex">
+                                                    <span className="text-gray-600 w-1/3">Email ID:</span>
+                                                    <span className="font-semibold">{profileView.email || 'N/A'}</span>
+                                                </div>
+                                                <div className="flex">
+                                                    <span className="text-gray-600 w-1/3">Date of Birth:</span>
+                                                    <span className="font-semibold">{profileView.dob ? formatDates(profileView.dob) : 'N/A'}</span>
+                                                </div>
+                                            </div>
+
+                                            {/* Right Column */}
+                                            <div className="space-y-4">
+                                                <div className="flex">
+                                                    <span className="text-gray-600 w-1/3">Gender:</span>
+                                                    <span className="font-semibold">{profileView.gender || 'N/A'}</span>
+                                                </div>
+                                                <div className="flex">
+                                                    <span className="text-gray-600 w-1/3">Bank Name:</span>
+                                                    <span className="font-semibold">{profileView.bankName || 'N/A'}</span>
+                                                </div>
+                                                <div className="flex">
+                                                    <span className="text-gray-600 w-1/3">Account Number:</span>
+                                                    <span className="font-semibold">{profileView.bankAccountNo || 'N/A'}</span>
+                                                </div>
+                                                <div className="flex">
+                                                    <span className="text-gray-600 w-1/3">IFSC Code:</span>
+                                                    <span className="font-semibold">{profileView.bankIfsc || 'N/A'}</span>
+                                                </div>
+                                                <div className="flex">
+                                                    <span className="text-gray-600 w-1/3">Address:</span>
+                                                    <span className="font-semibold">{profileView.address || 'N/A'}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Highlighted UCC number — prominent callout so the investor
+                                            sees their exchange identity at a glance. */}
+                                        {hasUcc && profileView.uccClientCode && (
+                                            <div className="mt-5 flex flex-wrap items-center gap-3 p-4 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200">
+                                                <div className="w-10 h-10 rounded-full bg-green-600 text-white flex items-center justify-center flex-shrink-0">
+                                                    <FiCheckCircle className="w-5 h-5" />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="text-[11px] uppercase tracking-wider text-green-700 font-semibold">NSE UCC (Unique Client Code)</div>
+                                                    <div className="text-xl font-bold font-mono text-green-800 tracking-wide">
+                                                        {profileView.uccClientCode}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* Status badges */}
+                                        <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-100">
+                                            {profileView.isCanRegistered && (
+                                                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-green-50 text-green-700 border border-green-200">
+                                                    <FiCheckCircle className="w-3 h-3" /> CAN Registered
+                                                </span>
+                                            )}
+                                            {kycVerified ? (
+                                                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-green-50 text-green-700 border border-green-200">
+                                                    <FiCheckCircle className="w-3 h-3" /> KYC Verified{hasUcc && !profileView.isKycDone ? " (via NSE)" : ""}
+                                                </span>
+                                            ) : (
+                                                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-red-50 text-red-700 border border-red-200">
+                                                    <FiXCircle className="w-3 h-3" /> KYC Pending
+                                                </span>
+                                            )}
+                                            {!hasUcc && !profileView.isCanRegistered && (
+                                                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                                                    <FiXCircle className="w-3 h-3" /> Onboarding Pending
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
                                 {/* Partner Profile Section (userType === 4) */}
                                 {userType === 4 && (
                                     <div className="bg-white rounded-2xl p-6 mb-6">
@@ -541,6 +710,191 @@ if (userData?.partner?.userType_id) {
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                )}
+
+                                {/* Partner's Investors Section (userType === 4) */}
+                                {userType === 4 && (
+                                    <div className="bg-white rounded-2xl p-6 mb-6">
+                                        <div className="flex justify-between items-center mb-4 bg-gray-50 p-3 rounded-xl">
+                                            <CustomText tag="h3" className="text-lg font-semibold text-secondary">
+                                                Investor Clients ({partnerInvestors.length})
+                                            </CustomText>
+                                        </div>
+
+                                        {partnerInvestors.length === 0 ? (
+                                            <div className="text-center py-10 text-gray-400">
+                                                <FiUser className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                                                <p className="text-lg font-medium">No investors found</p>
+                                                <p className="text-sm mt-1">Investors mapped to your account will appear here.</p>
+                                            </div>
+                                        ) : (
+                                            <div className="overflow-x-auto">
+                                                <table className="min-w-full text-sm">
+                                                    <thead>
+                                                        <tr className="border-b border-gray-200 text-gray-600">
+                                                            <th className="py-3 px-4 text-left font-semibold">#</th>
+                                                            <th className="py-3 px-4 text-left font-semibold">Investor Name</th>
+                                                            <th className="py-3 px-4 text-left font-semibold">PAN</th>
+                                                            <th className="py-3 px-4 text-left font-semibold">Mobile</th>
+                                                            <th className="py-3 px-4 text-left font-semibold">Email</th>
+                                                            <th className="py-3 px-4 text-left font-semibold">KYC Status</th>
+                                                            <th className="py-3 px-4 text-left font-semibold">Profile</th>
+                                                            <th className="py-3 px-4 text-left font-semibold">Actions</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {partnerInvestors.map((inv: any, idx: number) => (
+                                                            <Fragment key={inv.id}>
+                                                                <tr className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                                                                    <td className="py-3 px-4 text-gray-500">{idx + 1}</td>
+                                                                    <td className="py-3 px-4">
+                                                                        <button
+                                                                            className="inline-block align-middle mr-2 cursor-pointer hover:text-blue-600 transition-colors text-gray-400"
+                                                                            onClick={() => setExpandedPartnerInvestor(prev => ({ ...prev, [inv.id]: !prev[inv.id] }))}
+                                                                        >
+                                                                            {expandedPartnerInvestor[inv.id] ? <span className="inline-block text-xs">&#9660;</span> : <span className="inline-block text-xs">&#9654;</span>}
+                                                                        </button>
+                                                                        <span className="font-medium text-gray-800">{inv.name || '—'}</span>
+                                                                    </td>
+                                                                    <td className="py-3 px-4 font-mono text-gray-700">{inv.pan_no || '—'}</td>
+                                                                    <td className="py-3 px-4 text-gray-700">{inv.reg_mobile || '—'}</td>
+                                                                    <td className="py-3 px-4 text-gray-700 max-w-[180px] truncate" title={inv.reg_email}>{inv.reg_email || '—'}</td>
+                                                                    <td className="py-3 px-4">
+                                                                        <div className="flex flex-col gap-1">
+                                                                            {(inv.isKYCDone || inv.has_ucc) ? (
+                                                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-green-50 text-green-700 border border-green-200 w-fit">
+                                                                                    <FiCheckCircle className="w-3 h-3" /> Verified
+                                                                                </span>
+                                                                            ) : (
+                                                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-red-50 text-red-700 border border-red-200 w-fit">
+                                                                                    <FiXCircle className="w-3 h-3" /> Pending
+                                                                                </span>
+                                                                            )}
+                                                                            {inv.has_ucc && inv.ucc_client_code && (
+                                                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-white text-green-700 border border-green-300 w-fit font-mono">
+                                                                                    UCC {inv.ucc_client_code}
+                                                                                </span>
+                                                                            )}
+                                                                            {inv.is_CAN_registered && (
+                                                                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-white text-[#D97706] border border-[#F59E0B]/50 w-fit">
+                                                                                    CAN Registered
+                                                                                </span>
+                                                                            )}
+                                                                        </div>
+                                                                    </td>
+                                                                    <td className="py-3 px-4">
+                                                                        {(() => {
+                                                                            // UCC or CAN existence means the investor has an active
+                                                                            // onboarding lane — treat profile as complete even when
+                                                                            // the MFU-driven percentage field is still 0.
+                                                                            const invCompleted = formatNumber(inv.percentage) === 100 || inv.has_ucc || inv.is_CAN_registered;
+                                                                            return (
+                                                                                <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${
+                                                                                    invCompleted
+                                                                                        ? 'bg-green-50 text-green-700 border border-green-200'
+                                                                                        : 'bg-amber-50 text-amber-700 border border-amber-200'
+                                                                                }`}>
+                                                                                    {invCompleted ? 'Completed' : `${formatNumber(inv.percentage)}%`}
+                                                                                </span>
+                                                                            );
+                                                                        })()}
+                                                                    </td>
+                                                                    <td className="py-3 px-4">
+                                                                        <div className="flex gap-2">
+                                                                            {inv.is_kyc_complete && !inv.isKYCDone && !inv.has_ucc && (
+                                                                                <CustomButton
+                                                                                    className="bg-gray-500 w-fit h-auto px-3 rounded text-xs font-normal py-1"
+                                                                                    onClick={() => checkPANStatus(inv)}
+                                                                                    label="Check KYC"
+                                                                                />
+                                                                            )}
+                                                                            {(formatNumber(inv.percentage) === 100 || inv.has_ucc || inv.is_CAN_registered) ? (
+                                                                                <>
+                                                                                    <CustomButton
+                                                                                        onClick={() => {
+                                                                                            setLS(ADD_MEMBER, true);
+                                                                                            setLS(MEMBER_DATA, { InvestorRegistration: inv });
+                                                                                            // UCC-only investors open the NSE UCC form prefilled
+                                                                                            // by mobile; CAN-backed ones open MFU summary.
+                                                                                            if (inv.has_ucc && !inv.is_CAN_registered) {
+                                                                                                router.push(`/create-ucc?mobile=${encodeURIComponent(inv.reg_mobile || '')}`);
+                                                                                            } else {
+                                                                                                router.push(`/kyc-quick-summary`);
+                                                                                            }
+                                                                                        }}
+                                                                                        className="w-fit h-auto px-3 rounded text-xs font-normal py-1"
+                                                                                        label="View/Edit"
+                                                                                    />
+                                                                                    {inv.is_CAN_registered && (
+                                                                                        <CustomButton
+                                                                                            onClick={() => handleOpenCANEdit(inv)}
+                                                                                            className="w-fit h-auto px-3 rounded text-xs font-normal py-1 bg-green-600 hover:bg-green-700"
+                                                                                            label="Update CAN"
+                                                                                        />
+                                                                                    )}
+                                                                                </>
+                                                                            ) : (
+                                                                                <CustomButton
+                                                                                    onClick={() => {
+                                                                                        setLS(ADD_MEMBER, true);
+                                                                                        setLS(MEMBER_DATA, { InvestorRegistration: inv });
+                                                                                        router.push(`/initial-KYC`);
+                                                                                    }}
+                                                                                    className="w-fit h-auto px-3 rounded text-xs font-normal py-1"
+                                                                                    label="Initial KYC"
+                                                                                />
+                                                                            )}
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                                {expandedPartnerInvestor[inv.id] && (
+                                                                    <tr>
+                                                                        <td colSpan={8} className="pb-4 px-4">
+                                                                            <div className="bg-gray-50 p-4 rounded-xl mt-1">
+                                                                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-700">
+                                                                                    <div className="flex items-start gap-3">
+                                                                                        <div className="w-7 h-7 rounded-lg bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center flex-shrink-0">
+                                                                                            <FiCalendar className="w-3.5 h-3.5" />
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Date of Birth</div>
+                                                                                            <div className="font-semibold text-gray-800">{inv.dob ? formatDates(inv.dob) : '—'}</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div className="flex items-start gap-3">
+                                                                                        <div className="w-7 h-7 rounded-lg bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center flex-shrink-0">
+                                                                                            <FiUser className="w-3.5 h-3.5" />
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Account Holding</div>
+                                                                                            <div className="font-semibold text-gray-800">{inv.accountHolding || 'Not Linked'}</div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div className="flex items-start gap-3">
+                                                                                        <div className="w-7 h-7 rounded-lg bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center flex-shrink-0">
+                                                                                            <FiMapPin className="w-3.5 h-3.5" />
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Address</div>
+                                                                                            <div className="font-semibold text-gray-800">
+                                                                                                {[inv.AddressDetail?.address1, inv.AddressDetail?.city, inv.AddressDetail?.pincode]
+                                                                                                    .filter(Boolean)
+                                                                                                    .join(', ') || '—'}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                )}
+                                                            </Fragment>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
 
@@ -595,8 +949,8 @@ if (userData?.partner?.userType_id) {
                                     </div>
                                 )}
 
-                                {/* Profile Header - Only show for userType 2 */}
-                                {(userType === 2 || userType === 4 || userType === 6) && (
+                                {/* Profile Header - Only show for userType 2 (investor) and 6 (BC) */}
+                                {(userType === 2 || userType === 6) && (
                                     <div className="bg-white rounded-2xl shadow-sm overflow-hidden mb-4 border border-gray-100">
                                         {/* Gradient banner with avatar + name */}
                                         <div className="bg-gradient-to-r from-[#F59E0B] to-[#D97706] px-6 py-6">
@@ -610,9 +964,9 @@ if (userData?.partner?.userType_id) {
                                                     </h2>
                                                     <p className="text-white/80 text-sm mt-0.5">{profileView.memberTypeLabel}</p>
                                                     <div className="flex flex-wrap items-center gap-2 mt-3">
-                                                        {profileView.isKycDone ? (
+                                                        {kycVerified ? (
                                                             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-green-50 text-green-700 border border-green-200">
-                                                                <FiCheckCircle className="w-3 h-3" /> KYC Verified
+                                                                <FiCheckCircle className="w-3 h-3" /> KYC Verified{hasUcc && !profileView.isKycDone ? " (via NSE)" : ""}
                                                             </span>
                                                         ) : (
                                                             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-red-50 text-red-700 border border-red-200">
@@ -625,8 +979,10 @@ if (userData?.partner?.userType_id) {
                                                             </span>
                                                         )}
                                                         {hasUcc && (
-                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-white/95 text-[#D97706]">
-                                                                <FiCheckCircle className="w-3 h-3" /> NSE UCC {profileView.uccClientCode || "Created"}
+                                                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-white text-green-700 border-2 border-green-400 shadow-sm">
+                                                                <FiCheckCircle className="w-3.5 h-3.5 text-green-600" />
+                                                                <span>NSE UCC</span>
+                                                                <span className="font-mono font-bold text-green-800 tracking-wide">{profileView.uccClientCode || "Created"}</span>
                                                             </span>
                                                         )}
                                                         <span
@@ -659,7 +1015,12 @@ if (userData?.partner?.userType_id) {
                                                         onClick={() => {
                                                             removeLS(MEMBER_DATA);
                                                             removeLS(ADD_MEMBER);
-                                                            router.push(`/kyc-quick-summary`);
+                                                            // UCC-only investors → NSE UCC form; CAN investors → MFU summary.
+                                                            if (hasUcc && !profileView.isCanRegistered) {
+                                                                router.push(`/create-ucc`);
+                                                            } else {
+                                                                router.push(`/kyc-quick-summary`);
+                                                            }
                                                         }}
                                                         className="px-4 py-1.5 rounded-full bg-[#F59E0B] text-white text-xs font-semibold hover:bg-[#D97706] transition-colors"
                                                     >
@@ -737,6 +1098,52 @@ if (userData?.partner?.userType_id) {
                                                     <div className="font-semibold text-gray-800 truncate" title={profileView.email}>{profileView.email || "—"}</div>
                                                 </div>
                                             </div>
+                                            {profileView.gender && (
+                                                <div className="flex items-start gap-3">
+                                                    <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center flex-shrink-0">
+                                                        <FiUser className="w-4 h-4" />
+                                                    </div>
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Gender</div>
+                                                        <div className="font-semibold text-gray-800">{profileView.gender}</div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {profileView.maritalStatus && (
+                                                <div className="flex items-start gap-3">
+                                                    <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center flex-shrink-0">
+                                                        <FiUser className="w-4 h-4" />
+                                                    </div>
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Marital Status</div>
+                                                        <div className="font-semibold text-gray-800">{profileView.maritalStatus}</div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {profileView.occupation && (
+                                                <div className="flex items-start gap-3">
+                                                    <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center flex-shrink-0">
+                                                        <FiCreditCard className="w-4 h-4" />
+                                                    </div>
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Occupation</div>
+                                                        <div className="font-semibold text-gray-800">{profileView.occupation}</div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {profileView.aadhaarNo && (
+                                                <div className="flex items-start gap-3">
+                                                    <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center flex-shrink-0">
+                                                        <FiCreditCard className="w-4 h-4" />
+                                                    </div>
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Aadhaar</div>
+                                                        <div className="font-mono font-semibold text-gray-800">
+                                                            {`XXXX-XXXX-${profileView.aadhaarNo.slice(-4)}`}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
                                             <div className="flex items-start gap-3 md:col-span-2">
                                                 <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center flex-shrink-0">
                                                     <FiMapPin className="w-4 h-4" />
@@ -751,7 +1158,7 @@ if (userData?.partner?.userType_id) {
                                                     <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center flex-shrink-0">
                                                         <FiHome className="w-4 h-4" />
                                                     </div>
-                                                    <div className="min-w-0 flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                                    <div className="min-w-0 flex-1 grid grid-cols-1 sm:grid-cols-4 gap-3">
                                                         <div>
                                                             <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Bank</div>
                                                             <div className="font-semibold text-gray-800 truncate" title={profileView.bankName}>{profileView.bankName || "—"}</div>
@@ -766,6 +1173,12 @@ if (userData?.partner?.userType_id) {
                                                             <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">IFSC</div>
                                                             <div className="font-mono font-semibold text-gray-800">{profileView.bankIfsc || "—"}</div>
                                                         </div>
+                                                        {profileView.bankBranch && (
+                                                            <div>
+                                                                <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Branch</div>
+                                                                <div className="font-semibold text-gray-800 truncate" title={profileView.bankBranch}>{profileView.bankBranch}</div>
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </div>
                                             )}
@@ -778,6 +1191,17 @@ if (userData?.partner?.userType_id) {
                                                     <div className="font-semibold text-gray-800">{profileView.accountHolding || "Not Linked"}</div>
                                                 </div>
                                             </div>
+                                            {profileView.holdingNature && (
+                                                <div className="flex items-start gap-3">
+                                                    <div className="w-8 h-8 rounded-lg bg-[#F59E0B]/10 text-[#D97706] flex items-center justify-center flex-shrink-0">
+                                                        <FiUser className="w-4 h-4" />
+                                                    </div>
+                                                    <div className="min-w-0 flex-1">
+                                                        <div className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">Holding Nature</div>
+                                                        <div className="font-semibold text-gray-800">{profileView.holdingNature}</div>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 )}

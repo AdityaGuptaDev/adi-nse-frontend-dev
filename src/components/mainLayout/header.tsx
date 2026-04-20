@@ -58,15 +58,20 @@ const Header = ({
   const userCreated = prodUserData?.partner?.userCreated ?? 0;
   //const userType1=prodUserData?.partner?.userType_id ?? 0;
 
+  // Resolve userType by priority: investor mapping wins over partner/BC so that
+  // a Users record with legacy/stale partner fields can't misroute an investor
+  // into the partner onboarding flow.
   let userType;
+  if (prodUserData?.InvestorRegistration?.userType_id) {
+    userType = prodUserData.InvestorRegistration.userType_id;
+  } else if (prodUserData?.partner?.userType_id) {
+    userType = prodUserData.partner.userType_id;
+  } else if (prodUserData?.BC?.userType_id) {
+    userType = prodUserData.BC.userType_id;
+  } else {
+    userType = prodUserData?.userTypeId ?? 0;
+  }
 
-if (prodUserData?.partner?.userType_id) {
-  userType = prodUserData.partner.userType_id;
-} else {
-  userType = prodUserData?.userTypeId ?? 0;
-}
-
-console.log("partner----",userType)
   let targetLink = "/my-profile";
   if (userType === 4) {
     targetLink =
@@ -83,7 +88,7 @@ console.log("partner----",userType)
         : `/bcOnboarding?mobile=${partnerMobile}`;
   }
 
-  if ( userType===2 ) {
+  if (userType === 2) {
     targetLink = "/my-profile";
   }
 

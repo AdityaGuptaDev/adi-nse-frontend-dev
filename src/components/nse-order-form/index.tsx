@@ -2,7 +2,8 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import api from "@/utils/api";
-import { handleServerError, toastAlert } from "@/utils/helpers";
+import { getLS, handleServerError, toastAlert } from "@/utils/helpers";
+import { USER_DATA } from "@/utils/constants";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FiArrowLeft, FiCopy, FiCheck, FiUpload, FiAlertTriangle } from "react-icons/fi";
 
@@ -298,11 +299,36 @@ export default function NseOrderForm() {
   const [aofErrorRemark, setAofErrorRemark] = useState<string>("");
   const [showAofUpload, setShowAofUpload] = useState(false);
 
-  // Fetch investors for UCC selection
+  // Fetch investors for UCC selection, scoped to who's logged in:
+  //  • Investor (userType 2) → only their own UCC
+  //  • Partner  (userType 4) → only investors mapped to this partner
+  //  • Admin/RM/other         → unscoped (full list)
   useEffect(() => {
     (async () => {
       try {
-        const res = await api.get("/nse/ucc/investor-list", { params: { limit: 100, ucc_status: "created" } });
+        const params: any = { limit: 100, ucc_status: "created" };
+
+        const userData: any = getLS(USER_DATA);
+        const userTypeId =
+          userData?.InvestorRegistration?.userType_id ??
+          userData?.partner?.userType_id ??
+          userData?.userTypeId;
+
+        if (userTypeId === 2) {
+          const investorId = userData?.InvestorRegistration?.id;
+          const investorMobile =
+            userData?.InvestorRegistration?.reg_mobile ||
+            userData?.InvestorRegistration?.mobile ||
+            userData?.mobile;
+          if (investorId) params.investor_id = investorId;
+          if (investorMobile) {
+            params.mobile = String(investorMobile).replace(/\D/g, "").slice(-10);
+          }
+        } else if (userTypeId === 4 && userData?.partner?.regId) {
+          params.partner_id = userData.partner.regId;
+        }
+
+        const res = await api.get("/nse/ucc/investor-list", { params });
         const payload = res?.data?.data ?? res?.data ?? {};
         if (payload?.status === "S" && payload?.data?.investors) {
           setInvestors(payload.data.investors);

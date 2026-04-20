@@ -13,6 +13,7 @@ import OTPScreen from "./OTPScreen";
 import api from "@/utils/api";
 import { decrypt } from "@/utils/aesmfu";
 import { handleServerError, toastAlert } from "@/utils/helpers";
+import OnBoarding from "@/components/on-boarding";
 
 
 const schema = yup.object({
@@ -60,6 +61,7 @@ export default function RegisterForm() {
         userId: null,
         userType: null,
     });
+    const [showOnBoarding, setShowOnBoarding] = useState(false);
     //const [parentId, setParentId] = useState<string | null>(null);
 
 
@@ -241,11 +243,18 @@ export default function RegisterForm() {
                             closeModal={() => setIsOtpOpen(false)}
                             mobile={submittedMobile}
                             parentData={parentData}
+                            onShowOnBoarding={() => setShowOnBoarding(true)}
                         />
                     </div>
                 </div>
             )}
 
+            {showOnBoarding && (
+                <OnBoarding
+                    onBoardingModal={showOnBoarding}
+                    mandatory={true}
+                />
+            )}
 
         </div>
     );
