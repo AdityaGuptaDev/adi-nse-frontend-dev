@@ -185,6 +185,11 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
     // undefined (reading 'micr')` when Redeem/Switch/SWP/STP tried to submit
     // before the fetch resolved.
     const [bankByFolio, setBankByFolio] = useState<any[]>([])
+    // Fallback bank for Redeem / SWP when the `search_by_folio` lookup comes
+    // back empty (common for newer folios that aren't mapped yet in the DB).
+    // We load the investor's primary bank once on mount so the payout leg
+    // always has usable MICR / IFSC / account details.
+    const [investorBanks, setInvestorBanks] = useState<any[]>([])
 
 
 
@@ -260,6 +265,22 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
             setInvestorPortfolio(response?.data?.data?.data || []);
         }
         fetch(investorList[0]?.id);
+
+        // Pre-load the investor's own bank accounts so Redeem / SWP have a
+        // fallback payout bank when `search_by_folio` returns empty (the
+        // "Bank details for this folio are not available yet" case).
+        const loadInvestorBanks = async () => {
+            try {
+                const id = investorList[0]?.id;
+                if (!id) return;
+                const resp = await getBankAccount(id);
+                const rows = resp?.data?.data?.data ?? [];
+                setInvestorBanks(Array.isArray(rows) ? rows : []);
+            } catch (e) {
+                console.warn("loadInvestorBanks failed:", e);
+            }
+        };
+        loadInvestorBanks();
 
         const filteredOptions = orderTypes.filter(
             opt => !["STP", "SWP", "Switch", "Redeem"].includes(opt.label)
@@ -567,6 +588,11 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
     const handleTransact = async () => {
         setIsLoading(true)
+        // Clear any stale error banners from a previous submit attempt so the
+        // user doesn't see "Please select Payment Method?" after having picked
+        // one, or last MFU rejection lingering on a fresh try.
+        setExceptions({ value: false, message: "" })
+        setTransactionError("")
         if (redType === "All Units") {
             setAmount(availableUnits?.toString() || "")
         }
@@ -585,13 +611,23 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
             return
         }
 
-        // Redeem / Switch / SWP / STP need the investor's bank mapped to the
-        // folio so MFU knows where to credit proceeds. Fail fast with a clear
-        // message instead of crashing on `folioBank?.micr`.
-        const needsFolioBank = ["R", "O", "J", "Y"].includes(transactionType);
-        const folioBank: any = Array.isArray(bankByFolio) && bankByFolio.length > 0 ? bankByFolio[0] : null;
-        if (needsFolioBank && !folioBank) {
-            toast.error("Bank details for this folio are not available yet. Please wait a moment and try again, or re-select the folio.");
+        // Only Redeem (R) and SWP (J) actually have a bank leg — they credit
+        // proceeds to the investor's account. Switch (O) and STP (Y) are
+        // scheme-to-scheme and need no bank at all, so blocking them on
+        // `search_by_folio` (which is often empty for new folios) left those
+        // tabs unusable. For R/J we prefer the folio-mapped bank and fall
+        // back to the investor's primary bank on file.
+        const folioBankPrimary: any =
+            Array.isArray(bankByFolio) && bankByFolio.length > 0 ? bankByFolio[0] : null;
+        const investorBankPrimary: any =
+            Array.isArray(investorBanks) && investorBanks.length > 0 ? investorBanks[0] : null;
+        const folioBank: any = folioBankPrimary ?? investorBankPrimary;
+
+        const needsPayoutBank = transactionType === "R" || transactionType === "J";
+        if (needsPayoutBank && !folioBank) {
+            toast.error(
+                "No bank account is available for payout on this folio. Please add a bank to the investor profile and try again."
+            );
             setIsLoading(false);
             return;
         }

@@ -85,6 +85,25 @@ export default function SipPage() {
   const [categories, setCategories] = useState<Array<{ id: string, name: string }>>([]);
   const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
 
+  // Advanced sub-category filter. Opens when the user clicks a specific
+  // category pill (Equity / Debt / Hybrid / Others) while the SIP amount is
+  // above ₹1000; the drawer then lists only that category's sub-categories,
+  // matching the Top Performing Schemes filter UX.
+  const [showAdvancedFilter, setShowAdvancedFilter] = useState<boolean>(false);
+  const [selectedSubCategories, setSelectedSubCategories] = useState<number[]>([]);
+  const [pendingSubCategories, setPendingSubCategories] = useState<number[]>([]);
+
+  // Per-category pagination for the Select Fund list. First page shows the
+  // top 5; subsequent pages load the next 5 via the backend.
+  const [fundPage, setFundPage] = useState<number>(1);
+  const FUND_PAGE_SIZE = 5;
+  const [categoryTotals, setCategoryTotals] = useState<Record<string, number>>({});
+  // Map: categoryName -> [{ id, name }]  — built from the funds payload so the
+  // drawer only offers subcategories that actually have funds loaded.
+  const [subCategoryIndex, setSubCategoryIndex] = useState<
+    Record<string, Array<{ id: number; name: string }>>
+  >({});
+
   // State for SIP schedule
   const [freq, setFreq] = useState("M");
   const [sipDate, setSipDate] = useState<Date | null>(null);
@@ -215,7 +234,61 @@ export default function SipPage() {
     setLoaded(true);
     loadUserData();
     fetchTopPerformingFunds();
+    fetchFullSubCategoryTaxonomy();
   }, []);
+
+  // Pull the complete Category → Sub-Category taxonomy using the dedicated
+  // lightweight endpoints the Fund Explorer also consumes:
+  //   GET /scheme/get-allscheme-category            → [{ ID, Name }]
+  //   GET /scheme/get-allscheme-subcategory/:id     → [{ Id, Name, category_id }]
+  // The Top Performing Schemes page drives its filter drawer off the same
+  // Scheme / SchemeSubcategory tables — we just avoid the heavier
+  // `/mutual-fund/get-mutual-fund-classes-scheme` endpoint because it needs
+  // `MakeQuery` params (limit / sort / page) that aren't relevant for the
+  // taxonomy-only lookup, and missing them returned nothing.
+  const fetchFullSubCategoryTaxonomy = async () => {
+    try {
+      const catRes = await api.get(`/scheme/get-allscheme-category`);
+      const cats: any[] = catRes?.data?.data ?? catRes?.data ?? [];
+      const parsedCats: Array<{ id: number; name: string }> = (
+        Array.isArray(cats) ? cats : []
+      )
+        .map((c: any) => ({
+          id: Number(c?.ID ?? c?.id ?? 0),
+          name: c?.Name ?? c?.name ?? ""
+        }))
+        .filter(c => c.id && c.name);
+
+      if (parsedCats.length === 0) return;
+
+      const taxonomy: Record<string, Array<{ id: number; name: string }>> = {};
+      await Promise.all(
+        parsedCats.map(async cat => {
+          try {
+            const subRes = await api.get(
+              `/scheme/get-allscheme-subcategory/${cat.id}`
+            );
+            const subs: any[] = subRes?.data?.data ?? subRes?.data ?? [];
+            taxonomy[cat.name] = (Array.isArray(subs) ? subs : [])
+              .map((s: any) => ({
+                id: Number(s?.Id ?? s?.id ?? 0),
+                name: s?.Name ?? s?.name ?? ""
+              }))
+              .filter(s => s.id && s.name);
+          } catch (e) {
+            console.warn(
+              `get-allscheme-subcategory failed for ${cat.name}:`,
+              e
+            );
+            taxonomy[cat.name] = [];
+          }
+        })
+      );
+      setSubCategoryIndex(taxonomy);
+    } catch (error) {
+      console.warn("fetchFullSubCategoryTaxonomy failed:", error);
+    }
+  };
 
   // Fetch CAN ID and bank data when investor ID is available
   useEffect(() => {
@@ -224,6 +297,39 @@ export default function SipPage() {
       fetchBank();
     }
   }, [investorId]);
+
+  // Note: the drawer is NO LONGER auto-opened on custom amount > ₹1000.
+  // Per product spec it opens only when the user clicks a specific category
+  // pill (Equity / Debt / Hybrid / Others) with amount > ₹1000, so they
+  // explicitly pick a category first and then narrow by sub-category.
+
+  // When the user Applies a sub-category selection from the drawer, ask the
+  // backend for top-N performers WITHIN those sub-categories — mirroring the
+  // Fund Explorer. Without this the SIP page would keep showing only the
+  // globally-top 5 per broad category, which almost never overlap with a
+  // specific sub-category like Large-Cap / Flexi Cap / ELSS.
+  //
+  // `fundPage` is also in the dependency list so clicking Page 2/3/… asks
+  // the backend for the next slice of 5 funds without losing the active
+  // filter context.
+  const hasMounted = useRef(false);
+  useEffect(() => {
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      return;
+    }
+    fetchTopPerformingFunds(
+      selectedSubCategories.length > 0 ? selectedSubCategories : undefined,
+      fundPage
+    );
+  }, [selectedSubCategories, fundPage]);
+
+  // Whenever the active category or sub-category selection changes, reset
+  // back to page 1 so the user sees the first page of the newly-filtered
+  // list instead of a stale high page number.
+  useEffect(() => {
+    setFundPage(1);
+  }, [selectedCategory, selectedSubCategories]);
 
   // Function to check if a fund supports the selected frequency
   const doesFundSupportFrequency = (fund: any, frequency: string): boolean => {
@@ -274,6 +380,12 @@ export default function SipPage() {
     return dates;
   };
 
+  // Normalize a category label so "Equity ", "equity", "EQUITY" all compare
+  // equal. Prevents a trailing space or casing drift in the API from
+  // breaking the "Equity / Debt / Hybrid / Others" filter buttons.
+  const normalizeCategory = (value: any): string =>
+    (value ?? "").toString().trim().toLowerCase();
+
   // Filter funds based on amount, category, and frequency
   useEffect(() => {
     if (funds.length > 0) {
@@ -284,30 +396,56 @@ export default function SipPage() {
         return minAmtForFreq <= amount;
       });
 
+      // Counts are computed BEFORE the category filter so each pill always
+      // reflects the total matching that category for the current freq/amount,
+      // regardless of which pill is currently selected.
       const counts: Record<string, number> = {};
       filtered.forEach(fund => {
-        counts[fund.category] = (counts[fund.category] || 0) + 1;
+        const key = fund.category || "Others";
+        counts[key] = (counts[key] || 0) + 1;
       });
       setCategoryCounts(counts);
 
-      if (selectedCategory !== "All") {
-        filtered = filtered.filter(f => f.category === selectedCategory);
+      if (selectedCategory && selectedCategory !== "All") {
+        const target = normalizeCategory(selectedCategory);
+        filtered = filtered.filter(
+          f => normalizeCategory(f.category) === target
+        );
+      }
+
+      // Advanced sub-category filter (only applied when user has picked at
+      // least one sub-category from the popup drawer).
+      if (selectedSubCategories.length > 0) {
+        filtered = filtered.filter(
+          f => f.subCategoryId && selectedSubCategories.includes(f.subCategoryId)
+        );
       }
 
       setFilteredFunds(filtered);
 
       if (selectedFund) {
-        const stillValid = doesFundSupportFrequency(selectedFund, freq) &&
+        const stillValid =
+          doesFundSupportFrequency(selectedFund, freq) &&
           getMinAmountForFrequency(selectedFund, freq) <= amount &&
-          (selectedCategory === "All" || selectedFund.category === selectedCategory);
+          (selectedCategory === "All" ||
+            normalizeCategory(selectedFund.category) ===
+              normalizeCategory(selectedCategory)) &&
+          (selectedSubCategories.length === 0 ||
+            (selectedFund.subCategoryId &&
+              selectedSubCategories.includes(selectedFund.subCategoryId)));
 
         if (!stillValid) {
           setSelectedFund(null);
           setActiveStep(2);
         }
       }
+    } else {
+      // No funds loaded yet — clear derived state so the "No funds" empty
+      // state can render instead of stale counts.
+      setFilteredFunds([]);
+      setCategoryCounts({});
     }
-  }, [amount, funds, selectedFund, selectedCategory, freq]);
+  }, [amount, funds, selectedFund, selectedCategory, selectedSubCategories, freq]);
 
   // Load user data from localStorage
   const loadUserData = () => {
@@ -336,11 +474,34 @@ export default function SipPage() {
     }
   };
 
-  const fetchTopPerformingFunds = async () => {
+  const fetchTopPerformingFunds = async (
+    subCategoryIds?: number[],
+    page: number = 1
+  ) => {
     setLoadingFunds(true);
     try {
-      const response = await api.get(`/mutual-fund/sip-get-top-performing-schemes`);
+      const params: Record<string, string> = {
+        page: String(page),
+        limit: String(FUND_PAGE_SIZE),
+      };
+      if (Array.isArray(subCategoryIds) && subCategoryIds.length > 0) {
+        params.subCategory = subCategoryIds.join(",");
+      }
+      const response = await api.get(
+        `/mutual-fund/sip-get-top-performing-schemes`,
+        { params }
+      );
       console.log("Top Performing schemes:=", response)
+      // Capture per-category total counts so we can render Page X of Y.
+      if (response.data?.data && Array.isArray(response.data.data)) {
+        const totals: Record<string, number> = {};
+        response.data.data.forEach((cat: any) => {
+          if (cat?.categoryName) {
+            totals[cat.categoryName] = Number(cat?.totalCount) || 0;
+          }
+        });
+        setCategoryTotals(totals);
+      }
       if (response.data?.data && response.data.data.length > 0) {
 
         const categoryList = response.data.data.map((cat: any) => ({
@@ -360,11 +521,21 @@ export default function SipPage() {
 
             const minAmountDetails = scheme.minAmount || [];
 
+            const subCategoryRaw =
+              schemeMaster.SchemeSubcategory || schemeMaster.scheme_subcategory || null;
+            const subCategoryId = Number(
+              subCategoryRaw?.Id ?? subCategoryRaw?.id ?? 0
+            ) || null;
+            const subCategoryName =
+              subCategoryRaw?.Name || subCategoryRaw?.name || null;
+
             return {
               id: scheme.id || schemeMaster.id || `${catIndex}-${index}`,
               name: schemeMaster.ms_fullname || scheme.scheme_name || "Unknown Fund",
               category: category.categoryName || schemeMaster.SchemeCategory?.Name || "Equity",
               categoryId: category.id,
+              subCategoryId,
+              subCategoryName,
               minAmount: 100,
               minAmountDetails: minAmountDetails,
               returns1Y: parseFloat(scheme.Return1yr || scheme.returns_1yr || 0),
@@ -386,6 +557,11 @@ export default function SipPage() {
           }).filter((fund: any) => fund !== null);
         });
         setFunds(transformedFunds);
+        // Sub-category taxonomy is populated separately from
+        // `/mutual-fund/get-mutual-fund-classes-scheme` (same API Fund
+        // Explorer / Top Performing Schemes use) so the Advanced Filter
+        // drawer lists every valid option, not just the ones present in
+        // the small SIP top-performer sample.
       } else {
         setFunds([]);
       }
@@ -811,14 +987,73 @@ export default function SipPage() {
     setSelectedCategory("All");
   };
 
-  // Handle category selection
+  // Handle category selection.
+  // Behaviour per product spec:
+  //  • For preset amounts (≤ ₹1000 cards) → just switch the filter as before.
+  //  • For custom amounts > ₹1000 → clicking Equity / Debt / Hybrid / Others
+  //    additionally opens the drawer, already scoped to THAT category's
+  //    sub-categories. Clicking "All" never opens the drawer.
   const handleCategoryChange = (categoryName: string) => {
     setSelectedCategory(categoryName);
     setSelectedFund(null);
+    // Reset any previously applied sub-category picks when switching
+    // category so the drawer starts fresh.
+    setSelectedSubCategories([]);
+    setPendingSubCategories([]);
+
+    const shouldOpenDrawer =
+      amount > 1000 && categoryName !== "All";
+    if (shouldOpenDrawer) {
+      setShowAdvancedFilter(true);
+    }
 
     if (isMobile) {
       setShowMobileMenu(false);
     }
+  };
+
+  // Advanced sub-category filter — drawer-level handlers. The `pending`
+  // array is the user's in-progress selection; we only commit it to
+  // `selectedSubCategories` when they click Apply.
+  const openAdvancedFilter = () => {
+    setPendingSubCategories(selectedSubCategories);
+    setShowAdvancedFilter(true);
+  };
+
+  const toggleSubCategory = (subCategoryId: number) => {
+    setPendingSubCategories(prev =>
+      prev.includes(subCategoryId)
+        ? prev.filter(id => id !== subCategoryId)
+        : [...prev, subCategoryId]
+    );
+  };
+
+  const applyAdvancedFilter = () => {
+    setSelectedSubCategories(pendingSubCategories);
+    setShowAdvancedFilter(false);
+    setSelectedFund(null);
+  };
+
+  const resetAdvancedFilter = () => {
+    setPendingSubCategories([]);
+    setSelectedSubCategories([]);
+  };
+
+  // Full list of subcategories to show in the drawer. If a category pill is
+  // active we narrow to that category, otherwise we surface every category's
+  // subcategories grouped by category header — matching the reference UX
+  // from the Top Performing Schemes filter drawer.
+  const advancedFilterGroups = (): Array<{
+    category: string;
+    items: Array<{ id: number; name: string }>;
+  }> => {
+    if (selectedCategory && selectedCategory !== "All") {
+      const items = subCategoryIndex[selectedCategory] || [];
+      return items.length ? [{ category: selectedCategory, items }] : [];
+    }
+    return Object.entries(subCategoryIndex)
+      .filter(([, items]) => items.length > 0)
+      .map(([category, items]) => ({ category, items }));
   };
 
   const toggleMobileMenu = () => {
@@ -1166,7 +1401,7 @@ export default function SipPage() {
                 </div>
 
                 {/* Category Filter in Mobile Menu */}
-                {categories.length > 0 && amount > 0 && (
+                {categories.length > 0 && (
                   <div style={{ marginBottom: "24px" }}>
                     <h4 style={{ fontSize: "14px", fontWeight: "600", color: theme.textSecondary, marginBottom: "12px" }}>
                       Filter by Category
@@ -1174,31 +1409,34 @@ export default function SipPage() {
                     <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                       {categories.map((category) => {
                         const count = categoryCounts[category.name] || 0;
+                        const isSelected = normalizeCategory(selectedCategory) === normalizeCategory(category.name);
+                        const isDisabled = category.name !== "All" && count === 0;
                         return (
                           <motion.button
                             key={category.id}
+                            type="button"
                             whileTap={{ scale: 0.95 }}
-                            onClick={() => handleCategoryChange(category.name)}
+                            onClick={() => !isDisabled && handleCategoryChange(category.name)}
                             style={{
                               padding: "12px",
                               borderRadius: "12px",
                               border: "none",
-                              background: selectedCategory === category.name ? theme.primary : theme.accent,
-                              color: selectedCategory === category.name ? "#fff" : theme.textSecondary,
+                              background: isSelected ? theme.primary : theme.accent,
+                              color: isSelected ? "#fff" : theme.textSecondary,
                               fontSize: "14px",
                               fontWeight: "500",
-                              cursor: category.name === "All" || count > 0 ? "pointer" : "not-allowed",
+                              cursor: isDisabled ? "not-allowed" : "pointer",
                               display: "flex",
                               justifyContent: "space-between",
                               alignItems: "center",
-                              opacity: category.name !== "All" && count === 0 ? 0.5 : 1
+                              opacity: isDisabled ? 0.5 : 1
                             }}
-                            disabled={category.name !== "All" && count === 0}
+                            disabled={isDisabled}
                           >
                             <span>{category.name}</span>
                             {category.name !== "All" && (
                               <span style={{
-                                background: selectedCategory === category.name ? "rgba(255,255,255,0.2)" : `${theme.primary}20`,
+                                background: isSelected ? "rgba(255,255,255,0.2)" : `${theme.primary}20`,
                                 padding: "2px 8px",
                                 borderRadius: "12px",
                                 fontSize: "12px"
@@ -2057,8 +2295,72 @@ export default function SipPage() {
                 <ArrowRight size={isMobile ? 14 : 16} />
               </motion.button>
 
-              {/* Category Filter Buttons - Desktop */}
-              {!isMobile && categories.length > 0 && amount > 0 && (
+              {/* Advanced Filter button — shown once the user goes beyond
+                  the ₹1000 preset. Clicking opens the sub-category drawer.
+                  Also displays any active filters as a chip count so the
+                  user knows a filter is in effect. */}
+              {!isMobile && amount > 1000 && Object.keys(subCategoryIndex).length > 0 && (
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  marginBottom: "12px"
+                }}>
+                  <button
+                    type="button"
+                    onClick={openAdvancedFilter}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      padding: "8px 14px",
+                      borderRadius: "12px",
+                      border: `1px solid ${theme.primary}`,
+                      background: selectedSubCategories.length > 0 ? theme.primary : "transparent",
+                      color: selectedSubCategories.length > 0 ? "#fff" : theme.primary,
+                      fontSize: "13px",
+                      fontWeight: 600,
+                      cursor: "pointer"
+                    }}
+                  >
+                    <Filter size={14} />
+                    Advanced Filter
+                    {selectedSubCategories.length > 0 && (
+                      <span style={{
+                        background: "rgba(255,255,255,0.25)",
+                        padding: "1px 7px",
+                        borderRadius: "10px",
+                        fontSize: "11px"
+                      }}>
+                        {selectedSubCategories.length}
+                      </span>
+                    )}
+                  </button>
+                  {selectedSubCategories.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={resetAdvancedFilter}
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        color: theme.textSecondary,
+                        fontSize: "12px",
+                        textDecoration: "underline",
+                        cursor: "pointer"
+                      }}
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              )}
+
+              {/* Category Filter Buttons - Desktop. Previously hidden whenever
+                  amount === 0, which made the filter look broken before the
+                  user typed an amount. We now show them whenever categories
+                  have loaded; the "No funds" empty state below communicates
+                  the amount / frequency status. */}
+              {!isMobile && categories.length > 0 && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -2075,35 +2377,38 @@ export default function SipPage() {
                 >
                   {categories.map((category) => {
                     const count = categoryCounts[category.name] || 0;
+                    const isSelected = normalizeCategory(selectedCategory) === normalizeCategory(category.name);
+                    const isDisabled = category.name !== "All" && count === 0;
                     return (
                       <motion.button
                         key={category.id}
+                        type="button"
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => handleCategoryChange(category.name)}
+                        onClick={() => !isDisabled && handleCategoryChange(category.name)}
                         style={{
                           padding: "8px 16px",
                           borderRadius: "20px",
                           border: "none",
-                          background: selectedCategory === category.name ? theme.primary : theme.accent,
-                          color: selectedCategory === category.name ? "#fff" : theme.textSecondary,
+                          background: isSelected ? theme.primary : theme.accent,
+                          color: isSelected ? "#fff" : theme.textSecondary,
                           fontSize: "13px",
                           fontWeight: "500",
-                          cursor: category.name === "All" || count > 0 ? "pointer" : "not-allowed",
+                          cursor: isDisabled ? "not-allowed" : "pointer",
                           whiteSpace: "nowrap",
                           transition: "all 0.2s",
-                          opacity: category.name !== "All" && count === 0 ? 0.5 : 1
+                          opacity: isDisabled ? 0.5 : 1
                         }}
-                        disabled={category.name !== "All" && count === 0}
+                        disabled={isDisabled}
                       >
                         {category.name}
                         {category.name !== "All" && (
                           <span style={{
                             marginLeft: "6px",
                             fontSize: "11px",
-                            background: selectedCategory === category.name ? "rgba(255,255,255,0.2)" : `${theme.primary}20`,
+                            background: isSelected ? "rgba(255,255,255,0.2)" : `${theme.primary}20`,
                             padding: "2px 6px",
                             borderRadius: "12px",
-                            color: selectedCategory === category.name ? "#fff" : theme.primary
+                            color: isSelected ? "#fff" : theme.primary
                           }}>
                             {count}
                           </span>
@@ -2160,11 +2465,16 @@ export default function SipPage() {
                   </div>
                 </div>
               ) : (
-                <div style={{
-                  maxHeight: isMobile ? "350px" : "400px",
-                  overflowY: "auto",
-                  paddingRight: "4px"
-                }}>
+                <div
+                  // Re-mount the scroll container whenever the category pill
+                  // changes — otherwise the old list stayed scrolled/cached
+                  // and users thought the filter "did nothing".
+                  key={`fundlist-${selectedCategory}-${freq}`}
+                  style={{
+                    maxHeight: isMobile ? "350px" : "400px",
+                    overflowY: "auto",
+                    paddingRight: "4px"
+                  }}>
                   {filteredFunds.map((fund, index) => {
                     const isSelected = selectedFund?.id === fund.id;
                     const minAmtForFreq = getMinAmountForFrequency(fund, freq);
@@ -2330,9 +2640,133 @@ export default function SipPage() {
                   })}
                 </div>
               )}
+
+              {/* Pagination strip. Each broad category returns its own total
+                  count from the backend; we show pages for the currently
+                  active category (or max count when "All" is selected so
+                  investors can reach every category's page-2, page-3, …
+                  without changing tabs). */}
+              {(() => {
+                const total =
+                  selectedCategory === "All"
+                    ? Math.max(0, ...Object.values(categoryTotals))
+                    : categoryTotals[selectedCategory] || 0;
+                const totalPages = Math.max(1, Math.ceil(total / FUND_PAGE_SIZE));
+                if (total <= FUND_PAGE_SIZE) return null;
+                const pagesToShow: number[] = [];
+                const maxButtons = isMobile ? 5 : 7;
+                let start = Math.max(1, fundPage - Math.floor(maxButtons / 2));
+                const end = Math.min(totalPages, start + maxButtons - 1);
+                start = Math.max(1, end - maxButtons + 1);
+                for (let p = start; p <= end; p++) pagesToShow.push(p);
+
+                return (
+                  <div style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "6px",
+                    marginTop: "16px",
+                    flexWrap: "wrap"
+                  }}>
+                    <button
+                      type="button"
+                      disabled={fundPage <= 1}
+                      onClick={() => setFundPage(p => Math.max(1, p - 1))}
+                      style={{
+                        padding: "6px 10px",
+                        borderRadius: "8px",
+                        border: `1px solid ${theme.border}`,
+                        background: "transparent",
+                        color: fundPage <= 1 ? theme.textSecondary : theme.textPrimary,
+                        cursor: fundPage <= 1 ? "not-allowed" : "pointer",
+                        fontSize: "12px"
+                      }}
+                    >
+                      ‹ Prev
+                    </button>
+                    {start > 1 && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => setFundPage(1)}
+                          style={{
+                            padding: "6px 10px",
+                            borderRadius: "8px",
+                            border: "none",
+                            background: theme.accent,
+                            color: theme.textPrimary,
+                            cursor: "pointer",
+                            fontSize: "12px"
+                          }}
+                        >1</button>
+                        {start > 2 && (
+                          <span style={{ color: theme.textSecondary, fontSize: "12px" }}>…</span>
+                        )}
+                      </>
+                    )}
+                    {pagesToShow.map(p => (
+                      <button
+                        key={p}
+                        type="button"
+                        onClick={() => setFundPage(p)}
+                        style={{
+                          padding: "6px 10px",
+                          borderRadius: "8px",
+                          border: "none",
+                          background: p === fundPage ? theme.primary : theme.accent,
+                          color: p === fundPage ? "#fff" : theme.textPrimary,
+                          cursor: "pointer",
+                          fontSize: "12px",
+                          fontWeight: p === fundPage ? 600 : 500,
+                          minWidth: "32px"
+                        }}
+                      >
+                        {p}
+                      </button>
+                    ))}
+                    {end < totalPages && (
+                      <>
+                        {end < totalPages - 1 && (
+                          <span style={{ color: theme.textSecondary, fontSize: "12px" }}>…</span>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => setFundPage(totalPages)}
+                          style={{
+                            padding: "6px 10px",
+                            borderRadius: "8px",
+                            border: "none",
+                            background: theme.accent,
+                            color: theme.textPrimary,
+                            cursor: "pointer",
+                            fontSize: "12px"
+                          }}
+                        >{totalPages}</button>
+                      </>
+                    )}
+                    <button
+                      type="button"
+                      disabled={fundPage >= totalPages}
+                      onClick={() => setFundPage(p => Math.min(totalPages, p + 1))}
+                      style={{
+                        padding: "6px 10px",
+                        borderRadius: "8px",
+                        border: `1px solid ${theme.border}`,
+                        background: "transparent",
+                        color: fundPage >= totalPages ? theme.textSecondary : theme.textPrimary,
+                        cursor: fundPage >= totalPages ? "not-allowed" : "pointer",
+                        fontSize: "12px"
+                      }}
+                    >
+                      Next ›
+                    </button>
+                  </div>
+                );
+              })()}
             </motion.div>
 
-         
+
 
             {/* Step 4 - Start Date Selection - Responsive */}
             {selectedFund && (
@@ -2999,6 +3433,195 @@ export default function SipPage() {
             </motion.button>
           </div>
         )}
+
+        {/* Advanced Sub-Category Filter Drawer. Opened automatically when the
+            user types a custom SIP amount over ₹1000 (first time only), or on
+            demand via the "Advanced Filter" button. Mirrors the drawer on the
+            Top Performing Schemes page — checkbox grid grouped by category,
+            Reset + Apply in the footer. */}
+        <AnimatePresence>
+          {showAdvancedFilter && (
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setShowAdvancedFilter(false)}
+                style={{
+                  position: "fixed",
+                  inset: 0,
+                  background: "rgba(0,0,0,0.6)",
+                  zIndex: 1500
+                }}
+              />
+              <motion.div
+                initial={{ x: "100%" }}
+                animate={{ x: 0 }}
+                exit={{ x: "100%" }}
+                transition={{ type: "spring", damping: 28, stiffness: 240 }}
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  width: isMobile ? "100%" : "420px",
+                  background: theme.cardBg,
+                  borderLeft: `1px solid ${theme.border}`,
+                  zIndex: 1501,
+                  display: "flex",
+                  flexDirection: "column"
+                }}
+              >
+                <div style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: "16px 20px",
+                  borderBottom: `1px solid ${theme.border}`
+                }}>
+                  <h3 style={{
+                    margin: 0,
+                    fontSize: "16px",
+                    fontWeight: 600,
+                    color: theme.textPrimary
+                  }}>
+                    {selectedCategory !== "All" ? selectedCategory : "Filter by Sub-Category"}
+                  </h3>
+                  <button
+                    type="button"
+                    onClick={() => setShowAdvancedFilter(false)}
+                    style={{
+                      background: "transparent",
+                      border: "none",
+                      color: theme.textSecondary,
+                      cursor: "pointer",
+                      padding: "4px"
+                    }}
+                  >
+                    <X size={20} />
+                  </button>
+                </div>
+
+                <div style={{
+                  flex: 1,
+                  overflowY: "auto",
+                  padding: "16px 20px"
+                }}>
+                  {advancedFilterGroups().length === 0 && (
+                    <div style={{
+                      textAlign: "center",
+                      padding: "40px 16px",
+                      color: theme.textSecondary,
+                      fontSize: "13px"
+                    }}>
+                      No sub-categories available for the current funds.
+                    </div>
+                  )}
+
+                  {advancedFilterGroups().map(group => (
+                    <div key={group.category} style={{ marginBottom: "20px" }}>
+                      {/* Show the category header only when we're displaying
+                          multiple categories (i.e. "All" is active). */}
+                      {selectedCategory === "All" && (
+                        <div style={{
+                          fontSize: "13px",
+                          fontWeight: 600,
+                          color: theme.primary,
+                          marginBottom: "10px"
+                        }}>
+                          {group.category}
+                        </div>
+                      )}
+                      <div style={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr",
+                        gap: "10px"
+                      }}>
+                        {group.items.map(item => {
+                          const checked = pendingSubCategories.includes(item.id);
+                          return (
+                            <label
+                              key={item.id}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "8px",
+                                padding: "8px 10px",
+                                borderRadius: "10px",
+                                border: `1px solid ${checked ? theme.primary : theme.border}`,
+                                background: checked ? `${theme.primary}22` : "transparent",
+                                cursor: "pointer",
+                                fontSize: "12px",
+                                color: theme.textPrimary
+                              }}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={checked}
+                                onChange={() => toggleSubCategory(item.id)}
+                                style={{ accentColor: theme.primary, cursor: "pointer" }}
+                              />
+                              <span style={{
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                whiteSpace: "nowrap"
+                              }}>
+                                {item.name}
+                              </span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "12px",
+                  padding: "14px 20px",
+                  borderTop: `1px solid ${theme.border}`
+                }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setPendingSubCategories([]);
+                      resetAdvancedFilter();
+                      setShowAdvancedFilter(false);
+                    }}
+                    style={{
+                      padding: "10px",
+                      borderRadius: "10px",
+                      border: `1px solid ${theme.border}`,
+                      background: "transparent",
+                      color: theme.textPrimary,
+                      fontWeight: 500,
+                      cursor: "pointer"
+                    }}
+                  >
+                    Reset
+                  </button>
+                  <button
+                    type="button"
+                    onClick={applyAdvancedFilter}
+                    style={{
+                      padding: "10px",
+                      borderRadius: "10px",
+                      border: "none",
+                      background: theme.primary,
+                      color: "#fff",
+                      fontWeight: 600,
+                      cursor: "pointer"
+                    }}
+                  >
+                    Apply
+                  </button>
+                </div>
+              </motion.div>
+            </>
+          )}
+        </AnimatePresence>
       </div>
     </>
   );

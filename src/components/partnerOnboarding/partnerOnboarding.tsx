@@ -2646,7 +2646,7 @@ const KYCVerification: React.FC = () => {
                         <span className="text-lg font-bold">○</span>
                       </div>
                     ) : (
-                      <div className="w-4 h-4 text-[#9CA3AF] mr-2 flex items-center justify-center">
+                      <div className="w-4 h-4 text-gray-500 mr-2 flex items-center justify-center">
                         <span className="text-lg font-bold">-</span>
                       </div>
                     )}
@@ -2700,7 +2700,7 @@ const KYCVerification: React.FC = () => {
                         <span className="text-lg font-bold">○</span>
                       </div>
                     ) : (
-                      <div className="w-4 h-4 text-[#9CA3AF] mr-2 flex items-center justify-center">
+                      <div className="w-4 h-4 text-gray-500 mr-2 flex items-center justify-center">
                         <span className="text-lg font-bold">-</span>
                       </div>
                     )}

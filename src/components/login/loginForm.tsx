@@ -13,7 +13,7 @@ import {
   TOKEN_PREFIX,
   USER_DATA,
 } from "@/utils/constants";
-import { handleServerError, setLS, toastAlert } from "@/utils/helpers";
+import { handleServerError, setLS } from "@/utils/helpers";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -53,12 +53,17 @@ function LoginForm() {
   const [activeTab, setActiveTab] = useState<"password" | "otp">("password");
   const [otpSent, setOtpSent] = useState(false);
   const [mobileNumber, setMobileNumber] = useState("");
-
+  
   const openModal = () => setIsOpenOtpModal(true);
   const closeModal = () => {
     setIsOpenOtpModal(false);
     setOtpSent(false);
   };
+
+  const [notification, setNotification] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
 
   const [passwordType, setpasswordType] = useState<"text" | "password">("password");
   const [loginLoading, setLoginLoading] = useState<boolean>(false);
@@ -69,6 +74,17 @@ function LoginForm() {
   const [userTypes, setUserTypes] = useState<any[]>([]);
   const [showUserTypeSelection, setShowUserTypeSelection] = useState(false);
   const [selectedUserType, setSelectedUserType] = useState<any>(null);
+
+
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => {
+        setNotification(null);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
 
   useEffect(() => {
     if (isNotVerify) {
@@ -113,7 +129,10 @@ function LoginForm() {
 
       if (userTypesData.userTypesCount === 0) {
         setLoginLoading(false);
-        toastAlert("error", "No user found with this email or mobile number");
+        setNotification({
+          type: "error",
+          message: "No user found with this email or mobile number",
+        });
         return;
       }
 
@@ -136,7 +155,10 @@ function LoginForm() {
 
         if (validUserTypes.length === 0) {
           setLoginLoading(false);
-          toastAlert("error", "Incorrect Password entered !");
+          setNotification({
+            type: "error",
+            message: "Incorrect Password entered !",
+          });
           return;
         }
 
@@ -170,7 +192,11 @@ function LoginForm() {
           if (result.data.data) {
             passwordForm.reset();
             setLoginLoading(false);
-            toastAlert("error", "Please verify email or mobile after login");
+
+            setNotification({
+              type: "error",
+              message: "Please verify email or mobile after login !",
+            });
             setUserData(result.data.data);
             setIsNotVerify(true);
             openModal();
@@ -190,13 +216,17 @@ function LoginForm() {
     try {
       setOtpLoginLoading(true);
       setMobileNumber(values.mobile);
-
+      
       // Check if user exists with this mobile
       const userTypesData = await checkUserTypes(values.mobile);
-
+      
       if (!userTypesData || userTypesData.userTypesCount === 0) {
         setOtpLoginLoading(false);
-        toastAlert("error", "No user found with this mobile number");
+
+        setNotification({
+          type: "error",
+          message: "No user found with this mobile number !",
+        });
         return;
       }
 
@@ -206,13 +236,17 @@ function LoginForm() {
       };
 
       let result: any = await api.post("/user/login-otp", body);
-
+      
       if (result.data.data) {
         setOtpLoginLoading(false);
         setOtpSent(true);
         setUserData(result.data.data);
         openModal();
-        toastAlert("success", "OTP sent successfully to your mobile");
+
+        setNotification({
+          type: "success",
+          message: "OTP sent successfully to your mobile",
+        });
       }
     } catch (error) {
       setOtpLoginLoading(false);
@@ -245,7 +279,11 @@ function LoginForm() {
           if (result.data.data) {
             passwordForm.reset();
             setLoginLoading(false);
-            toastAlert("error", "Please verify email or mobile after login");
+
+            setNotification({
+              type: "error",
+              message: "Please verify email or mobile after login",
+            });
             setUserData(result.data.data);
             setIsNotVerify(true);
             openModal();
@@ -259,33 +297,36 @@ function LoginForm() {
       handleServerError(error);
     }
   };
-  const handleSuccessfulLogin = (data: any) => {
-    setLoginLoading(false);
+const handleSuccessfulLogin = (data: any) => {
+  setLoginLoading(false);
 
-    setLS(TOKEN_PREFIX, data.token);
-    setLS(MENU_PREFIX, data.menu || []);
-    setLS(USER_DATA, { ...data.user, ...data.meta });
-    setLS(ADMIN_INVESTER_DATA, data.findFilterData);
-    setLS(PROD_DATA, data);
+  setLS(TOKEN_PREFIX, data.token);
+  setLS(MENU_PREFIX, data.menu || []);
+  setLS(USER_DATA, { ...data.user, ...data.meta });
+  setLS(ADMIN_INVESTER_DATA, data.findFilterData);
+  setLS(PROD_DATA, data);
 
-    toastAlert("success", "Logged In successfully");
+    setNotification({
+      type: "success",
+      message: "Logged In successfully",
+    });
 
-    // 🔥 FRONTEND-ONLY CONDITION
-    const forceChange = sessionStorage.getItem("FORCE_CHANGE_PASSWORD");
+  // 🔥 FRONTEND-ONLY CONDITION
+  const forceChange = sessionStorage.getItem("FORCE_CHANGE_PASSWORD");
 
-    if (forceChange === "true") {
-      sessionStorage.removeItem("FORCE_CHANGE_PASSWORD");
-      router.push("/change-password");
-      return;
-    }
+  if (forceChange === "true") {
+    sessionStorage.removeItem("FORCE_CHANGE_PASSWORD");
+    router.push("/change-password");
+    return;
+  }
 
-    // NORMAL FLOW
-    if (data.initPath) {
-      router.push(`/${data.initPath}`);
-    } else {
-      router.push("/dashboards");
-    }
-  };
+  // NORMAL FLOW
+  if (data.initPath) {
+    router.push(`/${data.initPath}`);
+  } else {
+    router.push("/dashboards");
+  }
+};
 
   const tryLoginSilently = async (loginData: any) => {
     try {
@@ -306,7 +347,11 @@ function LoginForm() {
       setUserName(userName);
 
       if (!userName) {
-        return toastAlert("error", "Please enter username");
+
+        setNotification({
+          type: "error",
+          message: "Please enter username",
+        });
       }
 
       let body = {
@@ -322,7 +367,11 @@ function LoginForm() {
           setUserData(resData);
           setIsNotVerify(true);
           openModal();
-          toastAlert("error", "Please verify email or mobile after login");
+
+          setNotification({
+            type: "error",
+            message: "Please verify email or mobile after login",
+          });
         } else {
           setUserData(resData);
           openModal();
@@ -337,9 +386,10 @@ function LoginForm() {
   return (
     <>
       <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-[#0a0c10] via-[#0f1219] to-[#06080c]">
-
-        {/* ========== ANIMATED BACKGROUND — COSMIC WEALTH THEME ========== */}
+        
+        {/* ========== ALTERNATIVE ANIMATED BACKGROUND - COSMIC WEALTH THEME ========== */}
         <div className="absolute inset-0 overflow-hidden">
+          
           {/* Deep space gradient orbs */}
           <div className="absolute top-[5%] left-[15%] w-[600px] h-[600px] rounded-full bg-[#F59E0B]/5 blur-[150px] animate-orb-float"></div>
           <div className="absolute bottom-[5%] right-[10%] w-[500px] h-[500px] rounded-full bg-[#B45309]/8 blur-[140px] animate-orb-float-delay"></div>
@@ -370,6 +420,8 @@ function LoginForm() {
             <div className="absolute top-1/2 left-1/2 w-1 h-[150px] bg-gradient-to-t from-[#F59E0B] to-transparent origin-bottom animate-radar-sweep"></div>
           </div>
 
+      
+
           {/* Animated circular progress rings */}
           <div className="absolute bottom-[15%] left-[5%] w-[180px] h-[180px] opacity-30">
             <svg className="w-full h-full animate-spin-slow" viewBox="0 0 100 100">
@@ -379,7 +431,7 @@ function LoginForm() {
             </svg>
           </div>
 
-          {/* Floating geometric shapes */}
+          {/* Floating geometric shapes (diamonds/cubes representing assets) */}
           {[...Array(20)].map((_, i) => (
             <div
               key={i}
@@ -398,7 +450,7 @@ function LoginForm() {
             />
           ))}
 
-          {/* Animated bar chart */}
+          {/* Animated bar chart (live data feel) */}
           <div className="absolute bottom-[10%] right-[5%] flex items-end gap-1 h-36 opacity-40">
             {[28, 45, 62, 38, 85, 52, 70, 41, 93, 58, 77, 63, 88, 49, 72].map((height, i) => (
               <div
@@ -416,6 +468,24 @@ function LoginForm() {
           <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#F59E0B]/40 to-transparent animate-light-streak"></div>
           <div className="absolute top-1/3 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#FBBF24]/20 to-transparent animate-light-streak-delay"></div>
 
+          {/* Animated coin rain effect */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            {[...Array(40)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute text-lg animate-coin-fall"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 15}s`,
+                  animationDuration: `${8 + Math.random() * 10}s`,
+                  opacity: 0.15,
+                }}
+              >
+                💰
+              </div>
+            ))}
+          </div>
+
           {/* Grid with perspective */}
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.08)_0%,transparent_70%)]"></div>
           <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_40%,rgba(245,158,11,0.05)_50%,transparent_60%)] animate-grid-move"></div>
@@ -424,8 +494,8 @@ function LoginForm() {
         {/* Main Content */}
         <div className="relative z-10 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
           <div className="myContainer w-full !px-0 !mx-3">
-            <div className="relative mt-10 mb-2 w-full sm:w-96 md:w-[400px] max-w-screen-lg mx-auto backdrop-blur-xl bg-[#0a0c10]/60 p-8 rounded-3xl border border-[#F59E0B]/20 shadow-2xl shadow-black/50 transition-all duration-500 hover:shadow-[#F59E0B]/10 animate-container-glow">
-
+            <div className="mt-10 mb-2 w-full sm:w-96 md:w-[400px] max-w-screen-lg mx-auto backdrop-blur-xl bg-[#0a0c10]/60 p-8 rounded-3xl border border-[#F59E0B]/20 shadow-2xl shadow-black/50 transition-all duration-500 hover:shadow-[#F59E0B]/10 animate-container-glow">
+              
               {/* Animated corner brackets */}
               <div className="absolute top-3 left-3 w-12 h-12 border-t-2 border-l-2 border-[#F59E0B]/40 animate-corner-pulse"></div>
               <div className="absolute top-3 right-3 w-12 h-12 border-t-2 border-r-2 border-[#F59E0B]/40 animate-corner-pulse-delay"></div>
@@ -452,11 +522,46 @@ function LoginForm() {
                   <CustomText className="text-center mb-2 text-2xl font-bold bg-gradient-to-r from-[#F59E0B] via-[#FBBF24] to-[#F59E0B] bg-clip-text text-transparent animate-text-shimmer bg-[length:200%_auto]">
                     Welcome
                   </CustomText>
+              
 
+                  {notification && (
+                    <div
+                      className={`mb-5 relative overflow-hidden rounded-2xl px-4 py-3 border shadow-xl animate-notification-slide backdrop-blur-xl ${notification.type === "success"
+                          ? "border-[#10B981]/40 bg-[#10B981]/10"
+                          : "border-[#F59E0B]/40 bg-[#F59E0B]/10"
+                        }`}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-shimmer"></div>
+                      <div className="relative flex items-center gap-3">
+                        <div
+                          className={`w-10 h-10 rounded-full flex items-center justify-center animate-icon-pop ${notification.type === "success"
+                              ? "bg-[#10B981]/20"
+                              : "bg-[#F59E0B]/20"
+                            }`}
+                        >
+                          {notification.type === "success" ? (
+                            <svg className="w-5 h-5 text-[#10B981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                          ) : (
+                            <svg className="w-5 h-5 text-[#F59E0B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01" />
+                            </svg>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <p className={`text-sm font-semibold ${notification.type === "success" ? "text-[#10B981]" : "text-[#F59E0B]"}`}>
+                            {notification.type === "success" ? "Success!" : "Notice"}
+                          </p>
+                          <p className="text-xs text-[#E5E7EB]">{notification.message}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
                   {/* Login Type Tabs */}
                   <div className="flex mb-6 bg-[#1a1c22]/50 rounded-lg p-1 relative">
                     <button
-                      type="button"
                       className={`flex-1 py-2 text-center font-medium transition-all duration-300 rounded-md relative z-10 ${activeTab === "password"
                         ? "text-white"
                         : "text-[#9CA3AF] hover:text-[#F9FAFB]"
@@ -469,7 +574,6 @@ function LoginForm() {
                       🔐 Password
                     </button>
                     <button
-                      type="button"
                       className={`flex-1 py-2 text-center font-medium transition-all duration-300 rounded-md relative z-10 ${activeTab === "otp"
                         ? "text-white"
                         : "text-[#9CA3AF] hover:text-[#F9FAFB]"
@@ -503,7 +607,7 @@ function LoginForm() {
                           className="w-full px-4 py-3 bg-[#1a1c22]/80 border border-[#2a2c32] rounded-lg text-[#F9FAFB] placeholder:text-[#6a6c72] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-[#F59E0B] transition-all group-hover:border-[#F59E0B]/50"
                         />
                         {passwordForm.formState.errors.userName?.message && (
-                          <p className="mt-1 text-xs text-red-400 animate-shake">{passwordForm.formState.errors.userName?.message as string}</p>
+                          <p className="mt-1 text-xs text-red-400 animate-shake">{passwordForm.formState.errors.userName?.message}</p>
                         )}
                       </div>
                       <div className="group">
@@ -526,7 +630,7 @@ function LoginForm() {
                           </button>
                         </div>
                         {passwordForm.formState.errors.password?.message && (
-                          <p className="mt-1 text-xs text-red-400 animate-shake">{passwordForm.formState.errors.password?.message as string}</p>
+                          <p className="mt-1 text-xs text-red-400 animate-shake">{passwordForm.formState.errors.password?.message}</p>
                         )}
                       </div>
                     </div>
@@ -585,7 +689,7 @@ function LoginForm() {
                           />
                         </div>
                         {otpForm.formState.errors.mobile?.message && (
-                          <p className="mt-1 text-xs text-red-400 animate-shake">{otpForm.formState.errors.mobile?.message as string}</p>
+                          <p className="mt-1 text-xs text-red-400 animate-shake">{otpForm.formState.errors.mobile?.message}</p>
                         )}
                       </div>
                     </div>
@@ -722,6 +826,12 @@ function LoginForm() {
           from { transform: translate(-50%, -50%) rotate(0deg); }
           to { transform: translate(-50%, -50%) rotate(360deg); }
         }
+        @keyframes ticker-slide {
+          0% { opacity: 0; transform: translateX(20px); }
+          20% { opacity: 1; transform: translateX(0); }
+          80% { opacity: 1; transform: translateX(0); }
+          100% { opacity: 0; transform: translateX(-20px); }
+        }
         @keyframes float-shape {
           0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.1; }
           50% { transform: translateY(-40px) rotate(180deg); opacity: 0.3; }
@@ -734,6 +844,12 @@ function LoginForm() {
           0% { transform: translateX(-100%); opacity: 0; }
           50% { opacity: 0.5; }
           100% { transform: translateX(100%); opacity: 0; }
+        }
+        @keyframes coin-fall {
+          0% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
+          10% { opacity: 0.2; }
+          90% { opacity: 0.2; }
+          100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
         }
         @keyframes grid-move {
           0% { background-position: 0 0; }
@@ -754,6 +870,15 @@ function LoginForm() {
         @keyframes text-shimmer {
           0% { background-position: 0% 50%; }
           100% { background-position: 200% 50%; }
+        }
+        @keyframes notification-slide {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes icon-pop {
+          0% { transform: scale(0); opacity: 0; }
+          50% { transform: scale(1.2); }
+          100% { transform: scale(1); opacity: 1; }
         }
         @keyframes form-in {
           from { opacity: 0; transform: translateX(-10px); }
@@ -776,35 +901,50 @@ function LoginForm() {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-2px); }
         }
-        @keyframes pulse-slow {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.05); }
-        }
-        @keyframes spin-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
         .animate-orb-float { animation: orb-float 12s ease-in-out infinite; }
         .animate-orb-float-delay { animation: orb-float-delay 15s ease-in-out infinite; }
         .animate-orb-spin { animation: orb-spin 30s linear infinite; transform-origin: center; }
         .animate-radar-ping { animation: radar-ping 4s ease-out infinite; transform-origin: center; }
         .animate-radar-sweep { animation: radar-sweep 8s linear infinite; transform-origin: center; }
+        .animate-ticker-slide { animation: ticker-slide 6s ease-in-out infinite; white-space: nowrap; }
         .animate-float-shape { animation: float-shape 10s ease-in-out infinite; }
         .animate-light-streak { animation: light-streak 6s ease-in-out infinite; }
         .animate-light-streak-delay { animation: light-streak 6s ease-in-out 3s infinite; }
+        .animate-coin-fall { animation: coin-fall 12s linear infinite; }
         .animate-grid-move { animation: grid-move 20s linear infinite; background-size: 50px 50px; }
         .animate-container-glow { animation: container-glow 4s ease-in-out infinite; }
         .animate-corner-pulse { animation: corner-pulse 3s ease-in-out infinite; }
         .animate-corner-pulse-delay { animation: corner-pulse 3s ease-in-out 1.5s infinite; }
         .animate-logo-glow { animation: logo-glow 3s ease-in-out infinite; }
         .animate-text-shimmer { animation: text-shimmer 3s linear infinite; }
+        .animate-notification-slide { animation: notification-slide 0.3s ease-out; }
+        .animate-icon-pop { animation: icon-pop 0.4s ease-out; }
         .animate-form-in { animation: form-in 0.4s ease-out; }
         .animate-fadeIn { animation: fadeIn 0.2s ease-out; }
         .animate-scaleIn { animation: scaleIn 0.25s ease-out; }
         .animate-shake { animation: shake 0.3s ease-in-out; }
         .animate-pulse-subtle { animation: pulse-subtle 1s ease-in-out infinite; }
-        .animate-pulse-slow { animation: pulse-slow 3s ease-in-out infinite; }
-        .animate-spin-slow { animation: spin-slow 15s linear infinite; }
+        .animate-pulse-slow {
+          animation: pulse-slow 3s ease-in-out infinite;
+        }
+        @keyframes pulse-slow {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+        }
+        .animate-spin-slow {
+          animation: spin-slow 15s linear infinite;
+        }
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        .animate-shimmer {
+          animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
       `}</style>
     </>
   );

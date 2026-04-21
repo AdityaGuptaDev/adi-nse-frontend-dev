@@ -12,6 +12,10 @@ export function getPaySec(
     const today = new Date().toISOString().slice(0, 10);
 
     if (txnType === "B") {
+        // Lumpsum: `mandateRefNo` is only valid for the DM (PayEezz) payment
+        // mode. Sending it for Net Banking / NEFT / RTGS / UPI causes MFU to
+        // reject the order with "mandateRefNo should be empty".
+        const isMandateBased = paymentMode === "DM";
         return {
             payMode: paymentMode,
             micr,
@@ -23,7 +27,7 @@ export function getPaySec(
             beneVan,
             paymentRefNo: "",
             paymentBankRefNo: "",
-            mandateRefNo: selectedMandate,
+            mandateRefNo: isMandateBased ? selectedMandate : "",
             paymentConfirmTs: "",
             amcPaymentTs: "",
         };

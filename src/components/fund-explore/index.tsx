@@ -190,7 +190,12 @@ const FundPicker: NextPage = () => {
       if (data.data) {
         setSchemeData(data?.data?.data?.rows);
         setTotalCount(data?.data?.data?.count);
-        ExportSchemeData();
+        // Do NOT pre-fetch the full export dataset here. It was roughly
+        // doubling the Fund Explorer load time on every filter / page / sort
+        // change — an un-paginated `findAll` across SchemeMaster + all its
+        // joins (Performance, RiskRatio, AMC) pulled thousands of rows that
+        // were never shown unless the user actually clicked the Export PDF /
+        // Excel button (which triggers its own `ExportSchemeData` call).
         setLoader(false);
       }
     } catch (error) {
