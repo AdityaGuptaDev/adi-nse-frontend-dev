@@ -1103,46 +1103,6 @@ const AllReports: React.FC<AllReportsProps> = ({ invName, panNo }) => {
           </div>
         </div>
 
-        {/* Investor Details - Improved Card Design */}
-        <div className="mt-6 bg-gradient-to-r from-[#111111] to-[#1A1A1A] rounded-xl border border-[#2A2A2A] p-5 shadow-xl">
-          <h2 className="text-lg font-bold text-[#F59E0B] mb-4 flex items-center gap-2">
-            <div className="w-1 h-6 bg-[#F59E0B] rounded-full"></div>
-            Investor Information
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {/* Left Column */}
-            <div className="space-y-3">
-              <div className="flex items-start gap-3">
-                <span className="text-sm font-semibold text-[#F59E0B] min-w-[100px]">Investor Name:</span>
-                <span className="text-[15px] font-medium text-[#F9FAFB]">{invName}</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="text-sm font-semibold text-[#F59E0B] min-w-[100px]">PAN Number:</span>
-                <span className="text-[15px] font-mono font-semibold text-[#F9FAFB] tracking-wider">{panNo}</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="text-sm font-semibold text-[#F59E0B] min-w-[100px]">Email Address:</span>
-                <span className="text-[14px] text-[#9CA3AF] break-all">{summary.email || "Not available"}</span>
-              </div>
-            </div>
-            
-            {/* Right Column */}
-            <div className="space-y-3">
-              <div className="flex items-start gap-3">
-                <span className="text-sm font-semibold text-[#F59E0B] min-w-[100px]">Mobile Number:</span>
-                <span className="text-[15px] font-medium text-[#F9FAFB]">{summary.mobile || "Not available"}</span>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="text-sm font-semibold text-[#F59E0B] min-w-[100px]">Address:</span>
-                <span className="text-[14px] text-[#9CA3AF] leading-relaxed">
-                  {`${summary.address1 || ""} ${summary.address2 || ""} ${summary.address3 || ""}`.trim()}<br />
-                  {`${summary.city || ""} - ${summary.pincode || ""}`.trim()}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
         {/* Report Controls */}
         <div className="mt-6 flex justify-between items-center flex-wrap gap-4">
           <div className="flex items-center gap-3 bg-[#111111] rounded-lg p-3 border border-[#2A2A2A]">

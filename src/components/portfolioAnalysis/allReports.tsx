@@ -1092,9 +1092,9 @@ const exportToExcel1 = async () => {
   }
 
   return (
-    <div className="text-[11px] font-sans text-black bg-[#111111] p-4" ref={reportRef}>
+    <div className="text-[11px] font-sans text-[#F9FAFB] bg-[#111111] p-4" ref={reportRef}>
       {/* Header Section */}
-      <div className="border-b border-black pb-2 mb-2">
+      <div className="border-b border-[#2A2A2A] pb-2 mb-2">
         <button
           onClick={handleBack}
           className="flex items-center bg-[#F59E0B] text-[#F9FAFB] hover:bg-[#B45309] transition-colors px-4 py-2 rounded"
@@ -1105,7 +1105,7 @@ const exportToExcel1 = async () => {
         <div className="flex flex-col md:flex-row justify-between">
           <div>
             <h1 className="text-2xl font-bold text-orange-500">
-              Vedant<span className="text-black">Asset</span>
+              Vedant<span className="text-[#F9FAFB]">Asset</span>
             </h1>
             <div className="mt-2 text-xs">
               <p><strong>Investor:</strong> {invName}</p>

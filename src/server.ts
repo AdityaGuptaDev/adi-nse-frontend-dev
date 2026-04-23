@@ -7,14 +7,14 @@ import { createServer as secureServer } from "https";
 
 import fs from "fs";
 
-const DEFAULT_PORT = 9065;
+const DEFAULT_PORT = 9075;
 const port = Number(process.env.PORT || DEFAULT_PORT);
 let server: Server = createServer(app);
 
 server.on("error", (err: NodeJS.ErrnoException) => {
   if (err.code === "EADDRINUSE") {
     console.error(`Port ${port} is already in use. Please stop the process using this port and restart the app.`);
-    console.error("Try: netstat -ano | findstr \":9065\" and taskkill /PID <pid> /F");
+    console.error("Try: netstat -ano | findstr \":9075\" and taskkill /PID <pid> /F");
     process.exit(1);
   }
   throw err;

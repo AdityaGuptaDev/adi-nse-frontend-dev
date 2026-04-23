@@ -28,6 +28,7 @@ import { useRouter } from "next/navigation";
 import { useFundStore } from "@/store/useFundStore";
 
 import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import { generateUniqueId } from "@/utils/mfu/generateUtrn";
 import { getPayOutSec, getPaySec, getSchList, getSubSeqSec, getSysSchList } from "./transaction";
@@ -1227,8 +1228,8 @@ const OrderPopup: React.FC<InvestorPopupProps> = ({
 
     return (
         <>
-            <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-                <div className="bg-[#111111] rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto border border-[#2A2A2A]">
+            <div className="p-6">
+                <div className="w-full rounded-xl border border-[#2A2A2A] bg-[#111111]">
                     <div className="sticky top-0 z-30 bg-[#111111] border-b border-[#2A2A2A]">
                         <div className="flex items-center justify-between px-6 py-4">
                             <div className="flex items-center gap-3">

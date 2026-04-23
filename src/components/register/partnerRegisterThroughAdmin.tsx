@@ -355,7 +355,7 @@ function RegisterForm() {
                 isRegister={true}
                 closeModal={closeModal}
                 mobile={submittedMobile}
-                registerAs={submittedRegisterAs}
+                register_as={submittedRegisterAs}
                 fromAdmin={fromadmin}
                 partnerId={partnerId}
               />

@@ -1,166 +1,191 @@
+"use client";
+
 import api from "@/utils/api";
-import { TIMEPERIODS, toFixedData } from "@/utils/constants";
+import { toFixedData } from "@/utils/constants";
 import { handleServerError } from "@/utils/helpers";
 import React, { useEffect, useState } from "react";
 
-interface FundData {
-  name: string;
-  nav: number;
-  return: string;
-}
-
-interface TimePeriod {
-  label: string;
-  value: string;
-}
-
 const RelatedScheme = ({ schemeData }: any) => {
-  const [selectedPeriod, setSelectedPeriod] = useState("1D");
-  const [relatedSchemeData, setRelatedSchemeData] = useState<any>([]);
-
-
-  const timePeriods: TimePeriod[] = [
-    { label: "1D", value: "1D" },
-    { label: "1W", value: "1W" },
-    { label: "1M", value: "1M" },
-    { label: "3M", value: "3M" },
-    { label: "6M", value: "6M" },
-    { label: "1Y", value: "1Y" },
-    { label: "3Y", value: "3Y" },
-    { label: "5Y", value: "5Y" },
-  ];
-
-  const fundData: FundData[] = [
-    {
-      name: "ICICI Pru Balanced Advantage Fund(M-IDCW Payout)-Direct Plan",
-      nav: 28.06,
-      return: "22.09%",
-    },
-    {
-      name: "ICICI Pru Balanced Advantage Fund(M-IDCW)-Direct Plan",
-      nav: 18.19,
-      return: "21.09%",
-    },
-    {
-      name: "ICICI Pru Balanced Advantage Fund(IDCW-Payout)-Direct Plan",
-      nav: 72.67,
-      return: "14.09%",
-    },
-    {
-      name: "ICICI Pru Balanced Advantage Fund(IDCW-Payout)",
-      nav: 17.92,
-      return: "20.5%",
-    },
-  ];
+  const [relatedSchemeData, setRelatedSchemeData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    getRelatedSchemeData();
-  }, []);
+    if (schemeData?.id) getRelatedSchemeData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [schemeData?.id]);
 
   const getRelatedSchemeData = async () => {
+    setLoading(true);
     try {
-
-      let passBody: any = {
+      const passBody: any = {
         schemeId: schemeData?.id,
         optionId: schemeData?.option_id,
         amcId: schemeData?.amc_id,
         categoryid: schemeData?.categoryid,
         subcategory_id: schemeData?.subcategory_id,
-      }
+      };
 
-      let res: any = await api.post(`/scheme/get-mutual-related-scheme-data`, passBody);
-
+      const res: any = await api.post(`/scheme/get-mutual-related-scheme-data`, passBody);
       if (res.data.data) {
         setRelatedSchemeData(res.data.data);
       }
-
     } catch (error) {
       handleServerError(error);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
-  console.log(relatedSchemeData, "relatedSchemeData")
+  const returnColor = (val: any) => {
+    const n = Number(val);
+    if (!isFinite(n) || val === null || val === undefined) return "text-base-content/50";
+    return n >= 0 ? "text-emerald-400" : "text-red-400";
+  };
+
+  const formatReturn = (val: any) => {
+    if (val === null || val === undefined) return "--";
+    const n = Number(val);
+    if (!isFinite(n)) return "--";
+    const prefix = n >= 0 ? "+" : "";
+    return `${prefix}${n.toFixed(2)}%`;
+  };
 
   return (
-    <div className="min-h-screen bg-base-200 ">
-      <div className="max-w-8xl mx-auto bg-base-100 rounded-lg shadow">
-        {/* Time Period Filter */}
-        <div className="px-6 py-4 border-b border-base-300">
-        </div>
-
-        {/* Table Header */}
-        <div className="px-6 py-4 bg-base-200 border-b border-base-300">
-          <div className="grid grid-cols-12 gap-4">
-            <div className="col-span-4">
-              <h3 className="text-sm font-semibold text-base-content">
-                Scheme Name
-              </h3>
-            </div>
-            <div className="col-span-2 text-center">
-              <h3 className="text-sm font-semibold text-base-content">NAV</h3>
-            </div>
-            <div className="col-span-2 text-center">
-              <h3 className="text-sm font-semibold text-base-content">
-                1M Return %
-              </h3>
-            </div>
-            <div className="col-span-2 text-center">
-              <h3 className="text-sm font-semibold text-base-content">
-                3M Return %
-              </h3>
-            </div>
-            <div className="col-span-2 text-center">
-              <h3 className="text-sm font-semibold text-base-content">
-                1Y Return %
-              </h3>
+    <div className="p-4">
+      <div className="bg-[#111111] border border-white/5 rounded-2xl overflow-hidden">
+        <div className="px-6 py-4 border-b border-white/5 flex items-center justify-between">
+          <div>
+            <div className="text-sm font-semibold text-base-content">Related Schemes</div>
+            <div className="text-xs text-base-content/50 mt-0.5">
+              Other schemes in the same category
             </div>
           </div>
+          {!loading && (
+            <span className="text-xs text-base-content/50">
+              {relatedSchemeData.length}{" "}
+              {relatedSchemeData.length === 1 ? "scheme" : "schemes"}
+            </span>
+          )}
         </div>
 
-        {/* Fund Data Rows */}
-        <div className="divide-y divide-accent">
-          {relatedSchemeData.length > 0 && relatedSchemeData.map((item: any, index: any) => {
+        {/* Column headers — desktop only */}
+        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-3 bg-white/[0.02] text-[11px] uppercase tracking-wider text-base-content/60">
+          <div className="col-span-5">Scheme Name</div>
+          <div className="col-span-2 text-right">NAV</div>
+          <div className="col-span-2 text-right">1M</div>
+          <div className="col-span-1 text-right">3M</div>
+          <div className="col-span-2 text-right">1Y</div>
+        </div>
 
-            const formatted1MValue: any = toFixedData(item?.SchemePerformances[0]?.Return1mth);
-            const formatted3MValue: any = toFixedData(item?.SchemePerformances[0]?.Return3mth);
-            const formatted1YValue: any = toFixedData(item?.SchemePerformances[0]?.Return1yr);
+        {/* Loading */}
+        {loading && (
+          <div className="p-12 flex items-center justify-center">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-white/10 border-t-primary" />
+          </div>
+        )}
 
-            const textColor = formatted1MValue >= 0 || formatted3MValue >= 0 || formatted1YValue >= 0 ? "text-green-600" : "text-red-600";
+        {/* Empty */}
+        {!loading && relatedSchemeData.length === 0 && (
+          <div className="p-12 text-center">
+            <div className="text-sm text-base-content/50">
+              No related schemes found.
+            </div>
+          </div>
+        )}
 
-            return (
-              <div key={index} className="px-6 py-4  transition-colors">
-                <div className="grid grid-cols-12 gap-4 items-center">
-                  <div className="col-span-4">
-                    <p className="text-sm text-black font-medium leading-relaxed">
-                      {item.ms_fullname}
-                    </p>
+        {/* Rows */}
+        {!loading && relatedSchemeData.length > 0 && (
+          <div className="divide-y divide-white/5">
+            {relatedSchemeData.map((item: any, index: number) => {
+              const perf = item?.SchemePerformances?.[0] ?? {};
+              const nav = perf?.Nav;
+              const r1m = perf?.Return1mth;
+              const r3m = perf?.Return3mth;
+              const r1y = perf?.Return1yr;
+
+              return (
+                <div
+                  key={item?.id ?? index}
+                  className="px-6 py-4 md:grid md:grid-cols-12 md:gap-4 md:items-center hover:bg-white/[0.02] transition-colors"
+                >
+                  <div className="md:col-span-5">
+                    <div className="text-sm font-medium text-base-content leading-snug">
+                      {item?.ms_fullname || item?.name || "--"}
+                    </div>
+                    {item?.AMCMaster?.Name && (
+                      <div className="text-xs text-base-content/50 mt-1 truncate">
+                        {item.AMCMaster.Name}
+                      </div>
+                    )}
                   </div>
-                  <div className="col-span-2 text-center">
-                    <p className="text-sm text-black ">{toFixedData(item?.SchemePerformances[0]?.Nav)}</p>
+
+                  {/* Mobile-stacked stats */}
+                  <div className="mt-3 grid grid-cols-4 gap-2 md:hidden text-center">
+                    <Stat
+                      label="NAV"
+                      value={
+                        nav !== undefined && nav !== null ? `₹${toFixedData(nav)}` : "--"
+                      }
+                    />
+                    <Stat label="1M" value={formatReturn(r1m)} color={returnColor(r1m)} />
+                    <Stat label="3M" value={formatReturn(r3m)} color={returnColor(r3m)} />
+                    <Stat label="1Y" value={formatReturn(r1y)} color={returnColor(r1y)} />
                   </div>
-                  <div className="col-span-2 text-center">
-                    <p className={`text-sm font-semibold  ${textColor}`}>
-                      {formatted1MValue}%
-                    </p>
+
+                  {/* Desktop cells */}
+                  <div className="hidden md:block md:col-span-2 text-right text-sm text-base-content tabular-nums">
+                    {nav !== undefined && nav !== null ? `₹${toFixedData(nav)}` : "--"}
                   </div>
-                  <div className="col-span-2 text-center">
-                    <p className={`text-sm font-semibold  ${textColor}`}>
-                      {formatted3MValue}%
-                    </p>
+                  <div
+                    className={`hidden md:block md:col-span-2 text-right text-sm font-medium tabular-nums ${returnColor(
+                      r1m,
+                    )}`}
+                  >
+                    {formatReturn(r1m)}
                   </div>
-                  <div className="col-span-2 text-center">
-                    <p className={`text-sm font-semibold  ${textColor}`}>
-                      {formatted1YValue}%
-                    </p>
+                  <div
+                    className={`hidden md:block md:col-span-1 text-right text-sm font-medium tabular-nums ${returnColor(
+                      r3m,
+                    )}`}
+                  >
+                    {formatReturn(r3m)}
+                  </div>
+                  <div
+                    className={`hidden md:block md:col-span-2 text-right text-sm font-medium tabular-nums ${returnColor(
+                      r1y,
+                    )}`}
+                  >
+                    {formatReturn(r1y)}
                   </div>
                 </div>
-              </div>
-            )
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
 };
+
+function Stat({
+  label,
+  value,
+  color,
+}: {
+  label: string;
+  value: string;
+  color?: string;
+}) {
+  return (
+    <div>
+      <div className="text-[10px] uppercase tracking-wider text-base-content/50">
+        {label}
+      </div>
+      <div className={`text-xs font-medium mt-0.5 tabular-nums ${color ?? "text-base-content"}`}>
+        {value}
+      </div>
+    </div>
+  );
+}
 
 export default RelatedScheme;

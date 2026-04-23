@@ -150,13 +150,24 @@ export default function SolePrimaryHolder({
             // setUserData(res.data);
 
             const dob = user?.InvestorRegistration?.dob;
-            //const gender = data?.gender;
+            // Prefer the latest PAN/name/email from the DB response over the
+            // localStorage user blob. The user blob is written once at initial
+            // registration and never refreshed, so after an "Edit PAN and
+            // Retry" save it still holds the OLD pan_no. Reading it here would
+            // overwrite the correctly-updated DB value on every remount, which
+            // is exactly what caused the "PAN not updating" symptom.
+            // Sort DB rows by id DESC so legacy duplicate rows (from the
+            // pre-fix create-instead-of-update bug) don't shadow the most
+            // recently saved row.
+            const latestBasic = Array.isArray(result?.basicDetails) && result.basicDetails.length > 0
+                ? [...result.basicDetails].sort((a: any, b: any) => (b?.id ?? 0) - (a?.id ?? 0))[0]
+                : null;
             setFormData(prev => ({
                 ...prev,
-                name: user?.InvestorRegistration?.name,
-                pan: user?.InvestorRegistration?.pan_no,
-                mobileNumber: user?.mobile,
-                email: result?.basicDetails[0]?.email,
+                name: latestBasic?.name || user?.InvestorRegistration?.name,
+                pan: latestBasic?.pan_pek || user?.InvestorRegistration?.pan_no,
+                mobileNumber: latestBasic?.mobile_number || user?.mobile,
+                email: latestBasic?.email,
                 dateOfBirth: toDateInputValue(dob),
                 taxResidency: 'N',
             }));
@@ -234,9 +245,6 @@ export default function SolePrimaryHolder({
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
     const mobileRegex = /^[6-9]\d{9}$/;
-
-    const isFormValid = true
-
 
     const validateForm = () => {
         const newErrors: Record<string, string> = {};
@@ -333,11 +341,7 @@ export default function SolePrimaryHolder({
 
 
 
-    // Only call onCompletionUpdate when the validity actually changes
-    useEffect(() => {
-
-        onCompletionUpdate(isFormValid);
-    }, [isFormValid, onCompletionUpdate]);
+    // Completion is reported only after a successful submit (see handleSubmit).
 
 
     const handleInputChange = (field: keyof FormData, value: string) => {
@@ -367,15 +371,18 @@ export default function SolePrimaryHolder({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        let nextKyc = 'bank-accounts';
-        if (holding_nature == 'AS' || holding_nature == 'JO') {
-            nextKyc = 'sole-secondary';
-        } else {
-            nextKyc = 'bank-accounts';
-        }
-
+        // Route ordering matters: Minor → guardian-details first, then Joint/AS
+        // → sole-secondary, else → bank-accounts. The previous version had two
+        // separate if/else blocks where the second one always overwrote the
+        // first, so JO/AS investors were sent straight to bank-accounts and
+        // the secondary holder step was silently skipped — which is why CAN
+        // creation later failed with "Second Holder Details should not be
+        // blank".
+        let nextKyc: string;
         if (investor_category == 'M') {
             nextKyc = 'guardian-details';
+        } else if (holding_nature == 'AS' || holding_nature == 'JO') {
+            nextKyc = 'sole-secondary';
         } else {
             nextKyc = 'bank-accounts';
         }
@@ -432,12 +439,21 @@ export default function SolePrimaryHolder({
 
 
         if (isValid) {
-            let res: any = await api.post(`/kyc/update-basic-details`, payload);
-            console.log("Response from basic details ", res);
-            onNext();
+            try {
+                await api.post(`/kyc/update-basic-details`, payload);
+                // The user arrived here because Finalize & Submit returned "KYC
+                // Not Registered with KRA". Once they've saved an updated PAN,
+                // clear the flag so the field locks back down for the normal flow.
+                if (typeof window !== "undefined") {
+                    sessionStorage.removeItem("panEditRequired");
+                }
+                onCompletionUpdate(true);
+                onNext();
+            } catch (error) {
+                handleServerError(error);
+            }
         } else {
-
-            toastAlert("Please fill all required fields.", "error");
+            toastAlert("error", "Please fill all required fields.");
         }
     };
 
@@ -690,21 +706,46 @@ export default function SolePrimaryHolder({
                             {errors.dateOfBirth && <p className="text-red-400 text-xs mt-1">{errors.dateOfBirth}</p>}
                         </div>
 
-                        {/* PAN */}
-                        <div>
-                            <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
-                                PAN / PEKRN <span className="text-[#F59E0B]">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                id="pan"
-                                disabled
-                                value={formData.pan}
-                                className="w-full bg-[#1F1A1A] px-3 py-2 border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase disabled:opacity-50"
-                                maxLength={10}
-                            />
-                            {errors.pan && <p className="text-red-400 text-xs mt-1">{errors.pan}</p>}
-                        </div>
+                        {/* PAN — normally locked after identity verification, but
+                            unlocked when the Finalize & Submit step returned a
+                            "KYC Not Registered with KRA" response. The flag
+                            `panEditRequired` in sessionStorage controls this. */}
+                        {(() => {
+                            const panEditAllowed =
+                                typeof window !== "undefined" &&
+                                sessionStorage.getItem("panEditRequired") === "true";
+                            return (
+                                <div>
+                                    <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
+                                        PAN / PEKRN <span className="text-[#F59E0B]">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="pan"
+                                        disabled={!panEditAllowed}
+                                        value={formData.pan}
+                                        onChange={
+                                            panEditAllowed
+                                                ? (e) =>
+                                                      handleInputChange(
+                                                          "pan",
+                                                          e.target.value.toUpperCase(),
+                                                      )
+                                                : undefined
+                                        }
+                                        className="w-full bg-[#1F1A1A] px-3 py-2 border border-[#2A2A2A] rounded-lg text-[#F9FAFB] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent uppercase disabled:opacity-50"
+                                        maxLength={10}
+                                    />
+                                    {panEditAllowed && (
+                                        <p className="text-[#F59E0B] text-xs mt-1">
+                                            This PAN wasn't registered with KRA on the last
+                                            submit. Correct it and proceed to resubmit.
+                                        </p>
+                                    )}
+                                    {errors.pan && <p className="text-red-400 text-xs mt-1">{errors.pan}</p>}
+                                </div>
+                            );
+                        })()}
                     </div>
 
                     {/* Note */}
@@ -1258,11 +1299,7 @@ export default function SolePrimaryHolder({
 
                 <button
                     type="submit"
-                    disabled={!isFormValid}
-                    className={`px-6 py-2 rounded-lg transition-all font-medium ${isFormValid
-                        ? 'bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white hover:opacity-90 shadow-lg'
-                        : 'bg-[#2A2A2A] text-[#9CA3AF] cursor-not-allowed'
-                        }`}
+                    className="px-6 py-2 rounded-lg transition-all font-medium bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white hover:opacity-90 shadow-lg"
                 >
                     {isLastStep ? 'Submit' : 'Next'}
                 </button>

@@ -2,7 +2,7 @@
 const serverInfo = {
     servers:[
         {
-            url: "http://localhost:9065/api-docs/",
+            url: "http://localhost:9075/api-docs/",
             description:"Local server"
         },
     ]

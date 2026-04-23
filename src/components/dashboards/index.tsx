@@ -42,6 +42,40 @@ import InvestorPicker from "./(components)/InvestorPicker";
 import InvestorPopup from "../fund-explore/investor";
 import OrderPopup from "../fund-explore/order";
 
+// ── sessionStorage-backed stale-while-revalidate cache ────────────────────────
+// Dashboard loads 4 independent endpoints (portfolio, xirr, API portfolio, top
+// schemes, recommended funds). On repeat visits we serve the previous response
+// synchronously, then refresh in the background — so the user never sees the
+// full-page "Loading portfolio data…" blocker when returning to this page.
+const DASH_CACHE_PREFIX = 'dashCache:';
+const DASH_CACHE_TTL_MS = 10 * 60 * 1000;
+
+const readDashCache = <T,>(key: string): T | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = window.sessionStorage.getItem(DASH_CACHE_PREFIX + key);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed.t !== 'number') return null;
+    if (Date.now() - parsed.t > DASH_CACHE_TTL_MS) return null;
+    return parsed.d as T;
+  } catch {
+    return null;
+  }
+};
+
+const writeDashCache = (key: string, data: unknown) => {
+  if (typeof window === 'undefined') return;
+  try {
+    window.sessionStorage.setItem(
+      DASH_CACHE_PREFIX + key,
+      JSON.stringify({ t: Date.now(), d: data }),
+    );
+  } catch {
+    // quota / private mode — fail silently
+  }
+};
+
 // Golden Black Theme (Same as SIP Page)
 const theme = {
   primary: "#F59E0B",
@@ -301,35 +335,32 @@ const MutualFundDashboard = () => {
         return;
       }
 
-      try {
+      const cacheKey = `apiPortfolio:${panNumber}|${selectedDate}`;
+      const cached = readDashCache<ApiPortfolioItem[]>(cacheKey);
+      if (cached) {
+        setApiPortfolioData(cached);
+        setApiLoading(false);
+      } else {
         setApiLoading(true);
-        console.log('Making API call to /partner/portfolio/searches with:', {
-          pan: panNumber,
-          rpt_date: selectedDate
-        });
+      }
 
+      try {
         const portfolioResponse = await api.post('/partner/portfolio/searches', {
           pan: panNumber,
           rpt_date: selectedDate
         });
 
-        console.log('Portfolio API Response:', portfolioResponse.data);
-
         if (portfolioResponse.data?.data?.data && Array.isArray(portfolioResponse.data.data.data)) {
-          setApiPortfolioData(portfolioResponse.data.data.data);
-        } else {
-          console.error('Invalid data format received from API');
+          const fresh = portfolioResponse.data.data.data as ApiPortfolioItem[];
+          setApiPortfolioData(fresh);
+          writeDashCache(cacheKey, fresh);
+        } else if (!cached) {
           setApiPortfolioData([]);
         }
 
       } catch (err: any) {
         console.error('Portfolio API Error:', err);
-        console.error('Error details:', {
-          message: err.message,
-          response: err.response?.data,
-          status: err.response?.status,
-        });
-        setApiPortfolioData([]);
+        if (!cached) setApiPortfolioData([]);
       } finally {
         setApiLoading(false);
       }
@@ -401,10 +432,26 @@ const MutualFundDashboard = () => {
         return;
       }
 
-      try {
-        setLoading(true);
-        setXirrLoading(true);
+      const cacheKey = `${panNumber}|${selectedDate}`;
+      const cachedPortfolio = readDashCache<PortfolioItem[]>(`portfolio:${cacheKey}`);
+      const cachedXirr = readDashCache<string | null>(`xirr:${cacheKey}`);
 
+      // Serve cache synchronously so the full-page blocker is skipped.
+      if (cachedPortfolio) {
+        setPortfolioData(cachedPortfolio);
+        setError(null);
+        setLoading(false);
+      } else {
+        setLoading(true);
+      }
+      if (cachedXirr !== null) {
+        setXirrValue(cachedXirr);
+        setXirrLoading(false);
+      } else {
+        setXirrLoading(true);
+      }
+
+      try {
         const [portfolioData, xirrData] = await Promise.all([
           fetchInvestorPortfolio1(
             investorName as string,
@@ -416,15 +463,18 @@ const MutualFundDashboard = () => {
 
         if (Array.isArray(portfolioData)) {
           setPortfolioData(portfolioData);
+          writeDashCache(`portfolio:${cacheKey}`, portfolioData);
           setError(null);
-        } else {
+        } else if (!cachedPortfolio) {
           setError('Invalid data format received from server');
         }
 
         setXirrValue(xirrData);
+        writeDashCache(`xirr:${cacheKey}`, xirrData);
 
       } catch (err) {
-        setError('Failed to fetch portfolio data');
+        // Only surface an error screen if we had nothing cached to show.
+        if (!cachedPortfolio) setError('Failed to fetch portfolio data');
         console.error(err);
       } finally {
         setLoading(false);
@@ -438,20 +488,23 @@ const MutualFundDashboard = () => {
   // Fetch top performing schemes
   useEffect(() => {
     const fetchTopPerformingSchemes = async () => {
-      try {
+      const cached = readDashCache<TopPerformingScheme[]>('topPerformingSchemes');
+      if (cached) {
+        setTopPerformingSchemes(cached);
+        setTopSchemesLoading(false);
+      } else {
         setTopSchemesLoading(true);
-        console.log('Fetching top performing schemes...');
+      }
+
+      try {
         const response = await api.get('/mutual-fund/get-top-performing-schemes');
-        console.log('Top performing schemes response:', response.data);
-
         const schemesData = response.data?.data || response.data || [];
-        console.log('Processed schemes data:', schemesData);
-
         setTopPerformingSchemes(schemesData);
+        writeDashCache('topPerformingSchemes', schemesData);
       } catch (error) {
         console.error('Error fetching top performing schemes:', error);
         handleServerError(error);
-        setTopPerformingSchemes([]);
+        if (!cached) setTopPerformingSchemes([]);
       } finally {
         setTopSchemesLoading(false);
       }
@@ -462,40 +515,30 @@ const MutualFundDashboard = () => {
 
   useEffect(() => {
     const fetchRecommendedFunds = async () => {
-      try {
+      const cached = readDashCache<RecommendedFund[]>('recommendedFunds');
+      if (cached) {
+        setRecommendedFunds(cached);
+        setRecommendedFundsLoading(false);
+      } else {
         setRecommendedFundsLoading(true);
-        console.log(' Fetching recommended funds...');
+      }
 
+      try {
         const response = await api.get('scheme-configuration/vedantRecommended/all');
-        console.log(' Full API response:', response);
-        console.log(' Response data:', response.data);
 
         let fundsData: RecommendedFund[] = [];
-
         if (response.data && response.data.data && Array.isArray(response.data.data)) {
           fundsData = response.data.data;
-          console.log(' Using response.data.data structure, found', fundsData.length, 'funds');
         } else if (response.data && Array.isArray(response.data)) {
           fundsData = response.data;
-          console.log('Using response.data array structure, found', fundsData.length, 'funds');
-        } else {
-          console.warn(' Unexpected response structure:', response.data);
-          fundsData = [];
         }
 
-        console.log(' Processed funds data:', fundsData);
         setRecommendedFunds(fundsData);
+        writeDashCache('recommendedFunds', fundsData);
 
       } catch (error: any) {
-        console.error(' Error fetching recommended funds:', error);
-        console.error(' Error details:', {
-          message: error.message,
-          response: error.response?.data,
-          status: error.response?.status,
-        });
-
-        setRecommendedFunds([]);
-
+        console.error('Error fetching recommended funds:', error);
+        if (!cached) setRecommendedFunds([]);
       } finally {
         setRecommendedFundsLoading(false);
       }
@@ -1223,7 +1266,7 @@ const MutualFundDashboard = () => {
     );
   };
 
-  if (loading && hasClientData) {
+  if (loading && hasClientData && portfolioData.length === 0 && apiPortfolioData.length === 0) {
     return (
       <div className="min-h-screen bg-[#0A0A0A] p-4 flex items-center justify-center w-full">
         <div className="text-center">
@@ -1310,7 +1353,7 @@ const MutualFundDashboard = () => {
                           } else if (currentHour >= 17 && currentHour < 21) {
                             greeting = "Good Evening";
                           } else {
-                            greeting = "Good Night";
+                            greeting = "Welcome Back";
                           }
 
                           return greeting;
@@ -2052,7 +2095,10 @@ const MutualFundDashboard = () => {
 
       {onBoardingModal && (
         <div>
-          <OnBoarding onBoardingModal={onBoardingModal} />
+          <OnBoarding
+            onBoardingModal={onBoardingModal}
+            onClose={() => setOnBoardingModal(false)}
+          />
         </div>
       )}
     </div>

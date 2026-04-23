@@ -166,18 +166,22 @@ export default function SolePrimaryHolder({
 
             setFormData(prev => ({
                 ...prev,
-                gender: basic?.gender,
+                gender: basic?.gender || '',
                 resISD: '91',
                 resSTD: '',
                 resPhone: '',
                 mobileISD: '91',
-                name: basic?.name,
+                name: basic?.name || '',
                 dateOfBirth: toDateInputValue(basic?.date_of_birth),
-                pan: basic?.pan_pek,
-                mobileNumber: user?.mobile,
-                user: user?.email,
-                mobileDeclaration: basic?.mobile_declaration,
-                emailDeclaration: basic?.email_declaration,
+                pan: basic?.pan_pek || '',
+                // Secondary holder has its own mobile/email — falling back to
+                // the logged-in primary's contact info (previous behaviour)
+                // would cross-contaminate the primary's details into the
+                // secondary row on save.
+                mobileNumber: basic?.mobile_number || '',
+                email: basic?.email || '',
+                mobileDeclaration: basic?.mobile_declaration || '',
+                emailDeclaration: basic?.email_declaration || '',
 
                 grossAnnualIncome: additionalKyc?.gross_annual_income,
                 networth: additionalKyc?.networth,
@@ -282,11 +286,18 @@ export default function SolePrimaryHolder({
         return `${year}-${month}-${day}`;
     };
 
-    // Calculate form validity
-    // Alternative validation approach
+    // Validity: minimum set MFU needs to accept a secondary holder. DOB and
+    // gender are required because the backend keys basicDetails rows by
+    // (investor_id, date_of_birth) — a blank DOB would either collide with a
+    // row that has null DOB or create a garbage row that later fails MFU's
+    // "Second Holder Details should not be blank" check.
     const isFormValid =
-        formData.name !== '' &&
-        formData.pan !== ''
+        !!formData.name?.trim() &&
+        !!formData.pan?.trim() &&
+        !!formData.dateOfBirth &&
+        !!formData.gender &&
+        !!formData.mobileNumber &&
+        !!formData.email
 
 
     // Only call onCompletionUpdate when the validity actually changes
@@ -311,10 +322,23 @@ export default function SolePrimaryHolder({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Block submit when required fields are missing so we don't persist a
+        // half-filled secondary-holder row (blank DOB was the wedge that made
+        // CAN creation fail with "Second Holder Details should not be blank").
+        if (!isFormValid) {
+            toastAlert("error", "Please fill all required fields for the Secondary Holder.");
+            return;
+        }
+
         const payload = {
             investor_id: investorId,
             last_kyc_step: 'sole-secondary',
-            next_kyc_step: holding_nature == 'SI' ? 'bank-accounts' : 'sole-secondary',
+            // After secondary holder, the flow always continues to bank-accounts.
+            // The previous value ('sole-secondary' when not SI) pointed the
+            // backend's next_kyc_step at this step itself, trapping the user on
+            // reload.
+            next_kyc_step: 'bank-accounts',
             holding_nature: holding_nature,
             investorBasicDetails: {
                 investor_id: investorId,
@@ -357,10 +381,12 @@ export default function SolePrimaryHolder({
         }
 
 
-        let res: any = await api.post(`/kyc/update-basic-details`, payload);
-        console.log(res)
-        if (isFormValid) {
+        try {
+            await api.post(`/kyc/update-basic-details`, payload);
+            onCompletionUpdate(true);
             onNext();
+        } catch (err) {
+            handleServerError(err);
         }
     };
 

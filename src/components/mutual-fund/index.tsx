@@ -5,14 +5,10 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { useRouter } from "next/navigation";
 import CustomText from "@/commonUI/Text";
 import TopAMCs from "./(components)/top-AMCs";
-import MutualFundClasses from "./(components)/mutual-fund-classes";
 import TopFundManagers from "./(components)/top-fund-managers";
-import MutualFundThemes from "./(components)/mutual-fund-themes";
 import api from "@/utils/api";
 import { handleServerError } from "@/utils/helpers";
-import InvestmentTheme from "./(components)/investment-themes";
 import NewFundOffers from "./(components)/new-fund-offers";
-import FullPageLoader from "@/commonUI/FullPageLoader";
 import { getLS } from '@/utils/helpers';
 import { USER_DATA } from '@/utils/constants';
 import { getInvestor } from "@/api/holder";
@@ -58,6 +54,41 @@ const theme = {
   hoverBg: "#1F1A1A",
 };
 
+// ── sessionStorage-backed stale-while-revalidate cache ────────────────────────
+// The four /mutual-fund/* lists are read-only, non-PII, and rarely change within
+// a session. Caching them gives ~instant paint on every visit after the first.
+// Each entry gets a 10 min TTL — beyond that we fall back to null (spinner) so
+// the user never sees very stale data if they leave the tab open overnight.
+const CACHE_PREFIX = 'mfIndexCache:';
+const CACHE_TTL_MS = 10 * 60 * 1000;
+
+const readCache = <T,>(key: string): T | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = window.sessionStorage.getItem(CACHE_PREFIX + key);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed.t !== 'number') return null;
+    if (Date.now() - parsed.t > CACHE_TTL_MS) return null;
+    return parsed.d as T;
+  } catch {
+    return null;
+  }
+};
+
+const writeCache = (key: string, data: unknown) => {
+  if (typeof window === 'undefined') return;
+  try {
+    window.sessionStorage.setItem(
+      CACHE_PREFIX + key,
+      JSON.stringify({ t: Date.now(), d: data }),
+    );
+  } catch {
+    // sessionStorage can throw (quota exceeded, private mode). Fail silently —
+    // a cache miss just means the next visit refetches.
+  }
+};
+
 interface Investors {
   first_applicant?: string;
   scheme?: string;
@@ -84,23 +115,27 @@ function MutualFund() {
   const [showOrderPopup, setShowOrderPopup] = useState(false);
   const [showInvestorPopup, setshowInvestorPopup] = useState(false);
   const [showInvestorPicker, setshowInvestorPicker] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('all');
   const { setSchemeData, setInvestors } = useFundStore();
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [showInvestmentHelper, setShowInvestmentHelper] = useState(true);
   const [helperAnimation, setHelperAnimation] = useState<'idle' | 'bounce' | 'wave' | 'jump'>('bounce');
 
-  const [mutualFundData, setMutualFundData] = useState<any>({
-    allCategory: [],
-    topPerformingSchemes: [],
-    topAMCs: [],
-    fundClasses: [],
-    newFundData: [],
-    topFundManagers: [],
-    themes: [],
-    investmentTheme: [],
-  });
+  // null = still loading, [] = loaded-empty, [...] = loaded-with-data.
+  // Each slice is filled in independently so a slow endpoint never blocks a fast one.
+  // Lazy initializer seeds from sessionStorage so returning users paint instantly;
+  // the background refetch below still runs to keep data fresh.
+  const [mutualFundData, setMutualFundData] = useState<{
+    topPerformingSchemes: any[] | null;
+    topAMCs: any[] | null;
+    topFundManagers: any[] | null;
+    newFundData: any[] | null;
+  }>(() => ({
+    topPerformingSchemes: readCache<any[]>('topPerformingSchemes'),
+    topAMCs: readCache<any[]>('topAMCs'),
+    topFundManagers: readCache<any[]>('topFundManagers'),
+    newFundData: readCache<any[]>('newFundData'),
+  }));
 
   const allTabs = [
     {
@@ -246,45 +281,29 @@ function MutualFund() {
     fetchMutualFundData();
   }, []);
 
-  const fetchMutualFundData = async () => {
-    try {
-      setLoading(true);
+  const fetchMutualFundData = () => {
+    const load = (
+      key: 'topPerformingSchemes' | 'topAMCs' | 'topFundManagers' | 'newFundData',
+      url: string,
+    ) => {
+      api
+        .get(url)
+        .then((res: any) => {
+          const data = res?.data?.data || [];
+          setMutualFundData(prev => ({ ...prev, [key]: data }));
+          writeCache(key, data);
+        })
+        .catch((err: any) => {
+          // Only surface the empty state if we have nothing cached to show.
+          setMutualFundData(prev => ({ ...prev, [key]: prev[key] ?? [] }));
+          handleServerError(err);
+        });
+    };
 
-      const [
-        topPerSchemesRes,
-        allCategoryRes,
-        fundClassesRes,
-        newFundDataRes,
-        topAMCsRes,
-        fundManagersRes,
-        themesRes,
-        investmentThemeRes
-      ] = await Promise.all([
-        api.get(`/mutual-fund/get-top-performing-schemes`),
-        api.get(`/scheme/get-allscheme-category`),
-        api.get(`/mutual-fund/get-top-mutual-fund-catdata`),
-        api.get(`/mutual-fund/get-new-fund-offer-list`),
-        api.get(`/mutual-fund/get-top-amc-list`),
-        api.get(`/mutual-fund/get-top-fund-managers-list`),
-        api.get(`/mutual-fund/get-themes`).catch(() => ({ data: { data: [] } })),
-        api.get(`/mutual-fund/get-investment-themes`).catch(() => ({ data: { data: [] } }))
-      ]);
-
-      setMutualFundData({
-        allCategory: allCategoryRes.data.data || [],
-        topPerformingSchemes: topPerSchemesRes.data.data || [],
-        topAMCs: topAMCsRes.data.data || [],
-        fundClasses: fundClassesRes.data.data || [],
-        topFundManagers: fundManagersRes.data.data || [],
-        themes: themesRes.data.data || [],
-        investmentTheme: investmentThemeRes.data.data || [],
-        newFundData: newFundDataRes.data.data || [],
-      });
-    } catch (error) {
-      handleServerError(error);
-    } finally {
-      setLoading(false);
-    }
+    load('topPerformingSchemes', '/mutual-fund/get-top-performing-schemes');
+    load('newFundData', '/mutual-fund/get-new-fund-offer-list');
+    load('topAMCs', '/mutual-fund/get-top-amc-list');
+    load('topFundManagers', '/mutual-fund/get-top-fund-managers-list');
   };
 
   const handleBackClick = () => {
@@ -316,8 +335,6 @@ function MutualFund() {
 
   return (
     <>
-      <FullPageLoader isVisible={loading} message="Loading..." />
-
       <div className="min-h-screen" style={{ background: theme.background }}>
 
         {showInvestmentHelper && (
@@ -492,7 +509,8 @@ function MutualFund() {
             >
               {filteredComponents.map((comp: any) => {
                 const Component = comp.component as React.ComponentType<any>;
-                const hasData = comp.data && comp.data.length > 0;
+                const isLoading = comp.data === null;
+                const hasData = Array.isArray(comp.data) && comp.data.length > 0;
 
                 return (
                   <motion.div
@@ -531,6 +549,19 @@ function MutualFund() {
                       {/* Component Content */}
                       {hasData ? (
                         <Component {...comp.props} />
+                      ) : isLoading ? (
+                        <div className="text-center py-10">
+                          <div
+                            className="inline-block h-10 w-10 rounded-full animate-spin mb-3"
+                            style={{
+                              border: `3px solid ${theme.border}`,
+                              borderTopColor: theme.primary,
+                            }}
+                          />
+                          <div className="text-base" style={{ color: theme.textGray }}>
+                            Loading…
+                          </div>
+                        </div>
                       ) : (
                         <div className="text-center py-10">
                           <div className="inline-block p-3 rounded-full mb-3" style={{ background: theme.hoverBg }}>

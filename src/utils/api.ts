@@ -198,7 +198,22 @@ const fetchClient = () => {
       }
 
       const errorLog = formatError(err?.response);
-      return Promise.reject(errorLog);
+      const firstMsg = Array.isArray(errorLog)
+        ? errorLog[0]?.msg
+        : errorLog?.msg;
+      const status = Array.isArray(errorLog)
+        ? errorLog[0]?.status
+        : errorLog?.status;
+      const wrapped: any = new Error(firstMsg || 'Request failed');
+      wrapped.status = status ?? err?.response?.status ?? null;
+      if (Array.isArray(errorLog)) {
+        wrapped.errors = errorLog;
+        wrapped.msg = firstMsg;
+      } else {
+        wrapped.msg = errorLog?.msg;
+        wrapped.field = errorLog?.field;
+      }
+      return Promise.reject(wrapped);
     }
   );
   return instance;

@@ -46,18 +46,18 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
           </>
         )}
         <select
-          className={`select text-black disabled:!text-black rounded-lg focus:outline-none focus:shadow-none ${className}`}
+          className={`select text-white disabled:!text-white rounded-lg focus:outline-none focus:shadow-none ${className}`}
           {...props}
           onChange={onChange}
         >
-          <option value="" disabled defaultValue={defaultLabel}>
+          <option value="" disabled defaultValue={defaultLabel} className="text-white bg-[#111111]">
             {defaultLabel}
           </option>
           {items.map((opt: any) => (
             <option
               key={opt[bindValue]}
               value={opt[bindValue]}
-              className="text-black"
+              className="text-white bg-[#111111]"
             >
               {opt[bindName]}
             </option>

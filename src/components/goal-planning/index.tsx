@@ -47,6 +47,38 @@ import { searchByISIN } from "@/api/transaction";
 import SchemeConfigurationService, { ColorMaster, ColorAllocation, SavedSchemeConfig } from "@/services/schemeConfiguration";
 import { Pencil, Plus, Trash2, ArrowLeft } from "lucide-react";
 
+// ── sessionStorage-backed stale-while-revalidate cache ────────────────────────
+// Goal types & the goals list barely change inside a session — caching them
+// gives instant paint on every revisit while a background fetch refreshes.
+const GOAL_CACHE_PREFIX = 'goalPlanCache:';
+const GOAL_CACHE_TTL_MS = 10 * 60 * 1000;
+
+const readGoalCache = <T,>(key: string): T | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = window.sessionStorage.getItem(GOAL_CACHE_PREFIX + key);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed.t !== 'number') return null;
+    if (Date.now() - parsed.t > GOAL_CACHE_TTL_MS) return null;
+    return parsed.d as T;
+  } catch {
+    return null;
+  }
+};
+
+const writeGoalCache = (key: string, data: unknown) => {
+  if (typeof window === 'undefined') return;
+  try {
+    window.sessionStorage.setItem(
+      GOAL_CACHE_PREFIX + key,
+      JSON.stringify({ t: Date.now(), d: data }),
+    );
+  } catch {
+    // quota / private mode — fail silently
+  }
+};
+
 function GoalPlanning() {
   const router = useRouter();
 
@@ -133,7 +165,7 @@ function GoalPlanning() {
   ]);
 
   const [calculationLoading, setCalculationLoading] = useState(false);
-  const [goalTypes, setGoalTypes] = useState<any>([]);
+  const [goalTypes, setGoalTypes] = useState<any>(() => readGoalCache<any[]>('goalTypes') || []);
   const [activeTab, setActiveTab] = useState<string>(tabs[0]);
   const [GoalType, setGoalType] = useState<any>({});
   const [rangeInflation, setRangeInflation] = useState<any>(6);
@@ -163,8 +195,12 @@ function GoalPlanning() {
   const [targetSpanType, setTargetSpanType] = useState("Month");
   const [monthDiffrence, setMonthDiffrence] = useState<any>("");
   const [isMobileView, setIsMobileView] = useState<any>(false);
-  const [ongoingGoalList, setOngoingGoalList] = useState([]);
-  const [completedGoalList, setCompletedGoalList] = useState([]);
+  const [ongoingGoalList, setOngoingGoalList] = useState<any[]>(
+    () => readGoalCache<{ ongoing: any[]; completed: any[] }>('goalsList')?.ongoing || [],
+  );
+  const [completedGoalList, setCompletedGoalList] = useState<any[]>(
+    () => readGoalCache<{ ongoing: any[]; completed: any[] }>('goalsList')?.completed || [],
+  );
   const [goalForm, setGoalForm] = useState<any>({
     goal_plan_id: 0,
     goal_type_id: 0,
@@ -623,8 +659,9 @@ function GoalPlanning() {
       console.log('Goal Types Response:', goalTypes);
       console.log('Goal Types Data:', goalTypes?.data?.data);
 
-      console.log(goalTypes, "goalTypesgoalTypes");
-      setGoalTypes(goalTypes?.data?.data);
+      const types = goalTypes?.data?.data || [];
+      setGoalTypes(types);
+      writeGoalCache('goalTypes', types);
     } catch (error: any) {
       console.error('=== ERROR IN GET GOAL TYPES ===');
       console.error('Full Error:', error);
@@ -734,17 +771,7 @@ function GoalPlanning() {
 
       setOngoingGoalList(ongoingGoals);
       setCompletedGoalList(completedGoals);
-
-      console.log('=== STATE UPDATED ===');
-      console.log('Ongoing Goal List State:', ongoingGoals);
-      console.log('Completed Goal List State:', completedGoals);
-
-      // Success message
-      if (ongoingGoals.length > 0) {
-        toastAlert('success', `Loaded ${ongoingGoals.length} ongoing goals successfully`);
-      } else {
-        toastAlert('info', 'No ongoing goals found. Create your first goal!');
-      }
+      writeGoalCache('goalsList', { ongoing: ongoingGoals, completed: completedGoals });
 
     } catch (error: any) {
       console.error('=== ERROR IN GET GOALS ===');
@@ -773,9 +800,13 @@ function GoalPlanning() {
         toastAlert('error', 'Unknown error occurred while loading goals.');
       }
 
-      // Set empty arrays as fallback
-      setOngoingGoalList([]);
-      setCompletedGoalList([]);
+      // Only blank out the lists if we have nothing cached to show — otherwise
+      // keep the last-known-good view visible while the user retries.
+      const cached = readGoalCache<{ ongoing: any[]; completed: any[] }>('goalsList');
+      if (!cached) {
+        setOngoingGoalList([]);
+        setCompletedGoalList([]);
+      }
     }
   };
 
@@ -1918,22 +1949,22 @@ function GoalPlanning() {
 
           {/* Risk Profile Recommendations Section - opens Scheme Configuration modal */}
           {riskListData?.risk_type && (
-            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-100">
+            <div className="bg-gradient-to-r from-[#1F1A1A] to-[#111111] border-b border-[#2A2A2A]">
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${riskListData.risk_type.toLowerCase() === 'high'
-                      ? 'bg-red-100'
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center border ${riskListData.risk_type.toLowerCase() === 'high'
+                      ? 'bg-red-500/15 border-red-500/30'
                       : riskListData.risk_type.toLowerCase() === 'moderate'
-                        ? 'bg-amber-100'
-                        : 'bg-green-100'
+                        ? 'bg-amber-500/15 border-amber-500/30'
+                        : 'bg-green-500/15 border-green-500/30'
                       }`}>
                       {riskListData.risk_type.toLowerCase() === 'high' ? (
-                        <FaChartLine className="text-red-600 text-sm" />
+                        <FaChartLine className="text-red-400 text-sm" />
                       ) : riskListData.risk_type.toLowerCase() === 'moderate' ? (
-                        <FaBalanceScale className="text-amber-600 text-sm" />
+                        <FaBalanceScale className="text-amber-400 text-sm" />
                       ) : (
-                        <FaShieldAlt className="text-green-600 text-sm" />
+                        <FaShieldAlt className="text-green-400 text-sm" />
                       )}
                     </div>
                     <div>
@@ -1953,7 +1984,7 @@ function GoalPlanning() {
                   <div className="flex items-center gap-3">
                     <button
                       onClick={riskRecommendationsOpenModal}
-                      className="text-sm text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                      className="text-sm text-[#F59E0B] hover:text-[#FBBF24] font-medium flex items-center gap-1"
                     >
                       View Detailed Recommendations
                       <MdKeyboardArrowRight className="text-lg" />
@@ -1979,25 +2010,34 @@ function GoalPlanning() {
             {goalTypes.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
                 {goalTypes.map((item: any, idx: number) => (
-                  <div key={idx}>
+                  <div key={idx} className="group">
                     <div
-                      className="group border border-[#3A3A3A] rounded-lg p-2 h-36 flex flex-col items-center  justify-center relative hover:shadow-xl transition cursor-pointer bg-[#111111]"
+                      className="relative h-40 rounded-2xl overflow-hidden cursor-pointer transition-all duration-300
+                                 bg-gradient-to-br from-[#1F1A1A] to-[#0F0F0F]
+                                 border border-[#2A2A2A] group-hover:border-[#F59E0B]/60
+                                 group-hover:shadow-[0_8px_30px_rgba(245,158,11,0.18)]
+                                 group-hover:-translate-y-0.5"
                       onClick={() => handleNewGoal(item)}
                     >
-                      <img
-                        // src={`${publicPathName}/goalplanning/${item.goal_icon}`}
-                        //src={`${NODE_API_URL}/static/goalplanning/${item.goal_icon}`}
-                        src={`/goalplanning/${item.goal_icon}`}
-                        alt={item.goal_name}
-                        className="max-h-full max-w-full object-contain"
-                      />
+                      {/* Amber accent stripe along the top */}
+                      <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-[#F59E0B] via-[#FBBF24] to-[#B45309] opacity-70 group-hover:opacity-100 transition-opacity" />
 
-                      <span className="absolute bottom-0 right-0 bg-primary text-[#F9FAFB] text-xs px-3 py-1 rounded-br-lg rounded-tl-lg opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity  duration-200">
-                        Start
+                      {/* Cream frame so the illustration's white background looks intentional */}
+                      <div className="absolute inset-2 mt-2 rounded-xl bg-gradient-to-br from-[#FFF7E6] to-[#FCE7B8] flex items-center justify-center overflow-hidden ring-1 ring-[#F59E0B]/20">
+                        <img
+                          src={`/goalplanning/${item.goal_icon}`}
+                          alt={item.goal_name}
+                          className="max-h-[85%] max-w-[85%] object-contain transition-transform duration-300 group-hover:scale-110"
+                        />
+                      </div>
+
+                      {/* Hover-revealed Start chip in amber */}
+                      <span className="absolute bottom-2 right-2 bg-[#F59E0B] text-[#0A0A0A] text-[10px] font-bold tracking-wide px-2 py-0.5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md">
+                        START →
                       </span>
                     </div>
                     <div>
-                      <p className="text-sm text-center mt-2 text-[#F9FAFB]">
+                      <p className="text-sm text-center mt-2 font-medium text-[#F9FAFB] group-hover:text-[#FBBF24] transition-colors">
                         {item.goal_name}
                       </p>
                     </div>
@@ -2076,11 +2116,11 @@ function GoalPlanning() {
                                   Category: {item?.GoalType?.goal_name}
                                 </CustomText>
                                 {item?.sip_amt > 0 ? (
-                                  <div className="badge bg-secondary-content text-[#F9FAFB] text-xs">
+                                  <div className="text-xs font-semibold px-2.5 py-1 rounded-md bg-[#F59E0B] text-[#0A0A0A]">
                                     SIP
                                   </div>
                                 ) : (
-                                  <div className="badge bg-secondary-content text-[#F9FAFB] text-xs">
+                                  <div className="text-xs font-semibold px-2.5 py-1 rounded-md bg-[#F59E0B]/15 text-[#FBBF24] border border-[#F59E0B]/40">
                                     Lumpsum
                                   </div>
                                 )}
@@ -2282,11 +2322,11 @@ function GoalPlanning() {
                                   Category: {item?.GoalType?.goal_name}
                                 </CustomText>
                                 {item?.sip_amt > 0 ? (
-                                  <div className="badge bg-secondary-content text-[#F9FAFB] text-xs">
+                                  <div className="text-xs font-semibold px-2.5 py-1 rounded-md bg-[#F59E0B] text-[#0A0A0A]">
                                     SIP
                                   </div>
                                 ) : (
-                                  <div className="badge bg-secondary-content text-[#F9FAFB] text-xs">
+                                  <div className="text-xs font-semibold px-2.5 py-1 rounded-md bg-[#F59E0B]/15 text-[#FBBF24] border border-[#F59E0B]/40">
                                     Lumpsum
                                   </div>
                                 )}
@@ -3280,22 +3320,22 @@ function GoalPlanning() {
 
       {/* Retake Assessment Modal */}
       <dialog id="retake_assessment_modal" className="modal" open={showRetakeAssessment}>
-        <div className="modal-box max-w-5xl w-[95vw] sm:w-full bg-gradient-to-br from-blue-50 via-white to-indigo-50 border-0 rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden">
+        <div className="modal-box max-w-5xl w-[95vw] sm:w-full bg-gradient-to-br from-[#1F1A1A] via-[#111111] to-[#0A0A0A] border border-[#2A2A2A] rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden">
           {/* Enhanced Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-5 relative overflow-hidden">
-            <div className="absolute inset-0 bg-black opacity-5"></div>
+          <div className="bg-gradient-to-r from-[#B45309] via-[#F59E0B] to-[#FBBF24] px-6 py-5 relative overflow-hidden">
+            <div className="absolute inset-0 bg-black opacity-10"></div>
             <div className="relative z-10 flex justify-between items-center">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
+                <div className="w-10 h-10 bg-black/25 rounded-full flex items-center justify-center backdrop-blur-sm">
                   <FaClipboardList className="text-white text-lg" />
                 </div>
                 <div>
                   <h3 className="text-xl font-bold text-white">Retake Risk Assessment</h3>
-                  <p className="text-blue-100 text-sm mt-1">Re-evaluate your investment risk profile</p>
+                  <p className="text-amber-50/90 text-sm mt-1">Re-evaluate your investment risk profile</p>
                 </div>
               </div>
               <button
-                className="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-all duration-200 backdrop-blur-sm"
+                className="w-8 h-8 bg-black/25 hover:bg-black/40 rounded-full flex items-center justify-center transition-all duration-200 backdrop-blur-sm"
                 onClick={closeRetakeAssessment}
               >
                 <MdClose size={20} className="text-white" />
@@ -3310,21 +3350,21 @@ function GoalPlanning() {
                 <CustomText className="text-sm font-medium text-[#9CA3AF]">
                   Progress
                 </CustomText>
-                <CustomText className="text-sm font-semibold text-blue-600">
+                <CustomText className="text-sm font-semibold text-[#F59E0B]">
                   {Object.keys(retakeSelectedOptions).length} / {retakeQuestions.length} Questions
                 </CustomText>
               </div>
               <div className="w-full bg-[#2A2A2A] rounded-full h-2 overflow-hidden">
                 <div
-                  className="bg-gradient-to-r from-blue-500 to-indigo-600 h-2 rounded-full transition-all duration-500 ease-out"
+                  className="bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] h-2 rounded-full transition-all duration-500 ease-out"
                   style={{ width: `${(Object.keys(retakeSelectedOptions).length / retakeQuestions.length) * 100}%` }}
                 ></div>
               </div>
             </div>
 
             <div className="text-center mb-6 sm:mb-8">
-              <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-blue-100 rounded-full mb-3 sm:mb-4">
-                <FaQuestionCircle className="text-blue-600 text-lg sm:text-2xl" />
+              <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-[#F59E0B]/15 border border-[#F59E0B]/30 rounded-full mb-3 sm:mb-4">
+                <FaQuestionCircle className="text-[#F59E0B] text-lg sm:text-2xl" />
               </div>
               <CustomText className="text-lg sm:text-2xl font-bold text-[#F9FAFB] mb-2">
                 Let's Reassess Your Risk Profile
@@ -3335,13 +3375,13 @@ function GoalPlanning() {
 
               {/* Current Risk Profile Display */}
               {riskListData?.risk_type && (
-                <div className="mt-6 inline-flex items-center gap-2 bg-[#1F1A1A] px-4 py-2 rounded-full">
+                <div className="mt-6 inline-flex items-center gap-2 bg-[#1F1A1A] border border-[#2A2A2A] px-4 py-2 rounded-full">
                   <span className="text-sm text-[#9CA3AF]">Current Risk Level:</span>
-                  <span className={`text-sm font-bold px-2 py-1 rounded-full ${riskListData.risk_type.toLowerCase() === 'high'
-                    ? 'bg-red-100 text-red-700'
+                  <span className={`text-sm font-bold px-2 py-1 rounded-full border ${riskListData.risk_type.toLowerCase() === 'high'
+                    ? 'bg-red-500/15 text-red-400 border-red-500/40'
                     : riskListData.risk_type.toLowerCase() === 'moderate'
-                      ? 'bg-amber-100 text-amber-700'
-                      : 'bg-green-100 text-green-700'
+                      ? 'bg-amber-500/15 text-amber-400 border-amber-500/40'
+                      : 'bg-green-500/15 text-green-400 border-green-500/40'
                     }`}>
                     {riskListData.risk_type.toUpperCase()}
                   </span>
@@ -3362,9 +3402,9 @@ function GoalPlanning() {
                     className={`bg-[#111111] rounded-xl shadow-lg border transition-all duration-300 overflow-hidden ${!isEnabled
                       ? "opacity-50 cursor-not-allowed border-[#2A2A2A]"
                       : isAnswered
-                        ? "border-green-200 shadow-green-100/50 hover:shadow-xl"
-                        : "border-[#2A2A2A] hover:border-blue-300 hover:shadow-xl cursor-pointer"
-                      } ${isExpanded ? "ring-2 ring-blue-500 ring-opacity-50" : ""}`}
+                        ? "border-green-500/40 shadow-green-500/10 hover:shadow-xl"
+                        : "border-[#2A2A2A] hover:border-[#F59E0B]/50 hover:shadow-xl cursor-pointer"
+                      } ${isExpanded ? "ring-2 ring-[#F59E0B] ring-opacity-50" : ""}`}
                   >
                     <div
                       className="p-5 cursor-pointer"
@@ -3377,8 +3417,8 @@ function GoalPlanning() {
                             className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${isAnswered
                               ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white shadow-lg"
                               : isEnabled
-                                ? "bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-lg"
-                                : "bg-gray-300 text-[#9CA3AF]"
+                                ? "bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-[#0A0A0A] shadow-lg"
+                                : "bg-[#2A2A2A] text-[#9CA3AF]"
                               }`}
                           >
                             {isAnswered ? (
@@ -3397,7 +3437,7 @@ function GoalPlanning() {
 
                           {/* Selected Answer Preview */}
                           {isAnswered && selectedAnswer && !isExpanded && (
-                            <div className="flex items-center gap-2 text-green-700 bg-green-50 px-3 py-2 rounded-lg">
+                            <div className="flex items-center gap-2 text-green-400 bg-green-500/10 border border-green-500/30 px-3 py-2 rounded-lg">
                               <FaCheckCircle className="text-sm" />
                               <span className="text-xs sm:text-sm font-medium">{selectedAnswer}</span>
                             </div>
@@ -3405,11 +3445,11 @@ function GoalPlanning() {
 
                           {/* Status Indicators */}
                           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mt-3">
-                            <span className={`text-xs font-medium px-2 py-1 rounded-full inline-block ${isAnswered
-                              ? "bg-green-100 text-green-700"
+                            <span className={`text-xs font-medium px-2 py-1 rounded-full inline-block border ${isAnswered
+                              ? "bg-green-500/15 text-green-400 border-green-500/40"
                               : isEnabled
-                                ? "bg-blue-100 text-blue-700"
-                                : "bg-[#1F1A1A] text-[#9CA3AF]"
+                                ? "bg-[#F59E0B]/15 text-[#FBBF24] border-[#F59E0B]/40"
+                                : "bg-[#1F1A1A] text-[#9CA3AF] border-[#2A2A2A]"
                               }`}>
                               {isAnswered ? "Answered" : isEnabled ? "Not Answered" : "Disabled"}
                             </span>
@@ -3446,8 +3486,8 @@ function GoalPlanning() {
                                     <label
                                       key={index}
                                       className={`block p-3 sm:p-4 rounded-lg border-2 cursor-pointer transition-all duration-200 ${isSelected
-                                        ? "border-blue-500 bg-blue-50 shadow-md"
-                                        : "border-[#2A2A2A] bg-[#111111] hover:border-blue-300 hover:shadow-sm"
+                                        ? "border-[#F59E0B] bg-[#F59E0B]/10 shadow-md"
+                                        : "border-[#2A2A2A] bg-[#111111] hover:border-[#F59E0B]/40 hover:shadow-sm"
                                         }`}
                                     >
                                       <div className="flex items-start sm:items-center gap-3 sm:gap-4">
@@ -3455,12 +3495,12 @@ function GoalPlanning() {
                                         <div className="relative flex-shrink-0 mt-0.5 sm:mt-0">
                                           <div
                                             className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 flex items-center justify-center transition-all duration-200 ${isSelected
-                                              ? "border-blue-600 bg-blue-600"
+                                              ? "border-[#F59E0B] bg-[#F59E0B]"
                                               : "border-[#3A3A3A]"
                                               }`}
                                           >
                                             {isSelected && (
-                                              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#111111] rounded-full"></div>
+                                              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#0A0A0A] rounded-full"></div>
                                             )}
                                           </div>
                                           <input
@@ -3479,14 +3519,14 @@ function GoalPlanning() {
                                         </div>
 
                                         {/* Answer Text */}
-                                        <span className={`flex-1 text-sm sm:text-base leading-relaxed ${isSelected ? "text-blue-900 font-medium" : "text-[#E5E7EB]"
+                                        <span className={`flex-1 text-sm sm:text-base leading-relaxed ${isSelected ? "text-[#FBBF24] font-medium" : "text-[#E5E7EB]"
                                           }`}>
                                           {item.answer}
                                         </span>
 
                                         {/* Selection Indicator */}
                                         {isSelected && (
-                                          <FaCheckCircle className="text-blue-600 text-base sm:text-lg flex-shrink-0" />
+                                          <FaCheckCircle className="text-[#F59E0B] text-base sm:text-lg flex-shrink-0" />
                                         )}
                                       </div>
                                     </label>
@@ -3519,8 +3559,8 @@ function GoalPlanning() {
                 disabled={!allRetakeQuestionsAnswered()}
                 onClick={handleRetakeSubmit}
                 className={`w-full sm:w-auto px-8 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center gap-2 ${allRetakeQuestionsAnswered()
-                  ? "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-                  : "bg-gray-300 text-[#9CA3AF] cursor-not-allowed"
+                  ? "bg-gradient-to-r from-[#F59E0B] to-[#B45309] hover:from-[#FBBF24] hover:to-[#F59E0B] text-[#0A0A0A] shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  : "bg-[#2A2A2A] text-[#6B7280] cursor-not-allowed border border-[#3A3A3A]"
                   }`}
               >
                 {allRetakeQuestionsAnswered() ? (
@@ -3540,7 +3580,7 @@ function GoalPlanning() {
             {/* Helper Text */}
             {!allRetakeQuestionsAnswered() && (
               <div className="mt-4 text-center">
-                <CustomText className="text-sm text-amber-600 bg-amber-50 px-4 py-2 rounded-lg inline-block">
+                <CustomText className="text-sm text-amber-400 bg-amber-500/10 border border-amber-500/30 px-4 py-2 rounded-lg inline-block">
                   <MdError className="inline mr-2" />
                   Please answer all questions before submitting
                 </CustomText>

@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import { toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
@@ -2838,6 +2839,7 @@ export default function SipPage() {
                     })()}
                     inline={false}
                     popperPlacement="bottom-start"
+                    portalId="sip-datepicker-portal"
                     calendarClassName="custom-calendar"
                     className={`w-full px-4 py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none ${sipDate
                         ? `border-[${theme.primary}] bg-[${theme.primary}10]`
@@ -2850,9 +2852,17 @@ export default function SipPage() {
 
                 {/* Custom CSS to fix calendar display */}
                 <style jsx>{`
-      :global(.custom-popper) {
-        z-index: 1000 !important;
+      :global(#sip-datepicker-portal) {
+        position: relative !important;
+        z-index: 99999 !important;
+      }
+      :global(.custom-popper),
+      :global(.react-datepicker-popper) {
+        z-index: 99999 !important;
         width: auto !important;
+        background-color: ${theme.cardBg} !important;
+        border-radius: 16px !important;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6) !important;
       }
       :global(.custom-calendar) {
         background-color: ${theme.cardBg} !important;
@@ -2868,6 +2878,15 @@ export default function SipPage() {
         font-family: 'Inter', sans-serif !important;
         width: 280px !important;
         display: block !important;
+      }
+      :global(.react-datepicker__month-container) {
+        background-color: ${theme.cardBg} !important;
+        border-radius: 0 0 16px 16px !important;
+        float: none !important;
+        width: 100% !important;
+      }
+      :global(.react-datepicker__triangle) {
+        display: none !important;
       }
       :global(.react-datepicker__header) {
         background: linear-gradient(135deg, ${theme.primary}20, ${theme.secondary}20) !important;

@@ -1764,10 +1764,9 @@ const KYCVerification: React.FC = () => {
   };
 
   const calculateOverallProgress = () => {
-    const isEmailVerified =
-      loginEmailId !== "admin@gmail.com"
-        ? true
-        : (verification.email.value && verification.email.value.includes('@'));
+    // Email needs to be verified for all users
+    const isEmailVerified = verification.email.verified;
+
     const steps = [
       !!partnerData.phone,
       !!(partnerData.name && partnerData.dob),
@@ -1969,45 +1968,138 @@ const KYCVerification: React.FC = () => {
                 </div>
               </div>
 
-              {/* Email Section - shown for every partner onboarding flow */}
-              {(
-                <div className="bg-[#0A0A0A] rounded-lg p-3 border border-[#2A2A2A]">
-                  <div className="flex items-center mb-3">
-                    <div className="w-8 h-8 rounded-lg flex items-center justify-center mr-3 bg-[#1F1A1A]">
-                      <Mail className="w-4 h-4 text-[#F59E0B]" />
-                    </div>
-                    <div>
-                      <h3 className="text-sm font-semibold text-[#F9FAFB]">Email Address</h3>
-                      <p className="text-[#9CA3AF] text-xs">Will be used for registration</p>
-                    </div>
+              {/* Email Section - Show only when loginEmailId is "admin@gmail.com" */}
+              {/* Email Section - Show for all users, editable for everyone */}
+              <div className="bg-[#0A0A0A] rounded-lg p-3 border border-[#2A2A2A]">
+                <div className="flex items-center mb-3">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center mr-3 bg-[#1F1A1A]">
+                    <Mail className="w-4 h-4 text-[#F59E0B]" />
                   </div>
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-xs font-medium text-[#F9FAFB] mb-1">Email Address</label>
-                      <input
-                        type="email"
-                        value={verification.email.value}
-                        onChange={(e) => handleEmailChange(e.target.value)}
-                        placeholder="Enter your email address"
-                        className="w-full px-3 py-2 text-sm bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
-                      />
-                      <p className="text-xs text-[#9CA3AF] mt-1">This email will be used for registration</p>
-                    </div>
-                    {verification.email.error && (
-                      <p className="text-red-400 text-xs text-center">{verification.email.error}</p>
-                    )}
-                    {verification.email.value && (
-                      <div className="p-2 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg">
-                        <div className="flex items-center">
-                          <Mail className="w-4 h-4 text-[#F59E0B] mr-1" />
-                          <span className="text-xs font-semibold text-[#F59E0B]">Email entered</span>
-                        </div>
-                        <p className="text-[#F59E0B] text-xs mt-1">✓ This email will be used for registration</p>
-                      </div>
-                    )}
+                  <div>
+                    <h3 className="text-sm font-semibold text-[#F9FAFB]">Email Address</h3>
+                    <p className="text-[#9CA3AF] text-xs">Will be used for registration</p>
                   </div>
                 </div>
-              )}
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-medium text-[#F9FAFB] mb-1">Email Address</label>
+                    <input
+                      type="email"
+                      value={verification.email.value}
+                      onChange={(e) => handleEmailChange(e.target.value)}
+                      placeholder="Enter your email address"
+                      className="w-full px-3 py-2 text-sm bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg text-[#F9FAFB] placeholder:text-[#9CA3AF] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-transparent"
+                      disabled={verification.email.verified} // Only disable if already verified
+                    />
+                    {verification.email.verified && (
+                      <p className="text-[#10B981] text-xs mt-1">✓ Email verified - Cannot edit</p>
+                    )}
+                    <p className="text-xs text-[#9CA3AF] mt-1">This email will be used for registration</p>
+                  </div>
+
+                  {!verification.email.verified && verification.email.value && (
+                    <div className="space-y-2">
+                      <button
+                        onClick={sendEmailOTP}
+                        disabled={verification.email.loading}
+                        className="w-full bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white rounded-lg py-2 text-xs font-semibold hover:opacity-90 transition-colors disabled:opacity-50 flex items-center justify-center"
+                      >
+                        {verification.email.loading ? (
+                          <div className="flex items-center">
+                            <Loader2 className="w-3 h-3 animate-spin mr-1" />
+                            Sending OTP...
+                          </div>
+                        ) : (
+                          'Send Verification OTP'
+                        )}
+                      </button>
+
+                      {emailOtpState.sent && (
+                        <div className="space-y-3 p-3 bg-[#1F1A1A] rounded-lg border border-[#2A2A2A]">
+                          <div className="text-center">
+                            <label className="block text-xs font-medium text-[#F9FAFB] mb-2">6-digit Email OTP</label>
+                            <div className="flex justify-center space-x-2 mb-3">
+                              {[0, 1, 2, 3, 4, 5].map((index) => (
+                                <input
+                                  key={index}
+                                  ref={(el) => { emailOtpInputRefs.current[index] = el; }}
+                                  type="text"
+                                  maxLength={1}
+                                  value={emailOtpState.otp[index] || ''}
+                                  onChange={(e) => {
+                                    const value = e.target.value.replace(/[^0-9]/g, '');
+                                    handleEmailOTPChange(value, index);
+                                  }}
+                                  onKeyDown={(e) => handleEmailKeyDown(e, index)}
+                                  onPaste={handleEmailPaste}
+                                  className="w-10 h-10 text-center text-lg font-bold border border-[#2A2A2A] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-[#F59E0B] transition-all duration-200 bg-[#111111] text-[#F9FAFB] shadow-sm"
+                                  disabled={emailOtpState.verifying}
+                                />
+                              ))}
+                            </div>
+                            {emailOtpState.error && (
+                              <p className="text-red-400 text-xs text-center">{emailOtpState.error}</p>
+                            )}
+                          </div>
+                          <div className="flex items-center justify-between text-xs px-1">
+                            <button
+                              onClick={() => {
+                                setEmailOtpState({
+                                  otp: '',
+                                  timer: 0,
+                                  canResend: true,
+                                  loading: false,
+                                  error: '',
+                                  sent: false,
+                                  verifying: false
+                                });
+                              }}
+                              className="text-[#9CA3AF] hover:text-[#F9FAFB] font-medium"
+                            >
+                              Cancel
+                            </button>
+                            <button
+                              onClick={resendEmailOTP}
+                              disabled={!emailOtpState.canResend || emailOtpState.loading}
+                              className="text-[#F59E0B] hover:text-[#FBBF24] font-medium disabled:text-[#9CA3AF]"
+                            >
+                              {emailOtpState.loading ? 'Resending...' :
+                                emailOtpState.timer > 0 ? `Resend in ${emailOtpState.timer}s` : 'Resend OTP'}
+                            </button>
+                          </div>
+                          <button
+                            onClick={verifyEmailOTP}
+                            disabled={emailOtpState.otp.length !== 6 || emailOtpState.verifying}
+                            className="w-full bg-gradient-to-r from-[#10B981] to-[#059669] text-white rounded-lg py-2 text-xs font-semibold hover:opacity-90 transition-colors disabled:opacity-50 flex items-center justify-center"
+                          >
+                            {emailOtpState.verifying ? (
+                              <div className="flex items-center">
+                                <Loader2 className="w-3 h-3 animate-spin mr-1" />
+                                Verifying...
+                              </div>
+                            ) : (
+                              'Verify OTP'
+                            )}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {verification.email.error && (
+                    <p className="text-red-400 text-xs text-center">{verification.email.error}</p>
+                  )}
+
+                  {verification.email.verified && (
+                    <div className="p-2 bg-[#10B981]/20 border border-[#10B981]/30 rounded-lg">
+                      <div className="flex items-center">
+                        <CheckCircle className="w-4 h-4 text-[#10B981] mr-1" />
+                        <span className="text-xs font-semibold text-[#10B981]">Email Verified</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
 

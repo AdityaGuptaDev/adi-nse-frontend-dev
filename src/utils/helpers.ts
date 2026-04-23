@@ -200,7 +200,13 @@ export const handleServerError = (error: any) => {
   }
 
   if (error?.status === 429) {
-    toastAlert("warn", error?.msg || "Too many requests, please try again later");
+    // Collapse duplicate rate-limit toasts into one: when several requests
+    // from the same page all 429 within seconds (nominee save, status polls,
+    // etc.), react-toastify would stack 6-8 identical banners. A stable
+    // toastId reuses the same toast instead of creating new ones.
+    toast.warn(error?.msg || "Too many requests, please try again later", {
+      toastId: "rate-limit-warning",
+    });
     return;
   }
 

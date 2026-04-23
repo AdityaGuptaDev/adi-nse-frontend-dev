@@ -1,486 +1,382 @@
 "use client";
 
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import * as echarts from "echarts";
 import ReactECharts from "echarts-for-react";
-import { dateFormat, dateFormateValue, handleServerError } from "@/utils/helpers";
+import { dateFormat, convertOnlyEndDate, handleServerError } from "@/utils/helpers";
 import api from "@/utils/api";
-import { toFixedData, toFixedDataForReturn } from "@/utils/constants";
+import { toFixedData } from "@/utils/constants";
+
+type GraphPoint = [string, number];
+
+type GraphData = {
+  schemeArray?: GraphPoint[];
+  minFromDate?: string;
+  maxToDate?: string;
+  nav?: number;
+  getMinValue?: number;
+  getMaxValue?: number;
+};
+
+const PERIODS = [
+  { name: "1M", activeTab: "oneMonth" },
+  { name: "3M", activeTab: "threeMonth" },
+  { name: "6M", activeTab: "sixMonth" },
+  { name: "1Y", activeTab: "oneYear" },
+  { name: "3Y", activeTab: "threeYear" },
+  { name: "5Y", activeTab: "fiveYear" },
+  { name: "10Y", activeTab: "tenYear" },
+  { name: "Since Inception", activeTab: "sinceInception" },
+];
+
+function subtractMonths(date: Date, months: number) {
+  const d = new Date(date);
+  d.setMonth(d.getMonth() - months);
+  return d;
+}
+
+function subtractYears(date: Date, years: number) {
+  const d = new Date(date);
+  d.setFullYear(d.getFullYear() - years);
+  return d;
+}
+
+function rangeToFilter(range: string, schemeId: any, schemeType: any, schemeName: any) {
+  const today = new Date();
+  const base: any = {
+    id: schemeId,
+    scheme_type: schemeType,
+    schemeName,
+    ms_fullname: schemeName,
+  };
+
+  if (range === "sinceInception") {
+    return { ...base, tab: "sinceInception" };
+  }
+
+  const map: Record<string, Date> = {
+    oneMonth: subtractMonths(today, 1),
+    threeMonth: subtractMonths(today, 3),
+    sixMonth: subtractMonths(today, 6),
+    oneYear: subtractYears(today, 1),
+    threeYear: subtractYears(today, 3),
+    fiveYear: subtractYears(today, 5),
+    tenYear: subtractYears(today, 10),
+  };
+
+  const from = map[range] ?? subtractMonths(today, 1);
+  return {
+    ...base,
+    fromDate: dateFormat(from),
+    toDate: dateFormat(today),
+  };
+}
 
 function NAVChart({ schemeData }: any) {
   const chartRef = useRef<any>(null);
-  const [range, setRange] = useState<any>("oneMonth");
+  const [range, setRange] = useState<string>("oneMonth");
+  const [graphData, setGraphData] = useState<GraphData>({});
+  const [currentNav, setCurrentNav] = useState<number | undefined>();
+  const [loading, setLoading] = useState<boolean>(false);
 
-  let [graphData, setGraphData] = useState<any>([]);
+  const schemeId = schemeData?.id;
+  const schemeType = schemeData?.scheme_type;
+  const schemeName = schemeData?.ms_fullname;
 
-  // let getMonthDate = addYears(new Date(), 1);        ////////   1 year by default
-  let getMonthDate = addMonths(new Date(), 1);        ////////    1 Month by default
+  useEffect(() => {
+    if (!schemeId) return;
+    fetchGraph(rangeToFilter(range, schemeId, schemeType, schemeName));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [schemeId, range]);
 
-  let fromDate = dateFormat(getMonthDate)
-  let toDate = dateFormat(new Date())
-  let date = new Date(fromDate);
-  let date1 = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  const fetchGraph = async (filter: any) => {
+    setLoading(true);
+    try {
+      const res: any = await api.post(`/scheme/get-scheme-nav-graph-detail`, filter);
+      const data: GraphData = res?.data?.data ?? {};
+      setGraphData(data);
+      if (data?.nav !== undefined) setCurrentNav(data.nav);
+    } catch (error) {
+      handleServerError(error);
+      setGraphData({});
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // let [formattedDate, setFromDate] = useState<any>(date1);
-  let [minDate, setMinDate] = useState<any>();
-  let [maxDate, setMaxDate] = useState<any>();
-  let [currentNav, setCurrentNav] = useState<any>();
+  const points = graphData?.schemeArray ?? [];
+  const hasData = points.length > 0;
 
-  let [filter, setFilter] = useState<any>({
-    id: schemeData?.id,
-    scheme_type: schemeData?.scheme_type,
-    name: schemeData?.name,
-    ms_fullname: schemeData?.ms_fullname,
-    fromDate: fromDate,
-    toDate: toDate,
-  });
+  // Derive period change from first/last point in the series.
+  const { changeAbs, changePct, asOfDate } = useMemo(() => {
+    if (!hasData) return { changeAbs: null as number | null, changePct: null as number | null, asOfDate: null as string | null };
+    const first = Number(points[0]?.[1]);
+    const last = Number(points[points.length - 1]?.[1]);
+    const abs = last - first;
+    const pct = first ? (abs / first) * 100 : 0;
+    return {
+      changeAbs: abs,
+      changePct: pct,
+      asOfDate: points[points.length - 1]?.[0] ?? null,
+    };
+  }, [points, hasData]);
 
-  let indate = new Date(schemeData?.inception_date);
+  const changeColor =
+    changeAbs === null ? "text-base-content/70" : changeAbs >= 0 ? "text-emerald-400" : "text-red-400";
+  const changeSign = changeAbs === null ? "" : changeAbs >= 0 ? "+" : "";
 
   const calculateSmartYAxis = (minValue: number, maxValue: number) => {
-      const range = maxValue - minValue;
-      
-      // If range is very small (flat line), add padding
-      if (range < (minValue * 0.01)) { // Less than 1% movement
-          const padding = minValue * 0.01; // 1% padding
-          return {
-              min: minValue - padding,
-              max: maxValue + padding
-          };
-      }
-      
-      // Otherwise use 5% padding
-      const padding = range * 0.05;
-      return {
-          min: minValue - padding,
-          max: maxValue + padding
-      };
+    const spread = maxValue - minValue;
+    if (spread < minValue * 0.01) {
+      const padding = minValue * 0.01;
+      return { min: minValue - padding, max: maxValue + padding };
+    }
+    const padding = spread * 0.05;
+    return { min: minValue - padding, max: maxValue + padding };
   };
 
-  const optionNAVGrowth = {
-    tooltip: {
-      trigger: "axis",
-      formatter: function (params: any) {
-        let date = new Date(params?.[0]?.axisValueLabel);
-        var formattedDate = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-        var output = 'Date: ' + formattedDate + '<br/>';
-        output += '<table width="100%">';
-        let loop = 0;
-        if (graphData?.schemeArray.length > 0) {
-          loop = loop + 1
-        }
-
-        for (let i = 0; i < loop; i++) {
-          const value: any = (params[i]?.data) ? parseFloat(params[i].data[1]).toFixed(2) : 'NaN';
-          if (value !== 'NaN') {
-            output += `<tr>
-                <td>${params[i].marker}</td>
-                <td>${params[i].seriesName}</td>
-                <td class="text-end text-bold tabular-nums"><strong>${value}</strong></td>
-              </tr>`;
-          }
-        }
-        return output + '</table>';
+  const chartOption = useMemo(() => {
+    const xAxisBase = {
+      type: "time" as const,
+      boundaryGap: false,
+      min: graphData?.minFromDate,
+      max: graphData?.maxToDate,
+      axisLine: { lineStyle: { color: "rgba(255,255,255,0.15)" } },
+      axisLabel: {
+        color: "rgba(255,255,255,0.65)",
+        hideOverlap: true,
+        formatter:
+          range === "oneMonth" || range === "threeMonth"
+            ? "{dd}-{MMM}"
+            : "{MMM} {yyyy}",
       },
-      confine: true,
-      axisPointer: {
-        type: "cross",
-        label: {
-          backgroundColor: "#6a7985",
-        },
-      },
-    },
-    legend: {
-      textStyle: {
-        color: "#0a5195"
-      },
-      data: ["Fund"],
-    },
-    Animation: true,
-    animationDuration: 1000,
-    grid: {
-      left: "6%",
-      right: "4%",
-      //   bottom: "3%",
-      //   containLabel: true,
-    },
-    dataZoom: [
-      {
-        type: 'slider',
-        // start: 0,
-        // end: 25
-      },
-    ],
-    xAxis: [
-      range === 'oneMonth' ?
-        {
-          type: "time",  // Change from "category" to "time"
-          boundaryGap: false,
-          min: minDate ? minDate : filter.fromDate,
-          max: maxDate ? maxDate : filter.toDate,
-          hideOverlap: true,
-          minInterval: 24 * 60 * 60 * 1000, // 1 day interval for one month view
-          axisLabel: {
-            formatter: "{dd}-{MMM}",
-            rotate: 0,
-          },
-          splitLine: {
-            show: false
-          }
-        } : {
-          type: "time",
-          boundaryGap: false,
-          min: minDate ? minDate : filter.fromDate,
-          max: maxDate ? maxDate : filter.toDate,
-          hideOverlap: true,
-          minInterval: 1,
-          maxInterval: `${range == 'threeMonth' ? 30 * 24 * 60 * 60 * 1000 : range == 'sixMonth' || range == 'oneYear' ? 24 * 3600 * 1000 * 28 : range == 'threeYear' || range == 'fiveYear' || range == 'tenYear' || range == 'sinceInception' ? 'year' : ''}`,
-          // maxInterval: 24 * 3600 * 1000 * 28,
-          axisLabel: {
-            // formatter: `${range == 'oneYear' || range == 'threeYear' || range == 'fiveYear' || range == 'tenYear' ? "{MMM}-{yyyy}" : "{dd}-{MMM}"} `,
-            formatter: `${range == 'threeMonth' ? "{dd}-{MMM}" : "{MMM} {yyyy}"}`,
-            rotate: 0,
-          },
-          splitLine: {
-            show: false
-          }
-        },
-    ],
-    yAxis: {
-        type: "value",
-        boundaryGap: [0, '100%'],
-        ...(graphData?.getMinValue && graphData?.getMaxValue ? 
-            calculateSmartYAxis(graphData.getMinValue, graphData.getMaxValue) : 
-            { min: 'dataMin', max: 'dataMax' }
-        ),
-        splitLine: {
-            show: true,
-            lineStyle: {
-                color: "rgba(255, 255, 255, 0.05)"
-            }
-        }
-    },
-    series: [],
-    media: [
-      {
-        query: {
-          maxWidth: 768
-        },
-        option: {
-          legend: {
-            top: '0%'
-          },
-          grid: {
-            bottom: "35%",
-            left: 50,
-            //   containLabel: true,
-          },
-          yAxis: {
-            axisLabel: {
-              width: "100",
-            },
-          },
-          xAxis: {
-            axisLabel: { rotate: 45 }
-          },
-        }
-      },
-      {
-        option: {
-          legend: {
-            top: '0%'
-          }
-        }
-      }
-    ],
-  };
-
-
-  useEffect(() => {
-    let instance: any = chartRef.current.getEchartsInstance();
-
-    const finalOption = {
-      ...optionNAVGrowth,
-      series: [{
-        name: "NAV",
-        type: "line",
-        showSymbol: false,
-        smooth: true,
-        // areaStyle: {
-        //   opacity: 0,
-        // },
-        lineStyle: {
-          width: 2
-        },
-        data: graphData?.schemeArray,
-        // color: "#fe6bb9"
-        color: "#0a5195",
-        areaStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            {
-              offset: 0,
-              color: '#F5862E80'
-            },
-            {
-              offset: 1,
-              color: '#F5862E00'
-            }
-          ])
-        },
-      },]
+      splitLine: { show: false },
     };
 
-    instance.setOption(finalOption, true); // ✅ Safe full update
+    return {
+      backgroundColor: "transparent",
+      tooltip: {
+        trigger: "axis",
+        backgroundColor: "rgba(17,17,17,0.95)",
+        borderColor: "rgba(245,158,11,0.4)",
+        textStyle: { color: "#fff" },
+        formatter: (params: any) => {
+          const p = params?.[0];
+          if (!p) return "";
+          const d = new Date(p.axisValueLabel);
+          const formattedDate = d.toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          });
+          const value = p?.data ? Number(p.data[1]).toFixed(4) : "--";
+          return `<div style="font-size:12px;opacity:0.7">${formattedDate}</div>
+                  <div style="font-size:16px;font-weight:600;margin-top:2px">
+                    NAV ₹${value}
+                  </div>`;
+        },
+        axisPointer: {
+          type: "cross",
+          label: { backgroundColor: "#F59E0B" },
+          lineStyle: { color: "rgba(245,158,11,0.4)" },
+        },
+      },
+      legend: { show: false },
+      animationDuration: 600,
+      grid: { left: 60, right: 30, top: 30, bottom: 60 },
+      dataZoom: [
+        {
+          type: "slider",
+          height: 20,
+          bottom: 10,
+          borderColor: "rgba(255,255,255,0.1)",
+          backgroundColor: "rgba(255,255,255,0.03)",
+          fillerColor: "rgba(245,158,11,0.15)",
+          handleStyle: { color: "#F59E0B" },
+          textStyle: { color: "rgba(255,255,255,0.5)" },
+        },
+      ],
+      xAxis: [xAxisBase],
+      yAxis: {
+        type: "value" as const,
+        scale: true,
+        axisLine: { lineStyle: { color: "rgba(255,255,255,0.15)" } },
+        axisLabel: {
+          color: "rgba(255,255,255,0.65)",
+          formatter: (v: number) => v.toFixed(2),
+        },
+        ...(graphData?.getMinValue && graphData?.getMaxValue
+          ? calculateSmartYAxis(graphData.getMinValue, graphData.getMaxValue)
+          : { min: "dataMin", max: "dataMax" }),
+        splitLine: { show: true, lineStyle: { color: "rgba(255,255,255,0.06)" } },
+      },
+      series: [
+        {
+          name: "NAV",
+          type: "line",
+          showSymbol: false,
+          smooth: true,
+          data: points,
+          lineStyle: { width: 2, color: "#F59E0B" },
+          itemStyle: { color: "#F59E0B" },
+          areaStyle: {
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: "rgba(245,158,11,0.35)" },
+              { offset: 1, color: "rgba(245,158,11,0.02)" },
+            ]),
+          },
+        },
+      ],
+    };
+  }, [points, graphData?.minFromDate, graphData?.maxToDate, graphData?.getMinValue, graphData?.getMaxValue, range]);
 
-    // instance.setOption({
-    //   series: {
-    //     name: "Fund",
-    //     type: "line",
-    //     showSymbol: false,
-    //     smooth: true,
-    //     // areaStyle: {
-    //     //   opacity: 0,
-    //     // },
-    //     lineStyle: {
-    //       width: 2
-    //     },
-    //     data: graphData?.schemeArray,
-    //     // color: "#fe6bb9"
-    //     color: "#0a5195",
-    //     areaStyle: {
-    //       color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-    //         {
-    //           offset: 0,
-    //           color: '#F5862E80'
-    //         },
-    //         {
-    //           offset: 1,
-    //           color: '#F5862E00'
-    //         }
-    //       ])
-    //     },
-    //   },
-    // }, {
-    //   replaceMerge: ['series']
-    // })
-  }, [graphData])
-
-
-  useEffect(() => {
-    if (schemeData) {
-      getGraphData();
-    }
-  }, [filter, schemeData]);
-
-  const showYears = () => {
-
-    const today = new Date();
-
-    let years = today.getFullYear() - indate.getFullYear();
-    let months = today.getMonth() - indate.getMonth();
-
-    if (months < 0) {
-      years--;
-      months += 12;
-    }
-    const milestones = [];
-
-    milestones.push(
-      { name: "1M", activeTab: "oneMonth" },
-      { name: "3M", activeTab: "threeMonth" },
-      { name: "6M", activeTab: "sixMonth" },
-      { name: "1Y", activeTab: "oneYear" },
-      { name: "3Y", activeTab: "threeYear" },
-      { name: "5Y", activeTab: "fiveYear" },
-      { name: "10Y", activeTab: "tenYear" },
-      { name: "Since Inception", activeTab: "sinceInception" },
-    );
-
-    return milestones;
-  };
-
-  function addYears(date: any, years: any) {
-    date.setFullYear(date.getFullYear() - years);
-    return date;
-  }
-
-  function addMonths(date: any, months: any) {
-    date.setMonth(date.getMonth() - months);
-    return date;
-  }
-
-  const onChangePeriod = (value: any) => {
-    setRange(value)
-
-    if (value == 'oneMonth') {
-      let getMonthDate = addMonths(new Date(), 1);
-      let fromDate = dateFormat(getMonthDate)
-      let toDate = dateFormat(new Date())
-      setFilter({ 'fromDate': fromDate, 'toDate': toDate, 'id': schemeData?.id, 'scheme_type': schemeData?.scheme_type, 'schemeName': schemeData?.ms_fullname })
-      // let date = new Date(fromDate);
-      // let date1 = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-      // setFromDate(date1)
-    }
-    if (value == 'threeMonth') {
-      let getMonthDate = addMonths(new Date(), 3);
-      let fromDate = dateFormat(getMonthDate)
-      let toDate = dateFormat(new Date())
-      setFilter({ 'fromDate': fromDate, 'toDate': toDate, 'id': schemeData?.id, 'scheme_type': schemeData?.scheme_type, 'schemeName': schemeData?.ms_fullname })
-    }
-    if (value == 'sixMonth') {
-      let getMonthDate = addMonths(new Date(), 6);
-      let fromDate = dateFormat(getMonthDate)
-      let toDate = dateFormat(new Date())
-      setFilter({ 'fromDate': fromDate, 'toDate': toDate, 'id': schemeData?.id, 'scheme_type': schemeData?.scheme_type, 'schemeName': schemeData?.ms_fullname })
-    }
-
-    if (value == 'oneYear') {
-      let getMonthDate = addYears(new Date(), 1);
-      let fromDate = dateFormat(getMonthDate)
-      let toDate = dateFormat(new Date())
-      setFilter({ 'fromDate': fromDate, 'toDate': toDate, 'id': schemeData?.id, 'scheme_type': schemeData?.scheme_type, 'schemeName': schemeData?.ms_fullname })
-      // let date = new Date(fromDate);
-      // let date1 = date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-      // setFromDate(date1)
-    }
-    if (value == 'threeYear') {
-      let getMonthDate = addYears(new Date(), 3);
-      let fromDate = dateFormat(getMonthDate)
-      let toDate = dateFormat(new Date())
-      setFilter({ 'fromDate': fromDate, 'toDate': toDate, 'id': schemeData?.id, 'scheme_type': schemeData?.scheme_type, 'schemeName': schemeData?.ms_fullname })
-    }
-    if (value == 'fiveYear') {
-      let getMonthDate = addYears(new Date(), 5);
-      let fromDate = dateFormat(getMonthDate)
-      let toDate = dateFormat(new Date())
-      setFilter({ 'fromDate': fromDate, 'toDate': toDate, 'id': schemeData?.id, 'scheme_type': schemeData?.scheme_type, 'schemeName': schemeData?.ms_fullname })
-    }
-    if (value == 'tenYear') {
-      let getMonthDate = addYears(new Date(), 10);
-      let fromDate = dateFormat(getMonthDate)
-      let toDate = dateFormat(new Date())
-      setFilter({ 'fromDate': fromDate, 'toDate': toDate, 'id': schemeData?.id, 'scheme_type': schemeData?.scheme_type, 'schemeName': schemeData?.ms_fullname })
-    }
-
-    if (value == 'sinceInception') {
-      setFilter({ 'tab': 'sinceInception', 'id': schemeData?.id, 'scheme_type': schemeData?.scheme_type, 'schemeName': schemeData?.ms_fullname })
-    }
-  }
-
-
-  function getFloorRoundValue(value: any, roundTo: any) {
-    var modValue = Math.round(value % roundTo);
-
-    if (modValue == 0) {
-      return value;
-    }
-    else {
-      return (value - modValue);
-    }
-  }
-
-  function getRoundValue(value: any, roundTo: any) {
-    var modValue = Math.round(value % roundTo);
-
-    if (modValue == 0) {
-      return value;
-    }
-    else {
-      var result = (value - modValue) + roundTo;
-
-      return result;
-    }
-  }
-
-
-  function generateWeekLabels(startDateStr: string, endDateStr: string) {
-    const labels = [];
-    const startDate = new Date(startDateStr);
-    const endDate = new Date(endDateStr);
-    let current = new Date(startDate);
-    let week = 1;
-
-    while (current <= endDate) {
-      const weekStart = new Date(current);
-      const weekEnd = new Date(current);
-      weekEnd.setDate(weekEnd.getDate() + 6);
-
-      // Ensure the weekEnd doesn't go beyond endDate
-      if (weekEnd > endDate) {
-        weekEnd.setTime(endDate.getTime());
-      }
-
-      const format = (date: Date) =>
-        date.toLocaleDateString("en-GB", {
-          day: "2-digit",
-          month: "short",
-        });
-
-      labels.push(`Week ${week} (${format(weekStart)} - ${format(weekEnd)})`);
-
-      // Move to next week
-      current.setDate(current.getDate() + 7);
-      week++;
-    }
-
-    return labels;
-  }
-
-
-
-
-  const getGraphData = async () => {
-    try {
-      filter.id = schemeData?.id
-      filter.scheme_type = schemeData?.scheme_type
-      filter.schemeFullName = schemeData?.ms_fullname
-      filter.schemeName = schemeData?.name
-
-      const res: any = await api.post(`/scheme/get-scheme-nav-graph-detail`, filter);
-      
-      if (res.data.data) {
-        setMinDate(res.data.data.minFromDate);
-        setMaxDate(res.data.data.maxToDate);
-        setGraphData(res.data.data);
-        setCurrentNav(res.data.data.nav);
-      }
-    } catch (error: any) {
-      handleServerError(error)
-    }
-  };
-
+  const stats = [
+    {
+      label: "Category",
+      value:
+        schemeData?.SchemeCategory?.Name ||
+        schemeData?.SchemeSubcategory?.Name ||
+        "--",
+    },
+    { label: "Benchmark", value: schemeData?.allBenchmarkName || "--" },
+    { label: "AMC", value: schemeData?.AMCMaster?.Name || "--" },
+    {
+      label: "Expense Ratio",
+      value:
+        schemeData?.net_expense_ratio !== undefined &&
+        schemeData?.net_expense_ratio !== null
+          ? `${toFixedData(schemeData.net_expense_ratio)}%`
+          : "--",
+    },
+    {
+      label: "Launch Date",
+      value: schemeData?.inception_date
+        ? convertOnlyEndDate(schemeData.inception_date)
+        : "--",
+    },
+    {
+      label: "Rating",
+      value: schemeData?.SchemePerformances?.[0]?.OverallRating
+        ? `${schemeData.SchemePerformances[0].OverallRating} ★`
+        : "--",
+    },
+  ];
 
   return (
-    <div className="w-full p-4 rounded">
-      <div className="ml-10  text-[#1E4841]">
-        <div className="flex gap-3 items-center">
-          <div className="text-2xl font-medium">{toFixedData(currentNav)}</div>
+    <div className="p-4 space-y-6">
+      {/* ===== Summary header ===== */}
+      <div className="bg-[#111111] border border-white/5 rounded-2xl p-6">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <div className="text-xs uppercase tracking-wider text-base-content/60 mb-2">
+              Current NAV
+            </div>
+            <div className="flex items-baseline gap-3 flex-wrap">
+              <span className="text-4xl font-semibold text-base-content">
+                ₹{toFixedData(currentNav as number)}
+              </span>
+              {changeAbs !== null && (
+                <span className={`text-sm font-medium ${changeColor}`}>
+                  {changeSign}
+                  {changeAbs.toFixed(2)} ({changeSign}
+                  {changePct?.toFixed(2)}%)
+                  <span className="text-base-content/50 ml-1">
+                    · {PERIODS.find((p) => p.activeTab === range)?.name}
+                  </span>
+                </span>
+              )}
+            </div>
+            {asOfDate && (
+              <div className="text-xs text-base-content/50 mt-2">
+                As of{" "}
+                {new Date(asOfDate).toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                })}
+              </div>
+            )}
+          </div>
+
+          {schemeData?.scheme_type && (
+            <span className="badge badge-outline text-primary border-primary/40">
+              {schemeData.scheme_type}
+            </span>
+          )}
         </div>
-        <div className="text-sm mt-2">Current NAV</div>
-      </div>
-      <div className="w-full h-[400px]">
-        <ReactECharts ref={chartRef} option={optionNAVGrowth} />
-      </div>
-      <div className="tabs flex flex-wrap gap-3 mt-4">
-        {showYears().map((item: any, index: any) => {
-          return (
-            <Fragment key={index}>
-              <button
-                // key={index}
-                onClick={() => onChangePeriod(item.activeTab)}
-                className={`tab text-white py-2 rounded-xl font-semibold ${range === item.activeTab
-                  ? "tab-active bg-primary hover:text-white text-white"
-                  : "bg-placeholder !text-white"
-                  }`}
+
+        {/* Stat strip */}
+        <div className="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 pt-5 border-t border-white/5">
+          {stats.map((s) => (
+            <div key={s.label}>
+              <div className="text-[11px] uppercase tracking-wider text-base-content/50">
+                {s.label}
+              </div>
+              <div
+                className="text-sm font-medium text-base-content mt-1 truncate"
+                title={String(s.value)}
               >
-                {item.name}
-              </button>
-            </Fragment>
-          )
-        })}
+                {s.value}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ===== Chart card ===== */}
+      <div className="bg-[#111111] border border-white/5 rounded-2xl p-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 px-2 pt-1">
+          <div className="text-sm font-medium text-base-content/80">NAV Trend</div>
+          <div className="flex flex-wrap gap-2">
+            {PERIODS.map((item) => (
+              <Fragment key={item.activeTab}>
+                <button
+                  onClick={() => setRange(item.activeTab)}
+                  className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors ${
+                    range === item.activeTab
+                      ? "bg-primary text-white"
+                      : "bg-white/5 text-base-content/70 hover:bg-white/10"
+                  }`}
+                >
+                  {item.name}
+                </button>
+              </Fragment>
+            ))}
+          </div>
+        </div>
+
+        <div className="w-full h-[420px] mt-3 relative">
+          {loading && (
+            <div className="absolute inset-0 flex items-center justify-center z-10 bg-[#111111]/40 backdrop-blur-sm rounded-xl">
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/10 border-t-primary" />
+            </div>
+          )}
+
+          {!loading && !hasData && (
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+              <div className="text-base-content/40 text-sm">
+                No NAV history available for this period.
+              </div>
+              <div className="text-base-content/30 text-xs mt-1">
+                Try a longer timeframe or check back later.
+              </div>
+            </div>
+          )}
+
+          <ReactECharts
+            ref={chartRef}
+            option={chartOption}
+            style={{
+              height: "100%",
+              width: "100%",
+              visibility: hasData ? "visible" : "hidden",
+            }}
+            notMerge
+          />
+        </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default NAVChart;

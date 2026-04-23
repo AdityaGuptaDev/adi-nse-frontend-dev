@@ -43,6 +43,7 @@ const STEP_PROGRESS_KEY = "ecan-step-progress";
 const CURRENT_STEP_KEY = "ecan-current-step";
 
 export default function EcanRegistration() {
+    const router = useRouter();
 
     let users: any = getLS("INVESTOR_DATA") || getLS(USER_DATA);
     //let users: any = getLS(USER_DATA);
@@ -281,11 +282,12 @@ export default function EcanRegistration() {
         }
     }, [currentVisibleStepIndex, isFirstStep, visibleSteps]);
 
+    // Safety net: the Summary step owns the real CAN-creation submit and
+    // navigates to /can-onboarding itself. If somehow goToNextStep fires on
+    // the last step (e.g. keyboard Enter on a stale Next button) we just
+    // forward there instead of showing a blocking alert + wiping state.
     const handleFormSubmit = () => {
-        alert('eCAN Registration submitted successfully!');
-        // Reset or redirect as needed
-        setCurrentStep('can-criteria');
-        setSteps(baseStepsConfig);
+        router.push('/can-onboarding');
     };
 
     // Handle step click from sidebar

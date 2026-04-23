@@ -130,7 +130,7 @@ export default function BrokerageReport() {
 
     try {
       const response = await api.post(
-        'http://localhost:9065/partner/getBrokerageReport',
+        'http://localhost:9075/partner/getBrokerageReport',
         filters
       );
 

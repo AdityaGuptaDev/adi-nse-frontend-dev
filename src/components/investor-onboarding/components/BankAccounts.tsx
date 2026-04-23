@@ -264,11 +264,7 @@ export default function BankAccounts({
         return Object.keys(newErrors).length === 0;
     };
 
-    const isFormValid = true;
-
-    useEffect(() => {
-        onCompletionUpdate(isFormValid);
-    }, [isFormValid, onCompletionUpdate]);
+    // Completion is reported only after a successful submit (see handleSubmit).
 
     const handleAccountChange = (index: number, field: Exclude<keyof BankAccount, 'isVerified'>, value: string) => {
         setBankAccounts(prev => {
@@ -485,8 +481,12 @@ export default function BankAccounts({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(bankAccounts);
-        
+
+        if (!validateForm()) {
+            toastAlert("error", "Please fix the highlighted errors before continuing.");
+            return;
+        }
+
         const payload = {
             investor_id: investorId,
             last_kyc_step: 'bank-accounts',
@@ -514,14 +514,10 @@ export default function BankAccounts({
         };
 
         try {
-            let response = await api.post(`/kyc/update-bank-details`, payload);
-            console.log(response);
-
-            if (validateForm()) {
-                onNext();
-            }
+            await api.post(`/kyc/update-bank-details`, payload);
+            onCompletionUpdate(true);
+            onNext();
         } catch (error) {
-            console.error('Error submitting bank details:', error);
             toastAlert("error", "Failed to save bank details");
         }
     };
@@ -822,12 +818,7 @@ export default function BankAccounts({
 
                 <button
                     type="submit"
-                    disabled={!isFormValid}
-                    className={`px-6 py-2 rounded-lg transition-all font-medium ${
-                        isFormValid
-                            ? 'bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white hover:opacity-90 shadow-lg'
-                            : 'bg-[#2A2A2A] text-[#9CA3AF] cursor-not-allowed'
-                    }`}
+                    className="px-6 py-2 rounded-lg transition-all font-medium bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white hover:opacity-90 shadow-lg"
                 >
                     {isLastStep ? 'Submit' : 'Next'}
                 </button>

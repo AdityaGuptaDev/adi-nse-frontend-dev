@@ -84,7 +84,7 @@ const MutualFundPortfolio = () => {
       }
 
       const response = await api.post(
-        'http://localhost:9065/partner/getUserPanList',
+        'http://localhost:9075/partner/getUserPanList',
         requestBody,
         {
           headers: {
@@ -144,7 +144,7 @@ const MutualFundPortfolio = () => {
       console.log('Sending AUM request:', requestBody);
 
       const response = await api.post<AumApiResponse>(
-        'http://localhost:9065/partner/getAumReport',
+        'http://localhost:9075/partner/getAumReport',
         requestBody,
         {
           headers: {

@@ -12,8 +12,8 @@ const CustomLabel: React.FC<CustomLabelProps> = ({
   children,
 }) => {
   return (
-    <label className={`label text-sm text-black ${className}`}>
-      <span className="label-text" style={{ color: "black" }}>
+    <label className={`label text-sm text-white ${className}`}>
+      <span className="label-text">
         {children}
       </span>
     </label>

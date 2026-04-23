@@ -6,8 +6,9 @@ import api from "@/utils/api";
 import { USER_DATA } from "@/utils/constants";
 import { getLS } from "@/utils/helpers";
 import ErrorDialog from "@/commonUI/ErrorDialog";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { fetchHolderDetails } from "@/api/kyc";
+import { toast } from "react-toastify";
 
 import {
     relationshipTypeOptions, holdingNature, TaxStatus, country, declarationOptions,
@@ -21,6 +22,7 @@ export default function SummaryFinalization({
 }: StepComponentProps) {
     // Get user data once
     const user: any = getLS("INVESTOR_DATA") || getLS(USER_DATA);
+    const router = useRouter();
 
     const [summary, setSummary] = useState<any>(null);
     const [loader, setLoader] = useState(false);
@@ -40,6 +42,25 @@ export default function SummaryFinalization({
                 const res = await fetchHolderDetails(user.InvestorRegistration.id);
                 const data = res?.data?.data?.data;
 
+                // Deduplicate basicDetails by DOB+PAN so legacy duplicate rows
+                // (from the pre-fix create-instead-of-update path) don't show
+                // up as extra holders. Sort by id ASC so the primary (inserted
+                // first) stays at index 0 and the secondary at index 1 — the
+                // title mapping below depends on that order.
+                const rawHolders: any[] = Array.isArray(data?.basicDetails)
+                    ? data.basicDetails
+                    : [];
+                const sortedHolders = [...rawHolders].sort(
+                    (a: any, b: any) => (a?.id ?? 0) - (b?.id ?? 0)
+                );
+                const seen = new Set<string>();
+                const dedupedHolders = sortedHolders.filter((h: any) => {
+                    const key = `${h?.date_of_birth ?? ''}|${h?.pan_pek ?? ''}`;
+                    if (seen.has(key)) return false;
+                    seen.add(key);
+                    return true;
+                });
+
                 setSummary({
                     canCriteria: {
                         holdingNature: holdingNature.find((opt: any) => opt.value == data?.registration?.holding_nature)?.label,
@@ -48,9 +69,10 @@ export default function SummaryFinalization({
                             (opt: any) => opt.value === data?.registration?.tax_status?.toString()
                         )?.label ?? "",
                         holdersCount: data?.registration?.holders,
+                        holdingNatureCode: data?.registration?.holding_nature,
                     },
 
-                    holders: (data?.basicDetails || []).map((h: any, i: number) => ({
+                    holders: dedupedHolders.map((h: any, i: number) => ({
                         title: i === 0 ? "Primary Holder" : `Secondary Holder`,
                         ...h,
                     })),
@@ -68,9 +90,31 @@ export default function SummaryFinalization({
         loadData();
     }, [user?.InvestorRegistration?.id]);
 
+    // Expected holder count — JO/AS needs 2 rows, anything else needs 1.
+    // We compare against this to decide whether Finalize & Submit can proceed.
+    const expectedHolderCount =
+        summary?.canCriteria?.holdingNatureCode === "JO" ||
+        summary?.canCriteria?.holdingNatureCode === "AS"
+            ? 2
+            : 1;
+    const hasAllHolders =
+        (summary?.holders?.length || 0) >= expectedHolderCount;
+
     /* ================= SUBMIT ================= */
 
     const handleSubmit = async () => {
+        // Stop early when the Secondary Holder is missing for JO/AS.
+        // MFU would otherwise reject with "Second Holder Details should not be
+        // blank" (code 10083), giving the user a cryptic error dialog instead
+        // of a clear next action.
+        if (!hasAllHolders) {
+            toast.error(
+                "Secondary Holder details are missing. Please go back and complete the Secondary Holder step before finalising.",
+                { autoClose: 6000 },
+            );
+            return;
+        }
+
         setLoader(true);
         try {
             const response = await api.post(`/kyc/CAN-creation`, {
@@ -80,14 +124,49 @@ export default function SummaryFinalization({
             const result =
                 response?.data?.data?.canResponse?.CANIndFillEezzResp;
 
-            if (result?.RESP_HEADER?.RES_CODE !== "0") {
-                setIsError(true);
-                setTransactionData({
-                    status: result?.RESP_HEADER?.RES_MSG,
-                    code: result?.RESP_HEADER?.RES_CODE,
-                });
-            } else {
-                redirect("/can-onboarding");
+            const resCode: string = result?.RESP_HEADER?.RES_CODE || "";
+
+            if (resCode === "0") {
+                // Success — clear any lingering PAN-edit flag from a previous
+                // failed attempt.
+                if (typeof window !== "undefined") {
+                    sessionStorage.removeItem("panEditRequired");
+                }
+                router.push("/can-onboarding");
+                return;
+            }
+
+            if (resCode === "16094") {
+                // MFU idempotency hit: "CAN already exists for the same
+                // combination". Backend has already flipped is_CAN_registered
+                // on this investor. Treat as success, inform the user, and
+                // forward to the CAN onboarding flow.
+                if (typeof window !== "undefined") {
+                    sessionStorage.removeItem("panEditRequired");
+                }
+                toast.info(
+                    "A CAN is already registered with this PAN at MFU. You're being taken to the next step. Please contact support if your CAN number is not visible.",
+                    { autoClose: 6000 },
+                );
+                router.push("/can-onboarding");
+                return;
+            }
+
+            // Any other non-zero RES_CODE is a real failure.
+            const status: string = result?.RESP_HEADER?.RES_MSG || "";
+            setIsError(true);
+            setTransactionData({ status, code: resCode });
+
+            // Detect the "KYC Not Registered with KRA for ( <PAN> )" case.
+            // When it fires, the user's only recovery is to go back to the
+            // holder step and change the PAN. Flag that in sessionStorage
+            // so SolePrimaryHolder knows to unlock its PAN input — we keep
+            // the field locked in the normal flow because the PAN is
+            // supposed to be immutable after identity verification.
+            if (/KYC\s+Not\s+Registered\s+with\s+KRA/i.test(status)) {
+                if (typeof window !== "undefined") {
+                    sessionStorage.setItem("panEditRequired", "true");
+                }
             }
         } catch (err) {
             setIsError(true);
@@ -95,6 +174,34 @@ export default function SummaryFinalization({
             setLoader(false);
         }
     };
+
+    // Route the user back to the Sole/Primary Holder step where they can
+    // correct the PAN. Closes the error dialog first so it doesn't linger.
+    const handleEditPan = () => {
+        setIsError(false);
+        onPrevious?.();
+        onPrevious?.();
+        onPrevious?.();
+        // Summary → Nominees → Bank Accounts → Sole/Primary Holder — three
+        // steps back in the current wizard layout. onPrevious is a no-op at
+        // the first step, so over-calling is safe.
+    };
+
+    // Summary → Nominees → Bank Accounts → Secondary Holder — three steps
+    // back when holding_nature is JO/AS. onPrevious is a no-op at the first
+    // step, so this is safe even if the step list changes.
+    const goToSecondaryHolder = () => {
+        onPrevious?.();
+        onPrevious?.();
+        onPrevious?.();
+    };
+
+    // True when the most recent failure was the KRA-registration case.
+    const canEditPan =
+        isError &&
+        /KYC\s+Not\s+Registered\s+with\s+KRA/i.test(
+            transactionData?.status || ""
+        );
 
     if (!summary) {
         return (
@@ -118,7 +225,16 @@ export default function SummaryFinalization({
                 title="CAN Creation Failed"
                 message="Unable to process your request"
                 errorDetails={transactionData}
-                note="Please contact support"
+                note={
+                    canEditPan
+                        ? "This PAN is not registered with KRA. Please go back and correct the PAN, then resubmit."
+                        : "Please contact support"
+                }
+                primaryAction={
+                    canEditPan
+                        ? { label: "Edit PAN and Retry", onClick: handleEditPan }
+                        : undefined
+                }
             />
 
             {/* ================= CRITERIA ================= */}
@@ -133,6 +249,27 @@ export default function SummaryFinalization({
 
             {/* ================= HOLDERS ================= */}
             <SummarySection title="Holders">
+                {!hasAllHolders && (
+                    <div className="rounded-lg border border-red-500/40 bg-red-500/10 p-4 mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div>
+                            <p className="font-semibold text-red-300">
+                                Secondary Holder details missing
+                            </p>
+                            <p className="text-sm text-red-200/80 mt-1">
+                                This is a {summary.canCriteria.holdingNature} account and
+                                needs {expectedHolderCount} holders. MFU will reject CAN
+                                creation until the Secondary Holder is filled in.
+                            </p>
+                        </div>
+                        <button
+                            type="button"
+                            onClick={goToSecondaryHolder}
+                            className="shrink-0 px-4 py-2 rounded-lg bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white text-sm font-medium hover:opacity-90"
+                        >
+                            Go to Secondary Holder
+                        </button>
+                    </div>
+                )}
                 {summary.holders.map((h: any, idx: number) => (
                     <Card key={idx} title={h.title}>
                         <GridField label="Name" value={h.name} />
@@ -200,7 +337,16 @@ export default function SummaryFinalization({
                     Previous
                 </Button>
 
-                <Button onClick={handleSubmit} loading={loader}>
+                <Button
+                    onClick={handleSubmit}
+                    loading={loader}
+                    disabled={!hasAllHolders}
+                    title={
+                        !hasAllHolders
+                            ? "Complete the Secondary Holder step to finalise"
+                            : undefined
+                    }
+                >
                     Finalize & Submit
                 </Button>
             </div>
@@ -237,16 +383,19 @@ function GridField({ label, value }: any) {
     );
 }
 
-function Button({ children, loading, variant = "primary", ...props }: any) {
+function Button({ children, loading, disabled, variant = "primary", ...props }: any) {
+    const isDisabled = loading || disabled;
     const base =
         "px-6 py-2 rounded-lg font-medium transition flex items-center justify-center shadow-sm";
-    const styles =
+    const activeStyles =
         variant === "secondary"
             ? "bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] hover:bg-[#2A2A2A] hover:border-[#F59E0B] transition-all"
             : "bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white hover:opacity-90";
+    const disabledStyles = "bg-[#2A2A2A] text-[#9CA3AF] cursor-not-allowed";
+    const styles = isDisabled && !loading ? disabledStyles : activeStyles;
 
     return (
-        <button {...props} disabled={loading} className={`${base} ${styles}`}>
+        <button {...props} disabled={isDisabled} className={`${base} ${styles}`}>
             {loading ? (
                 <span className="flex items-center gap-2">
                     <span className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></span>

@@ -1,15 +1,15 @@
 //@ts-nocheck
 let configData = {
   development: {
-    ApiUrl: "http://localhost:9065", //ApiUrl: "http://localhost:9065"
+    ApiUrl: "http://localhost:9075", //ApiUrl: "http://localhost:9075"
     //ApiUrl: "https://vedantmf.com/api/",
     adminURL: "http://localhost:4200",
     baseUrl: "",
     publicBasePath: "",
-    websiteUrl: "http://localhost:3000"
+    websiteUrl: "http://localhost:3001"
   },
   staging: {
-    ApiUrl: "https://vedant.prosesenv.com:9065",
+    ApiUrl: "https://vedant.prosesenv.com:9075",
     adminURL: "",
     baseUrl: "",
     publicBasePath: "",
@@ -17,7 +17,7 @@ let configData = {
   },
   production: {
     //ApiUrl: "https://vedantmf.com/api/",
-    ApiUrl: "http://localhost:9065",
+    ApiUrl: "http://localhost:9075",
     adminURL: "",
     baseUrl: "",
     publicBasePath: "",

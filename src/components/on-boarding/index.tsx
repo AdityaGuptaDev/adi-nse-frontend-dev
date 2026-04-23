@@ -124,10 +124,19 @@ function OnBoarding({ onClose, mobile, mandatory }: OnBoardingProps) {
         </div>
 
         {/* Footer note */}
-        <div className="px-8 pb-6 text-center">
+        <div className="px-8 pb-6 text-center space-y-3">
           <p className="text-[11px] text-[#6B7280]">
             You can add the other lane later from your profile.
           </p>
+          {!mandatory && onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-xs font-medium text-[#9CA3AF] hover:text-[#F59E0B] border border-[#2A2A2A] hover:border-[#F59E0B]/50 rounded-lg px-4 py-2 transition-colors"
+            >
+              Remind Me Later
+            </button>
+          )}
         </div>
       </div>
     </div>

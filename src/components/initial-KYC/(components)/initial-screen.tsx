@@ -763,7 +763,7 @@ export default function InitialScreen({ setKYCSFlow, setKYCFlowScreen }: Props) 
                             <button
                                 type="button"
                                 onClick={handleNexttab}
-                                disabled={!panStatusVerified || kycVerifyLoader}
+                                disabled={kycVerifyLoader}
                                 className="px-6 py-2.5 bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white font-semibold rounded-lg hover:opacity-90 transition-all disabled:opacity-50"
                             >
                                 {kycVerifyLoader ? "Processing..." : "Next"}

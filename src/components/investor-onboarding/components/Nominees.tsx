@@ -154,8 +154,23 @@ export default function Nominees({
 
     useEffect(() => {
         const loadData = async () => {
-            const res = await fetchHolderDetails(user?.InvestorRegistration?.id);
-            const result = res.data?.data?.data;
+            const investorRegId = user?.InvestorRegistration?.id;
+            // Skip the fetch entirely when we don't yet have an investor
+            // registration ID — a fresh onboarding session will hit this
+            // step before the backend row exists, and calling with
+            // undefined just logs a scary "fetchHolderDetails Error: {}" in
+            // the console for no benefit. Default empty nominees is fine.
+            if (!investorRegId) return;
+
+            let res: any;
+            try {
+                res = await fetchHolderDetails(investorRegId);
+            } catch (error) {
+                // Soft failure: the row may simply not exist yet. Leave the
+                // form blank so the user can fill it in.
+                return;
+            }
+            const result = res?.data?.data?.data;
 
             console.log("Holder Details", result);
 
@@ -405,12 +420,7 @@ export default function Nominees({
 
 
 
-    //const isFormValid = validateForm();
-    const isFormValid = true;
-
-    useEffect(() => {
-        onCompletionUpdate(isFormValid);
-    }, [isFormValid, onCompletionUpdate]);
+    // Completion is reported only after a successful submit (see handleSubmit).
 
     const handleNominationOptionChange = (value: string) => {
         setNominationOption(value);
@@ -428,9 +438,20 @@ export default function Nominees({
     value: string | boolean
 ) => {
     try {
-        let response = await api.get(`/kyc/get-address-info/${investorId}`);
-        const apiData = response?.data?.data;
-        console.log("API Address:", apiData);
+        // The primary-holder address is only needed when the user toggles the
+        // "Same address as primary holder" checkbox ON. Fetching it on every
+        // keystroke of every field (name, email, mobile, address…) was firing
+        // one GET /kyc/get-address-info per character and tripping the rate
+        // limiter within seconds of the user typing.
+        const shouldCopyPrimaryAddress =
+            field === "sameAddressAsFirst" && value === true;
+
+        let apiData: any = null;
+        if (shouldCopyPrimaryAddress) {
+            const response = await api.get(`/kyc/get-address-info/${investorId}`);
+            apiData = response?.data?.data;
+            console.log("API Address:", apiData);
+        }
 
         setNominees(prev => {
             const updatedNominees = [...prev];
@@ -441,14 +462,14 @@ export default function Nominees({
             };
 
             // ⭐ Case 1: "sameAddressAsFirst" is checked -> fill from API
-            if (field === "sameAddressAsFirst" && value === true) {
+            if (shouldCopyPrimaryAddress) {
                 // Find India in country list
-                const indiaCountry = countryList.find((country: any) => 
-                    country.name?.toLowerCase() === "india" || 
+                const indiaCountry = countryList.find((country: any) =>
+                    country.name?.toLowerCase() === "india" ||
                     country.name?.toLowerCase() === "ind" ||
                     country.kyc_code === "IN"
                 );
-                
+
                 const indiaCountryValue = indiaCountry ? (indiaCountry.kyc_code || indiaCountry.id.toString()) : "";
 
                 updatedNominees[index] = {
@@ -624,12 +645,29 @@ export default function Nominees({
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (validateForm()) {
+        if (!validateForm()) {
+            // Previously this path failed silently — the Next button appeared
+            // dead if anything was missing (e.g. Nomination Option not picked).
+            // Surface the first error so the user knows what to fix.
+            const firstError = Object.values(errors).find(Boolean)
+                || "Please fill all required fields before proceeding.";
+            toastAlert("error", firstError);
+            // Scroll the first invalid field into view.
+            const firstErrorKey = Object.keys(errors).find(k => errors[k]);
+            if (firstErrorKey && typeof document !== "undefined") {
+                const el = document.querySelector(`[data-error-key="${firstErrorKey}"]`);
+                if (el) (el as HTMLElement).scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+            return;
+        }
 
-            //localStorage.setItem(NOMINEES_KEY, JSON.stringify(nominees));
+        try {
             const payload = buildNomineePayload(investorId, nominees);
             await api.post("/kyc/update-nominee-details", payload);
+            onCompletionUpdate(true);
             onNext();
+        } catch (error) {
+            handleServerError(error);
         }
     };
 
@@ -1281,12 +1319,7 @@ export default function Nominees({
 
                 <button
                     type="submit"
-                    disabled={!isFormValid}
-                    className={`px-6 py-2 rounded-lg transition-all font-medium shadow-sm ${
-                        isFormValid
-                            ? 'bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white hover:opacity-90'
-                            : 'bg-[#2A2A2A] text-[#9CA3AF] cursor-not-allowed'
-                    }`}
+                    className="px-6 py-2 rounded-lg transition-all font-medium shadow-sm bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white hover:opacity-90"
                 >
                     {isLastStep ? 'Submit' : 'Next'}
                 </button>

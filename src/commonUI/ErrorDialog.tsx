@@ -9,6 +9,9 @@ interface ErrorDialogProps {
     errorDetails?: Record<string, string | number>;
     note?: string;
     buttonText?: string;
+    // Optional secondary action, e.g. "Edit PAN" when the failure is
+    // recoverable by going back and changing a single field.
+    primaryAction?: { label: string; onClick: () => void };
 }
 
 const ErrorDialog: React.FC<ErrorDialogProps> = ({
@@ -19,6 +22,7 @@ const ErrorDialog: React.FC<ErrorDialogProps> = ({
     errorDetails,
     note = '',
     buttonText = 'Close',
+    primaryAction,
 }) => {
     if (!isOpen) return null;
 
@@ -55,8 +59,16 @@ const ErrorDialog: React.FC<ErrorDialogProps> = ({
                     <div className="text-xs text-red-600 italic px-6 mb-4">{note}</div>
                 )}
 
-                {/* Button */}
-                <div className="px-6 pb-6">
+                {/* Buttons */}
+                <div className="px-6 pb-6 space-y-2">
+                    {primaryAction && (
+                        <button
+                            onClick={primaryAction.onClick}
+                            className="w-full bg-gradient-to-r from-[#F59E0B] to-[#B45309] text-white py-2 rounded-full text-sm font-semibold shadow"
+                        >
+                            {primaryAction.label}
+                        </button>
+                    )}
                     <button
                         onClick={onClose}
                         className="w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-2 rounded-full text-sm font-semibold shadow"
