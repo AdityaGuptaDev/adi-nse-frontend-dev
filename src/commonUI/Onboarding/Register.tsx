@@ -10,10 +10,12 @@ import { User, Phone, ArrowLeft, Shield, CheckCircle, Lock, Mail, X } from "luci
 import CustomInput from "@/commonUI/Input";
 import CustomButton from "@/commonUI/Button";
 import OTPScreen from "./OTPScreen";
+import OnBoarding from "@/components/on-boarding";
 
 import api from "@/utils/api";
 import { decrypt } from "@/utils/aesmfu";
-import { handleServerError, toastAlert } from "@/utils/helpers";
+import { getLS, handleServerError, toastAlert } from "@/utils/helpers";
+import { USER_DATA } from "@/utils/constants";
 
 
 const schema = yup.object({
@@ -61,15 +63,32 @@ export default function RegisterForm() {
         userId: null,
         userType: null,
     });
+    const [isAdminFlow, setIsAdminFlow] = useState(false);
+    const [showOnBoarding, setShowOnBoarding] = useState(false);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
-        const encryptedId = params.get("id");
+        const idParam = params.get("id");
+        const userTypeParam = params.get("userType");
 
-        if (!encryptedId) return;
+        // Admin flow: AdminDashboard passes plain id + userType=admin (no encryption).
+        // Detect this first so we don't try to decrypt a plain integer and fail
+        // silently — that was the cause of the verify-otp 500 (partner_id="" → INTEGER cast error).
+        if (userTypeParam === "admin") {
+            setIsAdminFlow(true);
+            setUserType("Investor");
+            const adminUser = getLS(USER_DATA);
+            setParentData({
+                userId: adminUser?.id ?? idParam ?? null,
+                userType: "admin",
+            });
+            return;
+        }
+
+        if (!idParam) return;
 
         try {
-            const decrypted = JSON.parse(decrypt(encryptedId));
+            const decrypted = JSON.parse(decrypt(idParam));
             setUserType("Investor");
             setParentData({
                 userId: decrypted?.userId ?? null,
@@ -110,7 +129,9 @@ export default function RegisterForm() {
                 mobile,
                 userType,
                 parentUserType: parentData.userType || undefined,
-                ...(parentData.userId != null && { parentId: parentData.userId }),
+                // Only forward parentId when it represents a real partner — for admin
+                // flow the parent is just the admin user, not a partner who owns the investor.
+                ...(!isAdminFlow && parentData.userId != null && { parentId: parentData.userId }),
             };
 
             const res = await api.post("/user/add-investor", payload);
@@ -259,10 +280,22 @@ export default function RegisterForm() {
                                 closeModal={() => setIsOtpOpen(false)}
                                 mobile={submittedMobile}
                                 parentData={parentData}
+                                isAdminFlow={isAdminFlow}
+                                onShowOnBoarding={
+                                    isAdminFlow ? () => setShowOnBoarding(true) : undefined
+                                }
                             />
                         </div>
                     </div>
                 </div>
+            )}
+
+            {showOnBoarding && (
+                <OnBoarding
+                    onBoardingModal={showOnBoarding}
+                    mandatory={true}
+                    mobile={submittedMobile}
+                />
             )}
         </div>
     );

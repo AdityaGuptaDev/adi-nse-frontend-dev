@@ -19,6 +19,7 @@ const menu = [
   { id: 107, link: "/nse-systematic-orders", parentID: 100, title: "Systematic Orders", icon: "FiRepeat", isActive: true, sequenceNumber: 107 },
   { id: 108, link: "/nse-kyc-status", parentID: 100, title: "KYC Status Report", icon: "FiCheckCircle", isActive: true, sequenceNumber: 108 },
   { id: 109, link: "/nse-client-auth", parentID: 100, title: "Client Auth Report", icon: "FiShield", isActive: true, sequenceNumber: 109 },
+  { id: 110, link: "/nse-transaction-report", parentID: 100, title: "Transaction Report", icon: "FiFileText", isActive: true, sequenceNumber: 110 },
 
   // Activity Log
   // {id: 10, link: "/activity-logger/list", parentID: null, title: "Activity Log", icon: "fa-solid fa-tag"  , isActive:true, sequenceNumber: 10},

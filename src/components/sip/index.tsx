@@ -153,6 +153,7 @@ export default function SipPage() {
   const [success, setSuccess] = useState(false);
   const [isTransact, setIsTransact] = useState(false);
   const [isCartAdded, setIsCartAdded] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [exeptions, setExceptions] = useState({ value: false, message: "" });
   const [transactionError, setTransactionError] = useState("");
   const [commonError, setCommonError] = useState("");
@@ -710,6 +711,10 @@ export default function SipPage() {
   };
 
   const addToCart = async () => {
+    // Guard against double-clicks: the same button kicks off a network call
+    // and a previous in-flight request would otherwise fire a duplicate add.
+    if (isAddingToCart) return;
+
     if (!selectedFund || !amount) {
       toastAlert("info", "Please select fund and amount / कृपया फंड और राशि चुनें");
       return;
@@ -726,6 +731,7 @@ export default function SipPage() {
       return;
     }
 
+    setIsAddingToCart(true);
     try {
       const userData: any = getLS(USER_DATA);
 
@@ -735,7 +741,7 @@ export default function SipPage() {
         account_holding_id: 0,
         cart_type: 1,
         scheme_id: selectedFund?.id,
-        trans_type: 7,
+        trans_type: 2,
         trans_amount: amount,
         frequency: freq,
         day: sipDay || "05",
@@ -755,11 +761,50 @@ export default function SipPage() {
         toastAlert("success", "SIP Added To Cart / एसआईपी कार्ट में जोड़ा गया");
         setCartCounter(cartCounter + 1);
         setIsCartAdded(true);
+        // Reset selection so the user can pick a different fund without the
+        // previous fund's state leaking into the next add. Keeping
+        // selectedFund pinned was making a second click on the same button
+        // re-send the same fund, which the backend rejects as a duplicate
+        // and surfaces only as a generic 500 body in some cases.
+        setSelectedFund(null);
+        setSipDate(null);
+        setSipDay("");
+        setSipMonth("");
+        setSipYear("");
+        setRtaAmcCode("");
+        setRtaSchCode("");
+        setOutRtaSchCode("");
+        setActiveStep(2);
       } else {
         toastAlert("info", "Unable to add to cart, please try again later!");
       }
-    } catch (error) {
-      handleServerError(error);
+    } catch (error: any) {
+      // Surface the real server message (e.g. "This fund is already in your
+      // cart.") instead of a generic toast. The api wrapper puts the parsed
+      // message on .msg, but for plain-text 400/500 bodies it can also land on
+      // .message or the raw response data, and 500s with `{err: {}}` come
+      // through with an empty .msg — fall back to the response body and
+      // status text so the user always sees something more useful than
+      // "Something went wrong".
+      const rawData = error?.response?.data;
+      const serverMsg =
+        error?.msg ||
+        rawData?.msg ||
+        (typeof rawData === "string" ? rawData : "") ||
+        rawData?.message ||
+        rawData?.err?.message ||
+        error?.message;
+
+      if (serverMsg && serverMsg !== "Something went wrong") {
+        toastAlert("error", serverMsg);
+      } else {
+        toastAlert(
+          "error",
+          "Unable to add to cart. The fund may already be in your cart, or the server is busy — please refresh and try again."
+        );
+      }
+    } finally {
+      setIsAddingToCart(false);
     }
   };
 
@@ -3274,6 +3319,7 @@ export default function SipPage() {
                     <motion.button
                       whileTap={{ scale: 0.98 }}
                       onClick={addToCart}
+                      disabled={isAddingToCart}
                       style={{
                         width: "100%",
                         padding: isMobile ? "14px" : "16px",
@@ -3283,7 +3329,8 @@ export default function SipPage() {
                         color: theme.primary,
                         fontSize: isMobile ? "15px" : "16px",
                         fontWeight: "600",
-                        cursor: "pointer",
+                        cursor: isAddingToCart ? "not-allowed" : "pointer",
+                        opacity: isAddingToCart ? 0.6 : 1,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -3291,7 +3338,9 @@ export default function SipPage() {
                       }}
                     >
                       <Plus size={isMobile ? 16 : 18} />
-                      Add to Cart / कार्ट में जोड़ें
+                      {isAddingToCart
+                        ? "Adding... / जोड़ा जा रहा है..."
+                        : "Add to Cart / कार्ट में जोड़ें"}
                     </motion.button>
 
                     {isCartAdded && (

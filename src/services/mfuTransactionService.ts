@@ -65,7 +65,14 @@ export const executeMfuTransaction = async (
             }
             if (!parms.subSeqSec || parms.subSeqSec.length === 0) {
                 delete payload.subSeqSec;
-                delete payload.subSeqPayFlag;
+                // Only drop subSeqPayFlag along with subSeqSec when the caller
+                // didn't explicitly pick one. UPI / autopay SIPs have no
+                // subSeqSec but still require subSeqPayFlag = "Y" so MFU knows
+                // a subsequent payment will follow — otherwise it rejects with
+                // "subSeqPayFlag is required".
+                if (!parms.subSeqPayFlag) {
+                    delete payload.subSeqPayFlag;
+                }
             }
 
 

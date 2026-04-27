@@ -18,6 +18,7 @@ import { Investor } from "@/services/searchReportService";
 import OrderPopup from "./new-order";
 import { searchByISIN } from "@/api/transaction";
 import { useFundStore } from "@/store/useFundStore";
+import { routeInvestorToOrderForm } from "@/utils/investorOrderRouting";
 import TopPerformingSchemes from "./(components)/top-performing-schemes";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -116,7 +117,7 @@ function MutualFund() {
   const [showInvestorPopup, setshowInvestorPopup] = useState(false);
   const [showInvestorPicker, setshowInvestorPicker] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>('all');
-  const { setSchemeData, setInvestors } = useFundStore();
+  const { setSchemeData, setInvestors, setDataSource } = useFundStore();
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [showInvestmentHelper, setShowInvestmentHelper] = useState(true);
   const [helperAnimation, setHelperAnimation] = useState<'idle' | 'bounce' | 'wave' | 'jump'>('bounce');
@@ -216,20 +217,26 @@ function MutualFund() {
 
     if (investorList.length > 1) {
       setshowInvestorPopup(true);
-    } else {
-      if (investorList.length === 1) {
-        setSchemeData(scheme);
-        setInvestors(investorList);
-
-        // Store in localStorage for persistence across refreshes
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('newOrder_schemeData', JSON.stringify(scheme));
-          localStorage.setItem('newOrder_investorList', JSON.stringify(investorList));
-        }
-        router.push("/mutual-fund/new-order");
-      }
+      return;
     }
-  }, [fetchByISIN, investorList, router, setSchemeData, setInvestors]);
+
+    if (investorList.length === 1) {
+      // Persist for refresh-safety on the MFU lane. The NSE lane reads scheme
+      // identifiers from the URL, so these entries are harmless there.
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('newOrder_schemeData', JSON.stringify(scheme));
+        localStorage.setItem('newOrder_investorList', JSON.stringify(investorList));
+      }
+
+      // CAN → /mutual-fund/new-order, UCC → /nse-order-form, neither → toast.
+      routeInvestorToOrderForm({
+        router,
+        scheme,
+        investorList,
+        store: { setSchemeData, setInvestors, setDataSource },
+      });
+    }
+  }, [fetchByISIN, investorList, router, setSchemeData, setInvestors, setDataSource]);
 
   const getComponents = useCallback(() => {
     return [

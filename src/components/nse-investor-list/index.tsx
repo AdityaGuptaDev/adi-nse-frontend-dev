@@ -5,7 +5,7 @@ import api from "@/utils/api";
 import { getLS, handleServerError, toastAlert } from "@/utils/helpers";
 import { USER_DATA } from "@/utils/constants";
 import { useRouter } from "next/navigation";
-import { FiEdit, FiFileText, FiCreditCard, FiTrash2, FiMoreVertical } from "react-icons/fi";
+import { FiEdit, FiFileText, FiCreditCard, FiTrash2, FiExternalLink } from "react-icons/fi";
 import { BsBank2 } from "react-icons/bs";
 
 // ── Types ──
@@ -90,113 +90,81 @@ const ACCOUNT_TYPE_MAP: Record<string, string> = {
 };
 
 // ══════════════════════════════════════════
-//  Action Dropdown Menu
+//  Inline Action Buttons
 // ══════════════════════════════════════════
 function ActionMenu({
   investor,
   onEdit,
+  onActivate,
   onCreateMandate,
   onManageBanks,
   onSubmitFatca,
   onDelete,
+  activating,
 }: {
   investor: Investor;
   onEdit: () => void;
+  onActivate: () => void;
   onCreateMandate: () => void;
   onManageBanks: () => void;
   onSubmitFatca: () => void;
   onDelete: () => void;
+  activating: boolean;
 }) {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  const btnRef = useRef<HTMLButtonElement>(null);
-  // The table is inside an overflow-x-auto wrapper, so an absolutely-positioned
-  // dropdown gets clipped. We render with position:fixed and compute the anchor
-  // from the trigger's bounding rect so it floats above the table.
-  const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
-  const MENU_WIDTH = 192; // matches w-48
+  // "Activate UCC" calls GET_LINK (productType CL_ACT, refId = client_code)
+  // and opens the resulting authorization URL in a new tab. Only relevant
+  // once a UCC exists on NSE (ucc_created), and the activation is still
+  // pending — we treat anything other than "ACTIVE" as pending since the
+  // backend status text varies (CREATED / REG_SUCCESS / blank).
+  const isUccActive = (investor.ucc_status || "").toUpperCase().includes("ACTIVE");
 
-  const openMenu = () => {
-    if (!btnRef.current) return;
-    const r = btnRef.current.getBoundingClientRect();
-    const spaceBelow = window.innerHeight - r.bottom;
-    const approxHeight = 5 * 40 + 12; // 5 items @ ~40px + padding
-    const top = spaceBelow < approxHeight && r.top > approxHeight
-      ? r.top - approxHeight - 4
-      : r.bottom + 4;
-    const left = Math.min(
-      Math.max(8, r.right - MENU_WIDTH),
-      window.innerWidth - MENU_WIDTH - 8
-    );
-    setMenuPos({ top, left });
-    setOpen(true);
-  };
-
-  useEffect(() => {
-    if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (
-        ref.current && !ref.current.contains(e.target as Node) &&
-        btnRef.current && !btnRef.current.contains(e.target as Node)
-      ) setOpen(false);
-    };
-    const onScroll = () => setOpen(false);
-    document.addEventListener("mousedown", handler);
-    window.addEventListener("scroll", onScroll, true);
-    window.addEventListener("resize", onScroll);
-    return () => {
-      document.removeEventListener("mousedown", handler);
-      window.removeEventListener("scroll", onScroll, true);
-      window.removeEventListener("resize", onScroll);
-    };
-  }, [open]);
-
-  const items = [
+  const items: {
+    icon: React.ReactNode;
+    label: string;
+    onClick: () => void;
+    disabled?: boolean;
+    danger?: boolean;
+  }[] = [
     { icon: <FiEdit className="w-4 h-4" />, label: "Edit Profile", onClick: onEdit },
+    {
+      icon: <FiExternalLink className="w-4 h-4" />,
+      label: isUccActive
+        ? "UCC Activated"
+        : activating
+        ? "Fetching link..."
+        : "Activate UCC",
+      onClick: onActivate,
+      disabled: !investor.ucc_created || isUccActive || activating,
+    },
     { icon: <FiCreditCard className="w-4 h-4" />, label: "Create Mandate", onClick: onCreateMandate, disabled: !investor.ucc_created },
     { icon: <BsBank2 className="w-4 h-4" />, label: "Manage Banks", onClick: onManageBanks, disabled: !investor.ucc_created },
     { icon: <FiFileText className="w-4 h-4" />, label: "Submit FATCA", onClick: onSubmitFatca, disabled: !investor.ucc_created },
-    { icon: <FiTrash2 className="w-4 h-4 text-red-500" />, label: "Delete Profile", onClick: onDelete, danger: true },
+    { icon: <FiTrash2 className="w-4 h-4" />, label: "Delete Profile", onClick: onDelete, danger: true },
   ];
 
   return (
-    <>
-      <button
-        ref={btnRef}
-        onClick={() => (open ? setOpen(false) : openMenu())}
-        className="p-1.5 rounded-lg hover:bg-[#1F1A1A] transition-colors"
-      >
-        <FiMoreVertical className="w-4 h-4 text-[#9CA3AF]" />
-      </button>
-      {open && menuPos && (
-        <div
-          ref={ref}
-          style={{ position: "fixed", top: menuPos.top, left: menuPos.left, width: MENU_WIDTH }}
-          className="bg-[#111111] border border-[#2A2A2A] rounded-xl shadow-lg z-[1000] py-1.5"
+    <div className="flex items-center gap-1.5 flex-wrap">
+      {items.map((item, i) => (
+        <button
+          key={i}
+          type="button"
+          onClick={item.onClick}
+          disabled={item.disabled}
+          title={item.label}
+          aria-label={item.label}
+          className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md border text-xs font-medium whitespace-nowrap transition-colors ${
+            item.disabled
+              ? "opacity-40 cursor-not-allowed border-[#2A2A2A] text-[#6B7280]"
+              : item.danger
+              ? "border-red-500/40 text-red-500 hover:bg-red-500/10"
+              : "border-[#2A2A2A] text-[#E5E7EB] hover:border-[#F59E0B] hover:text-[#F59E0B] hover:bg-[#1F1A1A]"
+          }`}
         >
-          {items.map((item, i) => (
-            <button
-              key={i}
-              onClick={() => {
-                setOpen(false);
-                item.onClick();
-              }}
-              disabled={item.disabled}
-              className={`w-full flex items-center gap-2.5 px-4 py-2 text-sm text-left transition-colors ${
-                item.disabled
-                  ? "opacity-40 cursor-not-allowed text-[#6B7280]"
-                  : item.danger
-                  ? "text-red-600 hover:bg-red-50"
-                  : "text-[#E5E7EB] hover:bg-[#1F1A1A]"
-              }`}
-            >
-              {item.icon}
-              {item.label}
-            </button>
-          ))}
-        </div>
-      )}
-    </>
+          {item.icon}
+          <span>{item.label}</span>
+        </button>
+      ))}
+    </div>
   );
 }
 
@@ -285,7 +253,13 @@ function MandateModal({
         if (regData.reg_status === "REG_FAILED") {
           toastAlert("error", regData.reg_remark || "Mandate registration failed");
         } else {
-          onSuccess(regData);
+          // Carry mandate_type and client_code through so the success modal
+          // can branch (Physical → upload scan; eNACH → open auth link).
+          onSuccess({
+            ...regData,
+            mandate_type: mandateType,
+            client_code: investor.client_code || investor.pan || "",
+          });
         }
       } else {
         toastAlert("error", responseData?.remark || "Failed to create mandate");
@@ -490,6 +464,23 @@ function MandateModal({
 // ══════════════════════════════════════════
 //  Mandate Success Modal
 // ══════════════════════════════════════════
+// Convert a File to base64 (without the "data:...;base64," prefix) for
+// the NSE MANDATEIMG endpoint, which expects a raw base64 string.
+async function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      resolve(result.replace(/^data:[^;]+;base64,/, ""));
+    };
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+}
+
+const MAX_SCAN_BYTES = 4 * 1024 * 1024; // 4 MB raw — backend caps at ~5.6 MB base64
+const SCAN_EXT_RE = /\.(jpg|jpeg|png|pdf|tiff|tif)$/i;
+
 function MandateSuccessModal({
   mandateData,
   onClose,
@@ -497,6 +488,97 @@ function MandateSuccessModal({
   mandateData: any;
   onClose: () => void;
 }) {
+  // Backend chains GET_LINK after mandate registration and attaches the
+  // authorization URL(s) onto the same reg_data row. firstHolderLink is
+  // the eNACH/netbanking page (or physical-mandate form) the investor
+  // must visit to approve. If GET_LINK failed, errorMessage is populated
+  // and we fall back to a copyable Mandate ID.
+  const authLink: string =
+    mandateData?.auth_link ||
+    mandateData?.auth_links?.firstHolderLink ||
+    "";
+  const linkErr: string = mandateData?.auth_links?.errorMessage || "";
+  const isPhysical = mandateData?.mandate_type === "X";
+  const mandateId: string = mandateData?.reg_id || "";
+  const clientCode: string = mandateData?.client_code || "";
+
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = React.useState(false);
+  const [uploadedAt, setUploadedAt] = React.useState<string>("");
+
+  const handleApproveNow = () => {
+    if (authLink) {
+      window.open(authLink, "_blank", "noopener,noreferrer");
+      onClose();
+    } else {
+      toastAlert(
+        "error",
+        linkErr ||
+          "Authorization link not available — please use Member Desk to approve."
+      );
+    }
+  };
+
+  const handleCopyLink = async () => {
+    if (!authLink) return;
+    try {
+      await navigator.clipboard.writeText(authLink);
+      toastAlert("success", "Link copied to clipboard");
+    } catch {
+      toastAlert("error", "Could not copy link");
+    }
+  };
+
+  const handleScanSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-picking the same file
+    if (!file) return;
+    if (!mandateId || !clientCode) {
+      toastAlert("error", "Missing mandate ID or client code — cannot upload");
+      return;
+    }
+    if (!SCAN_EXT_RE.test(file.name)) {
+      toastAlert("error", "Allowed file types: jpg, jpeg, png, pdf, tiff, tif");
+      return;
+    }
+    if (file.name.length > 30) {
+      toastAlert("error", "File name must be 30 characters or less");
+      return;
+    }
+    if (file.size > MAX_SCAN_BYTES) {
+      toastAlert("error", "File too large (max 4 MB)");
+      return;
+    }
+    setUploading(true);
+    try {
+      const file_data = await fileToBase64(file);
+      const res = await api.post("/nse/mandate-image-upload", {
+        client_code: clientCode,
+        mandate_id: mandateId,
+        file_name: file.name,
+        file_data,
+      });
+      const payload = res?.data?.data ?? res?.data;
+      const ok = payload?.status === "S" || payload?.data?.status === "100";
+      if (ok) {
+        setUploadedAt(new Date().toLocaleString());
+        toastAlert(
+          "success",
+          payload?.remark || payload?.data?.message || "Mandate image uploaded"
+        );
+      } else {
+        toastAlert(
+          "error",
+          payload?.data?.message || payload?.remark || "Upload failed"
+        );
+      }
+    } catch (err) {
+      handleServerError(err);
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
       <div
@@ -516,7 +598,9 @@ function MandateSuccessModal({
           Your Mandate has been created Successfully.
         </h3>
         <p className="text-sm text-[#9CA3AF] mb-6">
-          To approve the mandate login to your Net Banking portal and enter your Debit Card details.
+          {isPhysical
+            ? "Print the mandate form, get it signed by the investor, then scan and upload the signed copy to NSE."
+            : "To approve the mandate login to your Net Banking portal and enter your Debit Card details."}
         </p>
 
         {mandateData?.reg_id && (
@@ -525,23 +609,121 @@ function MandateSuccessModal({
           </p>
         )}
 
-        <div className="flex items-center justify-center gap-3">
-          <button
-            onClick={() => {
-              toastAlert("info", "Redirecting to approve mandate...");
-              onClose();
-            }}
-            className="px-6 py-2.5 bg-gradient-to-r from-[#4bc5c1] to-[#3db5b1] text-white rounded-full text-sm font-semibold hover:opacity-90 transition-opacity"
-          >
-            Approve Now
-          </button>
-          <button
-            onClick={onClose}
-            className="px-6 py-2.5 bg-gradient-to-r from-[#4bc5c1] to-[#3db5b1] text-white rounded-full text-sm font-semibold hover:opacity-90 transition-opacity"
-          >
-            Approve Later
-          </button>
-        </div>
+        {/* Physical mandate: scan upload via MANDATEIMG. The "form download"
+            is the same NSE-issued auth link (when GET_LINK returns one),
+            otherwise distributors print from their internal template. */}
+        {isPhysical ? (
+          <>
+            {authLink && (
+              <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg p-3 mb-3 text-left">
+                <div className="text-[10px] uppercase tracking-wider text-[#6B7280] mb-1">
+                  Mandate Form Link
+                </div>
+                <div className="flex items-center gap-2">
+                  <a
+                    href={authLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 truncate text-xs text-[#4bc5c1] hover:underline font-mono"
+                    title={authLink}
+                    download
+                  >
+                    Download / Open Form
+                  </a>
+                  <button
+                    onClick={handleCopyLink}
+                    className="text-[10px] uppercase tracking-wider text-[#9CA3AF] hover:text-white border border-[#3A3A3A] rounded px-2 py-1"
+                    type="button"
+                  >
+                    Copy
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {uploadedAt && (
+              <p className="text-xs text-green-400 mb-3">
+                Scan uploaded at {uploadedAt}.
+              </p>
+            )}
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".jpg,.jpeg,.png,.pdf,.tiff,.tif,image/*,application/pdf"
+              className="hidden"
+              onChange={handleScanSelected}
+            />
+
+            <div className="flex items-center justify-center gap-3">
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploading || !mandateId}
+                className="px-6 py-2.5 bg-gradient-to-r from-[#4bc5c1] to-[#3db5b1] text-white rounded-full text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                type="button"
+              >
+                {uploading ? "Uploading..." : uploadedAt ? "Re-upload Scan" : "Upload Scan"}
+              </button>
+              <button
+                onClick={onClose}
+                className="px-6 py-2.5 border border-[#3A3A3A] text-[#9CA3AF] rounded-full text-sm font-semibold hover:bg-[#1F1A1A] transition-colors"
+                type="button"
+              >
+                Close
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            {authLink && (
+              <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg p-3 mb-4 text-left">
+                <div className="text-[10px] uppercase tracking-wider text-[#6B7280] mb-1">
+                  Authorization Link
+                </div>
+                <div className="flex items-center gap-2">
+                  <a
+                    href={authLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 truncate text-xs text-[#4bc5c1] hover:underline font-mono"
+                    title={authLink}
+                  >
+                    {authLink}
+                  </a>
+                  <button
+                    onClick={handleCopyLink}
+                    className="text-[10px] uppercase tracking-wider text-[#9CA3AF] hover:text-white border border-[#3A3A3A] rounded px-2 py-1"
+                    type="button"
+                  >
+                    Copy
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {!authLink && linkErr && (
+              <p className="text-xs text-red-400 mb-4">
+                Could not fetch authorization link: {linkErr}
+              </p>
+            )}
+
+            <div className="flex items-center justify-center gap-3">
+              <button
+                onClick={handleApproveNow}
+                disabled={!authLink}
+                className="px-6 py-2.5 bg-gradient-to-r from-[#4bc5c1] to-[#3db5b1] text-white rounded-full text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Approve Now
+              </button>
+              <button
+                onClick={onClose}
+                className="px-6 py-2.5 bg-gradient-to-r from-[#4bc5c1] to-[#3db5b1] text-white rounded-full text-sm font-semibold hover:opacity-90 transition-opacity"
+              >
+                Approve Later
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
@@ -562,6 +744,38 @@ export default function NseInvestorList(_props: any) {
   // Modals
   const [mandateInvestor, setMandateInvestor] = useState<Investor | null>(null);
   const [mandateSuccessData, setMandateSuccessData] = useState<any>(null);
+
+  // Per-row "Activate UCC" loading state. Keyed by client_code so a click
+  // on one row doesn't spin the others. The action calls GET_LINK with
+  // productType CL_ACT and opens the resulting URL in a new tab.
+  const [activatingClient, setActivatingClient] = useState<string>("");
+  const handleActivateUcc = async (inv: Investor) => {
+    const code = inv.client_code?.trim();
+    if (!code) {
+      toastAlert("error", "No UCC client code on file for this investor");
+      return;
+    }
+    setActivatingClient(code);
+    try {
+      const res = await api.post("/nse/get-link", {
+        productType: "CL_ACT",
+        productRefId: code,
+      });
+      const outer = res?.data?.data ?? {};
+      const inner = outer?.data ?? outer;
+      const link = inner?.firstHolderLink || "";
+      const errMsg = inner?.errorMessage || "";
+      if (link) {
+        window.open(link, "_blank", "noopener,noreferrer");
+      } else {
+        toastAlert("error", errMsg || "Activation link not available yet");
+      }
+    } catch (err) {
+      handleServerError(err);
+    } finally {
+      setActivatingClient("");
+    }
+  };
 
   // Filters
   const [search, setSearch] = useState("");
@@ -790,6 +1004,8 @@ export default function NseInvestorList(_props: any) {
                       <ActionMenu
                         investor={inv}
                         onEdit={() => router.push(`/create-ucc?id=${inv.id}`)}
+                        onActivate={() => handleActivateUcc(inv)}
+                        activating={activatingClient === inv.client_code}
                         onCreateMandate={() => setMandateInvestor(inv)}
                         onManageBanks={() => toastAlert("info", "Manage Banks coming soon")}
                         onSubmitFatca={() => toastAlert("info", "Submit FATCA coming soon")}

@@ -529,3 +529,194 @@ tr:hover {
 .nse-module > div > h2 {
   color: #F59E0B;
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   LIGHT MODE OVERRIDES
+   Triggered by html[data-theme="light"], set by the LandingNav toggle.
+   We override the most-used hardcoded dark hex Tailwind classes with a
+   pleasant light palette, and re-paint the auto-themed surfaces above
+   (inputs, cards, tables, scrollbar, .bg-white) so the whole app reads
+   correctly in light mode without touching component code.
+   ══════════════════════════════════════════════════════════════════════ */
+html[data-theme="light"] {
+  background-color: #F3F4F6;
+  color: #111827;
+}
+
+/* ── Background overrides ─────────────────────────────────────────── */
+html[data-theme="light"] .bg-\[\#0A0A0A\],
+html[data-theme="light"] .bg-\[\#0a0c10\] {
+  background-color: #F3F4F6 !important;
+}
+html[data-theme="light"] .bg-\[\#111111\],
+html[data-theme="light"] .bg-\[\#121418\] {
+  background-color: #FFFFFF !important;
+}
+html[data-theme="light"] .bg-\[\#1F1A1A\],
+html[data-theme="light"] .bg-\[\#1a1c22\] {
+  background-color: #F9FAFB !important;
+}
+html[data-theme="light"] .bg-\[\#2A2A2A\] {
+  background-color: #E5E7EB !important;
+}
+
+/* Gradient pieces frequently combined with dark bgs */
+html[data-theme="light"] .from-\[\#0a0c10\],
+html[data-theme="light"] .to-\[\#0a0c10\] {
+  --tw-gradient-from: #FFFFFF !important;
+  --tw-gradient-to: #FFFFFF !important;
+}
+html[data-theme="light"] .from-\[\#121418\],
+html[data-theme="light"] .to-\[\#121418\] {
+  --tw-gradient-from: #F9FAFB !important;
+  --tw-gradient-to: #F9FAFB !important;
+}
+html[data-theme="light"] .from-\[\#1F1A1A\],
+html[data-theme="light"] .to-\[\#1F1A1A\] {
+  --tw-gradient-from: #F9FAFB !important;
+  --tw-gradient-to: #F9FAFB !important;
+}
+html[data-theme="light"] .from-\[\#111111\],
+html[data-theme="light"] .to-\[\#111111\] {
+  --tw-gradient-from: #FFFFFF !important;
+  --tw-gradient-to: #FFFFFF !important;
+}
+
+/* ── Text overrides ───────────────────────────────────────────────── */
+html[data-theme="light"] .text-\[\#F9FAFB\] {
+  color: #111827 !important;
+}
+html[data-theme="light"] .text-\[\#E5E7EB\] {
+  color: #1F2937 !important;
+}
+html[data-theme="light"] .text-\[\#9CA3AF\] {
+  color: #6B7280 !important;
+}
+html[data-theme="light"] .text-\[\#6B7280\] {
+  color: #9CA3AF !important;
+}
+
+/* ── Border overrides ─────────────────────────────────────────────── */
+html[data-theme="light"] .border-\[\#2A2A2A\],
+html[data-theme="light"] .border-l-\[\#2A2A2A\],
+html[data-theme="light"] .border-r-\[\#2A2A2A\],
+html[data-theme="light"] .border-t-\[\#2A2A2A\],
+html[data-theme="light"] .border-b-\[\#2A2A2A\] {
+  border-color: #E5E7EB !important;
+}
+html[data-theme="light"] .divide-\[\#2A2A2A\] > :not([hidden]) ~ :not([hidden]) {
+  border-color: #E5E7EB !important;
+}
+
+/* ── Hover state overrides ────────────────────────────────────────── */
+html[data-theme="light"] .hover\:bg-\[\#1F1A1A\]:hover {
+  background-color: #F3F4F6 !important;
+}
+html[data-theme="light"] .hover\:bg-\[\#2A2A2A\]:hover {
+  background-color: #E5E7EB !important;
+}
+
+/* ── Re-paint the auto-themed component surfaces for light mode ──── */
+html[data-theme="light"] body {
+  background-color: #F3F4F6;
+  color: #111827;
+}
+html[data-theme="light"] input,
+html[data-theme="light"] textarea,
+html[data-theme="light"] select,
+html[data-theme="light"] .input,
+html[data-theme="light"] .select,
+html[data-theme="light"] .textarea,
+html[data-theme="light"] .file-input {
+  background-color: #FFFFFF !important;
+  border-color: #D1D5DB !important;
+  color: #111827 !important;
+}
+html[data-theme="light"] input::placeholder,
+html[data-theme="light"] textarea::placeholder,
+html[data-theme="light"] .input input::placeholder {
+  color: #9CA3AF !important;
+}
+html[data-theme="light"] input:-webkit-autofill,
+html[data-theme="light"] input:-webkit-autofill:hover,
+html[data-theme="light"] input:-webkit-autofill:focus,
+html[data-theme="light"] textarea:-webkit-autofill,
+html[data-theme="light"] select:-webkit-autofill {
+  -webkit-text-fill-color: #111827 !important;
+  -webkit-box-shadow: 0 0 0 1000px #FFFFFF inset !important;
+  caret-color: #111827;
+}
+html[data-theme="light"] input[type="date"]::-webkit-calendar-picker-indicator,
+html[data-theme="light"] input[type="time"]::-webkit-calendar-picker-indicator,
+html[data-theme="light"] input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+html[data-theme="light"] input[type="month"]::-webkit-calendar-picker-indicator {
+  filter: none;
+}
+
+html[data-theme="light"] .card {
+  background-color: #FFFFFF;
+  border-color: #E5E7EB;
+}
+html[data-theme="light"] table {
+  background-color: #FFFFFF;
+  border-color: #E5E7EB;
+}
+html[data-theme="light"] th {
+  background-color: #F9FAFB;
+  color: #B45309;
+}
+html[data-theme="light"] td {
+  color: #111827;
+  border-bottom-color: #E5E7EB;
+}
+html[data-theme="light"] tr:hover {
+  background-color: #F3F4F6;
+}
+
+/* The dark-themed bg-white override above flips white→black; reverse it
+   for light mode so cards/utilities written as bg-white render white. */
+html[data-theme="light"] .bg-white {
+  background-color: #FFFFFF !important;
+}
+
+/* Scrollbar — gentler on a light background */
+html[data-theme="light"] ::-webkit-scrollbar-track {
+  background: #E5E7EB;
+}
+
+/* Multi-select dropdown */
+html[data-theme="light"] .rmsc {
+  --rmsc-bg: #FFFFFF;
+  --rmsc-hover: #F3F4F6;
+  --rmsc-selected: #FEF3C7;
+  --rmsc-border: #D1D5DB;
+  --rmsc-gray: #6B7280;
+}
+html[data-theme="light"] .rmsc .dropdown-container,
+html[data-theme="light"] .rmsc .dropdown-content,
+html[data-theme="light"] .rmsc .panel-content {
+  background-color: #FFFFFF;
+  border-color: #D1D5DB;
+  color: #111827;
+}
+
+/* Sidebar / Header / Landing nav surfaces use bg-[#0A0A0A] and bg-[#111111]
+   — they're already covered by the bg overrides above. The NSE module
+   forces its own dark bg via `.nse-module`; lift that in light mode too. */
+html[data-theme="light"] .nse-module {
+  background-color: #F3F4F6;
+  color: #111827;
+}
+html[data-theme="light"] .nse-module > h1,
+html[data-theme="light"] .nse-module > h2,
+html[data-theme="light"] .nse-module > div > h1,
+html[data-theme="light"] .nse-module > div > h2 {
+  color: #B45309;
+}
+
+/* OTP input rebrand for light mode */
+html[data-theme="light"] .otpInput {
+  background-color: #FFFFFF;
+  color: #111827;
+  border-color: #D1D5DB;
+}

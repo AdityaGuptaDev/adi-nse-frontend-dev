@@ -24,6 +24,9 @@ type propTypes = {
   onInputChange?: any;
   required?: boolean;
   defaultValue?: any;
+  // Caller-provided per-slot style overrides. Merged on top of the built-in
+  // Golden Black styling so pages only need to specify the slots they change.
+  styles?: Record<string, (base: any, state?: any) => any>;
 };
 
 function CustomReactSelect({
@@ -46,6 +49,7 @@ function CustomReactSelect({
   onInputChange,
   required,
   defaultValue,
+  styles,
 }: propTypes) {
   const [selectedValue, setSelectedValue] = useState(defaultValue || null);
 
@@ -158,6 +162,21 @@ function CustomReactSelect({
     }),
   };
 
+  // Merge caller overrides on top of the defaults so each slot getter gets
+  // the defaults' output as its base. This lets pages tweak a few slots
+  // without redeclaring the whole style object.
+  const mergedStyles: any = { ...customStyles };
+  if (styles) {
+    for (const slot of Object.keys(styles)) {
+      const override = styles[slot];
+      const base = (customStyles as any)[slot];
+      mergedStyles[slot] = (provided: any, state: any) => {
+        const defaulted = typeof base === "function" ? base(provided, state) : provided;
+        return override(defaulted, state);
+      };
+    }
+  }
+
   return (
     <div>
       {isMulti ? (
@@ -191,7 +210,7 @@ function CustomReactSelect({
               isLoading={isLoading}
               onInputChange={onInputChange}
               defaultValue={defaultValue}
-              styles={customStyles}
+              styles={mergedStyles}
             />
           </fieldset>
         </div>
@@ -224,7 +243,7 @@ function CustomReactSelect({
               placeholder={placeholder}
               onChange={onChange}
               name={name}
-              styles={customStyles}
+              styles={mergedStyles}
               className={`rounded-lg min-h-10 ${className}`}
               isClearable={isClearable || false}
               menuPortalTarget={typeof window !== 'undefined' ? document.body : null}

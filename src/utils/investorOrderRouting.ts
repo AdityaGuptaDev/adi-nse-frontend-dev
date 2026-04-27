@@ -38,9 +38,23 @@ type StoreSetters = {
 
 const hasCanOnFile = (inv: any): boolean => {
   if (!inv) return false;
-  if (inv.is_CAN_registered !== true) return false;
-  const canId = inv?.InvestorAccountHolding?.[0]?.CAN_Id;
-  return !!canId && String(canId).trim() !== "";
+
+  // A non-empty CAN_Id is the source of truth — MFU only issues a CAN
+  // once onboarding finishes, so its presence proves CAN registration.
+  // The legacy `is_CAN_registered === true` check incorrectly rejected
+  // investors whose flag came back as `1`/"1" from MySQL TINYINT (which
+  // Sequelize doesn't always coerce to a boolean).
+  const canId =
+    inv?.InvestorAccountHolding?.[0]?.CAN_Id ??
+    inv?.InvestorAccountHolding?.CAN_Id ??
+    inv?.CAN_Id ??
+    inv?.can_id;
+  if (canId && String(canId).trim() !== "") return true;
+
+  // Fall-back to the registration flag in any of its truthy shapes for
+  // investors whose holding rows haven't been hydrated yet.
+  const flag = inv?.is_CAN_registered;
+  return flag === true || flag === 1 || flag === "1";
 };
 
 const hasInlineUcc = (inv: any): boolean => {

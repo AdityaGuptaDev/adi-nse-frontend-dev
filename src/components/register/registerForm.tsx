@@ -11,6 +11,9 @@ import api from "@/utils/api";
 import { handleServerError, toastAlert } from "@/utils/helpers";
 import OTPScreen from "../otp-screen/otp-screen";
 import { publicPathName } from "@/utils/constants";
+import ThemeToggle from "@/commonUI/ThemeToggle";
+import LanguageDropdown from "@/commonUI/LanguageDropdown";
+import { useLandingLang } from "@/i18n/landingI18n";
 import {
   ArrowLeft,
   CheckCircle,
@@ -38,6 +41,7 @@ const schema = yup.object().shape({
 });
 
 function RegisterForm() {
+  const { t } = useLandingLang();
   const router = useRouter();
   const modalRef = useRef<HTMLDivElement>(null);
   const [isOpenOtpModal, setIsOpenOtpModal] = useState(false);
@@ -237,6 +241,12 @@ function RegisterForm() {
           <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_40%,rgba(245,158,11,0.05)_50%,transparent_60%)] animate-grid-move"></div>
         </div>
 
+        {/* Theme + language controls */}
+        <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+          <ThemeToggle />
+          <LanguageDropdown />
+        </div>
+
         {/* Main Content */}
         <div className="relative z-10 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
           <div className="w-[450px] max-w-full">
@@ -272,7 +282,7 @@ function RegisterForm() {
                   <User className="w-8 h-8 text-[#F59E0B]" />
                 </div>
                 <h2 className="text-2xl font-bold bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent animate-text-shimmer bg-[length:200%_auto]">
-                  Create Account
+                  {t("register.title")}
                 </h2>
               </div>
 
@@ -290,7 +300,7 @@ function RegisterForm() {
                 <div className="mb-4 flex flex-col space-y-5">
                   <div className="group">
                     <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
-                      Register as: <span className="text-[#F59E0B]">*</span>
+                      {t("register.registerAs")}: <span className="text-[#F59E0B]">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -307,7 +317,7 @@ function RegisterForm() {
 
                   <div className="group">
                     <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
-                      Mobile Number <span className="text-[#F59E0B]">*</span>
+                      {t("register.mobileNumber")} <span className="text-[#F59E0B]">*</span>
                     </label>
                     <div className="relative">
                       <div className="absolute left-3 top-1/2 -translate-y-1/2">
@@ -318,7 +328,7 @@ function RegisterForm() {
                         type="tel"
                         {...register("mobile")}
                         required
-                        placeholder="Enter 10-digit mobile number"
+                        placeholder={t("register.mobilePlaceholder")}
                         onChange={handleMobileChange}
                         maxLength={10}
                         className="w-full pl-20 pr-4 py-3 bg-[#1a1c22]/80 border border-[#2a2c32] rounded-lg text-[#F9FAFB] placeholder:text-[#6a6c72] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-[#F59E0B] transition-all group-hover:border-[#F59E0B]/50"
@@ -330,12 +340,12 @@ function RegisterForm() {
                     {mobileValue && mobileValue.length === 10 && !errors.mobile && (
                       <div className="mt-2 flex items-center gap-1 animate-fade-in">
                         <CheckCircle className="w-4 h-4 text-[#10B981]" />
-                        <span className="text-xs text-[#10B981]">Valid mobile number</span>
+                        <span className="text-xs text-[#10B981]">{t("register.validMobile")}</span>
                       </div>
                     )}
                     <p className="mt-2 text-xs text-[#9CA3AF] flex items-center gap-1">
                       <TrendingUp className="w-3 h-3" />
-                      Must be a 10-digit Indian mobile number starting with 6-9
+                      {t("register.mobileHint")}
                     </p>
                   </div>
                 </div>
@@ -355,11 +365,11 @@ function RegisterForm() {
                       {loading ? (
                         <>
                           <span className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></span>
-                          <span>Processing...</span>
+                          <span>{t("register.processing")}</span>
                         </>
                       ) : (
                         <>
-                          <span>Register Now</span>
+                          <span>{t("register.button")}</span>
                           <TrendingUp className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                         </>
                       )}
@@ -372,10 +382,10 @@ function RegisterForm() {
               <div className="text-center pt-4 border-t border-[#2a2c32] animate-fade-in-up">
                 <div className="flex items-center justify-center gap-2 text-xs text-[#9CA3AF] mb-2">
                   <Shield className="w-3 h-3 text-[#F59E0B]" />
-                  <span>Your information is secure and encrypted</span>
+                  <span>{t("register.secureNote")}</span>
                 </div>
                 <p className="text-xs text-[#9CA3AF]/70">
-                  By registering, you agree to our Terms &amp; Conditions
+                  {t("register.terms")}
                 </p>
               </div>
             </div>

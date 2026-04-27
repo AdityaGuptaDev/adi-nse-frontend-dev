@@ -32,8 +32,8 @@ interface OTPScreenProps {
     mobile: string;
     parentData?: any | null;
     onShowOnBoarding?: () => void;
+    isAdminFlow?: boolean;
 }
- const userData = getLS(USER_DATA);
 
 export default function OTPScreen({
     mode,
@@ -42,6 +42,7 @@ export default function OTPScreen({
     mobile,
     parentData,
     onShowOnBoarding,
+    isAdminFlow = false,
 }: OTPScreenProps) {
     const router = useRouter();
     const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -104,7 +105,7 @@ export default function OTPScreen({
  
     const verifyRegisterOTP = async () => {
         console.log(userData, "userData");
-        const isPartnerAddInvestor = !!parentData?.userId;
+        const isPartnerAddInvestor = !isAdminFlow && !!parentData?.userId;
         const payload = {
             mobile,
             mobileOTP: otp,
@@ -112,6 +113,7 @@ export default function OTPScreen({
             userTypeId: userData.userTypeId,
             parentData,
             ...(isPartnerAddInvestor && { source: "partner-add-investor" }),
+            ...(isAdminFlow && { source: "admin-add-investor" }),
         };
 
         const res = await api.post(`/user/verify-otp`, payload);
@@ -122,8 +124,8 @@ export default function OTPScreen({
         toastAlert("success", res.data.msg);
         setLS("INVESTOR_USER_ID", data?.id);
 
-        if (isPartnerAddInvestor && onShowOnBoarding) {
-            // Store the new investor's data so create-ucc page can read investor_id
+        if ((isPartnerAddInvestor || isAdminFlow) && onShowOnBoarding) {
+            // Store the new investor's data so create-ucc / initial-KYC pages can read investor_id
             const existingUserData = getLS(USER_DATA);
             setLS(USER_DATA, {
                 ...existingUserData,

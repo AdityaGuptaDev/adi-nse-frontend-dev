@@ -34,6 +34,7 @@ import { getInvestor } from "@/api/holder";
 import { Investor } from "@/services/searchReportService";
 
 import { useFundStore } from "@/store/useFundStore";
+import { routeInvestorToOrderForm } from "@/utils/investorOrderRouting";
 
 
 type ReturnColumnKey =
@@ -75,7 +76,7 @@ const MutualFundClassesList = () => {
 
   const [sipData, setSipData] = useState<any[]>([]);
   const [selectedInvestor, setSelectedInvestor] = useState<Investor | null>(null);
-  const { setSchemeData, setInvestors } = useFundStore();
+  const { setSchemeData, setInvestors, setDataSource } = useFundStore();
 
   // Add state for search term
   const [searchTerm, setSearchTerm] = useState("");
@@ -573,32 +574,28 @@ const MutualFundClassesList = () => {
   const handleSchemeClick = (scheme: any) => {
     setSelectedScheme(scheme)
     fetchByISIN(scheme?.schemeISIN);
-    console.log("Investor LIstsss ===", investorList, "count :-", investorList.length)
-
-    //setShowOrderPopup(true)
-
-    // setshowInvestorPicker(true);
-    //return false;
 
     if (investorList.length > 1) {
-
-      setshowInvestorPopup(true)
-
-    } else {
-      if (investorList.length === 1) {
-        // Store in localStorage for persistence across refreshes
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('newOrder_schemeData', JSON.stringify(scheme));
-          localStorage.setItem('newOrder_investorList', JSON.stringify(investorList));
-        }
-
-        router.push("/mutual-fund/new-order");
-      }
-
+      setshowInvestorPopup(true);
+      return;
     }
 
-    console.log("Scheme clicked:", scheme);
-    // Handle the clicked scheme here (navigate, show details, etc.)
+    if (investorList.length === 1) {
+      // Persist for refresh-safety on the MFU lane. The NSE lane reads scheme
+      // identifiers from the URL, so these entries are harmless there.
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('newOrder_schemeData', JSON.stringify(scheme));
+        localStorage.setItem('newOrder_investorList', JSON.stringify(investorList));
+      }
+
+      // CAN → /mutual-fund/new-order, UCC → /nse-order-form, neither → toast.
+      routeInvestorToOrderForm({
+        router,
+        scheme,
+        investorList,
+        store: { setSchemeData, setInvestors, setDataSource },
+      });
+    }
   };
 
   return (

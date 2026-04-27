@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import NextTopLoader from "nextjs-toploader";
 import { PageTitleProvider } from "@/context/pageTitleContext";
 import { AccountProvider } from "@/context/AccountContext/Account.provider";
+import { LandingLanguageProvider } from "@/i18n/landingI18n";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -42,7 +43,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-theme="dark">
+      <head>
+        {/* Apply saved theme before first paint to avoid flash. Defaults to
+            dark. Bumping THEME_VERSION in this script clears any stale
+            `va_theme` value once per browser, so users who toggled the old
+            default get reset to dark on next visit; subsequent toggles still
+            persist normally. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var V='2';if(localStorage.getItem('va_theme_v')!==V){localStorage.removeItem('va_theme');localStorage.setItem('va_theme_v',V);}var t=localStorage.getItem('va_theme');document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark');}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();`,
+          }}
+        />
+      </head>
       <body
         className={`${fontLato.variable} ${fontMontserrat.variable} antialiased`}
       >
@@ -61,9 +74,11 @@ export default function RootLayout({
           toastClassName="!z-[10000001]" // Ensure individual toasts also get it
           className="!z-[10000001]" // For the container itself
         />
-        <AccountProvider>
-          <PageTitleProvider>{children}</PageTitleProvider>
-        </AccountProvider>
+        <LandingLanguageProvider>
+          <AccountProvider>
+            <PageTitleProvider>{children}</PageTitleProvider>
+          </AccountProvider>
+        </LandingLanguageProvider>
       </body>
     </html>
   );

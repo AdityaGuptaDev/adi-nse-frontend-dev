@@ -23,6 +23,7 @@ import api from "@/utils/api";
 import { cookieStorageKeys, setCookieToken, storeCookieData } from "@/services/cookieStorageService";
 import { useRouter } from "next/navigation";
 import { Shield, Clock, X } from "lucide-react";
+import { useLandingLang } from "@/i18n/landingI18n";
 
 function OTPScreen({
   userData,
@@ -38,6 +39,7 @@ function OTPScreen({
   //register_as,
   fromAdmin
 }: any) {
+  const { t } = useLandingLang();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -391,7 +393,7 @@ useEffect(() => {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full p-6">
       <div className="w-full">
         <div className="flex justify-center mb-6">
           <img
@@ -402,10 +404,10 @@ useEffect(() => {
         </div>
         <div>
           <CustomText className="text-center mb-3 text-2xl font-bold bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent">
-            OTP Verification
+            {t("otp.heading")}
           </CustomText>
           <CustomText className="text-center mb-8 text-sm text-[#9CA3AF]">
-            We have sent the verification code to your mobile number
+            {t("otp.subtitle")}
           </CustomText>
         </div>
 
@@ -418,86 +420,88 @@ useEffect(() => {
             className="space-y-8"
           >
             {isRegister ? (
-              <div className="mb-2">
-                <div className="flex justify-center">
-                  <OtpInput
-                    value={mobileOTP}
-                    onChange={(otp: any) => setMobileOTP(otp)}
-                    numInputs={6}
-                    renderSeparator={<span className="mx-1 sm:mx-2"></span>}
-                    renderInput={(props) => (
-                      <input
-                        {...props}
-                        className="otp-input-field"
-                        style={{
-                          width: "48px",
-                          height: "56px",
-                          fontSize: "24px",
-                          fontWeight: 600,
-                          borderRadius: "12px",
-                          border: "2px solid #2A2A2A",
-                          backgroundColor: "#1F1A1A",
-                          color: "#F9FAFB",
-                          textAlign: "center",
-                          outline: "none",
-                          transition: "all 0.3s ease",
-                          margin: "0 6px",
-                        }}
-                        onFocus={(e) => {
-                          e.target.style.borderColor = "#F59E0B";
-                          e.target.style.boxShadow = "0 0 0 3px rgba(245, 158, 11, 0.2)";
-                        }}
-                        onBlur={(e) => {
-                          e.target.style.borderColor = "#2A2A2A";
-                          e.target.style.boxShadow = "none";
-                        }}
-                      />
-                    )}
-                    inputType={"tel"}
-                    shouldAutoFocus={true}
-                  />
-                </div>
+              <div className="mb-2 px-2">
+                <OtpInput
+                  value={mobileOTP}
+                  onChange={(otp: any) => setMobileOTP(otp)}
+                  numInputs={6}
+                  renderSeparator={null}
+                  containerStyle="flex flex-nowrap justify-center items-center gap-2"
+                  renderInput={(props) => (
+                    <input
+                      {...props}
+                      className="otp-input-field"
+                      style={{
+                        width: "40px",
+                        height: "48px",
+                        fontSize: "20px",
+                        fontWeight: 600,
+                        borderRadius: "10px",
+                        border: "2px solid #2A2A2A",
+                        backgroundColor: "#1F1A1A",
+                        color: "#F9FAFB",
+                        textAlign: "center",
+                        outline: "none",
+                        transition: "all 0.3s ease",
+                        flexShrink: 0,
+                        margin: 0,
+                        padding: 0,
+                      }}
+                      onFocus={(e) => {
+                        e.target.style.borderColor = "#F59E0B";
+                        e.target.style.boxShadow = "0 0 0 3px rgba(245, 158, 11, 0.2)";
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = "#2A2A2A";
+                        e.target.style.boxShadow = "none";
+                      }}
+                    />
+                  )}
+                  inputType={"tel"}
+                  shouldAutoFocus={true}
+                />
               </div>
             ) : (
-              <div className="mb-2">
-                <div className="flex justify-center">
-                  <OtpInput
-                    value={loginOTP}
-                    onChange={(otp: any) => setLoginOTP(otp)}
-                    numInputs={6}
-                    renderSeparator={<span className="mx-1 sm:mx-2"></span>}
-                    renderInput={(props) => (
-                      <input
-                        {...props}
-                        className="otp-input-field"
-                        style={{
-                          width: "48px",
-                          height: "56px",
-                          fontSize: "24px",
-                          fontWeight: 600,
-                          borderRadius: "12px",
-                          border: "2px solid #2A2A2A",
-                          backgroundColor: "#1F1A1A",
-                          color: "#F9FAFB",
-                          textAlign: "center",
-                          outline: "none",
-                          transition: "all 0.3s ease",
-                          margin: "0 6px",
-                        }}
-                        onFocus={(e) => {
-                          e.target.style.borderColor = "#F59E0B";
-                          e.target.style.boxShadow = "0 0 0 3px rgba(245, 158, 11, 0.2)";
-                        }}
-                        onBlur={(e) => {
-                          e.target.style.borderColor = "#2A2A2A";
-                          e.target.style.boxShadow = "none";
-                        }}
-                      />
-                    )}
-                    inputType={"tel"}
-                    shouldAutoFocus={true}
-                  />
-                </div>
+              <div className="mb-2 px-2">
+                <OtpInput
+                  value={loginOTP}
+                  onChange={(otp: any) => setLoginOTP(otp)}
+                  numInputs={6}
+                  renderSeparator={null}
+                  containerStyle="flex flex-nowrap justify-center items-center gap-2"
+                  renderInput={(props) => (
+                    <input
+                      {...props}
+                      className="otp-input-field"
+                      style={{
+                        width: "44px",
+                        height: "52px",
+                        fontSize: "22px",
+                        fontWeight: 600,
+                        borderRadius: "12px",
+                        border: "2px solid #2A2A2A",
+                        backgroundColor: "#1F1A1A",
+                        color: "#F9FAFB",
+                        textAlign: "center",
+                        outline: "none",
+                        transition: "all 0.3s ease",
+                        margin: 0,
+                        padding: 0,
+                        flexShrink: 0,
+                      }}
+                      onFocus={(e) => {
+                        e.target.style.borderColor = "#F59E0B";
+                        e.target.style.boxShadow = "0 0 0 3px rgba(245, 158, 11, 0.2)";
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = "#2A2A2A";
+                        e.target.style.boxShadow = "none";
+                      }}
+                    />
+                  )}
+                  inputType={"tel"}
+                  shouldAutoFocus={true}
+                />
               </div>
             )}
 
@@ -513,10 +517,10 @@ useEffect(() => {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
-                    Processing...
+                    {t("otp.processing")}
                   </span>
                 ) : (
-                  "Submit"
+                  t("otp.submit")
                 )}
               </button>
 
@@ -525,13 +529,13 @@ useEffect(() => {
                 onClick={handleCloseOtpModel}
                 className="w-full sm:w-auto min-w-[120px] px-6 py-3 bg-[#1F1A1A] text-[#F9FAFB] border border-[#2A2A2A] rounded-lg hover:border-[#F59E0B] transition-all"
               >
-                Cancel
+                {t("otp.cancel")}
               </button>
             </div>
 
             <div className="flex items-center justify-center gap-2 text-center pt-4">
               <Clock className="w-4 h-4 text-[#F59E0B]" />
-              <span className="text-sm text-[#9CA3AF]">Time Remaining:</span>
+              <span className="text-sm text-[#9CA3AF]">{t("otp.timeRemaining")}</span>
               <span className="text-sm font-bold text-[#F59E0B]">{formatTime(timer)}s</span>
             </div>
 
@@ -542,7 +546,7 @@ useEffect(() => {
                   onClick={handleResendOTP}
                   className="text-[#F59E0B] hover:text-[#FBBF24] transition-colors font-medium text-sm"
                 >
-                  Resend OTP
+                  {t("otp.resend")}
                 </button>
               </div>
             )}
@@ -594,18 +598,26 @@ useEffect(() => {
       <style jsx>{`
         @media (max-width: 640px) {
           .otp-input-field {
-            width: 42px !important;
-            height: 48px !important;
-            font-size: 20px !important;
-            margin: 0 4px !important;
+            width: 38px !important;
+            height: 46px !important;
+            font-size: 18px !important;
+            margin: 0 !important;
           }
         }
         @media (max-width: 480px) {
           .otp-input-field {
-            width: 38px !important;
-            height: 44px !important;
-            font-size: 18px !important;
-            margin: 0 3px !important;
+            width: 34px !important;
+            height: 42px !important;
+            font-size: 16px !important;
+            margin: 0 !important;
+          }
+        }
+        @media (max-width: 380px) {
+          .otp-input-field {
+            width: 30px !important;
+            height: 38px !important;
+            font-size: 14px !important;
+            margin: 0 !important;
           }
         }
       `}</style>

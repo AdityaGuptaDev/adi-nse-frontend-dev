@@ -30,27 +30,31 @@ const MyCartSync = () => {
     } = useContext<any>(AccountContext)
 
 
-    // const getCartData = async () => {
-    //     try {
-    //         setLoader(true);
+    const getCartData = async () => {
+        try {
+            setLoader(true);
 
-    //         const payload = {
-    //             user_id: InvestorId
-    //         }
-    //         console.log(payload, 'payload')
+            // The backend reads `req.query.data` and JSON.parses it, so the
+            // value has to be the JSON string of the payload, URL-encoded.
+            // Templating an object directly produced "[object Object]" which
+            // crashed the JSON.parse and returned 500.
+            const payload = { InvestorId };
+            const qs = encodeURIComponent(JSON.stringify(payload));
 
-    //         const getCart = await api.get(`/cart/getAllInvestorCartData?data=${payload}`);
+            const getCart = await api.get(`/cart/getAllInvestorCartData?data=${qs}`);
 
-    //         if (getCart?.data?.data) {
-    //             setLoader(false);
-    //             setCartList(getCart.data.data);
-    //         }
-    //     } catch (error) {
-    //         setLoader(false);
-    //         console.log(error, "error");
-    //         handleServerError(error);
-    //     }
-    // };
+            if (getCart?.data?.data) {
+                setLoader(false);
+                setCartList(getCart.data.data);
+                setCartData(getCart.data.data);
+                setCartCounter(getCart.data.data.length);
+            }
+        } catch (error) {
+            setLoader(false);
+            console.log(error, "error");
+            handleServerError(error);
+        }
+    };
 
     useEffect(() => {
         investorListFunc();
@@ -59,37 +63,22 @@ const MyCartSync = () => {
 
     useMemo(() => {
         if (InvestorId !== 0) {
-            // getCartData();
+            getCartData();
         }
     }, [InvestorId, AccountHolder]);
 
 
     const handleDeleteCart = async (cartId: number) => {
         try {
-            await api.delete(`/cart/deleteCartItem/${cartId}`);
             setLoader(true);
-            const payload = {
-                investor_id: "1"
+            await api.delete(`/cart/deleteCartItem/${cartId}`);
+            toastAlert("success", "Cart Deleted");
+            // Hard-refresh so the cart list, header counter, and any other
+            // cart-derived UI all rehydrate from a clean fetch — avoids
+            // partial/stale state when re-rendering inline.
+            if (typeof window !== "undefined") {
+                window.location.reload();
             }
-
-            //const getCart = await api.get(`/cart/getAllInvestorCartData?data=${payload}`);
-            //const getCart = await api.post(`/investor/kyc-users`);
-
-            const getCart = await api.post(`/cart/getInvestorCartData`, payload);
-
-            console.log(getCart, 'getCart')
-
-
-            if (getCart?.data?.data) {
-                const updatedCart = getCart.data.data;
-                console.log(getCart.data.data, 'getCart.data.data')
-                setCartList(updatedCart);
-                setCartData(updatedCart);
-                setCartCounter(updatedCart.length); // updated count
-            }
-            // setCartCounter(cartCounter - 1)
-            setLoader(false);
-            toastAlert("success", "Cart Deleted")
         } catch (error: any) {
             setLoader(false);
             console.log(error, "error");
@@ -101,20 +90,12 @@ const MyCartSync = () => {
 
     const handleMultipalDeleteCart = async (cartIds: any) => {
         try {
-            await api.post(`/cart/deleteMultiCartItem`, { cartIds });
             setLoader(true);
-            const payload = {
-                InvestorId
+            await api.post(`/cart/deleteMultiCartItem`, { cartIds });
+            toastAlert("success", "Cart Deleted");
+            if (typeof window !== "undefined") {
+                window.location.reload();
             }
-
-            const getCart = await api.get(`/cart/getAllInvestorCartData?data=${payload}`);
-
-            // if (getCart?.data?.data) {
-            //     setCartList(getCart.data.data);
-            // }
-            // setCartCounter(cartCounter - cartIds.length)
-            setLoader(false);
-            toastAlert("success", "Cart Deleted")
         } catch (error: any) {
             setLoader(false);
             console.log(error, "error");

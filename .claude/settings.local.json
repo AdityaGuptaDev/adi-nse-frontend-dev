@@ -25,11 +25,23 @@
       "Read(//c/Program Files/Google/Chrome/Application/**)",
       "Bash(\"C:/Program Files/Google/Chrome/Application/chrome.exe\" --headless --disable-gpu --print-to-pdf=\"C:/Users/user/Desktop/NSE  Module Completee Code By Aditya/adi-nse-frontend-dev/NSE_API_DOCUMENTATION.pdf\" --no-margins \"file:///C:/Users/user/Desktop/NSE  Module Completee Code By Aditya/adi-nse-frontend-dev/NSE_API_DOCUMENTATION.html\")",
       "Bash(grep \"^\\\\${NSE_BASE_URL}\" -o)",
-      "Bash(grep -E \"\\\\.\\(ts|js\\)$\")"
+      "Bash(grep -E \"\\\\.\\(ts|js\\)$\")",
+      "Bash(where pdftoppm *)",
+      "Bash(pdftotext \"c:/Users/user/Desktop/NSE  Module Completee Code By Aditya/Connection level pre-requisite for API connection of NSEINVEST 1_Draft1.pdf\" /tmp/conn-prereq.txt)",
+      "Bash(pdftotext \"c:/Users/user/Desktop/NSE  Module Completee Code By Aditya/NSEMF_API_Details_V1.9.6 \\(2\\).pdf\" /tmp/nsemf.txt)",
+      "Bash(unzip -l \"c:/Users/user/Desktop/NSE  Module Completee Code By Aditya/Postman API Collection and Environment File - 07052025.zip\")",
+      "Bash(unzip -l \"c:/Users/user/Desktop/NSE  Module Completee Code By Aditya/recasecs1398212regardingliveapiandsecret.zip\")",
+      "Bash(unzip -p \"c:/Users/user/Desktop/NSE  Module Completee Code By Aditya/Postman API Collection and Environment File - 07052025.zip\" \"uat-nsemf.postman_environment.json\")",
+      "Bash(npx --prefix \"c:/Users/user/Desktop/NSE  Module Completee Code By Aditya/adi-nse-backend-dev\" tsc -p \"c:/Users/user/Desktop/NSE  Module Completee Code By Aditya/adi-nse-backend-dev/tsconfig.json\" --noEmit)",
+      "Bash(npx --prefix \"c:/Users/user/Desktop/NSE  Module Completee Code By Aditya/adi-nse-frontend-dev\" tsc -p \"c:/Users/user/Desktop/NSE  Module Completee Code By Aditya/adi-nse-frontend-dev/tsconfig.json\" --noEmit)",
+      "Bash(awk '/Mandate Status Report API/,/Get short URL Link API/' /tmp/nsemf.txt)"
     ],
     "additionalDirectories": [
       "c:\\Users\\user\\Desktop\\NSE  Module Completee Code By Aditya\\adi-nse-backend-dev\\src\\routes\\investor",
-      "c:\\Users\\user\\Desktop\\NSE  Module Completee Code By Aditya\\adi-nse-backend-dev\\src\\routes\\user"
+      "c:\\Users\\user\\Desktop\\NSE  Module Completee Code By Aditya\\adi-nse-backend-dev\\src\\routes\\user",
+      "\\tmp",
+      "c:\\Users\\user\\Desktop\\NSE  Module Completee Code By Aditya\\adi-nse-backend-dev\\src\\routes\\cart",
+      "c:\\Users\\user\\Desktop\\NSE  Module Completee Code By Aditya\\adi-nse-backend-dev\\src\\routes\\mfu"
     ]
   }
 }

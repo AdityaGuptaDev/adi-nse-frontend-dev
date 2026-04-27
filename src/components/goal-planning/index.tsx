@@ -1622,8 +1622,12 @@ function GoalPlanning() {
         account_holding_id: 0,
         cart_type: 1,
         scheme_id: schemeData?.scheme_id,
-        trans_type: schemeData?.transaction_type,
-        trans_amount: schemeData?.amount,
+        // handleExecuteNow puts the transaction code on `trans_type`
+        // ("1" for Lumpsum, "2" for SIP). Reading `transaction_type` here
+        // resolved to undefined, so the cart row stored no trans_type and
+        // the cart page rendered the count without showing the fund.
+        trans_type: Number(schemeData?.trans_type ?? schemeData?.transaction_type),
+        trans_amount: schemeData?.amount ?? schemeData?.trans_amount,
         frequency: schemeData?.frequency,
         day: schemeData?.day,
         start_month: schemeData?.start_month,
@@ -2460,6 +2464,8 @@ function GoalPlanning() {
             <div className="sm:flex justify-between items-center mt-4">
               <CustomLabel className="text-[#F9FAFB]">Title</CustomLabel>
               <div className="max-w-48">
+                {/* Title mirrors the chosen goal category and is fixed —
+                    the input stays read-only so users can't edit it. */}
                 <CustomInput
                   type="text"
                   id="title"
@@ -2467,15 +2473,8 @@ function GoalPlanning() {
                   placeholder="Enter Title"
                   value={watch("goal_label")}
                   {...register("goal_label")}
-                  onChange={(e: any) => {
-                    const title = e?.target?.value;
-                    if (!title.startsWith(" ")) {
-                      setValue("goal_label", title, {
-                        shouldValidate: true,
-                      });
-                    }
-                  }}
-                  disabled={secondModal}
+                  disabled
+                  readOnly
                   error={errors?.goal_label?.message}
                 />
               </div>

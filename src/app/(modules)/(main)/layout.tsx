@@ -1,6 +1,8 @@
 "use client";
 
 import Header from "@/components/mainLayout/header";
+import LandingFooter from "@/components/mainLayout/landingFooter";
+import LandingNav from "@/components/mainLayout/landingNav";
 import Sidebar from "@/components/mainLayout/sidebar";
 import HeaderArea from "@/components/moduleUi/headerArea";
 import { PageTitleProvider, usePageTitle } from "@/context/pageTitleContext";
@@ -30,18 +32,19 @@ function AuthLayoutContent({ children }: { children: React.ReactNode }) {
   const user = getLS(PROD_DATA)?.user;
 
   useEffect(() => {
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-    if (prefersDark) {
-      document.documentElement.setAttribute("data-theme", "dark");
-    } else {
-      document.documentElement.setAttribute("data-theme", "light");
-    }
+    // Theme is owned by the LandingNav toggle (persisted in localStorage as "va_theme").
+    // We only set a default here on first load if the user hasn't picked one yet.
+    if (typeof window === "undefined") return;
+    const stored = window.localStorage.getItem("va_theme");
+    document.documentElement.setAttribute("data-theme", stored === "light" ? "light" : "dark");
   }, []);
 
+  // Theme is owned by <html data-theme>, set by the inline script in
+  // app/layout.tsx (defaults to dark) and toggled by LandingNav. Hard-coding
+  // data-theme on this wrapper would pin every logged-in page to one theme
+  // regardless of the user's choice, so it's intentionally omitted.
   return (
-    <div className="flex h-screen w-full bg-[#0A0A0A]" data-theme="light">
+    <div className="flex h-screen w-full bg-[#0A0A0A]">
       {/* for web */}
       <div
         className={`hidden lg:block transition-all duration-300 ease-in-out ${sidebarCollapsed ? "w-16" : "w-[288px]"
@@ -63,8 +66,10 @@ function AuthLayoutContent({ children }: { children: React.ReactNode }) {
           collapsed={sidebarCollapsed}
           userData={user}
         />
+        <LandingNav />
         <div className="flex-1 overflow-y-auto xl:px-6 py-0">
           <div className="bg-[#0A0A0A] rounded-2xl min-h-[calc(100vh-100px)] text-[#F9FAFB]">{children}</div>
+          <LandingFooter />
         </div>
       </main>
     </div>

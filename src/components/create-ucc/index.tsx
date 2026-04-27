@@ -74,6 +74,39 @@ const addressTypeOptions = [
   { value: "4", label: "Registered Office" },
 ];
 
+// NSE UCC caps:
+//   Primary holder → Line 1 ≤ 120, Line 2 ≤ 40, Line 3 ≤ 40
+//   Nominee        → Line 1 ≤ 40,  Line 2 ≤ 40, Line 3 ≤ 40  (all three capped at 40)
+// Carve the joined address at the last comma inside each cap so words
+// aren't cut mid-char; fall back to a hard cut when there's no comma
+// inside the window. Any remainder past Line 3 is discarded.
+const PRIMARY_ADDRESS_CAPS = [120, 40, 40] as const;
+const NOMINEE_ADDRESS_CAPS = [40, 40, 40] as const;
+const carveByCap = (s: string, max: number): [string, string] => {
+  const src = (s ?? "").trim();
+  if (src.length <= max) return [src, ""];
+  const window = src.slice(0, max);
+  const lastComma = window.lastIndexOf(",");
+  const cut = lastComma > 0 ? lastComma : max;
+  return [src.slice(0, cut).trim(), src.slice(cut).replace(/^[,\s]+/, "").trim()];
+};
+const splitAddressByCaps = (
+  l1: any,
+  l2: any,
+  l3: any,
+  caps: readonly [number, number, number] = PRIMARY_ADDRESS_CAPS,
+): [string, string, string] => {
+  const joined = [l1, l2, l3]
+    .map((v) => String(v ?? "").trim())
+    .filter(Boolean)
+    .join(", ");
+  if (!joined) return ["", "", ""];
+  const [line1, rest1] = carveByCap(joined, caps[0]);
+  const [line2, rest2] = carveByCap(rest1, caps[1]);
+  const [line3] = carveByCap(rest2, caps[2]);
+  return [line1, line2, line3];
+};
+
 const pepOptions = [
   { value: "N", label: "Not a politically exposed person" },
   { value: "P", label: "A politically exposed person" },
@@ -549,6 +582,7 @@ function CreateUCC() {
     title: string;
     message: string;
     clientCode?: string;
+    activationLink?: string;
   }>({ open: false, success: false, title: "", message: "" });
 
   // Existing-UCC summary view — when the investor already has a UCC we show
@@ -736,6 +770,79 @@ function CreateUCC() {
       setPanDisabled(false);
     }
   }, [panValue]);
+
+  // Keep each nominee's address mirrored to the primary holder while that
+  // nominee has "Same address as primary holder" ticked. Previously the copy
+  // ran only inside the checkbox onChange handler, so on initial mount the
+  // default-checked state left the nominee address fields blank — the user
+  // had to toggle the checkbox off and on again before the data appeared.
+  // Running this via useEffect fixes both cases: it fires once on mount
+  // (copying Aadhaar-derived primary address into the nominee) and again
+  // every time the primary holder's address is edited.
+  const primaryAddr1 = watch("address_1");
+  const primaryAddr2 = watch("address_2");
+  const primaryAddr3 = watch("address_3");
+  const primaryPincode = watch("pincode");
+  const primaryCity = watch("city");
+  const primaryCountry = watch("country");
+  const nominee1Same = watch("nominee_1_same_address");
+  const nominee2Same = watch("nominee_2_same_address");
+  const nominee3Same = watch("nominee_3_same_address");
+
+  useEffect(() => {
+    // NSE caps nominee address lines at 40/40/40 (stricter than the primary
+    // holder's 120/40/40). Re-carve the primary address into 40-char lines
+    // when mirroring so the nominee payload doesn't violate the NSE limit.
+    const [nomAddr1, nomAddr2, nomAddr3] = splitAddressByCaps(
+      primaryAddr1,
+      primaryAddr2,
+      primaryAddr3,
+      NOMINEE_ADDRESS_CAPS,
+    );
+
+    const sync = (idx: 1 | 2 | 3, enabled: any) => {
+      if (!enabled) return;
+      setValue(`nominee_${idx}_address1` as any, nomAddr1);
+      setValue(`nominee_${idx}_address2` as any, nomAddr2);
+      setValue(`nominee_${idx}_address3` as any, nomAddr3);
+      setValue(`nominee_${idx}_pin` as any, primaryPincode || "");
+      setValue(`nominee_${idx}_city` as any, primaryCity || "");
+      setValue(`nominee_${idx}_country` as any, primaryCountry || "");
+    };
+    sync(1, nominee1Same);
+    sync(2, nominee2Same);
+    sync(3, nominee3Same);
+  }, [
+    primaryAddr1,
+    primaryAddr2,
+    primaryAddr3,
+    primaryPincode,
+    primaryCity,
+    primaryCountry,
+    nominee1Same,
+    nominee2Same,
+    nominee3Same,
+  ]);
+
+  // Auto-generate the Client Code (NSE UCC identifier) as
+  //   first-4-letters-of-first-name + last-6-digits-of-mobile
+  // The field stays read-only in the UI — the user can't hand-edit a code
+  // that has to follow a deterministic rule, and typos here would break
+  // NSE registration. Regenerates whenever either source value changes.
+  const firstNameForCode = watch("primary_holder_first_name");
+  const mobileForCode = watch("indian_mobile_no");
+  useEffect(() => {
+    const namePart = String(firstNameForCode || "")
+      .replace(/[^A-Za-z]/g, "")
+      .toUpperCase()
+      .slice(0, 4);
+    const mobileDigits = String(mobileForCode || "").replace(/\D/g, "");
+    const mobilePart = mobileDigits.slice(-6);
+    const generated = namePart && mobilePart ? `${namePart}${mobilePart}` : "";
+    if (generated !== watch("client_code")) {
+      setValue("client_code", generated, { shouldValidate: true });
+    }
+  }, [firstNameForCode, mobileForCode]);
 
   // ── Country / State fetchers ──
 
@@ -1013,12 +1120,83 @@ function CreateUCC() {
       const result = data?.data?.data;
 
       if (result) {
-        // Auto-fill address from Aadhaar
-        setValue("address_1", result.address || "", { shouldValidate: true });
-        setValue("country", result.split_address?.country || "INDIA", { shouldValidate: true });
-        setValue("state", result.split_address?.state || "", { shouldValidate: true });
-        setValue("pincode", result.split_address?.pincode || "", { shouldValidate: true });
-        setValue("city", result.split_address?.dist || "", { shouldValidate: true });
+        // Auto-fill address from Aadhaar.
+        //
+        // NSE UCC per-line caps: Line 1 ≤ 120, Line 2 ≤ 40, Line 3 ≤ 40.
+        // City / state / pincode / country go to their OWN fields — never
+        // inside the address lines (NSE would otherwise complain because the
+        // fields get compared individually against the master data).
+        //
+        // We deliberately DROP `care_of` ("S/O: …", "D/O: …", "W/O: …") —
+        // Aadhaar ships it as part of the address payload but NSE expects
+        // only the postal address, not the relative reference.
+        // We also decode HTML entities that some Aadhaar APIs leak into the
+        // response (e.g. `&#x2F;` → `/`, `&amp;` → `&`) so the stored value
+        // matches what a human would read.
+        const split = result.split_address || {};
+        const decodeEntities = (s: string): string =>
+          s
+            .replace(/&#x([0-9a-fA-F]+);/g, (_, hex) =>
+              String.fromCharCode(parseInt(hex, 16)),
+            )
+            .replace(/&#(\d+);/g, (_, dec) =>
+              String.fromCharCode(parseInt(dec, 10)),
+            )
+            .replace(/&amp;/g, "&")
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">")
+            .replace(/&quot;/g, '"')
+            .replace(/&apos;/g, "'");
+        const clean = (v: any): string => decodeEntities(String(v ?? "")).trim();
+
+        const rawParts: string[] = [
+          clean(split.house),
+          clean(split.street),
+          clean(split.locality),
+          clean(split.landmark),
+          clean(split.vtc),
+          clean(split.po),
+          clean(split.subdist),
+        ].filter(Boolean);
+
+        // Drop any leading "S/O: Name", "D/O: Name", "W/O: Name",
+        // "C/O: Name" etc. that Aadhaar sometimes embeds as the first
+        // token of the flat address string.
+        const stripCareOfPrefix = (s: string): string =>
+          s.replace(/^\s*(?:s|d|w|c|h)\s*\/\s*o\s*:?\s*[^,]*,?\s*/i, "").trim();
+
+        let fullAddress = rawParts.join(", ").replace(/,\s*,+/g, ",").trim();
+        fullAddress = stripCareOfPrefix(fullAddress);
+
+        if (!fullAddress && result.address) {
+          const blacklist = new Set(
+            [
+              split.dist,
+              split.state,
+              split.country,
+              split.pincode,
+              "INDIA",
+              "India",
+            ]
+              .map((v) => clean(v).toLowerCase())
+              .filter(Boolean),
+          );
+          fullAddress = stripCareOfPrefix(clean(result.address))
+            .split(",")
+            .map((c) => c.trim())
+            .filter((c) => c && !blacklist.has(c.toLowerCase()))
+            .join(", ");
+        }
+
+        const [addr1, addr2, addr3] = splitAddressByCaps(fullAddress, "", "");
+
+        setValue("address_1", addr1 || "", { shouldValidate: true });
+        setValue("address_2", addr2 || "", { shouldValidate: true });
+        setValue("address_3", addr3 || "", { shouldValidate: true });
+        setValue("country", clean(split.country) || "INDIA", { shouldValidate: true });
+        setValue("state", clean(split.state), { shouldValidate: true });
+        setValue("pincode", clean(split.pincode), { shouldValidate: true });
+        setValue("city", clean(split.dist) || clean(split.vtc), { shouldValidate: true });
 
         // Auto-fill DOB from Aadhaar — convert DD-MM-YYYY (or DD/MM/YYYY) to YYYY-MM-DD for <input type="date">
         if (result.dob) {
@@ -1119,8 +1297,19 @@ const onSubmit = async (data: any) => {
       return;
     }
 
-    const clientCode = regDetails?.reg_id || "";
+    // Show the UCC the user actually submitted (auto-generated as
+    // first-4-letters-of-first-name + last-6-digits-of-mobile in the form),
+    // not NSE's internal reg_id — that's what the user identifies the
+    // account by going forward.
+    const clientCode = data?.client_code || regDetails?.reg_id || "";
     const successMsg = backendRemark || "Your UCC has been created successfully";
+    // Backend chains GET_LINK (productType CL_ACT) after a successful
+    // UCC and attaches the activation URL onto reg_details[0].auth_link
+    // — the investor must visit it to activate the UCC for trading.
+    const activationLink: string =
+      regDetails?.auth_link ||
+      regDetails?.auth_links?.firstHolderLink ||
+      "";
 
     setUccResultModal({
       open: true,
@@ -1128,6 +1317,7 @@ const onSubmit = async (data: any) => {
       title: "Congratulations!",
       message: successMsg,
       clientCode,
+      activationLink,
     });
 
     reset();
@@ -1193,13 +1383,53 @@ const onSubmit = async (data: any) => {
   if (!valid) return;
 
   // ── Step 2 pre-flight: nominee identity is mandatory per NSE UCC spec ──
+  // Skipped entirely for minor nominees — NSE captures Guardian Name +
+  // Guardian PAN for those, not the nominee's own ID. The corresponding
+  // input fields are already hidden in renderNomineeCard when minor=true.
   if (currentStep === 2) {
     const v = getValues() as any;
     const doNotNominate = !!v.do_not_wish_to_nominate;
     if (!doNotNominate) {
+      // Sum of nominee shares MUST equal 100. NSE rejects with the
+      // confusingly worded "<N>th NOMINEE MUST BE BLANK" when the
+      // running total exceeds 100% — e.g. nominee 1=100, nominee 2=25
+      // makes NSE think there's no room left for nominee 2. Validate
+      // up-front so the user gets a clear, actionable message instead
+      // of NSE's cryptic one.
+      let totalShare = 0;
+      let filledNominees = 0;
       for (let i = 1; i <= nomineeCount; i++) {
         const nm = v[`nominee_${i}_name`];
         if (!nm || !String(nm).trim()) continue;
+        filledNominees++;
+        const raw = v[`nominee_${i}_share`];
+        const share = Number(String(raw ?? "").trim());
+        if (!Number.isFinite(share) || share <= 0) {
+          toastAlert(
+            "error",
+            `Nominee ${i}: Share Percentage is required (must be a number greater than 0).`,
+          );
+          return;
+        }
+        if (share > 100) {
+          toastAlert("error", `Nominee ${i}: Share Percentage cannot exceed 100.`);
+          return;
+        }
+        totalShare += share;
+      }
+      if (filledNominees > 0 && totalShare !== 100) {
+        toastAlert(
+          "error",
+          `Nominee shares must add up to exactly 100%. Currently ${totalShare}% across ${filledNominees} nominee(s).`,
+        );
+        return;
+      }
+
+      for (let i = 1; i <= nomineeCount; i++) {
+        const nm = v[`nominee_${i}_name`];
+        if (!nm || !String(nm).trim()) continue;
+        const isMinor = !!v[`nominee_${i}_minor_flag`];
+        if (isMinor) continue;
         const idType = v[`nominee_${i}_identity_type`];
         const idNum = v[`nominee_${i}_identity_number`];
         if (!idType) {
@@ -1243,6 +1473,32 @@ const onSubmit = async (data: any) => {
         aadhaarNo: aadhaarNo || "",
       };
       console.log("[handleNext] step", currentStep, "tax_status =", resolvedTaxStatus, "aadhaar =", aadhaarNo);
+
+      // ── NSE address-length safety split + clamp ─────────────────────
+      // Caps: Line 1 ≤ 120, Line 2 ≤ 40, Line 3 ≤ 40. Re-joins Line 1/2/3,
+      // then carves into the 120/40/40 windows at comma boundaries so no
+      // line exceeds its cap and no word gets cut mid-character. Applied
+      // to primary holder + all 3 nominees. Form state is also updated so
+      // the split is visible in the UI (not just the outgoing payload).
+      [payload.address_1, payload.address_2, payload.address_3] =
+        splitAddressByCaps(payload.address_1, payload.address_2, payload.address_3);
+      setValue("address_1", payload.address_1, { shouldValidate: true });
+      setValue("address_2", payload.address_2, { shouldValidate: true });
+      setValue("address_3", payload.address_3, { shouldValidate: true });
+      for (const i of [1, 2, 3]) {
+        const [a1, a2, a3] = splitAddressByCaps(
+          payload[`nominee_${i}_address1`],
+          payload[`nominee_${i}_address2`],
+          payload[`nominee_${i}_address3`],
+          NOMINEE_ADDRESS_CAPS,
+        );
+        payload[`nominee_${i}_address1`] = a1;
+        payload[`nominee_${i}_address2`] = a2;
+        payload[`nominee_${i}_address3`] = a3;
+        setValue(`nominee_${i}_address1` as any, a1, { shouldValidate: true });
+        setValue(`nominee_${i}_address2` as any, a2, { shouldValidate: true });
+        setValue(`nominee_${i}_address3` as any, a3, { shouldValidate: true });
+      }
 
       // ── Step 2 (Nominee page) — normalize nominee fields so backend persists them ──
       if (currentStep === 2) {
@@ -1544,8 +1800,12 @@ const onSubmit = async (data: any) => {
             label="Address Line 1"
             placeholder="Address (auto-filled from Aadhaar)"
             required
+            maxLength={120}
             error={errors.address_1?.message}
-            {...register("address_1", { required: "Address is required" })}
+            {...register("address_1", {
+              required: "Address is required",
+              maxLength: { value: 120, message: "Max 120 characters" },
+            })}
           />
         </div>
       </div>
@@ -1555,12 +1815,18 @@ const onSubmit = async (data: any) => {
           <CustomInput
             label="Address Line 2"
             placeholder="Address line 2 (optional)"
-            {...register("address_2")}
+            maxLength={40}
+            {...register("address_2", {
+              maxLength: { value: 40, message: "Max 40 characters" },
+            })}
           />
           <CustomInput
             label="Address Line 3"
             placeholder="Address line 3 (optional)"
-            {...register("address_3")}
+            maxLength={40}
+            {...register("address_3", {
+              maxLength: { value: 40, message: "Max 40 characters" },
+            })}
           />
         </div>
       </div>
@@ -1814,8 +2080,10 @@ const onSubmit = async (data: any) => {
 
         <CustomInput
           label="Client Code"
-          placeholder="Enter client code"
+          placeholder="Auto-generated from name + mobile"
           required
+          disabled
+          readOnly
           maxLength={10}
           error={errors.client_code?.message}
           {...register("client_code", {
@@ -2158,19 +2426,49 @@ const onSubmit = async (data: any) => {
     const onSameAddrChange = (checked: boolean) => {
       setValue(name("same_address"), checked);
       if (checked) {
-        setValue(name("address1"), watch("address_1") || "");
-        setValue(name("address2"), watch("address_2") || "");
-        setValue(name("address3"), watch("address_3") || "");
+        // NSE caps nominee address lines at 40/40/40 — re-carve the primary
+        // 120/40/40 address into 40-char lines before mirroring.
+        const [a1, a2, a3] = splitAddressByCaps(
+          watch("address_1"),
+          watch("address_2"),
+          watch("address_3"),
+          NOMINEE_ADDRESS_CAPS,
+        );
+        setValue(name("address1"), a1);
+        setValue(name("address2"), a2);
+        setValue(name("address3"), a3);
         setValue(name("pin"), watch("pincode") || "");
         setValue(name("city"), watch("city") || "");
         setValue(name("country"), watch("country") || "");
       }
     };
+    // When the user marks the nominee as a minor, mobile + ID fields
+    // become inapplicable per NSE (the guardian's identity is sent
+    // instead). Clear them so stale values from before the toggle don't
+    // get submitted. Email is intentionally preserved — distributors
+    // commonly want to keep the guardian's email reachable here.
+    const onMinorToggle = (checked: boolean) => {
+      setValue(name("minor_flag"), checked);
+      if (checked) {
+        setValue(name("mobile"), "");
+        setValue(name("identity_type"), "", { shouldValidate: true });
+        setValue(name("identity_number"), "", { shouldValidate: true });
+      }
+    };
     return (
       <div key={idx} className="col-span-full mt-3">
         <div className="rounded-xl bg-[#111111] shadow-md border-l-4 border-emerald-500 overflow-hidden">
-          <div className="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-emerald-50 to-transparent">
+          <div className="flex items-center justify-between px-5 py-3 bg-gradient-to-r from-emerald-50 to-transparent gap-4">
             <div className="text-sm font-bold text-emerald-700 tracking-wide uppercase">Nominee {idx}</div>
+            <label className="flex items-center gap-2 cursor-pointer text-sm text-emerald-800 ml-auto">
+              <input
+                type="checkbox"
+                className="accent-[var(--color-primary)]"
+                checked={isMinor}
+                onChange={(e) => onMinorToggle(e.target.checked)}
+              />
+              Nominee is a minor
+            </label>
             {idx > 1 && (
               <button
                 type="button"
@@ -2201,142 +2499,153 @@ const onSubmit = async (data: any) => {
               placeholder="Select"
               onChange={(e: any) => setValue(name("relationship"), e.value)}
             />
+            {/* Email is collected for both adult and minor nominees — useful
+                for sending confirmations to a parent/guardian's address.
+                Mobile / ID Proof / ID Number are skipped for minors since
+                NSE captures the guardian's identity (Guardian Name + PAN
+                further below) for those. */}
             <CustomInput label="Email" placeholder="Email" type="email" {...register(name("email"))} />
-            <Controller
-              control={control}
-              name={name("mobile")}
-              render={({ field }) => (
-                <CustomInput
-                  label="Mobile Number"
-                  placeholder="Mobile Number"
-                  maxLength={10}
-                  value={field.value || ""}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const v = e.target.value.replace(/\D/g, "").slice(0, 10);
-                    field.onChange(v);
+            {!isMinor && (
+              <>
+                <Controller
+                  control={control}
+                  name={name("mobile")}
+                  render={({ field }) => (
+                    <CustomInput
+                      label="Mobile Number"
+                      placeholder="Mobile Number"
+                      maxLength={10}
+                      value={field.value || ""}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        const v = e.target.value.replace(/\D/g, "").slice(0, 10);
+                        field.onChange(v);
+                      }}
+                    />
+                  )}
+                />
+                <CustomReactSelect
+                  label="ID Proof"
+                  items={nomineeIdProofOptions}
+                  bindValue="value"
+                  bindName="label"
+                  value={watch(name("identity_type"))}
+                  placeholder="Select"
+                  required
+                  onChange={(e: any) => {
+                    setValue(name("identity_type"), e.value, { shouldValidate: true });
+                    // Reset id number when type changes so old value doesn't fail validation
+                    setValue(name("identity_number"), "", { shouldValidate: true });
+                  }}
+                  error={(errors as any)?.[`nominee_${idx}_identity_type`]?.message}
+                />
+                <Controller
+                  control={control}
+                  name={name("identity_number")}
+                  rules={{
+                    validate: (val) => {
+                      // Skip validation entirely for minors — the field
+                      // isn't even rendered in that case.
+                      if (!!watch(name("minor_flag"))) return true;
+                      const nomineeName = watch(name("name"));
+                      const idType = watch(name("identity_type"));
+                      // Only validate if a nominee name has been entered
+                      if (!nomineeName || !String(nomineeName).trim()) return true;
+                      if (!idType) return "Select ID Proof first";
+                      return validateNomineeIdNumber(String(idType), String(val || ""));
+                    },
+                  }}
+                  render={({ field, fieldState }) => {
+                    const idType = watch(name("identity_type"));
+                    const placeholder =
+                      idType === "1" ? "PAN (e.g., ABCDE1234F)" :
+                      idType === "2" ? "Last 4 digits of Aadhaar" :
+                      idType === "3" ? "Driving Licence Number" :
+                      idType === "4" ? "Passport / OCI Number" :
+                      "Select ID Proof first";
+                    const maxLen = idType === "1" ? 10 : idType === "2" ? 4 : 20;
+                    return (
+                      <CustomInput
+                        label="ID Number"
+                        placeholder={placeholder}
+                        required
+                        maxLength={maxLen}
+                        value={field.value || ""}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                          let v = e.target.value;
+                          if (idType === "2") v = v.replace(/\D/g, "").slice(0, 4);
+                          else if (idType === "1") v = v.toUpperCase().slice(0, 10);
+                          else v = v.toUpperCase().slice(0, 20);
+                          field.onChange(v);
+                        }}
+                        error={fieldState.error?.message}
+                      />
+                    );
                   }}
                 />
-              )}
-            />
-            <CustomReactSelect
-              label="ID Proof"
-              items={nomineeIdProofOptions}
-              bindValue="value"
-              bindName="label"
-              value={watch(name("identity_type"))}
-              placeholder="Select"
-              required
-              onChange={(e: any) => {
-                setValue(name("identity_type"), e.value, { shouldValidate: true });
-                // Reset id number when type changes so old value doesn't fail validation
-                setValue(name("identity_number"), "", { shouldValidate: true });
-              }}
-              error={(errors as any)?.[`nominee_${idx}_identity_type`]?.message}
-            />
-            <Controller
-              control={control}
-              name={name("identity_number")}
-              rules={{
-                validate: (val) => {
-                  const nomineeName = watch(name("name"));
-                  const idType = watch(name("identity_type"));
-                  // Only validate if a nominee name has been entered
-                  if (!nomineeName || !String(nomineeName).trim()) return true;
-                  if (!idType) return "Select ID Proof first";
-                  return validateNomineeIdNumber(String(idType), String(val || ""));
-                },
-              }}
-              render={({ field, fieldState }) => {
-                const idType = watch(name("identity_type"));
-                const placeholder =
-                  idType === "1" ? "PAN (e.g., ABCDE1234F)" :
-                  idType === "2" ? "Last 4 digits of Aadhaar" :
-                  idType === "3" ? "Driving Licence Number" :
-                  idType === "4" ? "Passport / OCI Number" :
-                  "Select ID Proof first";
-                const maxLen = idType === "1" ? 10 : idType === "2" ? 4 : 20;
-                return (
-                  <CustomInput
-                    label="ID Number"
-                    placeholder={placeholder}
-                    required
-                    maxLength={maxLen}
-                    value={field.value || ""}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      let v = e.target.value;
-                      if (idType === "2") v = v.replace(/\D/g, "").slice(0, 4);
-                      else if (idType === "1") v = v.toUpperCase().slice(0, 10);
-                      else v = v.toUpperCase().slice(0, 20);
-                      field.onChange(v);
-                    }}
-                    error={fieldState.error?.message}
-                  />
-                );
-              }}
-            />
+              </>
+            )}
           </div>
 
-          <div className="mt-3 flex items-center gap-6">
+          <div className="mt-3 flex items-center gap-6 flex-wrap">
+            {/* Same-address checkbox is offered for minor nominees too — a
+                minor typically lives at the primary holder's address, and
+                the previous UI hid this option the moment "is a minor" was
+                ticked, forcing the user to retype everything. */}
             <label className="flex items-center gap-2 cursor-pointer text-sm">
               <input
                 type="checkbox"
                 className="accent-[var(--color-primary)]"
-                checked={isMinor}
-                onChange={(e) => setValue(name("minor_flag"), e.target.checked)}
+                checked={sameAddress}
+                onChange={(e) => onSameAddrChange(e.target.checked)}
               />
-              Nominee is a minor
+              Same address as primary holder
             </label>
           </div>
-
-          {!isMinor && (
-            <div className="mt-3">
-              <label className="flex items-center gap-2 cursor-pointer text-sm">
-                <input
-                  type="checkbox"
-                  className="accent-[var(--color-primary)]"
-                  checked={sameAddress}
-                  onChange={(e) => onSameAddrChange(e.target.checked)}
-                />
-                Same address as primary holder
-              </label>
-            </div>
-          )}
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
             <CustomInput
               label="Address Line 1"
               placeholder="Address Line 1"
-              disabled={!isMinor && sameAddress}
-              {...register(name("address1"))}
+              maxLength={120}
+              disabled={sameAddress}
+              {...register(name("address1"), {
+                maxLength: { value: 120, message: "Max 120 characters" },
+              })}
             />
             <CustomInput
               label="Address Line 2"
               placeholder="Address Line 2"
-              disabled={!isMinor && sameAddress}
-              {...register(name("address2"))}
+              maxLength={40}
+              disabled={sameAddress}
+              {...register(name("address2"), {
+                maxLength: { value: 40, message: "Max 40 characters" },
+              })}
             />
             <CustomInput
               label="Address Line 3"
               placeholder="Address Line 3"
-              disabled={!isMinor && sameAddress}
-              {...register(name("address3"))}
+              maxLength={40}
+              disabled={sameAddress}
+              {...register(name("address3"), {
+                maxLength: { value: 40, message: "Max 40 characters" },
+              })}
             />
             <CustomInput
               label="Pincode"
               placeholder="Pincode"
-              disabled={!isMinor && sameAddress}
+              disabled={sameAddress}
               {...register(name("pin"))}
             />
             <CustomInput
               label="City"
               placeholder="City"
-              disabled={!isMinor && sameAddress}
+              disabled={sameAddress}
               {...register(name("city"))}
             />
             <CustomInput
               label="Country"
               placeholder="Country"
-              disabled={!isMinor && sameAddress}
+              disabled={sameAddress}
               {...register(name("country"))}
             />
             {isMinor && (
@@ -2917,10 +3226,53 @@ const onSubmit = async (data: any) => {
 
               {uccResultModal.success && uccResultModal.clientCode && (
                 <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg py-3 px-4 mb-4">
-                  <div className="text-[11px] uppercase tracking-wider font-semibold text-green-700">Client Code</div>
+                  <div className="text-[11px] uppercase tracking-wider font-semibold text-green-700">UCC Number</div>
                   <div className="text-2xl font-extrabold text-green-800 mt-1 tracking-wide">
                     {uccResultModal.clientCode}
                   </div>
+                </div>
+              )}
+
+              {/* Backend chained GET_LINK (CL_ACT) — surface the
+                  activation link so the investor can authorize the
+                  newly-created UCC right from this modal. */}
+              {uccResultModal.success && uccResultModal.activationLink && (
+                <div className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg p-3 mb-4 text-left">
+                  <div className="text-[10px] uppercase tracking-wider text-[#6B7280] mb-1">
+                    UCC Activation Link
+                  </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <a
+                      href={uccResultModal.activationLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 truncate text-xs text-[#4bc5c1] hover:underline font-mono"
+                      title={uccResultModal.activationLink}
+                    >
+                      {uccResultModal.activationLink}
+                    </a>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          await navigator.clipboard.writeText(uccResultModal.activationLink || "");
+                          toastAlert("success", "Link copied");
+                        } catch {
+                          toastAlert("error", "Could not copy link");
+                        }
+                      }}
+                      className="text-[10px] uppercase tracking-wider text-[#9CA3AF] hover:text-white border border-[#3A3A3A] rounded px-2 py-1"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => window.open(uccResultModal.activationLink, "_blank", "noopener,noreferrer")}
+                    className="w-full bg-[#4bc5c1] hover:bg-[#3db5b1] text-white font-semibold py-2 px-4 rounded-lg text-sm transition-colors"
+                  >
+                    Activate UCC Now
+                  </button>
                 </div>
               )}
 

@@ -22,6 +22,9 @@ import { useForm } from "react-hook-form";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import * as yup from "yup";
 import OTPScreen from "../otp-screen/otp-screen";
+import ThemeToggle from "@/commonUI/ThemeToggle";
+import LanguageDropdown from "@/commonUI/LanguageDropdown";
+import { useLandingLang } from "@/i18n/landingI18n";
 
 // Validation schema for login with password
 const loginSchema = yup.object().shape({
@@ -47,6 +50,7 @@ const otpLoginSchema = yup.object().shape({
 });
 
 function LoginForm() {
+  const { t } = useLandingLang();
   const router = useRouter();
   const modalRef = useRef<HTMLDivElement | null>(null);
   const [isOpenOtpModal, setIsOpenOtpModal] = useState(false);
@@ -491,6 +495,12 @@ const handleSuccessfulLogin = (data: any) => {
           <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_40%,rgba(245,158,11,0.05)_50%,transparent_60%)] animate-grid-move"></div>
         </div>
 
+        {/* Theme + language controls */}
+        <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+          <ThemeToggle />
+          <LanguageDropdown />
+        </div>
+
         {/* Main Content */}
         <div className="relative z-10 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
           <div className="myContainer w-full !px-0 !mx-3">
@@ -520,7 +530,7 @@ const handleSuccessfulLogin = (data: any) => {
               <div>
                 <div>
                   <CustomText className="text-center mb-2 text-2xl font-bold bg-gradient-to-r from-[#F59E0B] via-[#FBBF24] to-[#F59E0B] bg-clip-text text-transparent animate-text-shimmer bg-[length:200%_auto]">
-                    Welcome
+                    {t("login.welcome")}
                   </CustomText>
               
 
@@ -571,7 +581,7 @@ const handleSuccessfulLogin = (data: any) => {
                         setOtpSent(false);
                       }}
                     >
-                      🔐 Password
+                      🔐 {t("login.tabPassword")}
                     </button>
                     <button
                       className={`flex-1 py-2 text-center font-medium transition-all duration-300 rounded-md relative z-10 ${activeTab === "otp"
@@ -583,7 +593,7 @@ const handleSuccessfulLogin = (data: any) => {
                         setOtpSent(false);
                       }}
                     >
-                      📱 OTP
+                      📱 {t("login.tabOtp")}
                     </button>
                     <div
                       className={`absolute top-1 bottom-1 w-[calc(50%-4px)] bg-gradient-to-r from-[#F59E0B] to-[#B45309] rounded-md transition-all duration-400 ease-out ${activeTab === "password" ? "left-1" : "left-[calc(50%+2px)]"
@@ -598,12 +608,12 @@ const handleSuccessfulLogin = (data: any) => {
                     <div className="mb-1 flex flex-col gap-4">
                       <div className="group">
                         <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
-                          <span className="inline-flex items-center gap-1">📧 Email / Mobile No. <span className="text-[#F59E0B]">*</span></span>
+                          <span className="inline-flex items-center gap-1">📧 {t("login.emailOrMobile")} <span className="text-[#F59E0B]">*</span></span>
                         </label>
                         <input
                           type="text"
                           {...passwordForm.register("userName")}
-                          placeholder="Enter Email or Mobile Number"
+                          placeholder={t("login.emailOrMobilePlaceholder")}
                           className="w-full px-4 py-3 bg-[#1a1c22]/80 border border-[#2a2c32] rounded-lg text-[#F9FAFB] placeholder:text-[#6a6c72] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-[#F59E0B] transition-all group-hover:border-[#F59E0B]/50"
                         />
                         {passwordForm.formState.errors.userName?.message && (
@@ -612,13 +622,13 @@ const handleSuccessfulLogin = (data: any) => {
                       </div>
                       <div className="group">
                         <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
-                          <span className="inline-flex items-center gap-1">🔒 Password <span className="text-[#F59E0B]">*</span></span>
+                          <span className="inline-flex items-center gap-1">🔒 {t("login.password")} <span className="text-[#F59E0B]">*</span></span>
                         </label>
                         <div className="relative">
                           <input
                             type={passwordType}
                             {...passwordForm.register("password")}
-                            placeholder="Enter Password"
+                            placeholder={t("login.passwordPlaceholder")}
                             className="w-full px-4 py-3 bg-[#1a1c22]/80 border border-[#2a2c32] rounded-lg text-[#F9FAFB] placeholder:text-[#6a6c72] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-[#F59E0B] transition-all pr-12 group-hover:border-[#F59E0B]/50"
                           />
                           <button
@@ -640,7 +650,7 @@ const handleSuccessfulLogin = (data: any) => {
                         className="text-[#F59E0B] text-sm font-medium hover:text-[#FBBF24] transition-all hover:underline inline-flex items-center gap-1 group"
                         onClick={() => router.push("/forgot-password")}
                       >
-                        Forgot Password?
+                        {t("login.forgotPassword")}
                         <span className="group-hover:translate-x-1 transition-transform">→</span>
                       </button>
                     </div>
@@ -658,10 +668,10 @@ const handleSuccessfulLogin = (data: any) => {
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                               </svg>
-                              Logging in...
+                              {t("login.loggingIn")}
                             </>
                           ) : (
-                            "Login →"
+                            <>{t("login.button")} →</>
                           )}
                         </span>
                       </button>
@@ -675,14 +685,14 @@ const handleSuccessfulLogin = (data: any) => {
                     <div className="mb-1 flex flex-col">
                       <div className="group">
                         <label className="block text-sm font-medium text-[#F9FAFB] mb-2">
-                          <span className="inline-flex items-center gap-1">📞 Mobile Number <span className="text-[#F59E0B]">*</span></span>
+                          <span className="inline-flex items-center gap-1">📞 {t("login.mobileNumber")} <span className="text-[#F59E0B]">*</span></span>
                         </label>
                         <div className="relative">
                           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF] text-sm">+91</span>
                           <input
                             type="tel"
                             {...otpForm.register("mobile")}
-                            placeholder="Enter 10-digit mobile number"
+                            placeholder={t("login.mobilePlaceholder")}
                             maxLength={10}
                             disabled={otpSent}
                             className="w-full pl-12 pr-4 py-3 bg-[#1a1c22]/80 border border-[#2a2c32] rounded-lg text-[#F9FAFB] placeholder:text-[#6a6c72] focus:outline-none focus:ring-2 focus:ring-[#F59E0B] focus:border-[#F59E0B] transition-all disabled:opacity-50 disabled:cursor-not-allowed group-hover:border-[#F59E0B]/50"
@@ -707,12 +717,12 @@ const handleSuccessfulLogin = (data: any) => {
                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                               </svg>
-                              Sending OTP...
+                              {t("login.sendingOtp")}
                             </>
                           ) : otpSent ? (
-                            "✓ OTP Sent Successfully"
+                            <>✓ {t("login.otpSent")}</>
                           ) : (
-                            "Send OTP →"
+                            <>{t("login.sendOtp")} →</>
                           )}
                         </span>
                       </button>
@@ -722,7 +732,7 @@ const handleSuccessfulLogin = (data: any) => {
                         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#10B981]/10 border border-[#10B981]/30">
                           <span className="inline-block w-2 h-2 bg-[#10B981] rounded-full animate-ping"></span>
                           <p className="text-[#10B981] text-sm">
-                            OTP sent to +91 {mobileNumber}
+                            {t("login.otpSentTo")} +91 {mobileNumber}
                           </p>
                         </div>
                       </div>
@@ -753,9 +763,9 @@ const handleSuccessfulLogin = (data: any) => {
                           <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-r from-[#F59E0B]/20 to-[#B45309]/20 rounded-full flex items-center justify-center animate-pulse-slow">
                             <span className="text-4xl">👥</span>
                           </div>
-                          <h3 className="font-bold text-xl mb-2 text-[#F9FAFB]">Select User Type</h3>
+                          <h3 className="font-bold text-xl mb-2 text-[#F9FAFB]">{t("login.selectUserType")}</h3>
                           <p className="text-sm text-[#9CA3AF] mb-6">
-                            Multiple user types found for this account. Please select how you want to login:
+                            {t("login.selectUserTypeDesc")}
                           </p>
                           <div className="space-y-3">
                             {userTypes.map((userType: any, index: number) => (
@@ -787,7 +797,7 @@ const handleSuccessfulLogin = (data: any) => {
                             className="mt-4 text-[#9CA3AF] hover:text-[#F59E0B] text-sm transition-colors inline-flex items-center gap-1 group"
                             disabled={loginLoading}
                           >
-                            Cancel
+                            {t("login.cancel")}
                             <span className="group-hover:translate-x-0.5 transition-transform">←</span>
                           </button>
                         </div>

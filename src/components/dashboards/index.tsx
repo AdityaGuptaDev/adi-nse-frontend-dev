@@ -14,6 +14,7 @@ import {
 import { getLS, removeLS, handleServerError } from '@/utils/helpers';
 import api from '@/utils/api';
 import { getInvestor } from "@/api/holder";
+import { useLandingLang } from "@/i18n/landingI18n";
 import {
   LineChart as ReLineChart,
   Line,
@@ -34,8 +35,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ImProfile } from 'react-icons/im';
 import { FaUnlockAlt, FaPowerOff } from 'react-icons/fa';
 import Link from 'next/link';
-import OnBoarding from '../on-boarding';
-
 import TopPerformingSchemes from "./(components)/top-performing-schemes";
 import RecommendedFunds from "./(components)/recommended-funds";
 import InvestorPicker from "./(components)/InvestorPicker";
@@ -208,6 +207,7 @@ interface SelectedClient {
 }
 
 const MutualFundDashboard = () => {
+  const { t } = useLandingLang();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -217,6 +217,14 @@ const MutualFundDashboard = () => {
 
   const [selectedClient, setSelectedClient] = useState<SelectedClient | null>(null);
   const [clientData, setClientData] = useState<{ name: string; pan: string }>({ name: '', pan: '' });
+
+  // Decentro seeds investor rows with name="TEMPORARY INVESTOR" — that
+  // placeholder must not win over a real UCC primary-holder name.
+  const isRealName = (s: any) => {
+    const v = (s ?? "").toString().trim();
+    if (!v) return false;
+    return !/^temporary\s*investor$/i.test(v);
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -237,6 +245,87 @@ const MutualFundDashboard = () => {
     }
   }, []);
 
+  // Hydrate the dashboard greeting / PAN chip from the same sources the
+  // profile page uses, so the two views stay in sync. We try, in order:
+  //   1. /investor/kyc-users  → freshest InvestorRegistration row
+  //   2. /nse/ucc/search-by-mobile/:mobile → NSE UCC primary holder
+  // The "TEMPORARY INVESTOR" placeholder (seeded by decentro) is treated as
+  // empty so a real UCC primaryHolder name wins.
+  useEffect(() => {
+    const userData: any = prodUserData;
+    const investorId = userData?.InvestorRegistration?.id;
+    const mobile =
+      userData?.InvestorRegistration?.reg_mobile || userData?.mobile;
+
+    if (!investorId && !mobile) return;
+
+    let cancelled = false;
+
+    const buildUccName = (ucc: any) => {
+      if (!ucc) return '';
+      return [ucc.primaryHolderFirstName, ucc.primaryHolderMiddleName, ucc.primaryHolderLastName]
+        .filter((p: any) => p && `${p}`.trim() !== '')
+        .map((p: any) => `${p}`.trim())
+        .join(' ')
+        .trim();
+    };
+
+    (async () => {
+      let kycName = '';
+      let kycPan = '';
+      let uccName = '';
+      let uccPan = '';
+
+      // Same call the profile page makes — returns the InvestorRegistration row
+      if (investorId) {
+        try {
+          const res: any = await api.post('/investor/kyc-users', { investor_id: investorId });
+          const inv = res?.data?.data;
+          if (inv) {
+            if (isRealName(inv.name)) kycName = String(inv.name).trim();
+            else if (isRealName(inv.signzy_user_name)) kycName = String(inv.signzy_user_name).trim();
+            if (inv.pan_no && `${inv.pan_no}`.trim()) kycPan = `${inv.pan_no}`.trim();
+          }
+        } catch {
+          // ignore — fall through to UCC
+        }
+      }
+
+      // Same call the profile page makes — returns NSE UCC primary holder data
+      if (mobile) {
+        try {
+          const res: any = await api.get(`/nse/ucc/search-by-mobile/${mobile}`);
+          const payload = res?.data?.data ?? res?.data ?? {};
+          if (payload?.status === 'S' && payload?.data) {
+            const u = payload.data;
+            uccName = buildUccName(u);
+            if (u?.primaryHolderPan && `${u.primaryHolderPan}`.trim()) {
+              uccPan = `${u.primaryHolderPan}`.trim();
+            }
+          }
+        } catch {
+          // ignore — UCC may legitimately 404
+        }
+      }
+
+      if (cancelled) return;
+
+      const resolvedName = kycName || uccName || (isRealName(userData?.name) ? userData.name : '');
+      const resolvedPan = kycPan || uccPan;
+
+      if (!resolvedName && !resolvedPan) return;
+
+      setClientData((prev) => ({
+        name: prev.name?.trim() ? prev.name : resolvedName,
+        pan: prev.pan?.trim() ? prev.pan : resolvedPan,
+      }));
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [prodUserData?.InvestorRegistration?.id, prodUserData?.mobile]);
+
   // Determine the final client data to use
   const panNumber =
     clientData.pan ||
@@ -244,10 +333,20 @@ const MutualFundDashboard = () => {
       ? prodUserData.InvestorRegistration.pan_no
       : searchPan ?? "");
 
+  // Pull the investor's name from whichever source has it. We first honour an
+  // explicit selection (sessionStorage selectedClient), then the InvestorRegistration
+  // record (the canonical KYC name), then the Users row (name captured at signup),
+  // then the signzy verified name, and finally any ?name= query param. This way
+  // the greeting reads dynamically for both fully-onboarded investors and freshly
+  // self-registered ones who only have a Users.name set so far.
   const investorName =
-    clientData.name ||
-    (prodUserData?.InvestorRegistration?.name && prodUserData?.InvestorRegistration?.name.trim() !== ""
+    (isRealName(clientData.name) && clientData.name) ||
+    (isRealName(prodUserData?.InvestorRegistration?.name)
       ? prodUserData.InvestorRegistration.name
+      : isRealName(prodUserData?.InvestorRegistration?.signzy_user_name)
+      ? prodUserData.InvestorRegistration.signzy_user_name
+      : isRealName(prodUserData?.name)
+      ? prodUserData.name
       : searchName ?? "");
 
   // Pick investorId
@@ -377,46 +476,42 @@ const MutualFundDashboard = () => {
 
       const investor = userData?.InvestorRegistration;
 
-      // If investor data exists and KYC is complete, no popup needed
+      // This route (/dashboards) is the Investor Dashboard — only investors land
+      // here (admins → /admin-dashboard, partners → /partner-dashboard, etc.).
+      // The MFU/NSE picker popup is gone: when an investor needs onboarding we
+      // drop them straight on /create-ucc, which now hosts the NSE/MFU tab
+      // switcher (NSE selected by default).
+      setOnBoardingModal(false);
+
+      // KYC already complete → nothing to do, render dashboard normally.
       if (investor?.is_kyc_complete === true) {
-        console.log("KYC complete - no onboarding popup");
-        setOnBoardingModal(false);
         return;
       }
 
-      // If CAN is registered, skip onboarding popup
+      // MFU CAN already registered → nothing to do.
       if (investor?.is_CAN_registered === true) {
-        console.log("CAN registered - no onboarding popup");
-        setOnBoardingModal(false);
         return;
       }
 
-      // Check if UCC is created via NSE API (by mobile number)
+      // NSE UCC already created (checked by mobile) → nothing to do.
       if (investor?.reg_mobile) {
         try {
           const res = await api.get(`/nse/ucc/search-by-mobile/${investor.reg_mobile}`);
           const payload = res?.data?.data ?? res?.data ?? {};
           if (payload?.status === "S" && payload?.data) {
             const uccData = payload.data;
-            // If UCC record exists and uccCreated flag is true, skip onboarding
             if (uccData.uccCreated === 1 || uccData.uccCreated === true) {
-              console.log("UCC created - no onboarding popup");
-              setOnBoardingModal(false);
               return;
             }
           }
         } catch (err) {
-          // UCC check failed - continue with normal check
-          console.log("UCC check failed, continuing with normal onboarding check");
+          // ignore — fall through to redirect
         }
       }
 
-      // If none of the above conditions met, show onboarding popup
-      if (!investor || investor.is_kyc_complete === false || investor.is_kyc_complete === null) {
-        setOnBoardingModal(true);
-      } else {
-        setOnBoardingModal(false);
-      }
+      // Onboarding is needed. Send the investor to the NSE UCC creation page.
+      // The page's tab switcher lets them flip to MFU without coming back here.
+      router.push("/create-ucc");
     };
 
     checkOnboardingStatus();
@@ -1301,7 +1396,7 @@ const MutualFundDashboard = () => {
         <div className="w-full bg-[#111111] border-b border-[#2A2A2A] shadow-sm">
           <div className="flex items-center justify-between p-4 sm:p-6">
             {/* Premium date selector with golden border */}
-            {hasClientData && (
+            {(
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-[#F59E0B] to-[#B45309] rounded-xl opacity-20"></div>
                 <div className="relative flex items-center gap-3 bg-[#1F1A1A] px-4 py-2 rounded-xl border border-[#F59E0B]/50 hover:border-[#F59E0B] transition-all duration-200 text-sm flex-shrink-0 min-w-0">
@@ -1330,8 +1425,10 @@ const MutualFundDashboard = () => {
           </div>
         </div>
 
-        {/* Welcome Banner with Investor Info */}
-        {hasClientData && (
+        {/* Welcome Banner with Investor Info — always shown so the layout matches
+            the production view even when the investor's name / PAN haven't been
+            captured yet. We render placeholders ("Investor", "—") for empty fields. */}
+        {(
           <div className="w-full bg-gradient-to-r from-[#F59E0B] to-[#B45309]">
             <div className="px-4 sm:px-6 py-6">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -1342,27 +1439,16 @@ const MutualFundDashboard = () => {
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <h1 className="text-2xl sm:text-3xl font-bold text-white">
-                        {(() => {
-                          const currentHour = new Date().getHours();
-                          let greeting = "";
-
-                          if (currentHour >= 5 && currentHour < 12) {
-                            greeting = "Good Morning";
-                          } else if (currentHour >= 12 && currentHour < 17) {
-                            greeting = "Good Afternoon";
-                          } else if (currentHour >= 17 && currentHour < 21) {
-                            greeting = "Good Evening";
-                          } else {
-                            greeting = "Welcome Back";
-                          }
-
-                          return greeting;
-                        })()},
+                        {investorName?.trim() ? t("dash.namasteWith") : t("dash.namasteAlone")}
                       </h1>
-                      {/* Investor Name with Gradient Effect */}
-                      <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-yellow-300 via-yellow-200 to-white bg-clip-text text-transparent drop-shadow-lg">
-                        {investorName}
-                      </span>
+                      {/* Investor first name with gradient effect — only the
+                          first word of the resolved name is shown, followed by
+                          a respectful honorific (e.g. "Namaste, Ajay Ji" / "नमस्ते, अजय जी"). */}
+                      {investorName?.trim() && (
+                        <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-yellow-300 via-yellow-200 to-white bg-clip-text text-transparent drop-shadow-lg">
+                          {investorName.trim().split(/\s+/)[0]} {t("dash.honorific")}
+                        </span>
+                      )}
                       {/* Animated Tick Symbol */}
                       <div className="relative flex items-center justify-center">
                         <div className="absolute inset-0 animate-ping bg-green-400 rounded-full w-5 h-5 opacity-75"></div>
@@ -1373,13 +1459,13 @@ const MutualFundDashboard = () => {
                     <div className="flex items-center gap-3 mt-2 flex-wrap">
                       <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-lg">
                         <Shield className="w-4 h-4 text-yellow-400" />
-                        <span className="text-sm text-white/90">PAN:</span>
-                        <span className="text-sm font-mono font-medium text-white tracking-wider">{panNumber}</span>
+                        <span className="text-sm text-white/90">{t("dash.pan")}</span>
+                        <span className="text-sm font-mono font-medium text-white tracking-wider">{panNumber?.trim() ? panNumber : "—"}</span>
                       </div>
                       <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-lg">
                         <Award className="w-4 h-4 text-green-400" />
-                        <span className="text-sm text-white/90">KYC:</span>
-                        <span className="text-sm font-medium text-green-400">Verified</span>
+                        <span className="text-sm text-white/90">{t("dash.kyc")}</span>
+                        <span className="text-sm font-medium text-green-400">{t("dash.verified")}</span>
                       </div>
                       {/* Time-based icon */}
                       <div className="flex items-center gap-2 bg-black/30 backdrop-blur-sm px-3 py-1.5 rounded-lg">
@@ -1623,9 +1709,11 @@ const MutualFundDashboard = () => {
               </div>
             </div>
 
-            {/* Portfolio Details Section */}
-            {hasClientData ? (
-              validParentPortfolioData.length === 0 ? (
+            {/* Portfolio Details Section — always rendered so the local view
+                matches the production layout. Inner sections handle their own
+                empty states (no portfolio data, no transactions, etc.). */}
+            {true ? (
+              false ? (
                 <div className="space-y-4 sm:space-y-6 w-full min-w-0 flex-1 flex flex-col">
                   <div className="bg-[#111111] p-6 sm:p-8 rounded-xl shadow-lg border border-[#2A2A2A] text-center w-full flex-1 flex items-center justify-center min-h-[600px]">
                     <div className="max-w-md mx-auto w-full">
@@ -2093,14 +2181,8 @@ const MutualFundDashboard = () => {
         )}
       </div>
 
-      {onBoardingModal && (
-        <div>
-          <OnBoarding
-            onBoardingModal={onBoardingModal}
-            onClose={() => setOnBoardingModal(false)}
-          />
-        </div>
-      )}
+      {/* Onboarding picker popup intentionally removed — investors now go straight
+          to /create-ucc which hosts the NSE/MFU tab switcher. */}
     </div>
   );
 };

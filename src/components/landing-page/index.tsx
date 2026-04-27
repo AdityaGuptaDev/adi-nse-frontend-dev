@@ -5,6 +5,9 @@ import { publicPathName } from "@/utils/constants";
 import { useRouter } from "next/navigation";
 import { userStore } from "@/store/registerStore";
 import { motion, AnimatePresence } from "framer-motion";
+import ThemeToggle from "@/commonUI/ThemeToggle";
+import LanguageDropdown from "@/commonUI/LanguageDropdown";
+import { useLandingLang } from "@/i18n/landingI18n";
 
 type UserType = "Investor" | "Partner";
 
@@ -836,6 +839,7 @@ const DownloadSection = () => {
 
 const HeroWithApp = () => {
   const router = useRouter();
+  const { t } = useLandingLang();
 
   return (
     <div className="relative min-h-screen flex items-center overflow-hidden pt-20 w-full">
@@ -861,14 +865,14 @@ const HeroWithApp = () => {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#1F1A1A] backdrop-blur-sm shadow-lg border border-[#F59E0B]/30 mb-6"
           >
             <span className="w-2 h-2 bg-[#F59E0B] rounded-full animate-pulse"></span>
-            <span className="text-xs font-medium text-[#F59E0B]">SEBI Registered · Trusted by 50K+ Investors</span>
+            <span className="text-xs font-medium text-[#F59E0B]">{t("hero.badge")}</span>
           </motion.div>
 
           <h1 className="heading-font text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
-            <span className="text-[#F9FAFB]">Grow Your</span>
+            <span className="text-[#F9FAFB]">{t("hero.title1")}</span>
             <br />
             <span className="bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent relative">
-              Wealth Journey
+              {t("hero.title2")}
               <motion.span
                 initial={{ width: 0 }}
                 animate={{ width: "100%" }}
@@ -879,7 +883,7 @@ const HeroWithApp = () => {
           </h1>
 
           <p className="text-base text-[#9CA3AF] mt-6 max-w-lg leading-relaxed">
-            Experience smart investing with AI-powered portfolio management, expert guidance, and market-beating returns. Start your journey today.
+            {t("hero.subtitle")}
           </p>
 
           <div className="flex gap-6 mt-8">
@@ -892,37 +896,37 @@ const HeroWithApp = () => {
               }}
               className="gradient-btn px-8 py-4 rounded-xl font-semibold text-base"
             >
-              Register Now
+              {t("hero.cta.register")}
             </button>
             <button
               onClick={() => document.getElementById('download')?.scrollIntoView({ behavior: 'smooth' })}
               className="px-8 py-4 rounded-xl font-semibold text-base bg-[#1F1A1A] backdrop-blur-sm text-[#F9FAFB] border-2 border-[#2A2A2A] hover:border-[#F59E0B] hover:shadow-lg transition-all"
             >
-              Download App
+              {t("hero.cta.download")}
             </button>
           </div>
 
           <div className="flex gap-8 mt-12">
-            <motion.div 
+            <motion.div
               whileHover={{ scale: 1.05 }}
               className="bg-[#1F1A1A] backdrop-blur-sm px-4 py-2 rounded-xl shadow-lg border border-[#2A2A2A]"
             >
               <p className="text-2xl font-bold text-[#F59E0B]">₹300Cr+</p>
-              <p className="text-xs text-[#9CA3AF]">AUM Managed</p>
+              <p className="text-xs text-[#9CA3AF]">{t("hero.stat.aum")}</p>
             </motion.div>
-            <motion.div 
+            <motion.div
               whileHover={{ scale: 1.05 }}
               className="bg-[#1F1A1A] backdrop-blur-sm px-4 py-2 rounded-xl shadow-lg border border-[#2A2A2A]"
             >
               <p className="text-2xl font-bold text-[#10B981]">15%</p>
-              <p className="text-xs text-[#9CA3AF]">Avg. Returns</p>
+              <p className="text-xs text-[#9CA3AF]">{t("hero.stat.returns")}</p>
             </motion.div>
-            <motion.div 
+            <motion.div
               whileHover={{ scale: 1.05 }}
               className="bg-[#1F1A1A] backdrop-blur-sm px-4 py-2 rounded-xl shadow-lg border border-[#2A2A2A]"
             >
               <p className="text-2xl font-bold text-[#F59E0B]">50K+</p>
-              <p className="text-xs text-[#9CA3AF]">Investors</p>
+              <p className="text-xs text-[#9CA3AF]">{t("hero.stat.investors")}</p>
             </motion.div>
           </div>
         </motion.div>
@@ -942,7 +946,7 @@ const HeroWithApp = () => {
             whileHover={{ scale: 1.05 }}
             className="absolute -top-10 -right-10 bg-[#111111] rounded-xl shadow-2xl p-4 border border-[#2A2A2A] hidden lg:block"
           >
-            <p className="text-xs text-[#9CA3AF]">App Store Rating</p>
+            <p className="text-xs text-[#9CA3AF]">{t("hero.appStoreRating")}</p>
             <p className="text-xl font-bold text-[#F59E0B]">4.8 ★</p>
           </motion.div>
 
@@ -953,7 +957,7 @@ const HeroWithApp = () => {
             whileHover={{ scale: 1.05 }}
             className="absolute -bottom-10 -left-10 bg-[#111111] rounded-xl shadow-2xl p-4 border border-[#2A2A2A] hidden lg:block"
           >
-            <p className="text-xs text-[#9CA3AF]">Active Users</p>
+            <p className="text-xs text-[#9CA3AF]">{t("hero.activeUsers")}</p>
             <p className="text-xl font-bold text-[#10B981]">50K+</p>
           </motion.div>
         </motion.div>
@@ -1125,6 +1129,7 @@ const ChoosePathCards = () => {
 };
 
 function LandingPage() {
+  const { t } = useLandingLang();
   const router = useRouter();
   const [registerOpen, setRegisterOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -1176,6 +1181,32 @@ function LandingPage() {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Scroll to a specific section when the landing page is opened with a hash
+  // (e.g. /landing#features). Used by the in-app nav from logged-in dashboards.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const hash = window.location.hash?.replace("#", "");
+    if (!hash) return;
+
+    const refMap: Record<string, React.RefObject<HTMLDivElement>> = {
+      home: homeRef,
+      features: featuresRef,
+      calculator: calculatorRef,
+      app: appFeaturesRef,
+      about: aboutRef,
+    };
+    const target = refMap[hash];
+    if (!target) return;
+
+    if (hash === "calculator") setShowCalculator(true);
+
+    // Wait one frame so the section has mounted before we scroll
+    const t = window.setTimeout(() => {
+      target.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+    return () => window.clearTimeout(t);
   }, []);
 
   const handleLogin = () => router.push("/login");
@@ -1333,11 +1364,11 @@ function LandingPage() {
             className="hidden md:flex items-center gap-8"
           >
             {[
-              { id: "home", label: "Home" },
-              { id: "features", label: "Features" },
-              { id: "calculator", label: "Calculator" },
-              { id: "app", label: "Mobile App" },
-              { id: "about", label: "About" },
+              { id: "home", label: t("nav.home") },
+              { id: "features", label: t("nav.features") },
+              { id: "calculator", label: t("nav.calculator") },
+              { id: "app", label: t("nav.app") },
+              { id: "about", label: t("nav.about") },
             ].map(item => (
               <button
                 key={item.id}
@@ -1360,11 +1391,14 @@ function LandingPage() {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-3"
           >
+            <ThemeToggle />
+            <LanguageDropdown />
+
             <button
               onClick={handleLogin}
               className="text-sm font-semibold text-[#9CA3AF] hover:text-[#F59E0B] transition-colors hidden sm:block"
             >
-              Sign In
+              {t("nav.signIn")}
             </button>
 
             <div className="relative" ref={dropdownRef}>
@@ -1372,7 +1406,7 @@ function LandingPage() {
                 onClick={() => setRegisterOpen(!registerOpen)}
                 className="gradient-btn px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2"
               >
-                Register
+                {t("nav.register")}
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
@@ -1388,8 +1422,8 @@ function LandingPage() {
                   >
                     <div className="p-2">
                       {[
-                        { type: "Investor", icon: "📈", label: "Investor", desc: "Start your journey", color: "from-[#F59E0B] to-[#B45309]" },
-                        { type: "Partner", icon: "🤝", label: "Partner", desc: "Grow your business", color: "from-[#10B981] to-[#059669]" },
+                        { type: "Investor", icon: "📈", label: t("register.investor"), desc: t("register.investorDesc"), color: "from-[#F59E0B] to-[#B45309]" },
+                        { type: "Partner", icon: "🤝", label: t("register.partner"), desc: t("register.partnerDesc"), color: "from-[#10B981] to-[#059669]" },
                       ].map(item => (
                         <motion.button
                           key={item.type}
@@ -1416,12 +1450,12 @@ function LandingPage() {
       </nav>
 
       {/* Hero Section with App */}
-      <section ref={homeRef}>
+      <section ref={homeRef} id="home">
         <HeroWithApp />
       </section>
 
       {/* Features Section */}
-      <section ref={featuresRef} className="py-20 px-6">
+      <section ref={featuresRef} id="features" className="py-20 px-6">
         <div className="w-full max-w-[1400px] mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -1429,11 +1463,11 @@ function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <span className="text-sm font-semibold text-[#F59E0B] tracking-wider bg-[#F59E0B]/20 px-4 py-2 rounded-full inline-block">WHY CHOOSE US</span>
+            <span className="text-sm font-semibold text-[#F59E0B] tracking-wider bg-[#F59E0B]/20 px-4 py-2 rounded-full inline-block">{t("section.features.eyebrow")}</span>
             <h2 className="heading-font text-3xl sm:text-4xl lg:text-5xl font-bold mt-4">
-              <span className="text-[#F9FAFB]">Invest with</span>{' '}
+              <span className="text-[#F9FAFB]">{t("section.features.titleA")}</span>{' '}
               <span className="bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent">
-                Confidence
+                {t("section.features.titleB")}
               </span>
             </h2>
           </motion.div>
@@ -1443,7 +1477,7 @@ function LandingPage() {
       </section>
 
       {/* Calculator Section */}
-      <section ref={calculatorRef} className="py-20 px-6 bg-[#111111]/50">
+      <section ref={calculatorRef} id="calculator" className="py-20 px-6 bg-[#111111]/50">
         <div className="w-full max-w-5xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -1451,11 +1485,11 @@ function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-10"
           >
-            <span className="text-sm font-semibold text-[#F59E0B] tracking-wider bg-[#F59E0B]/20 px-4 py-2 rounded-full inline-block">CALCULATE RETURNS</span>
+            <span className="text-sm font-semibold text-[#F59E0B] tracking-wider bg-[#F59E0B]/20 px-4 py-2 rounded-full inline-block">{t("section.calc.eyebrow")}</span>
             <h2 className="heading-font text-3xl sm:text-4xl lg:text-5xl font-bold mt-4">
-              <span className="text-[#F9FAFB]">Plan Your</span>{' '}
+              <span className="text-[#F9FAFB]">{t("section.calc.titleA")}</span>{' '}
               <span className="bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent">
-                Investment
+                {t("section.calc.titleB")}
               </span>
             </h2>
           </motion.div>
@@ -1465,7 +1499,7 @@ function LandingPage() {
       </section>
 
       {/* Mobile App Features Section */}
-      <section ref={appFeaturesRef} className="py-20 px-6">
+      <section ref={appFeaturesRef} id="app" className="py-20 px-6">
         <div className="w-full max-w-[1400px] mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -1473,15 +1507,15 @@ function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <span className="text-sm font-semibold text-[#F59E0B] tracking-wider bg-[#F59E0B]/20 px-4 py-2 rounded-full inline-block">MOBILE APP</span>
+            <span className="text-sm font-semibold text-[#F59E0B] tracking-wider bg-[#F59E0B]/20 px-4 py-2 rounded-full inline-block">{t("section.app.eyebrow")}</span>
             <h2 className="heading-font text-3xl sm:text-4xl lg:text-5xl font-bold mt-4">
-              <span className="text-[#F9FAFB]">Invest on the</span>{' '}
+              <span className="text-[#F9FAFB]">{t("section.app.titleA")}</span>{' '}
               <span className="bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent">
-                Go
+                {t("section.app.titleB")}
               </span>
             </h2>
             <p className="text-[#9CA3AF] text-base max-w-2xl mx-auto mt-4">
-              Experience the power of smart investing right at your fingertips. Download our app and start your wealth journey today.
+              {t("section.app.subtitle")}
             </p>
           </motion.div>
 
@@ -1505,11 +1539,11 @@ function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-12"
           >
-            <span className="text-sm font-semibold text-[#F59E0B] tracking-wider bg-[#F59E0B]/20 px-4 py-2 rounded-full inline-block">GET STARTED</span>
+            <span className="text-sm font-semibold text-[#F59E0B] tracking-wider bg-[#F59E0B]/20 px-4 py-2 rounded-full inline-block">{t("section.steps.eyebrow")}</span>
             <h2 className="heading-font text-3xl sm:text-4xl lg:text-5xl font-bold text-center text-[#F9FAFB] mt-4">
-              Get Started in{' '}
+              {t("section.steps.titleA")}{' '}
               <span className="bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] bg-clip-text text-transparent">
-                4 Simple Steps
+                {t("section.steps.titleB")}
               </span>
             </h2>
           </motion.div>
@@ -1532,7 +1566,7 @@ function LandingPage() {
       </section>
 
       {/* About Section */}
-      <section ref={aboutRef} className="py-20 px-6">
+      <section ref={aboutRef} id="about" className="py-20 px-6">
         <div className="w-full max-w-[1200px] mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}

@@ -6,13 +6,13 @@ import dynamic from "next/dynamic";
 import { useEffect } from "react";
 import WithAuth from "@/app/HOC/withAuth";
 
-const Page = dynamic(() => import("@/components/create-ucc/index"), { ssr: false });
+const Page = dynamic(() => import("@/components/onboarding-tabs"), { ssr: false });
 
 function CreateUCC(props: any) {
   const { setTitle } = usePageTitle();
 
   useEffect(() => {
-    setTitle("Create UCC");
+    setTitle("Investor Onboarding");
   }, [setTitle]);
 
   return <Page {...props} />;

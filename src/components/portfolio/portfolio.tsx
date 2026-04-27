@@ -25,7 +25,7 @@ import { IoWalletOutline, IoAnalyticsOutline } from "react-icons/io5";
 import CustomReactSelect from "@/commonUI/ReactSelect";
 import api from "@/utils/api";
 import getConfig from '@/utils/config';
-import { getLS, getProdUser } from "@/utils/helpers";
+import { getLS, getProdUser, toastAlert } from "@/utils/helpers";
 import CustomBackButton from "@/commonUI/CustomBackButton";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { searchByISIN } from "@/api/transaction";
@@ -198,23 +198,97 @@ const Portfolio: NextPage = () => {
     sessionStorage.removeItem(STORAGE_KEYS.PORTFOLIO_SEARCH_PARAMS);
   }, []);
 
+  // Build the "self" (logged-in user) option from USER_DATA. UCC-only NSE
+  // investors aren't returned by /partner/getInvestorPortfolioDtl (that
+  // endpoint is scoped to partner-mapped CAN holders), so without this seed
+  // they see an empty dropdown and can't run Search. Search itself is
+  // PAN-driven, so surfacing the investor's PAN here is enough.
+  const buildSelfInvestorOption = (): { id: any; text: string; pan: string; value: any } | null => {
+    const selfUser: any = getLS(USER_DATA);
+    const reg = selfUser?.InvestorRegistration || {};
+    const selfPan = reg?.pan_no || reg?.pan || selfUser?.pan || "";
+    const selfName =
+      reg?.name ||
+      [reg?.first_name, reg?.middle_name, reg?.last_name].filter(Boolean).join(" ").trim() ||
+      selfUser?.name ||
+      "";
+    const selfId = reg?.id ?? selfUser?.id ?? 1;
+    if (!selfPan && !selfName) return null;
+    return { id: selfId, text: selfName || selfPan, pan: selfPan, value: selfId };
+  };
+
+  // Track the NSE client_code (UCC) for the selected investor, so the Search
+  // button can branch to the NSE portfolio endpoint when the investor has no
+  // CAN. Kept alongside selectedInvestorPan.
+  const [selectedClientCode, setSelectedClientCode] = useState<string>("");
+
+  // Auto-pick an option when the dropdown has exactly one entry, so a solo
+  // investor (common for NSE UCC-only users) doesn't have to open the
+  // dropdown before they can click Search. No-op if the user already
+  // restored a selection from sessionStorage.
+  const maybeAutoSelect = (list: any[]) => {
+    if (list.length !== 1) return;
+    const only = list[0];
+    setSelectedInvestor((prev) => prev || only.text);
+    setSelectedInvestorId((prev: any) => prev ?? only.id);
+    setSelectedInvestorPan((prev: any) => prev || only.pan);
+    setSelectedClientCode((prev) => prev || only.client_code || "");
+  };
+
+  // UCC-only investors don't have their PAN on InvestorRegistration — it lives
+  // on UCCRegistration.primaryHolderPan. Hit the same search-by-mobile
+  // endpoint the NSE order form uses and return whatever PAN is on file,
+  // plus the client_code so we can route portfolio fetch to the NSE endpoint.
+  const fetchPanFromUcc = async (): Promise<{ pan?: string; name?: string; clientCode?: string }> => {
+    const userData: any = getLS(USER_DATA);
+    const rawMobile =
+      userData?.InvestorRegistration?.reg_mobile ||
+      userData?.InvestorRegistration?.mobile ||
+      userData?.mobile;
+    const mobile = rawMobile ? String(rawMobile).replace(/\D/g, "").slice(-10) : "";
+    if (!mobile) return {};
+    try {
+      const res = await api.get(`/nse/ucc/search-by-mobile/${mobile}`);
+      const payload = res?.data?.data ?? res?.data ?? {};
+      const u = payload?.data;
+      if (payload?.status !== "S" || !u) return {};
+      const pan = u.primaryHolderPan || "";
+      const name = [u.primaryHolderFirstName, u.primaryHolderMiddleName, u.primaryHolderLastName]
+        .filter(Boolean)
+        .join(" ")
+        .trim();
+      const clientCode = u.clientCode || "";
+      return { pan, name, clientCode };
+    } catch {
+      return {};
+    }
+  };
+
   // Fetch investor data
   const fetchInvestorData = async () => {
+    // Always start from the self-option so a failed / empty API response
+    // can't leave the dropdown blank.
+    const selfOption = buildSelfInvestorOption();
+    const seed: any[] = selfOption ? [selfOption] : [];
+
     try {
       const response = await api.get(
         `${ApiUrl}/partner/getInvestorPortfolioDtl/${userTypeid}/${userId}`
       );
 
       const data = response.data?.data?.data || [];
-
-      let uniqueInvestors = [];
+      const uniqueInvestors: any[] = [...seed];
 
       if (data.length > 0) {
-        uniqueInvestors = data.reduce((acc: { id: any; text: any; pan: any; value: any; }[], item: { user_name: any; user_pan: any; id: any; }) => {
+        data.forEach((item: { user_name: any; user_pan: any; id: any }) => {
           if (item.user_name && item.user_pan) {
-            const existing = acc.find(inv => inv.id === item.id);
+            const existing = uniqueInvestors.find(
+              (inv) =>
+                inv.id === item.id ||
+                (item.user_pan && inv.pan === item.user_pan)
+            );
             if (!existing) {
-              acc.push({
+              uniqueInvestors.push({
                 id: item.id,
                 text: item.user_name,
                 pan: item.user_pan,
@@ -222,22 +296,26 @@ const Portfolio: NextPage = () => {
               });
             }
           }
-          return acc;
-        }, []);
-      } else {
-        const user = getLS(USER_DATA);
-        const pan = user?.InvestorRegistration?.pan_no || "";
-        const name = user?.InvestorRegistration?.name || "";
+        });
+      }
 
-        if (name) {
-          uniqueInvestors = [
-            {
-              id: 1,
-              text: name,
-              pan: pan,
-              value: 1,
-            },
-          ];
+      // Backfill PAN + client_code for the self-option from the UCC record.
+      // PAN is needed to enable the Search button; client_code tells
+      // getPortfolioData to route to the NSE portfolio endpoint instead of
+      // the MFU one. We always try the UCC lookup for the self-option so an
+      // investor who has BOTH CAN and UCC still gets their NSE orders.
+      if (selfOption) {
+        const ucc = await fetchPanFromUcc();
+        if (ucc.pan || ucc.clientCode) {
+          const idx = uniqueInvestors.findIndex((inv) => inv.id === selfOption.id);
+          if (idx >= 0) {
+            uniqueInvestors[idx] = {
+              ...uniqueInvestors[idx],
+              pan: uniqueInvestors[idx].pan || ucc.pan || "",
+              text: uniqueInvestors[idx].text || ucc.name || ucc.pan || "",
+              client_code: ucc.clientCode || "",
+            };
+          }
         }
       }
 
@@ -245,8 +323,28 @@ const Portfolio: NextPage = () => {
       setAccountHoldingOptions([]);
       setAllAccountHolders([]);
       setHasAccountHolders(false);
+      maybeAutoSelect(uniqueInvestors);
     } catch (error) {
       console.error("Error fetching investor data:", error);
+      // API errored — still surface the logged-in user so Search works for
+      // UCC-only investors whose partner-portfolio lookup 5xx's.
+      const fallback = [...seed];
+      if (selfOption) {
+        const ucc = await fetchPanFromUcc();
+        if ((ucc.pan || ucc.clientCode) && fallback[0]) {
+          fallback[0] = {
+            ...fallback[0],
+            pan: fallback[0].pan || ucc.pan || "",
+            text: fallback[0].text || ucc.name || "",
+            client_code: ucc.clientCode || "",
+          };
+        }
+      }
+      setInvestorOptions(fallback);
+      setAccountHoldingOptions([]);
+      setAllAccountHolders([]);
+      setHasAccountHolders(false);
+      maybeAutoSelect(fallback);
     }
   };
 
@@ -301,6 +399,7 @@ const Portfolio: NextPage = () => {
     setSelectedInvestor(option.text);
     setSelectedInvestorId(option.id);
     setSelectedInvestorPan(option.pan);
+    setSelectedClientCode(option.client_code || "");
     setSelectedAccountHolding("");
     setSelectedAccountHoldingId(null);
     setSelectedAccountHoldingPan(null);
@@ -320,33 +419,76 @@ const Portfolio: NextPage = () => {
     } catch (error) { }
   };
 
+  // NSE transaction menu exposed to UCC-having investors from the portfolio
+  // row. Each entry maps the user-facing label to the tt query param the NSE
+  // order form reads on mount — Lumpsum (P), SIP (S), Switch (SW),
+  // STP (ST), SWP (SP), Redemption (R).
+  const NSE_TRANSACT_OPTIONS: { tt: string; label: string }[] = [
+    { tt: "P", label: "Lumpsum" },
+    { tt: "S", label: "SIP" },
+    { tt: "SW", label: "Switch" },
+    { tt: "ST", label: "STP" },
+    { tt: "SP", label: "SWP" },
+    { tt: "R", label: "Redemption" },
+  ];
+
+  // Build the /nse-order-form URL with enough context for the order form to
+  // skip scheme lookup and preselect the transaction type. `source=portfolio`
+  // is what unlocks the R/SW/SP/ST options inside the form.
+  const navigateToNseOrderForm = (row: any, tt: string) => {
+    const params = new URLSearchParams({
+      source: "portfolio",
+      tt,
+      scheme_code: String(row?.scheme_code || ""),
+      scheme_name: String(row?.out_scheme || ""),
+      folio_no: String(row?.out_folio_no || ""),
+      units: String(row?.out_units || row?.out_sum_units || ""),
+      amc_code: String(row?.amc_code || ""),
+      client_code: String(selectedClientCode || ""),
+    });
+    router.push(`/nse-order-form?${params.toString()}`);
+  };
+
   const handleTransactClick = async (index: number) => {
     if (transactButtonRefs.current[index]) {
       const rect = transactButtonRefs.current[index]!.getBoundingClientRect();
       const spaceBelow = window.innerHeight - rect.bottom;
       const spaceAbove = rect.top;
-      const dropdownHeight = 200;
+      const dropdownHeight = 260;
       if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
         setDropdownDirection((prev) => ({ ...prev, [index]: "up" }));
       } else {
         setDropdownDirection((prev) => ({ ...prev, [index]: "down" }));
       }
     }
-    setOpenTransactDropdown(openTransactDropdown === index ? null : index);
+
+    const row: any = schemeData[index] || {};
+
+    // NSE path: investor has a UCC → show the NSE transaction menu. We don't
+    // navigate yet; the user picks the transaction type from the dropdown
+    // and that click handler routes to /nse-order-form with ?tt=<code>.
+    const isNseInvestor = !!selectedClientCode;
+    if (isNseInvestor) {
+      setOpenTransactDropdown(openTransactDropdown === index ? null : index);
+      return;
+    }
+
+    // MFU path — unchanged legacy flow. Close any open NSE dropdown first.
+    setOpenTransactDropdown(null);
 
     const _schemeData = {
       id: '',
-      name: schemeData[index].out_mutual_fund,
+      name: row.out_mutual_fund,
       category: '',
-      ms_fullname: schemeData[index].out_scheme,
-      schemeISIN: schemeData[index].out_isin,
-      amc_id: schemeData[index].out_amc_id,
-      out_folio_no: schemeData[index].out_folio_no,
-      out_sum_amount: schemeData[index].out_sum_amount,
-      out_sum_units: schemeData[index].out_sum_units,
+      ms_fullname: row.out_scheme,
+      schemeISIN: row.out_isin,
+      amc_id: row.out_amc_id,
+      out_folio_no: row.out_folio_no,
+      out_sum_amount: row.out_sum_amount,
+      out_sum_units: row.out_sum_units,
     };
 
-    await fetchByISIN(schemeData[index].out_isin);
+    await fetchByISIN(row.out_isin);
     console.log("Investorsssssssss :---------", investorList);
 
     if (investorList.length > 1) {
@@ -472,36 +614,98 @@ const Portfolio: NextPage = () => {
     setIsInitialLoad(false);
   }, [loadStateFromStorage]);
 
-  // Memoize the portfolio data fetch function
+  // Auto-run Search once the PAN resolves (from USER_DATA or the async UCC
+  // backfill). Only fires on the very first resolve so the user can still
+  // manually change selection + click Search afterwards without stomping.
+  const didAutoSearchRef = useRef(false);
+  useEffect(() => {
+    if (didAutoSearchRef.current) return;
+    if (isInitialLoad) return;
+    if (!selectedInvestorPan) return;
+    if (hasSearched) return; // saved state already ran a search
+    didAutoSearchRef.current = true;
+    getPortfolioData(selectedInvestorPan, true);
+    setPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedInvestorPan, isInitialLoad]);
+
+  // Memoize the portfolio data fetch function.
+  //
+  // Two data lanes:
+  //   • MFU / CAN → /partner/portfolio/searchs (fn_portfolio_valuation)
+  //   • NSE / UCC → /nse/portfolio/by-client-code/:client_code
+  // For an investor who has BOTH a CAN and a UCC we run the MFU fetch first
+  // and, if it's empty, fall through to the NSE feed so the user sees their
+  // NSE orders instead of an "empty portfolio".
   const getPortfolioData = useCallback(async (pan: string, shouldSave = true) => {
     if (!pan) return;
 
+    const clientCode = selectedClientCode?.trim() || "";
+
     setLoader(true);
     try {
-      const response = await api.post(`${ApiUrl}/partner/portfolio/searchs`, {
-        pan: pan,
-      });
-      console.log("port folio search", response);
+      let portfolioRecords: any[] = [];
+      let sourceLabel = "MFU";
 
-      const list = response.data?.data?.data ?? [];
-      const portfolioRecords = list.filter(
-        (item: any) => item.out_record_typ === "P"
-      );
+      // MFU lane first (keeps the existing CAN behavior untouched).
+      try {
+        const response = await api.post(`${ApiUrl}/partner/portfolio/searchs`, {
+          pan: pan,
+        });
+        const list = response.data?.data?.data ?? [];
+        portfolioRecords = list.filter((item: any) => item.out_record_typ === "P");
+      } catch (mfuErr) {
+        console.error("MFU portfolio fetch failed:", mfuErr);
+        portfolioRecords = [];
+      }
+
+      // NSE fallback — runs when (a) MFU returned nothing and (b) we know the
+      // investor's NSE client_code. This is the UCC-only case the user reported.
+      if (portfolioRecords.length === 0 && clientCode) {
+        try {
+          const nseRes = await api.get(`/nse/portfolio/by-client-code/${clientCode}`);
+          const nseList = nseRes?.data?.data ?? [];
+          if (Array.isArray(nseList) && nseList.length > 0) {
+            portfolioRecords = nseList.filter(
+              (item: any) => item.out_record_typ === "P"
+            );
+            sourceLabel = "NSE";
+          }
+        } catch (nseErr) {
+          console.error("NSE portfolio fetch failed:", nseErr);
+        }
+      }
+
+      console.log(`portfolio source=${sourceLabel} count=${portfolioRecords.length}`);
 
       setSchemeDatas(portfolioRecords);
       setTotalCount(portfolioRecords.length);
       setLastSearchPan(pan);
       setHasSearched(true);
 
+      if (portfolioRecords.length === 0) {
+        toastAlert(
+          "info",
+          clientCode
+            ? `No holdings found for PAN ${pan} or UCC ${clientCode}`
+            : `No portfolio holdings found for PAN ${pan}`
+        );
+      }
+
       if (shouldSave) {
         saveStateToStorage();
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error loading portfolio data:", error);
+      setSchemeDatas([]);
+      setTotalCount(0);
+      setLastSearchPan(pan);
+      setHasSearched(true);
+      toastAlert("error", error?.msg || error?.message || "Failed to load portfolio data");
     } finally {
       setLoader(false);
     }
-  }, [saveStateToStorage]);
+  }, [saveStateToStorage, selectedClientCode]);
 
   // Auto-refresh when returning to page
   useEffect(() => {
@@ -689,6 +893,30 @@ const Portfolio: NextPage = () => {
             >
               <GrTransaction size={14} className="text-white" />
             </button>
+            {openTransactDropdown === globalIndex && selectedClientCode && (
+              <div
+                className={`transact-dropdown absolute right-0 ${
+                  dropdownDirection[globalIndex] === "up" ? "bottom-full mb-2" : "top-full mt-2"
+                } z-50 w-44 bg-[#1F1A1A] border border-[#2A2A2A] rounded-lg shadow-xl overflow-hidden`}
+              >
+                <div className="px-3 py-2 text-[10px] uppercase tracking-wider text-[#F59E0B] border-b border-[#2A2A2A] bg-[#111111]">
+                  NSE Transact
+                </div>
+                {NSE_TRANSACT_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.tt}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenTransactDropdown(null);
+                      navigateToNseOrderForm(item, opt.tt);
+                    }}
+                    className="w-full text-left px-3 py-2 text-sm text-[#F9FAFB] hover:bg-[#2A2A2A] border-b border-[#2A2A2A] last:border-b-0"
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </td>
       </tr>

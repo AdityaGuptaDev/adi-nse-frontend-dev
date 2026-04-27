@@ -19,22 +19,32 @@ interface OrderRow {
   order_id: string;
 }
 
+// NSE ORDER_STATUS spec: "Maximum Date range should be 7 days" (inclusive).
+// 7 days inclusive means the numerical diff between from and to is ≤ 6.
+// Picking from=today-7 → diff=7 days → NSE rejects with "should be 7 days".
+const MAX_DATE_DIFF_DAYS = 6;
+
 // ── Helpers ──
-function todayStr(): string {
-  const d = new Date();
+function isoFromDate(d: Date): string {
   const dd = String(d.getDate()).padStart(2, "0");
   const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const yyyy = d.getFullYear();
-  return `${yyyy}-${mm}-${dd}`;
+  return `${d.getFullYear()}-${mm}-${dd}`;
 }
 
-function sevenDaysAgoStr(): string {
+function todayStr(): string {
+  return isoFromDate(new Date());
+}
+
+function sixDaysAgoStr(): string {
   const d = new Date();
-  d.setDate(d.getDate() - 7);
-  const dd = String(d.getDate()).padStart(2, "0");
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const yyyy = d.getFullYear();
-  return `${yyyy}-${mm}-${dd}`;
+  d.setDate(d.getDate() - MAX_DATE_DIFF_DAYS);
+  return isoFromDate(d);
+}
+
+function diffInDays(fromIso: string, toIso: string): number {
+  const a = new Date(fromIso).getTime();
+  const b = new Date(toIso).getTime();
+  return Math.round((b - a) / 86_400_000);
 }
 
 function toApiDate(dateStr: string): string {
@@ -61,11 +71,38 @@ function statusBadge(status: string) {
 // ══════════════════════════════════════════
 export default function NseMyOrders() {
   const router = useRouter();
-  const [fromDate, setFromDate] = useState(sevenDaysAgoStr());
+  const [fromDate, setFromDate] = useState(sixDaysAgoStr());
   const [toDate, setToDate] = useState(todayStr());
   const [loading, setLoading] = useState(false);
   const [orders, setOrders] = useState<OrderRow[]>([]);
   const [fetched, setFetched] = useState(false);
+
+  // Keep from_date and to_date within NSE's 7-day-inclusive window.
+  // When the user moves one bound past the limit, slide the other to
+  // match instead of throwing an error — this is what NSE Member Desk
+  // does and it's much less annoying than a validation popup.
+  const handleFromChange = (next: string) => {
+    setFromDate(next);
+    if (toDate && diffInDays(next, toDate) > MAX_DATE_DIFF_DAYS) {
+      const d = new Date(next);
+      d.setDate(d.getDate() + MAX_DATE_DIFF_DAYS);
+      setToDate(isoFromDate(d));
+    }
+    if (toDate && diffInDays(next, toDate) < 0) {
+      setToDate(next);
+    }
+  };
+  const handleToChange = (next: string) => {
+    setToDate(next);
+    if (fromDate && diffInDays(fromDate, next) > MAX_DATE_DIFF_DAYS) {
+      const d = new Date(next);
+      d.setDate(d.getDate() - MAX_DATE_DIFF_DAYS);
+      setFromDate(isoFromDate(d));
+    }
+    if (fromDate && diffInDays(fromDate, next) < 0) {
+      setFromDate(next);
+    }
+  };
 
   // ── Summary counts ──
   const totalOrders = orders.length;
@@ -103,6 +140,17 @@ export default function NseMyOrders() {
       toastAlert("warn", "Please select both dates");
       return;
     }
+    if (diffInDays(fromDate, toDate) < 0) {
+      toastAlert("error", "From Date cannot be after To Date");
+      return;
+    }
+    if (diffInDays(fromDate, toDate) > MAX_DATE_DIFF_DAYS) {
+      toastAlert(
+        "error",
+        `Date range can be at most ${MAX_DATE_DIFF_DAYS + 1} days (NSE limit).`,
+      );
+      return;
+    }
     setLoading(true);
     try {
       const res = await api.post("/nse/order-status", {
@@ -112,22 +160,63 @@ export default function NseMyOrders() {
         order_type: "ALL",
         sub_order_type: "ALL",
       });
-      const rows: any[] = res?.data?.data?.report_data || [];
+      // Backend sends { status, remark, data: <nseRaw> } encrypted; the
+      // axios interceptor decrypts to res.data.data, so the raw NSE
+      // payload (with response_status, report_data, error_remark) lives
+      // at res.data.data.data depending on the wrapper depth.
+      const outer = res?.data?.data ?? {};
+      const inner = outer?.data ?? outer;
+      const responseStatus =
+        inner?.response_status ?? outer?.response_status ?? "";
+      const errorRemark =
+        inner?.error_remark || outer?.error_remark || "";
+      const rows: any[] =
+        inner?.report_data || outer?.report_data || [];
+
+      // NSE returns response_status=F + error_remark for two very
+      // different situations:
+      //   1. Empty result — "No record(s) found." (not an error, just
+      //      means there are no orders in this window). Treat as empty.
+      //   2. Real validation/auth failure — "Maximum Difference between
+      //      from_date to to_date should be 7 days.", "Invalid date",
+      //      "Invalid authorization header." etc. Toast loudly.
+      const isEmptyRemark =
+        !!errorRemark &&
+        /no\s+record/i.test(errorRemark);
+      if ((responseStatus === "F" || errorRemark) && !isEmptyRemark) {
+        toastAlert("error", errorRemark || "NSE rejected the report request");
+        setOrders([]);
+        setFetched(true);
+        return;
+      }
+      if (isEmptyRemark) {
+        setOrders([]);
+        setFetched(true);
+        toastAlert("info", "No orders found for the selected date range");
+        return;
+      }
+
       const mapped: OrderRow[] = rows.map((r: any) => ({
-        order_date: r.order_date || r.orderDate || "--",
-        investor_name: r.investor_name || r.investorName || r.clientName || "--",
+        order_date: r.order_date || r.orderDate || r.request_date || "--",
+        investor_name:
+          r.investor_name ||
+          r.investorName ||
+          r.clientName ||
+          r.first_applicant_name ||
+          "--",
         folio_no: r.folio_no || r.folioNo || r.folio || "--",
         scheme_name: r.scheme_name || r.schemeName || r.scheme || "--",
-        trans_type: r.trans_type || r.transType || r.buySell || "--",
+        trans_type: r.trans_type || r.transType || r.buySell || r.transaction_type || "--",
         amount: r.amount || r.orderAmount || "--",
-        units: r.units || r.orderUnits || "--",
-        status: r.status || r.orderStatus || "--",
-        remarks: r.remarks || r.remark || "--",
+        units: r.units || r.orderUnits || r.quantity || "--",
+        status: r.status || r.orderStatus || r.order_status || "--",
+        remarks: r.remarks || r.remark || r.order_remark || "--",
         order_id: r.order_id || r.orderId || r.orderNo || "",
       }));
       setOrders(mapped);
       setFetched(true);
-      if (mapped.length === 0) toastAlert("info", "No orders found for the selected date range");
+      if (mapped.length === 0)
+        toastAlert("info", "No orders found for the selected date range");
     } catch (err: any) {
       handleServerError(err);
     } finally {
@@ -162,7 +251,8 @@ export default function NseMyOrders() {
           <input
             type="date"
             value={fromDate}
-            onChange={(e) => setFromDate(e.target.value)}
+            max={toDate || undefined}
+            onChange={(e) => handleFromChange(e.target.value)}
             className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
           />
         </div>
@@ -171,7 +261,8 @@ export default function NseMyOrders() {
           <input
             type="date"
             value={toDate}
-            onChange={(e) => setToDate(e.target.value)}
+            min={fromDate || undefined}
+            onChange={(e) => handleToChange(e.target.value)}
             className="border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F59E0B]"
           />
         </div>
@@ -183,6 +274,9 @@ export default function NseMyOrders() {
         >
           {loading ? "Searching..." : "Search"}
         </button>
+        <span className="text-[11px] text-[#6B7280] ml-auto">
+          NSE limits this report to a {MAX_DATE_DIFF_DAYS + 1}-day window.
+        </span>
       </div>
 
       {/* ── Table ── */}
